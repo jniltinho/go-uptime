@@ -7,6 +7,20 @@ metadata:
 data:
   config.yaml: |
     metrics: true
+    # The administration, ready to use at /admin: user "admin", password "go-uptime". CHANGE THE PASSWORD before exposing
+    # the Service; "go-uptime password hash" asks for the new one and prints its hash. For a real installation keep this
+    # file in a Secret instead of a ConfigMap.
+    storage:
+      type: sqlite
+      path: /data/data.db
+    security:
+      basic:
+        username: admin
+        password-bcrypt-base64: "JDJhJDEwJDY2YjI2R1dQYXQwZlNEdmdFc2RwTC5sU1loNG12MktoTUQ5dEo5WXFNZHduWlMvcnZGT3Bp"
+    admin:
+      enabled: true
+    status-pages:
+      enabled: true
     endpoints:
       - name: website
         url: https://twin.sh/health
@@ -96,10 +110,16 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: go-uptime-config
+            - mountPath: /data
+              name: go-uptime-data
       volumes:
         - configMap:
             name: go-uptime
           name: go-uptime-config
+        # What is created through the web lives here: an emptyDir is lost with the pod, so use a PersistentVolumeClaim
+        # (or storage.type postgres or mysql) to keep it
+        - emptyDir: {}
+          name: go-uptime-data
 ---
 apiVersion: v1
 kind: Service

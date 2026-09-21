@@ -24,3 +24,23 @@ endpoints:
     interval: 1h
     conditions:
       - "[DOMAIN_EXPIRATION] > 720h"
+
+# The administration keeps what is created through the web in a SQL database; SQLite needs nothing else
+storage:
+  type: sqlite
+  path: /data/data.db
+
+# The administration, ready to use: http://127.0.0.1:8080/admin, user "admin", password "go-uptime".
+# CHANGE THE PASSWORD before this is reachable by anyone else. It asks for the new password and prints its hash:
+#   docker run --rm -it jniltinho/go-uptime:v7.0.0 password hash
+security:
+  basic:
+    username: admin
+    password-bcrypt-base64: "JDJhJDEwJDY2YjI2R1dQYXQwZlNEdmdFc2RwTC5sU1loNG12MktoTUQ5dEo5WXFNZHduWlMvcnZGT3Bp"
+
+admin:
+  enabled: true
+
+# Public status pages (/status/<slug>) are created at /admin/status-pages. This only turns the public routes on.
+status-pages:
+  enabled: true

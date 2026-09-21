@@ -2,10 +2,10 @@
 # The minimum configuration with the administration enabled: a SQL storage, a login and admin.enabled. There is no
 # "endpoints" section on purpose: everything is registered at http://127.0.0.1:8080/admin and lives in the database.
 #
-#   1. docker run --rm -it jniltinho/go-uptime:v7.0.0 password hash      # asks for your password, prints its hash
-#   2. paste the hash below, then:  docker compose up -d
-#
-# Go Uptime refuses to start while the placeholder is there, so that it never runs with a password you did not choose:
+# It starts as it is:  docker compose up -d   then sign in with the user "admin" and the password "go-uptime".
+# CHANGE THE PASSWORD before this is reachable by anyone else. It asks for the new password and prints its hash:
+#   docker run --rm -it jniltinho/go-uptime:v7.0.0 password hash
+# Check the file after every change:
 #   docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.0.0 config validate
 
 storage:
@@ -15,7 +15,7 @@ storage:
 security:
   basic:
     username: admin
-    password-bcrypt-base64: "PASTE-THE-HASH-HERE"
+    password-bcrypt-base64: "JDJhJDEwJDY2YjI2R1dQYXQwZlNEdmdFc2RwTC5sU1loNG12MktoTUQ5dEo5WXFNZHduWlMvcnZGT3Bp"
 
 admin:
   enabled: true

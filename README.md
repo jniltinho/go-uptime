@@ -77,6 +77,11 @@ docker compose up -d
 with the `storage`, `security` and `admin` blocks of the next section in `config/config.yaml`. For MariaDB or MySQL,
 start from [.examples/docker-compose-mariadb-storage](.examples/docker-compose-mariadb-storage).
 
+Every example of [.examples](.examples) starts as it is with the administration enabled: open
+http://127.0.0.1:8080/admin and sign in with the user `admin` and the password `go-uptime`. That password is public, so
+the examples publish the port on `127.0.0.1` only: **change it** (`go-uptime password hash`) before putting a reverse
+proxy in front. The `config.yaml` inside the image has no administration enabled, on purpose.
+
 Without Docker, download `go-uptime_<version>_linux_<amd64|arm64>.tar.gz` from the
 [releases](https://github.com/jniltinho/go-uptime/releases) and run:
 
