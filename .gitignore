@@ -16,7 +16,7 @@ node_modules
 *.db
 *.db-shm
 *.db-wal
-gatus
+go-uptime
 config/config.yml
 config.yaml
 # Pacotes de release e capturas de tela dos testes E2E (dist/prints)

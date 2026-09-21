@@ -1,0 +1,16 @@
+go-uptime
+Copyright 2026 jniltinho and the go-uptime contributors
+
+This product is a derivative work of Gatus (https://github.com/TwiN/gatus),
+Copyright TwiN and the Gatus contributors, licensed under the Apache License,
+Version 2.0. go-uptime started from the Gatus commit
+7f3873d0b455 (2026-09-08) and is distributed under the same license; see the
+LICENSE file.
+
+The files of this repository that existed in Gatus have been modified. The
+source files carry a one-line notice saying so; the git history is the record
+of every modification.
+
+The names kept from Gatus in this repository are kept on purpose, either to
+credit the original project or because other systems depend on them (see
+AGENTS.md, "Names kept from Gatus").

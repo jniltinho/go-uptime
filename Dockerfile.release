@@ -1,21 +1,26 @@
-# Imagem de release do fork, montada com os binários de `make release-cross`
-# (dist/pkg/linux_<arch>/gatus). Nada é compilado nem executado na plataforma de destino,
-# então o build multi-arquitetura não precisa de QEMU.
+# Release image, assembled from the binaries of `make release-cross` (dist/pkg/linux_<arch>/go-uptime). Nothing is
+# compiled nor executed on the target platform, so the multi-architecture build needs no QEMU.
 #
-#   make docker-release VERSION=6.0.0
+#   make docker-release VERSION=7.0.0
 FROM --platform=$BUILDPLATFORM alpine:3.24.1 AS certs
 RUN apk add --no-cache ca-certificates tzdata
+# /gatus stays as a symbolic link during the 7.x series, for the compose files of v6 that call the binary by its path
+# (entrypoint, healthcheck). It is created here, on the build platform, inside a directory: copying the directory keeps
+# the link, copying the link alone would resolve it.
+RUN mkdir /compat && ln -s /go-uptime /compat/gatus
 
 FROM scratch
 ARG TARGETARCH
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=certs /usr/share/zoneinfo /usr/share/zoneinfo
-COPY dist/pkg/linux_${TARGETARCH}/gatus /gatus
+COPY dist/pkg/linux_${TARGETARCH}/go-uptime /go-uptime
+COPY --from=certs /compat/ /
 COPY config.yaml /config/config.yaml
-ENV GATUS_CONFIG_PATH=""
-ENV GATUS_LOG_LEVEL="INFO"
+COPY LICENSE NOTICE /
+# No ENV for GO_UPTIME_CONFIG_PATH nor GO_UPTIME_LOG_LEVEL: the application has the defaults, and a default of the image
+# would always be set, hiding the GATUS_* variables of a compose file of v6
 ENV PORT="8080"
 EXPOSE ${PORT}
 # The image has no shell, so the binary checks itself: the address, the port and the TLS come from the configuration
-HEALTHCHECK --interval=30s --timeout=6s --start-period=30s --retries=3 CMD ["/gatus", "healthcheck"]
-ENTRYPOINT ["/gatus"]
+HEALTHCHECK --interval=30s --timeout=6s --start-period=30s --retries=3 CMD ["/go-uptime", "healthcheck"]
+ENTRYPOINT ["/go-uptime"]

@@ -37,9 +37,9 @@ func init() {
 	rootCmd.AddCommand(serveCmd)
 }
 
-// runServe starts Gatus and blocks until a termination signal
+// runServe starts Go Uptime and blocks until a termination signal
 func runServe(cmd *cobra.Command, _ []string) error {
-	if delayInSeconds, _ := strconv.Atoi(os.Getenv(GatusDelayStartEnvVar)); delayInSeconds > 0 {
+	if delayInSeconds, _ := strconv.Atoi(lookupEnvironment(DelayStartEnvVar, LegacyDelayStartEnvVar)); delayInSeconds > 0 {
 		logr.Infof("Delaying start by %d seconds", delayInSeconds)
 		time.Sleep(time.Duration(delayInSeconds) * time.Second)
 	}

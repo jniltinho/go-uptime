@@ -41,7 +41,7 @@ security.basic.password-bcrypt-base64 and of auth.password-bcrypt-base64 of a st
 
 On a terminal the password is asked twice, without echo. Through a pipe, one line is read and its line break is dropped:
 
-    printf 'the-password' | gatus password hash`,
+    printf 'the-password' | go-uptime password hash`,
 	Args: func(_ *cobra.Command, arguments []string) error {
 		if len(arguments) > 0 {
 			return errPasswordAsArgument
@@ -91,7 +91,7 @@ func readPassword(input io.Reader, prompt io.Writer) (string, error) {
 	if err != nil && !errors.Is(err, io.EOF) {
 		return "", err
 	}
-	// Exactly one line break goes, and nothing else: `echo password | gatus password hash` must not hash "password\n",
+	// Exactly one line break goes, and nothing else: `echo password | go-uptime password hash` must not hash "password\n",
 	// while spaces, and even a carriage return that is not part of the line break, belong to the password
 	if trimmed, found := strings.CutSuffix(line, "\r\n"); found {
 		return trimmed, nil

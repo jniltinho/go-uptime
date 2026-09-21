@@ -1,10 +1,10 @@
-BINARY=gatus
-DOCKER_IMAGE ?= jniltinho/gatus
+BINARY=go-uptime
+DOCKER_IMAGE ?= jniltinho/go-uptime
 DOCKER_PLATFORMS ?= linux/amd64,linux/arm64
 VERSION ?= dev
 DIST := dist
 RELEASE_ARCHS := amd64 arm64
-# Versão, commit e data gravados no binário, mostrados por `gatus version`
+# Versão, commit e data gravados no binário, mostrados por `go-uptime version`
 GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 # Cada -X entre aspas simples, senão uma versão com espaço partiria o -ldflags; e só o alfabeto de uma versão é aceito,
@@ -62,7 +62,7 @@ release-cross: check-version
 	@for arch in $(RELEASE_ARCHS); do \
 		mkdir -p $(DIST)/pkg/linux_$$arch && \
 		CGO_ENABLED=0 GOOS=linux GOARCH=$$arch go build -trimpath -ldflags "$(LDFLAGS)" -o $(DIST)/pkg/linux_$$arch/$(BINARY) . && \
-		tar -czf $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz -C $(DIST)/pkg/linux_$$arch $(BINARY) -C $(CURDIR) config.yaml LICENSE README.md && \
+		tar -czf $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz -C $(DIST)/pkg/linux_$$arch $(BINARY) -C $(CURDIR) config.yaml LICENSE NOTICE README.md && \
 		echo "  $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz" || exit 1; \
 	done
 
@@ -84,11 +84,11 @@ docker-build: check-version
 		--build-arg VERSION=$(VERSION) \
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		-t jniltinho/gatus:$(VERSION) .
+		-t $(DOCKER_IMAGE):$(VERSION) .
 
 .PHONY: docker-run
 docker-run:
-	docker run -p 8080:8080 --name gatus jniltinho/gatus:$(VERSION)
+	docker run -p 8080:8080 --name go-uptime $(DOCKER_IMAGE):$(VERSION)
 
 .PHONY: docker-build-and-run
 docker-build-and-run: docker-build docker-run

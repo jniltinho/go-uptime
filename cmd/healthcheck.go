@@ -127,7 +127,7 @@ func isLoopbackTarget(target string) bool {
 func checkHealth(ctx context.Context, target string) error {
 	client := &http.Client{
 		Transport: &http.Transport{
-			// The proxy of the environment is for the checks of Gatus, never for the server checking itself
+			// The proxy of the environment is for the checks of Go Uptime, never for the server checking itself
 			Proxy:           nil,
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: isLoopbackTarget(target)}, //nolint:gosec // only for the loopback
 		},

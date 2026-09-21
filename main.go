@@ -1,4 +1,4 @@
-// Gatus is a health dashboard that monitors services, evaluates conditions on their results, sends alerts and serves
+// Go Uptime is a health dashboard that monitors services, evaluates conditions on their results, sends alerts and serves
 // public status pages. The command line lives in the cmd package.
 package main
 

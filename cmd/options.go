@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/TwiN/logr"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/spf13/cobra"
@@ -20,14 +18,7 @@ func resolveConfigPath(cmd *cobra.Command) (string, error) {
 		}
 		return configPath, nil
 	}
-	configPath := os.Getenv(GatusConfigPathEnvVar)
-	// Backwards compatibility
-	if len(configPath) == 0 {
-		if configPath = os.Getenv(GatusConfigFileEnvVar); len(configPath) > 0 {
-			logr.Warnf("WARNING: %s is deprecated. Please use %s instead.", GatusConfigFileEnvVar, GatusConfigPathEnvVar)
-		}
-	}
-	return configPath, nil
+	return lookupEnvironment(ConfigPathEnvVar, LegacyConfigPathEnvVar, LegacyConfigFileEnvVar), nil
 }
 
 // resolveLogLevel returns the log level of the flag when it was passed, otherwise of the environment
@@ -35,7 +26,7 @@ func resolveLogLevel(cmd *cobra.Command) string {
 	if flag := cmd.Flags().Lookup(logLevelFlagName); flag != nil && flag.Changed {
 		return flag.Value.String()
 	}
-	return os.Getenv(GatusLogLevelEnvVar)
+	return lookupEnvironment(LogLevelEnvVar, LegacyLogLevelEnvVar)
 }
 
 func configureLogging(logLevelAsString string) {

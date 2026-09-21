@@ -11,7 +11,7 @@ var versionCmd = &cobra.Command{
 	Short: "Show the version, the commit and the build date",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, _ []string) {
-		fmt.Fprintf(cmd.OutOrStdout(), "gatus %s (commit: %s, built: %s)\n", Version, GitCommit, BuildDate)
+		fmt.Fprintf(cmd.OutOrStdout(), "go-uptime %s (commit: %s, built: %s)\n", Version, GitCommit, BuildDate)
 	},
 }
 
