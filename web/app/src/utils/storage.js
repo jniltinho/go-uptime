@@ -39,7 +39,9 @@ export const readPreference = (name, storage) => {
     }
     try {
       // Another tab may have stored the preference since the read above: what it chose is newer than the legacy value,
-      // so it is kept, and only the legacy key goes
+      // so it is kept, and only the legacy key goes. localStorage has no lock, so a write of another tab between this
+      // read and the write below can still lose to the legacy value; the window is two synchronous calls, once per
+      // preference and per browser, and what is lost is a choice made in that instant.
       const stored = store.getItem(preferenceKey(name))
       if (stored !== null && stored !== undefined) {
         store.removeItem(legacyPreferenceKey(name))

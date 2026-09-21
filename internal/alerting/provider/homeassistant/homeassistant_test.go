@@ -171,7 +171,7 @@ func TestConfig_EventType(t *testing.T) {
 	if err := cfg.Validate(); err != nil || cfg.GetEventType() != "go_uptime_alert" {
 		t.Errorf("expected the configured event type, got %q (err=%v)", cfg.GetEventType(), err)
 	}
-	for _, invalid := range []string{"with space", "a/b", "../admin", "a?b"} {
+	for _, invalid := range []string{"with space", "a/b", "../admin", "a?b", ".", "..", "a.b"} {
 		cfg.EventType = invalid
 		if err := cfg.Validate(); !errors.Is(err, ErrInvalidEventType) {
 			t.Errorf("expected %q to be refused, got %v", invalid, err)

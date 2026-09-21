@@ -117,8 +117,9 @@ The scripts keep working too: `docs/manager-gatus.py` is still there, as an iden
 
 ## Going back to v6
 
-Reinstalling `jniltinho/gatus:v6.3.0` over the same database works, since nothing was migrated. Two things do not go
-back: **v6 cannot read a backup made by v7** (keep the one you made before upgrading), and a configuration with
+Reinstalling `jniltinho/gatus:v6.3.0` over the same database works, since nothing was migrated. Three things do not go
+back: the preferences of each browser (sorting, filters, collapsed groups), because the migration removes the `gatus:`
+keys that v6 reads; **v6 cannot read a backup made by v7** (keep the one you made before upgrading), and a configuration with
 `metrics-namespace`, or a Home Assistant provider with `event-type`, has options that v6 does not know — `metrics-namespace`
 is ignored by v6, and `event-type` too.
 

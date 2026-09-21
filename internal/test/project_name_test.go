@@ -94,7 +94,7 @@ func TestProjectName(t *testing.T) {
 			leftovers = append(leftovers, name+": the name of the file")
 		}
 		content, err := os.ReadFile(filepath.Join(root, name))
-		if err != nil || bytes.IndexByte(content[:min(len(content), 8000)], 0) >= 0 {
+		if err != nil || isBinaryFile(name, content) {
 			continue // removed in the working tree, or binary
 		}
 		scanner := bufio.NewScanner(bytes.NewReader(content))
@@ -109,6 +109,26 @@ func TestProjectName(t *testing.T) {
 	if len(leftovers) > 0 {
 		t.Errorf("the old name of the project appears outside the names kept on purpose (AGENTS.md, \"Origin, and names kept from Gatus\"). Write Go Uptime or go-uptime, or, if the name must stay, add the reason to this test:\n  %s", strings.Join(leftovers, "\n  "))
 	}
+}
+
+// binaryFileSuffixes are the files that are never read as text
+var binaryFileSuffixes = []string{".png", ".jpg", ".jpeg", ".gif", ".ico", ".woff", ".woff2", ".ttf", ".pyc", ".gz", ".db", ".pdf"}
+
+// isBinaryFile tells a binary from a text file by its name first, and only then by its first bytes: a source file may
+// have a NUL byte inside a regular expression (web/app/src/utils/adminBackup.js and redirect.js do), and skipping it as a
+// binary would hide whatever else it says
+func isBinaryFile(name string, content []byte) bool {
+	for _, suffix := range binaryFileSuffixes {
+		if strings.HasSuffix(strings.ToLower(name), suffix) {
+			return true
+		}
+	}
+	for _, suffix := range []string{".go", ".js", ".mjs", ".cjs", ".vue", ".css", ".html", ".md", ".yaml", ".yml", ".sh", ".py", ".json", ".svg", ".service", ".conf", ".mod", ".sum"} {
+		if strings.HasSuffix(name, suffix) {
+			return false
+		}
+	}
+	return bytes.IndexByte(content[:min(len(content), 512)], 0) >= 0
 }
 
 func hasAnyPrefix(name string, prefixes []string) bool {

@@ -26,15 +26,16 @@ var (
 	ErrURLNotSet              = errors.New("url not set")
 	ErrTokenNotSet            = errors.New("token not set")
 	ErrDuplicateGroupOverride = errors.New("duplicate group override")
-	ErrInvalidEventType       = errors.New("event-type must have only letters, digits, underscores, hyphens and dots")
+	ErrInvalidEventType       = errors.New("event-type must have only letters, digits, underscores and hyphens")
 )
 
 // DefaultEventType is the event fired when event-type is not set. It is kept from Gatus on purpose (see AGENTS.md,
 // "Names kept from Gatus"): the automations of Home Assistant written on v6 listen to this event.
 const DefaultEventType = "gatus_alert"
 
-// eventTypePattern is what an event type may have, since it is part of the path of the request
-var eventTypePattern = regexp.MustCompile(`^[A-Za-z0-9_.-]+$`)
+// eventTypePattern is what an event type may have, since it is part of the path of the request: no slash, and no dot
+// either, so that it can never be the segment "." or "..", which a proxy in between would resolve
+var eventTypePattern = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
 
 // Config holds the base URL of the Home Assistant instance, the access token sent as a bearer token and, optionally,
 // the type of the event to fire.

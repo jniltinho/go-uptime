@@ -20,8 +20,8 @@ go-uptime completion <shell>    shell completion (bash, zsh, fish, powershell)
 
 | Flag | Environment | Default |
 |------|-------------|---------|
-| `--config` | `GO_UPTIME_CONFIG_PATH` (and the deprecated `GATUS_CONFIG_FILE`) | `config/config.yaml`, then `config/config.yml` |
-| `--log-level` | `GO_UPTIME_LOG_LEVEL` | `INFO` |
+| `--config` | `GO_UPTIME_CONFIG_PATH`, then `GATUS_CONFIG_PATH` and the deprecated `GATUS_CONFIG_FILE`, the names of v6 | `config/config.yaml`, then `config/config.yml` |
+| `--log-level` | `GO_UPTIME_LOG_LEVEL`, then `GATUS_LOG_LEVEL`, the name of v6 | `INFO` |
 
 The flag wins over the environment, and the environment over the default. Both flags work on every command, before or
 after it: `go-uptime --config x.yaml` is `go-uptime serve --config x.yaml`. `GO_UPTIME_DELAY_START_SECONDS` still delays the start

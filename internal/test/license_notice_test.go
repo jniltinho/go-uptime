@@ -41,7 +41,7 @@ func TestLicenseNotices(t *testing.T) {
 			continue
 		}
 		content, err := os.ReadFile(filepath.Join(root, name))
-		if err != nil || bytes.IndexByte(content[:min(len(content), 8000)], 0) >= 0 {
+		if err != nil || isBinaryFile(name, content) {
 			continue // removed in the working tree, or binary
 		}
 		if hasAnySuffix(name, licenseNoticeWithoutComment) {

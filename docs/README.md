@@ -1353,7 +1353,7 @@ endpoints:
         success-threshold: 2
 ```
 
-The alerts will be sent as events to HomeAssistant with the event type `gatus_alert`, the name that the event has had since the project was called Gatus and that existing automations listen to. `alerting.homeassistant.event-type` changes it (letters, digits, `_`, `-` and `.`). The event data includes:
+The alerts will be sent as events to HomeAssistant with the event type `gatus_alert`, the name that the event has had since the project was called Gatus and that existing automations listen to. `alerting.homeassistant.event-type` changes it (letters, digits, `_` and `-`). The event data includes:
 - `status`: "triggered" or "resolved"
 - `endpoint`: The name of the monitored endpoint
 - `description`: The alert description if provided
