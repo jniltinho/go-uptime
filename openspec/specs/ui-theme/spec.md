@@ -49,7 +49,7 @@ A interface web MUST oferecer três temas: escuro (`dark`), claro (`light`) e Bi
 
 #### Scenario: Tema padrão inválido
 - **WHEN** a configuração tem `ui.default-theme: azul`
-- **THEN** a configuração é inválida, no início e em `gatus config validate`
+- **THEN** a configuração é inválida, no início e em `go-uptime config validate`
 
 #### Scenario: Do escuro para o Bio e de volta
 - **WHEN** o visitante troca do tema escuro para o Bio e depois para o claro
@@ -77,7 +77,7 @@ O tom de repouso MUST ter pelo menos 3:1 de contraste com a superfície de menor
 - **THEN** o repouso e o realce da barra ficam mais fortes que os do tema Bio sem essa preferência, com o realce acima do repouso
 
 ### Requirement: Tipografia entregue pelo próprio serviço
-A interface MUST usar a fonte Inter entregue pelo próprio Gatus, em arquivos `woff2` variáveis servidos em `/fonts/`, versionados no repositório e embutidos no binário junto do restante dos estáticos. O frontend MUST NOT pedir fontes a nenhum domínio externo, nas telas autenticadas e nas páginas públicas.
+A interface MUST usar a fonte Inter entregue pelo próprio Go Uptime, em arquivos `woff2` variáveis servidos em `/fonts/`, versionados no repositório e embutidos no binário junto do restante dos estáticos. O frontend MUST NOT pedir fontes a nenhum domínio externo, nas telas autenticadas e nas páginas públicas.
 
 Os `@font-face` MUST declarar `font-display: swap` e um `unicode-range` por subconjunto, e a pilha de fontes MUST manter as fontes do sistema como reserva, de modo que a interface continue legível se o arquivo não carregar. A licença da fonte MUST ser distribuída junto dos arquivos.
 
@@ -105,7 +105,7 @@ Os números da interface MUST usar algarismos tabulares, inclusive dentro de cam
 - **THEN** a interface volta aos algarismos proporcionais
 
 #### Scenario: Arquivo da fonte entregue pelo binário
-- **WHEN** um cliente pede o arquivo da fonte ao Gatus
+- **WHEN** um cliente pede o arquivo da fonte ao Go Uptime
 - **THEN** a resposta é `200` com `Content-Type: font/woff2`
 
 ### Requirement: Seletor de tema

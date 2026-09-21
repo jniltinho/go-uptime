@@ -40,7 +40,7 @@ Cada página MUST aceitar `slug`, `title`, `description`, `groups`, `endpoints`,
 
 #### Scenario: Limite de endpoints fora do intervalo
 - **WHEN** a configuração tem `status-pages.maximum-endpoints-per-page` igual a `0`, a `-1`, a `1001` ou a um valor que não é inteiro
-- **THEN** a configuração é inválida, no início e em `gatus config validate`, com a mensagem citando o intervalo aceito
+- **THEN** a configuração é inválida, no início e em `go-uptime config validate`, com a mensagem citando o intervalo aceito
 
 ### Requirement: Validação das páginas
 A validação do arquivo de configuração MUST ser estrutural e MUST recusar:

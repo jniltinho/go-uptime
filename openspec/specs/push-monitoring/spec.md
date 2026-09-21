@@ -4,9 +4,9 @@
 TBD - created by archiving change add-push-monitoring. Update Purpose after archive.
 ## Requirements
 ### Requirement: URL de push compatível com o Uptime Kuma
-O sistema MUST receber envios em `/api/push/{token}` por qualquer método HTTP, sem autenticação do Gatus, lendo somente os parâmetros de query `status`, `msg` e `ping`, com as regras do Uptime Kuma e uma extensão do Gatus:
+O sistema MUST receber envios em `/api/push/{token}` por qualquer método HTTP, sem autenticação do Go Uptime, lendo somente os parâmetros de query `status`, `msg` e `ping`, com as regras do Uptime Kuma e uma extensão do Go Uptime:
 - `status` igual a `up` MUST registrar sucesso, e o padrão é `up`;
-- `status` igual a `pending` MUST registrar um resultado Pending, extensão do Gatus, porque no Uptime Kuma esse valor registra falha;
+- `status` igual a `pending` MUST registrar um resultado Pending, extensão do Go Uptime, porque no Uptime Kuma esse valor registra falha;
 - qualquer outro valor de `status` MUST registrar falha, sujeito às tentativas do endpoint;
 - `msg` MUST ser a mensagem do resultado, com padrão `OK`;
 - `ping` MUST ser lido como número em milissegundos e usado como duração do resultado; vazio ou não numérico MUST ser ignorado; menor que 0 ou maior que 100000000000 MUST ser rejeitado.
@@ -155,7 +155,7 @@ Os endpoints Push gerenciados MUST ter o mesmo ciclo dos endpoints gerenciados a
 - **THEN** a página pública mostra `jobs_backup` com seus resultados
 
 ### Requirement: Push em endpoints ativos
-Receber push MUST ser uma opção de cada endpoint ativo, desligada por padrão. Um push aceito para um endpoint ativo com a opção ligada MUST registrar um resultado no mesmo histórico das verificações do Gatus, com status, mensagem, duração e origem Push. Esse resultado MUST contar para o uptime, os eventos, as métricas e os alertas como as verificações, exceto um push Pending, que segue as regras do status Pending. Os endpoints ativos MUST NOT ter tentativas. O processamento das verificações ativas e dos pushes de um mesmo endpoint MUST ser serializado, sem perder os contadores dos alertas. O heartbeat MUST NOT ser aplicado a endpoints ativos. Um push para um endpoint ativo com a opção desligada, parado, desabilitado ou removido MUST responder 404.
+Receber push MUST ser uma opção de cada endpoint ativo, desligada por padrão. Um push aceito para um endpoint ativo com a opção ligada MUST registrar um resultado no mesmo histórico das verificações do Go Uptime, com status, mensagem, duração e origem Push. Esse resultado MUST contar para o uptime, os eventos, as métricas e os alertas como as verificações, exceto um push Pending, que segue as regras do status Pending. Os endpoints ativos MUST NOT ter tentativas. O processamento das verificações ativas e dos pushes de um mesmo endpoint MUST ser serializado, sem perder os contadores dos alertas. O heartbeat MUST NOT ser aplicado a endpoints ativos. Um push para um endpoint ativo com a opção desligada, parado, desabilitado ou removido MUST responder 404.
 
 #### Scenario: Notificação da Akamai num serviço ativo
 - **WHEN** `erp_site` tem push ligado, verifica a URL a cada minuto com sucesso e a Akamai envia `status=down&msg=Latencia alta` às 10:00:20
@@ -170,7 +170,7 @@ Receber push MUST ser uma opção de cada endpoint ativo, desligada por padrão.
 #### Scenario: Push desligado
 - **WHEN** um administrador desliga o push de `erp_site`
 - **THEN** os envios para `erp_site` com a chave global ou com o token do endpoint respondem 404
-- **AND** as verificações do Gatus continuam registrando resultados
+- **AND** as verificações do Go Uptime continuam registrando resultados
 
 #### Scenario: Push durante a verificação ativa
 - **WHEN** um push chega enquanto a verificação ativa do mesmo endpoint grava seu resultado
@@ -234,11 +234,11 @@ O resumo do dashboard MUST mostrar a contagem de endpoints cujo último resultad
 - **THEN** nenhum evento novo é criado
 
 #### Scenario: Pending persistido
-- **WHEN** um resultado Pending é gravado com storage `postgres` e o Gatus reinicia
+- **WHEN** um resultado Pending é gravado com storage `postgres` e o Go Uptime reinicia
 - **THEN** a API protegida devolve o resultado com `success: false` e `pending: true`
 
 #### Scenario: Banco de versão anterior
-- **WHEN** o Gatus inicia com uma tabela `endpoint_result_messages` sem a coluna `pending`, com storage `sqlite`, `postgres` ou `mysql`
+- **WHEN** o Go Uptime inicia com uma tabela `endpoint_result_messages` sem a coluna `pending`, com storage `sqlite`, `postgres` ou `mysql`
 - **THEN** a coluna é acrescentada, as mensagens existentes continuam legíveis e os resultados antigos não são Pending
 
 #### Scenario: Uptime com Pending

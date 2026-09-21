@@ -81,7 +81,7 @@ O formulário MUST começar pelo tipo de monitor:
 - **Push (passivo):** nome, grupo, token, intervalo de heartbeat, tentativas ("Retries", `heartbeat.retries`, de 0 a 100, padrão 0) ao lado do intervalo, alertas e estado habilitado.
 
 No tipo Push, a tela MUST mostrar:
-- a URL de push copiável no formato do Uptime Kuma (`<endereço do Gatus>/api/push/<token>?status=up&msg=OK&ping=`);
+- a URL de push copiável no formato do Uptime Kuma (`<endereço do Go Uptime>/api/push/<token>?status=up&msg=OK&ping=`);
 - a explicação de que o envio deve ocorrer a cada intervalo de heartbeat e aceita `status`, `msg` e `ping`;
 - um exemplo de `curl`;
 - a ação de gerar um token novo;
@@ -176,7 +176,7 @@ As telas de administração MUST seguir as convenções do projeto: Vue 3 com `<
 - **THEN** as telas de administração são exibidas com as cores do tema Bio, sem nenhuma variante do tema escuro aplicada
 
 ### Requirement: Testes ponta a ponta com agent-browser
-O repositório MUST ter um roteiro de testes ponta a ponta em `test/e2e/` que suba o Gatus local com SQLite temporário, `security.basic` e `admin.enabled`, e use o `agent-browser` para percorrer lista, criação, validação, teste, salvamento, edição, desabilitação, remoção e acesso sem credenciais (401), nos temas claro e escuro, salvando capturas de tela em `dist/prints/`. O diretório `dist/` MUST ser ignorado pelo git.
+O repositório MUST ter um roteiro de testes ponta a ponta em `test/e2e/` que suba o Go Uptime local com SQLite temporário, `security.basic` e `admin.enabled`, e use o `agent-browser` para percorrer lista, criação, validação, teste, salvamento, edição, desabilitação, remoção e acesso sem credenciais (401), nos temas claro e escuro, salvando capturas de tela em `dist/prints/`. O diretório `dist/` MUST ser ignorado pelo git.
 
 #### Scenario: Execução do roteiro
 - **WHEN** alguém executa o roteiro de testes ponta a ponta

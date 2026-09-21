@@ -32,6 +32,6 @@
 ## 5. Entrega
 
 - [x] 5.1 PR da implementação com CI verde; revisão codex + grok do diff (as duas APROVADA COM AJUSTES, sem BLOCKER nem MAJOR; ajustes aplicados).
-- [ ] 5.2 Com o aval do dono: `gh repo rename go-uptime`, descrição e tópicos, remotos locais (`origin` novo, `upstream` removido); o dono sai da rede de forks.
-- [ ] 5.3 Release `v7.0.0`: pré-release, teste de upgrade, tag, tarballs, imagem `jniltinho/go-uptime:v7.0.0` (amd64 e arm64, sem `latest`), notas em inglês com o guia de migração no topo; script antigo e novo e a unit do systemd baixados pela URL da tag candidata e **executados** (o script numa pasta vazia).
-- [ ] 5.4 Pós-release: descrição do `jniltinho/gatus` no Docker Hub apontando para o novo, `mariadb/` do dono, servidor de validação (com o aval dele), memória do agente, arquivamento da change.
+- [x] 5.2 Com o aval do dono: `gh repo rename go-uptime`, descrição e tópicos, remotos locais (`origin` novo, `upstream` removido); o dono sai da rede de forks.
+- [x] 5.3 Release `v7.0.0`: pré-release, teste de upgrade, tag, tarballs, imagem `jniltinho/go-uptime:v7.0.0` (amd64 e arm64, sem `latest`), notas em inglês com o guia de migração no topo; script antigo e novo e a unit do systemd baixados pela URL da tag candidata e **executados** (o script numa pasta vazia).
+- [x] 5.4 Pós-release: descrição do `jniltinho/gatus` no Docker Hub apontando para o novo, `mariadb/` do dono, servidor de validação (com o aval dele), memória do agente, arquivamento da change.

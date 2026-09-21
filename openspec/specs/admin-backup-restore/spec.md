@@ -11,7 +11,7 @@ O backup MUST conter as definições completas, sem máscara, do que foi cadastr
 
 **O que fica de fora:** o backup MUST NOT conter histórico, alertas disparados, sessões de login nem cadastros do arquivo de configuração.
 
-**Formato:** JSON com `format: "gatus-admin-backup"`, `version: 1`, `createdAt`, `createdBy`, `gatusVersion` opcional e as listas `endpoints`, `statusPages` e `pushKeys`, ordenadas.
+**Formato:** JSON com `format: "go-uptime-admin-backup"`, `version: 1`, `createdAt`, `createdBy`, `appVersion` opcional e as listas `endpoints`, `statusPages` e `pushKeys`, ordenadas.
 
 **Leitura:** o sistema MUST recusar com 400 um arquivo com:
 - `format` desconhecido ou versão maior que a suportada;
@@ -20,6 +20,8 @@ O backup MUST conter as definições completas, sem máscara, do que foi cadastr
 - itens duplicados (chave, slug, nome ou hash).
 
 **Limites:** o texto claro MUST ter no máximo 2 MiB, 1.000 endpoints, 200 status pages e 500 chaves. O backup MUST responder 422 quando os cadastros passam desses limites.
+
+**Arquivos da v6:** a leitura MUST aceitar também `format: "gatus-admin-backup"` e o envelope `format: "gatus-admin-backup-encrypted"`, e o campo `gatusVersion` como sinônimo de `appVersion`, de modo que um backup feito antes da troca de nome seja restaurado. O cabeçalho de um arquivo cifrado MUST ser autenticado como foi lido, com o `format` do próprio arquivo. A escrita MUST usar sempre o formato novo.
 
 #### Scenario: Backup com os três tipos
 - **WHEN** a web tem os endpoints `jobs_backup` (Push) e `web_site` (desabilitado), a status page `jobs` e a chave `akamai`
@@ -41,7 +43,7 @@ O backup MUST conter as definições completas, sem máscara, do que foi cadastr
 Ao gerar o backup, o administrador MUST poder escolher cifrá-lo com uma senha de 12 a 1.024 bytes UTF-8.
 
 **Envelope:**
-- o arquivo cifrado MUST ser um envelope JSON `format: "gatus-admin-backup-encrypted"`, `version: 1`;
+- o arquivo cifrado MUST ser um envelope JSON `format: "go-uptime-admin-backup-encrypted"`, `version: 1`;
 - MUST usar Argon2id com `time: 2`, `memoryKiB: 19456` e `threads: 1`, salt aleatório de 16 bytes, AES-256-GCM com nonce aleatório de 12 bytes e o cabeçalho canônico como dado autenticado;
 - o leitor MUST recusar outros parâmetros, tamanhos de salt ou nonce, nomes de algoritmo e campos desconhecidos.
 
@@ -76,7 +78,7 @@ Ao gerar o backup, o administrador MUST poder escolher cifrá-lo com uma senha d
 - exigir administrador e as proteções contra CSRF, com `Content-Type: application/json`;
 - aceitar `{}` ou `{"password": "..."}`;
 - responder 503 durante uma recarga ou com um dos registros indisponível, inclusive quando a lista dos endpoints gerenciados não pôde ser carregada;
-- responder o arquivo com `Content-Disposition: attachment`, nome `gatus-backup-<AAAAMMDD-HHMMSS>.json` (ou `.enc.json` cifrado) e `Cache-Control: no-store`.
+- responder o arquivo com `Content-Disposition: attachment`, nome `go-uptime-backup-<AAAAMMDD-HHMMSS>.json` (ou `.enc.json` cifrado) e `Cache-Control: no-store`.
 
 A operação MUST ser registrada no log com o autor, as quantidades e se houve cifragem, sem o conteúdo.
 
@@ -244,7 +246,7 @@ A administração MUST ter a aba **Backup** em `/admin/backup`, depois de "Push 
 
 #### Scenario: Download cifrado pela tela
 - **WHEN** o administrador marca "Encrypt with a password", digita a senha duas vezes e clica em Download
-- **THEN** o navegador baixa `gatus-backup-<data>.enc.json`
+- **THEN** o navegador baixa `go-uptime-backup-<data>.enc.json`
 - **AND** um toast de sucesso informa o nome do arquivo
 
 #### Scenario: Restore pela tela

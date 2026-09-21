@@ -7,7 +7,7 @@ TBD - created by archiving change add-admin-endpoint-management. Update Purpose 
 O sistema MUST persistir cada endpoint criado pela administração web no storage configurado (SQLite ou PostgreSQL), guardando a definição enviada sem os valores padrão, uma versão inteira incrementada a cada alteração, a data de criação, a data da última alteração e o autor da última alteração. Os valores padrão MUST ser aplicados apenas em memória.
 
 #### Scenario: Endpoint criado sobrevive ao reinício
-- **WHEN** um administrador cria o endpoint `api` no grupo `core` e o Gatus é reiniciado
+- **WHEN** um administrador cria o endpoint `api` no grupo `core` e o Go Uptime é reiniciado
 - **THEN** o endpoint `core_api` volta a ser monitorado
 - **AND** os resultados registrados antes do reinício continuam disponíveis
 
@@ -50,7 +50,7 @@ O sistema MUST aceitar a definição de um endpoint gerenciado em YAML ou JSON, 
 
 ### Requirement: Restrições próprias de endpoints gerenciados
 O sistema MUST rejeitar definições de endpoints gerenciados que:
-- gerem, pela função de chave do Gatus, uma chave já usada por endpoint, external-endpoint, suite ou endpoint de suite do YAML, ou por outro endpoint gerenciado (409, com a origem da chave na mensagem);
+- gerem, pela função de chave do Go Uptime, uma chave já usada por endpoint, external-endpoint, suite ou endpoint de suite do YAML, ou por outro endpoint gerenciado (409, com a origem da chave na mensagem);
 - usem `client.identity-aware-proxy`, `client.tls.certificate-file`, `client.tls.private-key-file`, `store` ou `always-run` (400);
 - referenciem em `client.tunnel` um túnel inexistente em `tunneling` (400);
 - declarem em `extra-labels` nomes fora da lista de labels Prometheus registrada no ciclo atual (400).
@@ -111,7 +111,7 @@ Operações que alteram um endpoint existente MUST exigir `If-Match` com a vers�
 - **AND** a alteração do primeiro é mantida
 
 #### Scenario: Escrita durante recarga
-- **WHEN** um administrador envia uma criação enquanto o hot-reload está entre parar e iniciar o Gatus
+- **WHEN** um administrador envia uma criação enquanto o hot-reload está entre parar e iniciar o Go Uptime
 - **THEN** a API responde 503 e nada é persistido
 
 ### Requirement: Segredos mascarados
@@ -227,7 +227,7 @@ Com `admin.enabled: true`, o sistema MUST validar os pré-requisitos da administ
 
 #### Scenario: YAML sem endpoints
 - **WHEN** o arquivo de configuração tem apenas `storage`, `security` e `admin`
-- **THEN** o Gatus inicia e serve o dashboard sem endpoints
+- **THEN** o Go Uptime inicia e serve o dashboard sem endpoints
 - **AND** um administrador consegue criar o primeiro endpoint
 
 ### Requirement: Escritas serializadas com a partida
@@ -264,7 +264,7 @@ Um endpoint gerenciado em conflito com o arquivo de configuração MUST poder se
 - **AND** `web_site` não aparece em `GET /api/v1/endpoints/statuses`
 
 #### Scenario: Histórico preservado depois de reiniciar
-- **WHEN** o Gatus reinicia depois da renomeação de `web_site` para `clientes_site`
+- **WHEN** o Go Uptime reinicia depois da renomeação de `web_site` para `clientes_site`
 - **THEN** `clientes_site` continua com o histórico anterior à renomeação
 - **AND** nenhum dado é registrado sob `web_site`
 

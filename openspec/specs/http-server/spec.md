@@ -55,7 +55,7 @@ As respostas JSON MUST ter os mesmos bytes de antes da troca, sem quebra de linh
 - **THEN** a chave vista pelo manipulador é a mesma de antes da troca
 
 ### Requirement: Esquema e sessão sem confiar em cabeçalhos
-A proteção contra CSRF e o atributo `Secure` do cookie de sessão MUST continuar usando o TLS da própria conexão, o `Host` da requisição e o **primeiro valor** de `X-Forwarded-Proto`, exatamente como hoje, e MUST NOT usar a resolução de esquema do framework, que também confia em `X-Forwarded-Protocol`, `X-Forwarded-Ssl` e `X-Url-Scheme`, nem `X-Forwarded-Host`. O cookie `gatus_session` MUST manter `Path=/`, `HttpOnly` e `SameSite=Strict`.
+A proteção contra CSRF e o atributo `Secure` do cookie de sessão MUST continuar usando o TLS da própria conexão, o `Host` da requisição e o **primeiro valor** de `X-Forwarded-Proto`, exatamente como hoje, e MUST NOT usar a resolução de esquema do framework, que também confia em `X-Forwarded-Protocol`, `X-Forwarded-Ssl` e `X-Url-Scheme`, nem `X-Forwarded-Host`. O cookie `go_uptime_session` MUST manter `Path=/`, `HttpOnly` e `SameSite=Strict`.
 
 #### Scenario: Proxy que termina o TLS
 - **WHEN** uma conexão sem TLS envia `X-Forwarded-Proto: https` no login

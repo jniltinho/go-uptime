@@ -85,7 +85,7 @@ O sistema MUST limitar as conexões de eventos abertas a 500 no total e a 10 por
 - **THEN** as conexões são encerradas e a recarga não espera 5 minutos
 
 #### Scenario: Atrás do nginx sem trusted-proxies
-- **WHEN** o Gatus está atrás de um proxy que não está em `status-pages.trusted-proxies` e 11 visitantes abrem os detalhes
+- **WHEN** o Go Uptime está atrás de um proxy que não está em `status-pages.trusted-proxies` e 11 visitantes abrem os detalhes
 - **THEN** o 11º recebe 429 no canal e continua com a atualização periódica
 - **AND** a documentação indica configurar `trusted-proxies`
 
@@ -106,8 +106,8 @@ A página de detalhes do endpoint no dashboard e a página pública de detalhes 
 - **WHEN** um visitante está em `/status/jobs/endpoints/jobs_backup` e o endpoint recebe um push
 - **THEN** a página mostra o resultado novo em até 2 segundos, mesmo com a resposta de detalhes ainda em cache
 
-#### Scenario: Recarga do Gatus atrás do nginx
-- **WHEN** o visitante está nos detalhes, a configuração do Gatus é recarregada e o canal recebe 502 do nginx
+#### Scenario: Recarga do Go Uptime atrás do nginx
+- **WHEN** o visitante está nos detalhes, a configuração do Go Uptime é recarregada e o canal recebe 502 do nginx
 - **THEN** a página continua mostrando os dados e volta a receber avisos em no máximo 5 minutos, sem ação do visitante
 
 #### Scenario: Pending com a tabela na página 2
