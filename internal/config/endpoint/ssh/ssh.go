@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ssh holds the ssh section of an endpoint of the YAML configuration, i.e. the credentials used by the
 // endpoints whose URL starts with ssh://, and validates them.
 package ssh

@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Note: The fs.Stats deprecation warning is from Vue CLI's webpack dependencies
 // which are not yet compatible with Node.js v23. This is suppressed in the build
 // script. All user dependencies have been updated to their latest versions.

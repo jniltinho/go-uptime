@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <a href="https://github.com/jniltinho/go-uptime">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-with-light-text.png">

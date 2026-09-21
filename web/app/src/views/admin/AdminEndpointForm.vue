@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="container mx-auto px-4 py-8 max-w-5xl">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package alerting holds the configuration of every alerting provider and finds the provider of an alert type
 // by matching the type against the YAML tags of Config through reflection.
 package alerting

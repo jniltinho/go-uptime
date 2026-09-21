@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package pushkey keeps the global push keys (fork): the keys of the configuration file and the keys created through the
 // administration API, whose tokens are only stored as hashes
 package pushkey

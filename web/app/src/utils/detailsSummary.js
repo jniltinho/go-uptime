@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Numbers of the panel of the endpoint details pages, of the dashboard and of the public status pages (fork)
 
 import { formatMilliseconds, formatUptime } from './statusPage.js'

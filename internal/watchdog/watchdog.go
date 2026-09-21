@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package watchdog runs the monitoring: one goroutine per endpoint and per suite, limited by the configured
 // concurrency. Each execution stores its result, updates the metrics, handles the alerts and publishes the live
 // update. Endpoints managed from the administration are started, stopped and restarted individually, and push

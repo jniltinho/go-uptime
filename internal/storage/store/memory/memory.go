@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package memory implements the store in memory: nothing survives a restart. It is the default, and what the tests
 // use.
 package memory

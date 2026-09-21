@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package dns holds the dns section of an endpoint of the YAML configuration, which turns the endpoint into a DNS
 // query, and validates its query name and query type.
 package dns

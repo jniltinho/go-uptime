@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: action of the administration lists as an icon. A link stays a link (Open), and a disabled action keeps its
        tooltip, which the disabled:pointer-events-none of the Button would swallow -->

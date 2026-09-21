@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <AdminListLayout title="Status pages" description="Pages at /status/&lt;slug&gt;, open without login unless the page asks for one" active="status-pages">
     <template #actions>

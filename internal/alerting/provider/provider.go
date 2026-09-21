@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package provider defines the AlertProvider interface implemented by every alerting provider and the Config
 // contract of their configurations, checks both at compile time for each provider, and merges a provider's
 // default alert into an endpoint alert.

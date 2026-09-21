@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package clickup implements the alerting provider that opens a task in a ClickUp list when an alert is
 // triggered and closes the matching tasks when it is resolved, through the ClickUp REST API.
 package clickup

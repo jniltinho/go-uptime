@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # Installing the binary on Linux with systemd
 
 Go Uptime is a single static binary: no runtime, no libraries, no container. This page installs the release tarball in

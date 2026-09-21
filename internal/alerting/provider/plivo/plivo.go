@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package plivo implements the alerting provider that sends alerts as SMS through the Plivo Message REST API,
 // one request for each recipient, using basic authentication.
 package plivo

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 // mysqlTableOptions are the options of every table of the MySQL schema: InnoDB for foreign keys and transactions, and a

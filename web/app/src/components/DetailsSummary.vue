@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <Card data-testid="details-summary">
     <dl class="grid grid-cols-2 gap-x-4 gap-y-5 p-6 md:grid-cols-5">

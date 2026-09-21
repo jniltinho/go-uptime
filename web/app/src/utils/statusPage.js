@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Helpers of the public status pages (fork)
 
 // Relative import with the extension, so that the unit tests can load this module with Node

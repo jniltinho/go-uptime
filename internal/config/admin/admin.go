@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package admin contains the configuration of the web administration of endpoints, i.e. the admin section of the YAML
 // configuration: whether it is enabled, which OIDC subjects may use it and which origins may send its requests. It
 // validates and normalizes these values.

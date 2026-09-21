@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Fork: toast messages of the administration, shown by components/admin/AdminToasts.vue.
 //
 // - Types success, info, warning and error (an unknown type is info).

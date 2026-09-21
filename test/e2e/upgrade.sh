@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Upgrade test between two images, with Docker: a backup made on the old version is restored on the new one, the new
 # version is started over the database of the old one, and the Python scripts of docs/ run against both.
 #

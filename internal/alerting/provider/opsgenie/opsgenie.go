@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package opsgenie implements the alerting provider that creates alerts in Opsgenie and closes them once
 // resolved, through the REST Alert API authenticated with a GenieKey API key.
 package opsgenie

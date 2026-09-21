@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package custom implements the alerting provider that sends alerts through a user-defined HTTP request,
 // whose URL, method, headers and body are configured and may contain placeholders.
 package custom

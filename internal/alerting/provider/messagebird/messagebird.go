@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package messagebird implements the alerting provider that sends alerts by SMS through the MessageBird
 // REST API.
 package messagebird

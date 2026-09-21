@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of the login screen of security.basic, with agent-browser.
 #
 #   test/e2e/login.sh

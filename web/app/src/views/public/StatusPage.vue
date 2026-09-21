@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="container mx-auto px-4 py-6 max-w-5xl">
     <div v-if="state === 'loading'" class="py-16 flex justify-center"><Loading /></div>

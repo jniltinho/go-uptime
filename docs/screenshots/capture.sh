@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Retakes the screenshots of docs/screenshots, so that they all come from the same version and the same data.
 #
 #   make build && docs/screenshots/capture.sh

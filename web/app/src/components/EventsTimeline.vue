@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: events of an endpoint, collapsed by default like the Checks table, on the dashboard and on the public status pages -->
   <div>

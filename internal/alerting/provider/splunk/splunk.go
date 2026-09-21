@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package splunk implements the alerting provider that sends alerts to Splunk as events through the HTTP
 // Event Collector (HEC), authenticated with a HEC token.
 package splunk

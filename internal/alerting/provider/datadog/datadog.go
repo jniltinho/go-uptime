@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package datadog implements the alerting provider that publishes alerts as events in Datadog through the
 // Datadog Events REST API.
 package datadog

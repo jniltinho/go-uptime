@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Expiration of the TLS certificate of an endpoint (fork), shown discreetly like the "Cert Exp." of the Uptime Kuma
 const DAY_MS = 24 * 60 * 60 * 1000
 const NANOSECONDS_PER_MILLISECOND = 1000000

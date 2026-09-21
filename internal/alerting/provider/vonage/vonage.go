@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package vonage implements the alerting provider that sends alerts as SMS through the Vonage (formerly
 // Nexmo) SMS REST API, one request for each recipient.
 package vonage

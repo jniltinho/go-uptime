@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package zulip implements the alerting provider that posts alerts to a Zulip channel through the messages
 // REST API, authenticated as a bot with basic authentication.
 package zulip

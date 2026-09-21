@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package cmd defines the commands of the go-uptime binary (serve, version, config validate, password hash and
 // healthcheck). The configuration path and the log level come from the flag when it is passed, then from the environment
 // (GO_UPTIME_CONFIG_PATH, GO_UPTIME_LOG_LEVEL, then their GATUS_* aliases, see environment.go), then from the defaults.

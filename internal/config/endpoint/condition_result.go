@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 // ConditionResult result of a Condition: the outcome of one condition of an endpoint for a given Result, as

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package signl4 implements the alerting provider that sends alerts to SIGNL4 through the team's inbound
 // webhook, whose URL is built from the team secret.
 package signl4

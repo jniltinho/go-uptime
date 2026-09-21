@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ifttt implements the alerting provider that triggers an IFTTT applet through the Webhooks service
 // of IFTTT (maker.ifttt.com).
 package ifttt

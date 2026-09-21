@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # MySQL and MariaDB storage
 
 > Not in Gatus, the project that Go Uptime derives from: there, the

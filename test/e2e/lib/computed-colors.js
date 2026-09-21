@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Collects the computed colours of every element of the page, for test/e2e/theme-colors.sh. It returns a JSON object
 // from a stable identifier of each element (its data-testid when it has one, otherwise its path in the DOM) to the
 // values that a theme can change. The pixels of images and of a canvas are out of its reach.

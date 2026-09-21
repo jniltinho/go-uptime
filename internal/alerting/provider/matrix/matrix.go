@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package matrix implements the alerting provider that sends alerts as messages to a Matrix room through the
 // client-server API of a homeserver.
 package matrix

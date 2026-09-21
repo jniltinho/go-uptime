@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Release image, assembled from the binaries of `make release-cross` (dist/pkg/linux_<arch>/go-uptime). Nothing is
 # compiled nor executed on the target platform, so the multi-architecture build needs no QEMU.
 #

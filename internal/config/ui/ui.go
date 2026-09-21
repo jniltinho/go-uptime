@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ui models the ui section of the YAML configuration: the texts, logo, favicons, buttons, custom CSS, theme
 // and default sorting and filtering of the dashboard. It validates the section, applies its defaults and makes sure
 // that the index template renders with it.

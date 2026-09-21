@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div id="global" class="bg-background text-foreground">
     <!-- Waiting for the router: the layout depends on the route -->

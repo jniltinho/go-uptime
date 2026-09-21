@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 export { default as Card } from './Card.vue'
 export { default as CardHeader } from './CardHeader.vue'
 export { default as CardTitle } from './CardTitle.vue'

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package newrelic implements the alerting provider that records alerts in New Relic as custom GatusAlert
 // events through the Event API of the Insights collector, authenticated with an insert key.
 package newrelic

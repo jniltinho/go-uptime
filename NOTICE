@@ -7,9 +7,28 @@ Version 2.0. go-uptime started from the Gatus commit
 7f3873d0b455 (2026-09-08) and is distributed under the same license; see the
 LICENSE file.
 
-The files of this repository that existed in Gatus have been modified. The
-source files carry a one-line notice saying so; the git history is the record
-of every modification.
+The files of this repository that existed in Gatus have been modified. Every
+file of the project that can carry a comment has a one-line notice saying so
+(.github/license-notices.py puts it, and TestLicenseNotices requires it); the
+git history is the record of every modification.
+
+The following files of the project cannot carry a comment, because of their
+format. They also derive from Gatus and were modified where they existed there:
+
+  .examples/docker-compose-grafana-prometheus/grafana/provisioning/dashboards/go-uptime.json
+  go.sum
+  web/app/.nvmrc
+  web/app/package-lock.json
+  web/app/package.json
+  web/app/public/manifest.json
+  web/app/src/utils/theme.cases.json
+
+Not covered by the notice, because they are not files of the project or must
+keep their bytes: third_party/ (modules of the author of Gatus, under their own
+licenses), the skills and commands imported into .claude/ (see
+.claude/skills/LICENSE.cc-skills-golang), the Inter font (SIL OFL 1.1, served
+with its license), test fixtures, certificates of the examples, images, and
+the files generated into web/static/.
 
 The names kept from Gatus in this repository are kept on purpose, either to
 credit the original project or because other systems depend on them (see

@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <Card class="suite h-full flex flex-col transition hover:shadow-lg hover:scale-[1.01] dark:hover:border-gray-700">
     <CardHeader class="suite-header px-3 sm:px-6 pt-3 sm:pt-6 pb-2 space-y-0">

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package pattern matches strings against the glob patterns of the conditions, e.g. pat(*ok*).
 package pattern
 

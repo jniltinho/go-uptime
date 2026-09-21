@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # Screenshots
 
 The screens of [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime), captured at 1280×900 by

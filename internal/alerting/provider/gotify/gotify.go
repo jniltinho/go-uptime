@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gotify implements the alerting provider that sends alerts as messages to a Gotify server through
 // its REST API, authenticated with an application token.
 package gotify

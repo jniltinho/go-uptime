@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package alert defines the alert configuration attached to an endpoint and the alert types, one for each
 // alerting provider.
 package alert

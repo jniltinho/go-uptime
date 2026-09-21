@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package config loads the YAML configuration of the application, from a single file or from a directory whose files
 // are merged, expands the environment variables it references, and validates every section while applying its
 // defaults. The Config it returns is the root object from which the rest of the application reads its settings; each

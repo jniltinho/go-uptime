@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 > Full configuration reference of Go Uptime: endpoints, conditions, alerting, storage, security, UI, suites and deployment.
 > It comes from the README of the original [TwiN/gatus](https://github.com/TwiN/gatus), from which this project started,
 > and everything in it applies here. What [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime) adds is documented apart:

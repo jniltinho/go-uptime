@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package homeassistant implements the alerting provider that fires a gatus_alert event in Home Assistant
 // through its REST API, authenticated with a long-lived access token.
 package homeassistant

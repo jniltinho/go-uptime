@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package n8n implements the alerting provider that sends alerts to an n8n workflow by posting a JSON payload
 // to the workflow's webhook URL.
 package n8n

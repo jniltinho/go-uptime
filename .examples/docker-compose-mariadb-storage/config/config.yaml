@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 storage:
   type: mysql
   path: "${MARIADB_USER}:${MARIADB_PASSWORD}@tcp(mariadb:3306)/${MARIADB_DATABASE}"

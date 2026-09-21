@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package push contains the configuration of the push monitoring (fork): the global push keys and the endpoints of the
 // configuration file that receive push, in addition to the external endpoints
 package push

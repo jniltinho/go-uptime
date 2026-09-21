@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package teamsworkflows implements the alerting provider that sends alerts to Microsoft Teams as an
 // Adaptive Card through the webhook of a Workflows (Power Automate) flow.
 package teamsworkflows

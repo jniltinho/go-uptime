@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Calls to the protected API with the login screen of security.basic (fork)
 
 // Headers of the calls to the protected API: with them, a 401 does not open the native credentials dialog of the browser

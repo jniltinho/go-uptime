@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div :class="['border px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between', bannerClass]" data-testid="status-summary">
     <p role="status" class="font-semibold flex items-center gap-2">

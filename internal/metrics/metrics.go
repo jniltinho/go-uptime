@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package metrics publishes the results of the endpoints and suites as Prometheus metrics, when metrics is enabled in
 // the configuration. The metrics are registered again on every configuration reload, because the extra labels may
 // change.

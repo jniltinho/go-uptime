@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package googlechat implements the alerting provider that sends alerts to a Google Chat space through an
 // incoming webhook.
 package googlechat

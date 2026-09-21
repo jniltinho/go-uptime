@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Go Uptime with the MySQL/MariaDB storage of the jniltinho/go-uptime fork (see docs/storage-mysql.md).
 # The image of the original Gatus (twinproduction/gatus) does not include this storage.
 services:

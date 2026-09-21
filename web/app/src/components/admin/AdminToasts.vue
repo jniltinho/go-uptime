@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: toast messages of the administration, see utils/toast.js. Centered, at the top on larger screens and below
        the header of the app on phones, above the dialogs, and only the toasts take clicks -->

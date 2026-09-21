@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # PagerDuty + Go Uptime Integration Benefits
 - Notify on-call responders based on alerts sent from Go Uptime.
 - Incidents will automatically resolve in PagerDuty when the endpoint that caused the incident in Go Uptime returns to a healthy state.

@@ -2,6 +2,7 @@
 name: create-release
 description: Cria a tag de versão e a GitHub Release de jniltinho/go-uptime (tags vX.Y.Z, SemVer simples), publica a imagem jniltinho/go-uptime no Docker Hub com make docker-release e ajusta as notas. Use quando pedirem para criar ou publicar uma release, gerar uma tag de versão ou publicar a imagem do fork.
 ---
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 
 # Releases de jniltinho/go-uptime
 

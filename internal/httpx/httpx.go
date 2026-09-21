@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package httpx holds what the handlers need from the HTTP framework, in one place. Go Uptime moved from Fiber (fasthttp)
 // to Echo v5 (net/http), and several methods kept their name while changing their meaning: echo.Context.Get reads the
 // store of the request and not a header, Path returns the registered route and not the path of the request, and the

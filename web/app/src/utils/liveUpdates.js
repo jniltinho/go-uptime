@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Fork: real-time updates of the endpoint details pages. The server only notifies that the endpoint has a new result,
 // through Server-Sent Events, and the page fetches the data again with its usual APIs.
 

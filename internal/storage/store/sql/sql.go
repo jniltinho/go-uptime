@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package sql implements the store on SQLite, PostgreSQL, MySQL 8.4+ and MariaDB 10.11+. The queries are written once,
 // with $N placeholders; the differences between the databases live in the specific_*.go and dialect_mysql.go files,
 // and the schema is created and migrated when the store starts.

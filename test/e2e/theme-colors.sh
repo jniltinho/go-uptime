@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Collects the computed colours of every element of every screen, per theme and per state, so that two versions of the
 # frontend can be compared element by element:
 #

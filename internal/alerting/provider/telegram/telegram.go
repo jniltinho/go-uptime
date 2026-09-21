@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package telegram implements the alerting provider that sends alerts to a Telegram chat through the
 // sendMessage method of the Bot API.
 package telegram

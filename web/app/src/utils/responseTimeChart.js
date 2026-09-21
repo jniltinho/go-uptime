@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Series of the response time chart in the format of the monitor page of Uptime Kuma (fork)
 //
 // Ports of getChartDatapointsFromHeartbeatList and getChartDatapointsFromStats of src/components/PingChart.vue of

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Testes ponta a ponta das telas de administração de endpoints, com agent-browser.
 #
 #   test/e2e/admin.sh

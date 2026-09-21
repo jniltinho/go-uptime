@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="flex justify-center items-center" role="status" aria-label="Loading">
     <Loader2 :class="['animate-spin opacity-60', sizeClass]" aria-hidden="true" />

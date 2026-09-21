@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gitea implements the alerting provider that opens an issue in a Gitea repository when an alert is
 // triggered and closes it when the alert is resolved, through the Gitea API.
 package gitea

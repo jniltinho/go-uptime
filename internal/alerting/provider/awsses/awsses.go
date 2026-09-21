@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package awsses implements the alerting provider that sends alerts by email through AWS Simple Email Service,
 // using the SendEmail operation of the AWS SDK.
 package awsses

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ui holds the ui section of an endpoint of the YAML configuration: what is hidden from the results of the
 // endpoint (hostname, URL, port, errors, conditions), how its conditions are displayed and the thresholds of its
 // response time badge. It validates the section and provides its defaults.

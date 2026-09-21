@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package remote models the remote section of the YAML configuration: other Go Uptime instances whose endpoint statuses
 // are retrieved and merged into the ones of this instance. It validates the section and applies its defaults.
 package remote

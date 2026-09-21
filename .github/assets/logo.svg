@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 89.76 89.75">
 <defs>
 <linearGradient id="go-uptime-light" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="65" y2="90">

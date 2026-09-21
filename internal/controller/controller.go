@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package controller owns the HTTP server: Handle builds the router of package api and serves it, with TLS when
 // web.tls is set, and Shutdown drains the connections before closing them. A new server is started on every
 // configuration reload.

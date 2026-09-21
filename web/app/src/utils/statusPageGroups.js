@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Collapsed groups of a public status page: which state a group is shown in, and how the choice of a visitor is
 // remembered between visits without leaving the name of a group in the browser.
 //

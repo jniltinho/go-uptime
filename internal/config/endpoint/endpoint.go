@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package endpoint models the endpoints and external-endpoints sections of the YAML configuration. It validates
 // them and applies their defaults, performs the health check of an endpoint (HTTP, DNS, TCP, UDP, SCTP, ICMP, TLS,
 // STARTTLS, gRPC, WebSocket and SSH) and evaluates its conditions, and defines the Status, Result, Event and

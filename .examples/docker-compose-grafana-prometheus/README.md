@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 ## Usage
 Go Uptime exposes Prometheus metrics at `/metrics` if the `metrics` configuration option is set to `true`.
 

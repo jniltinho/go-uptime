@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package push resolves the pushes received through /api/push (fork): the push token of an endpoint identifies it,
 // and a global push key accepts push for every endpoint that receives push
 package push

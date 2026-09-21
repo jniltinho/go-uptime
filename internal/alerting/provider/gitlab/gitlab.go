@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gitlab implements the alerting provider that creates and resolves GitLab alerts through the HTTP
 // endpoint (webhook) of a GitLab alert integration.
 package gitlab

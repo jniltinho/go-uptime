@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="dashboard-container bg-background">
     <div class="container mx-auto px-4 py-4 max-w-7xl">

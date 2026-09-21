@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # Migrating from `jniltinho/gatus` v6 to Go Uptime v7
 
 Go Uptime is the same project as `jniltinho/gatus`, under its new name from `v7.0.0` on. The database, the configuration

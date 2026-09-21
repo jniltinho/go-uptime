@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Build the go application into a binary
 FROM golang:alpine AS builder
 RUN apk --update add ca-certificates

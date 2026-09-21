@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of status-pages.maximum-endpoints-per-page, with agent-browser.
 #
 #   make build && test/e2e/status-page-limit.sh

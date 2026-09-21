@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package zapier implements the alerting provider that hands alerts to a Zap by posting a JSON payload to a
 // Zapier webhook.
 package zapier

@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Preferences that the interface keeps in the browser (localStorage), under the prefix of the project.
 //
 // While the project was called Gatus the prefix was "gatus:". A preference stored under it is migrated the first time

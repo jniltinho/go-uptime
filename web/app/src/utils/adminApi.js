@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Client of the administration API of endpoints (/api/v1/admin)
 import { PROTECTED_API_HEADERS, notifyUnauthorized } from '@/utils/auth'
 import { parseRetryAfter, readBlobResponse } from '@/utils/adminBackup'

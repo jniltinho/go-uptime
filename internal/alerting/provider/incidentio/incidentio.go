@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package incidentio implements the alerting provider that sends alert events to incident.io through the
 // HTTP alert source of its REST API.
 package incidentio

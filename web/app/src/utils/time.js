@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 /**
  * Generates a human-readable relative time string (e.g., "2 hours ago")
  * @param {string|Date} timestamp - The timestamp to convert

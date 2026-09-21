@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 """Manages the endpoints of Go Uptime through the administration API: imports them from a CSV, renames groups and exports
 the push tokens.
 

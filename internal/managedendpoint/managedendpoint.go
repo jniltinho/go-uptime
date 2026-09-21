@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package managedendpoint parses, validates and serializes the endpoints managed through the administration API.
 package managedendpoint
 

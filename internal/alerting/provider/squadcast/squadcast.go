@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package squadcast implements the alerting provider that triggers and resolves Squadcast incidents through
 // an incoming webhook.
 package squadcast

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package connectivity models the connectivity section of the YAML configuration: a checker that tells whether Go Uptime
 // itself can reach the internet, so that endpoints are not evaluated (and alerts not sent) while it cannot. It
 // validates the section, applies its defaults and performs the check.

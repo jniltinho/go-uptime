@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ntfy implements the alerting provider that publishes alerts to a ntfy topic by posting a JSON
 // message to the ntfy server, optionally authenticated with an access token.
 package ntfy

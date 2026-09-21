@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 """Builds .github/assets/logo-with-{dark,light}-text.png: the icon of the project and its name, in the Inter of the interface."""
 import sys
 from fontTools.ttLib import TTFont

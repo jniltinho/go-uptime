@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package store defines the Store interface, implemented by the memory and sql packages, and holds the store in use
 // by the process. Besides the results, events and uptime of the endpoints and suites, a store keeps what is managed
 // from the administration: endpoints, status pages, push keys and login sessions.

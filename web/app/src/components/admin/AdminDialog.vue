@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: dialog of the administration, teleported to the body in the order it opens, see utils/dialogStack.js -->
   <Teleport v-if="open" to="body">

@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Measures the contrast of every text of the page against the background it is really drawn on, for
 // test/e2e/theme-colors.sh --contrast. It returns a JSON object from a stable identifier of each element that has text
 // of its own to { ratio, foreground, background, large }. The background is the first opaque one going up the

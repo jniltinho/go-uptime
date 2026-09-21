@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package teams implements the alerting provider that sends alerts to Microsoft Teams as a MessageCard
 // through an incoming webhook connector.
 package teams

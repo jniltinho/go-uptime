@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Default configuration of jniltinho/go-uptime: example endpoints and two public status pages.
 # In the Docker image it is at /config/config.yaml; mount your own file at that path to replace it.
 # Check a change before applying it:   go-uptime config validate --config config.yaml

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package sendgrid implements the alerting provider that sends alerts by email through the SendGrid v3 Mail
 // Send REST API, authenticated with a bearer API key.
 package sendgrid

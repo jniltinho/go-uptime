@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 import { beforeEach, afterEach, mock, test } from 'node:test'
 import assert from 'node:assert/strict'
 import { REOPEN_DELAYS_MS, RESULT_DELAY_MS, reopenDelayMs, urlWithLastEventId, watchEndpointResults } from './liveUpdates.js'

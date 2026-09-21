@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package api is the HTTP layer of Go Uptime, built on Echo v5: the JSON API under /api/v1, the badges and charts in SVG,
 // the event streams (text/event-stream) of the live updates, the push routes compatible with the Uptime Kuma, the
 // health and metrics routes, the rendered single page application and the embedded static files.

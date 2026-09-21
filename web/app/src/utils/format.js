@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 /**
  * Formats a duration from nanoseconds to a human-readable string
  * @param {number} duration - Duration in nanoseconds

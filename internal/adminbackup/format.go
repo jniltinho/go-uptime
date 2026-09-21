@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package adminbackup backs up and restores what was registered through the administration (fork): the managed
 // endpoints, the managed status pages and the push keys created through the administration.
 package adminbackup
