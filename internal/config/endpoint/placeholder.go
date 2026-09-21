@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 import (
@@ -5,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/jsonpath"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/jsonpath"
 )
 
 // Placeholders

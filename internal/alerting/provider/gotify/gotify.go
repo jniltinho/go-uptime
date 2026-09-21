@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gotify implements the alerting provider that sends alerts as messages to a Gotify server through
 // its REST API, authenticated with an application token.
 package gotify
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -27,7 +29,7 @@ var (
 )
 
 // Config holds the address and the application token of the Gotify server and the priority and title of the
-// messages. An empty Title means Gatus followed by the display name of the endpoint.
+// messages. An empty Title means Go Uptime followed by the display name of the endpoint.
 type Config struct {
 	ServerURL string `yaml:"server-url"`         // URL of the Gotify server
 	Token     string `yaml:"token"`              // Token to use when sending a message to the Gotify server
@@ -131,7 +133,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		message += " with the following description: " + alert.GetDescription()
 	}
 	message += formattedConditionResults
-	title := "Gatus: " + ep.DisplayName()
+	title := "Go Uptime: " + ep.DisplayName()
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package adminbackup
 
 import (
@@ -7,7 +9,7 @@ import (
 	"testing"
 )
 
-const validBackup = `{"format":"gatus-admin-backup","version":1,"createdAt":"2026-09-16T18:00:00Z","createdBy":"admin",
+const validBackup = `{"format":"go-uptime-admin-backup","version":1,"createdAt":"2026-09-16T18:00:00Z","createdBy":"admin",
 "endpoints":[{"key":"jobs_backup","definition":"type: push\nname: backup\ngroup: jobs\ntoken: abcdefgh12345678\n"}],
 "statusPages":[{"slug":"jobs","definition":"slug: jobs\ntitle: Jobs\n"}],
 "pushKeys":[{"name":"akamai","tokenHash":"` + "0000000000000000000000000000000000000000000000000000000000000000" + `","hint":"Ab12","createdAt":"2026-09-16T18:00:00Z","createdBy":"admin"}]}`
@@ -18,7 +20,7 @@ func TestDecode(t *testing.T) {
 		t.Fatalf("expected a valid backup, got %v %v", file, err)
 	}
 	scenarios := map[string]string{
-		"unknown-format":   strings.Replace(validBackup, `"gatus-admin-backup"`, `"other"`, 1),
+		"unknown-format":   strings.Replace(validBackup, `"go-uptime-admin-backup"`, `"other"`, 1),
 		"higher-version":   strings.Replace(validBackup, `"version":1`, `"version":2`, 1),
 		"unknown-field":    strings.Replace(validBackup, `"createdBy":"admin",`, `"createdBy":"admin","extra":true,`, 1),
 		"unknown-item-key": strings.Replace(validBackup, `"slug":"jobs",`, `"slug":"jobs","enabled":true,`, 1),
@@ -51,7 +53,7 @@ func TestEncodeDecodeRoundTrip(t *testing.T) {
 
 func FuzzDecode(f *testing.F) {
 	f.Add([]byte(validBackup))
-	f.Add([]byte(`{"format":"gatus-admin-backup","version":1,"endpoints":[],"statusPages":[],"pushKeys":[]}`))
+	f.Add([]byte(`{"format":"go-uptime-admin-backup","version":1,"endpoints":[],"statusPages":[],"pushKeys":[]}`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		file, err := Decode(data)
 		if err == nil && (file.Format != Format || file.Endpoints == nil) {

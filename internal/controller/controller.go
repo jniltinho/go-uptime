@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package controller owns the HTTP server: Handle builds the router of package api and serves it, with TLS when
 // web.tls is set, and Shutdown drains the connections before closing them. A new server is started on every
 // configuration reload.
@@ -12,9 +14,9 @@ import (
 	"sync"
 	"time"
 
-	"gatus/v5/internal/api"
-	"gatus/v5/internal/config"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/api"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
 )
 
 // shutdownTimeout is how long Shutdown waits for the open connections, e.g. an event stream blocked by a slow client.

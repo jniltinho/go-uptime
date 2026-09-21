@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <li :class="featured ? 'border bg-card p-3 dark:border-gray-800' : 'py-2'" :data-testid="`status-endpoint-${endpoint.name}`">
     <div v-if="showHeader" class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">

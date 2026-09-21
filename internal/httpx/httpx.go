@@ -1,4 +1,6 @@
-// Package httpx holds what the handlers need from the HTTP framework, in one place. Gatus moved from Fiber (fasthttp)
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
+// Package httpx holds what the handlers need from the HTTP framework, in one place. Go Uptime moved from Fiber (fasthttp)
 // to Echo v5 (net/http), and several methods kept their name while changing their meaning: echo.Context.Get reads the
 // store of the request and not a header, Path returns the registered route and not the path of the request, and the
 // body can only be read once. Every handler goes through these functions, so that those rules live here and not in
@@ -25,7 +27,7 @@ const (
 	MaximumBodySize = 4 << 20
 
 	// bodyKey is the key of the store holding the body read ahead by BufferBody
-	bodyKey = "gatus.httpx.body"
+	bodyKey = "go-uptime.httpx.body"
 
 	mimeTextPlain = "text/plain; charset=utf-8"
 	mimeJSON      = "application/json"

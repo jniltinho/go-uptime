@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package mattermost
 
 import (
@@ -5,10 +7,10 @@ import (
 	"net/http"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -151,14 +153,14 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: "{\"text\":\"\",\"username\":\"gatus\",\"icon_url\":\"https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png\",\"attachments\":[{\"title\":\":helmet_with_white_cross: Gatus\",\"fallback\":\"Gatus - An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row\",\"text\":\"An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row:\\n\\u003e description-1\",\"short\":false,\"color\":\"#DD0000\",\"fields\":[{\"title\":\"Condition results\",\"value\":\":x: - `[CONNECTED] == true`\\n:x: - `[STATUS] == 200`\\n\",\"short\":false}]}]}",
+			ExpectedBody: "{\"text\":\"\",\"username\":\"go-uptime\",\"icon_url\":\"https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png\",\"attachments\":[{\"title\":\":helmet_with_white_cross: Go Uptime\",\"fallback\":\"Go Uptime - An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row\",\"text\":\"An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row:\\n\\u003e description-1\",\"short\":false,\"color\":\"#DD0000\",\"fields\":[{\"title\":\"Condition results\",\"value\":\":x: - `[CONNECTED] == true`\\n:x: - `[STATUS] == 200`\\n\",\"short\":false}]}]}",
 		},
 		{
 			Name:         "resolved",
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: "{\"text\":\"\",\"username\":\"gatus\",\"icon_url\":\"https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png\",\"attachments\":[{\"title\":\":helmet_with_white_cross: Gatus\",\"fallback\":\"Gatus - An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row:\\n\\u003e description-2\",\"short\":false,\"color\":\"#36A64F\",\"fields\":[{\"title\":\"Condition results\",\"value\":\":white_check_mark: - `[CONNECTED] == true`\\n:white_check_mark: - `[STATUS] == 200`\\n\",\"short\":false}]}]}",
+			ExpectedBody: "{\"text\":\"\",\"username\":\"go-uptime\",\"icon_url\":\"https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png\",\"attachments\":[{\"title\":\":helmet_with_white_cross: Go Uptime\",\"fallback\":\"Go Uptime - An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row:\\n\\u003e description-2\",\"short\":false,\"color\":\"#36A64F\",\"fields\":[{\"title\":\"Condition results\",\"value\":\":white_check_mark: - `[CONNECTED] == true`\\n:white_check_mark: - `[STATUS] == 200`\\n\",\"short\":false}]}]}",
 		},
 	}
 	for _, scenario := range scenarios {

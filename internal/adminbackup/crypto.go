@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package adminbackup
 
 import (
@@ -15,7 +17,11 @@ import (
 
 const (
 	// EncryptedFormat identifies an encrypted backup file
-	EncryptedFormat = "gatus-admin-backup-encrypted"
+	EncryptedFormat = "go-uptime-admin-backup-encrypted"
+
+	// LegacyEncryptedFormat identifies an encrypted backup file written while the project was called Gatus, up to v6. It
+	// is still read and never written.
+	LegacyEncryptedFormat = "gatus-admin-backup-encrypted"
 
 	// The only key derivation parameters of version 1, the minimum recommended by OWASP for Argon2id, so that a forged
 	// envelope cannot make the server derive a more expensive key
@@ -61,7 +67,8 @@ var (
 // additional authenticated data of the encryption. It is not encrypted, but changing any of its fields makes the
 // decryption fail.
 type envelopeHeader struct {
-	// Format identifies an encrypted backup file. It is always "gatus-admin-backup-encrypted".
+	// Format identifies an encrypted backup file. It is "go-uptime-admin-backup-encrypted", or
+	// "gatus-admin-backup-encrypted" in a file written up to v6.
 	Format string `json:"format"`
 
 	// Version is the version of the format of the envelope. It must be exactly 1.
@@ -194,7 +201,9 @@ func Decrypt(data []byte, password string) ([]byte, error) {
 		return nil, invalidFile("%s", err.Error())
 	}
 	header := sealedEnvelope.envelopeHeader
-	if header.Format != EncryptedFormat || header.Version != Version {
+	// The header is authenticated as it was read: its format, the one of the file, is part of the additional data of the
+	// seal, so the legacy format must not be rewritten before opening it
+	if (header.Format != EncryptedFormat && header.Format != LegacyEncryptedFormat) || header.Version != Version {
 		return nil, invalidFile("unsupported encrypted format %q version %d", header.Format, header.Version)
 	}
 	if header.KDF.Name != kdfName || header.KDF.Time != kdfTime || header.KDF.MemoryKiB != kdfMemoryKiB || header.KDF.Threads != kdfThreads || header.Cipher.Name != cipherName {
@@ -244,10 +253,10 @@ func Unwrap(data []byte, password string) ([]byte, bool, error) {
 		return nil, false, invalidFile("the file is not a JSON object")
 	}
 	switch detected.Format {
-	case EncryptedFormat:
+	case EncryptedFormat, LegacyEncryptedFormat:
 		plaintext, err := Decrypt(data, password)
 		return plaintext, true, err
-	case Format:
+	case Format, LegacyFormat:
 		if len(password) > 0 {
 			return nil, false, ErrNotEncrypted
 		}

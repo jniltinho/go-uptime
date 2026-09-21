@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package alert defines the alert configuration attached to an endpoint and the alert types, one for each
 // alerting provider.
 package alert
@@ -15,7 +17,7 @@ import (
 )
 
 var (
-	// ErrAlertWithInvalidDescription is the error with which Gatus will panic if an alert has an invalid character
+	// ErrAlertWithInvalidDescription is the error with which Go Uptime will panic if an alert has an invalid character
 	ErrAlertWithInvalidDescription = errors.New("alert description must not have \" or \\")
 
 	// ErrAlertWithInvalidMinimumReminderInterval is returned by Alert.ValidateAndSetDefaults when

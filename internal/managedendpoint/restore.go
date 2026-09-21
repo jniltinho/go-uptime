@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -6,14 +8,14 @@ import (
 	"strings"
 	"sync/atomic"
 
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/metrics"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/watchdog"
 	"github.com/TwiN/logr"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 // Restore of the managed endpoints of a backup of the administration (fork, see the adminbackup package)

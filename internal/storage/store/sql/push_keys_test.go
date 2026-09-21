@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -5,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 func TestStore_PushKeys(t *testing.T) {

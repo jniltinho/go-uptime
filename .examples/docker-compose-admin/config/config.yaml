@@ -1,0 +1,27 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+# The minimum configuration with the administration enabled: a SQL storage, a login and admin.enabled. There is no
+# "endpoints" section on purpose: everything is registered at http://127.0.0.1:8080/admin and lives in the database.
+#
+#   1. docker run --rm -it jniltinho/go-uptime:v7.0.0 password hash      # asks for your password, prints its hash
+#   2. paste the hash below, then:  docker compose up -d
+#
+# Go Uptime refuses to start while the placeholder is there, so that it never runs with a password you did not choose:
+#   docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.0.0 config validate
+
+storage:
+  type: sqlite
+  path: /data/data.db
+
+security:
+  basic:
+    username: admin
+    password-bcrypt-base64: "PASTE-THE-HASH-HERE"
+
+admin:
+  enabled: true
+
+# Public status pages (/status/<slug>) are created at /admin/status-pages. This only turns the public routes on.
+status-pages:
+  enabled: true
+  # How many endpoints a page shows (1 to 1000). Raising it publishes more endpoints on the pages that were truncated.
+  # maximum-endpoints-per-page: 400

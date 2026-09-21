@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gitlab implements the alerting provider that creates and resolves GitLab alerts through the HTTP
 // endpoint (webhook) of a GitLab alert integration.
 package gitlab
@@ -11,17 +13,19 @@ import (
 	"net/url"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/google/uuid"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
 // Defaults applied by Config.Validate: DefaultSeverity when no severity is set and DefaultMonitoringTool when
 // no monitoring tool name is set.
 const (
-	DefaultSeverity       = "critical"
+	DefaultSeverity = "critical"
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): GitLab groups and deduplicates the alerts by
+	// monitoring_tool, and the title of the alert derives from it; it is configurable (monitoring-tool)
 	DefaultMonitoringTool = "gatus"
 )
 

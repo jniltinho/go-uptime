@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package statuspage contains the configuration of the public status pages, i.e. the status-pages section of the
 // YAML configuration. It validates and normalizes the pages (slug, title, selection of groups and endpoints, login)
 // and the trusted proxies and rate limit that protect them. Page is also the JSON object exchanged with the

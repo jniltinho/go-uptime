@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -7,12 +9,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"gatus/v5/internal/config"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Origin is where a status page is defined

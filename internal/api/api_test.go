@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -6,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 )
 
 func TestNew(t *testing.T) {
@@ -131,7 +133,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-// Fork: the Inter of the interface is served by Gatus itself, from the embedded static files
+// Fork: the Inter of the interface is served by Go Uptime itself, from the embedded static files
 func TestFontsAreServed(t *testing.T) {
 	for _, path := range []string{"/fonts/inter-4-1-latin.woff2", "/fonts/inter-4-1-latin-ext.woff2"} {
 		t.Run(path, func(t *testing.T) {

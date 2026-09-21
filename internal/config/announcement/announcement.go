@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package announcement models the announcements section of the YAML configuration: the messages shown at the top
 // of the dashboard and of the status pages. It validates them, defaults their type and sorts them.
 package announcement

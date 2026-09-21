@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package controller
 
 import (
@@ -11,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/web"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
 )
 
 func TestHandle(t *testing.T) {

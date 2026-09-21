@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of status-pages.maximum-endpoints-per-page, with agent-browser.
 #
 #   make build && test/e2e/status-page-limit.sh
 #
 # The limit is an access rule as much as a display rule: an endpoint beyond the cut is answered 404 by every route of
 # the page. The script starts with a limit of 3 on a page that selects 5 endpoints, then lowers the limit to 2 with
-# Gatus running, which takes up to 30 seconds to notice the change of its configuration file. Screenshots in
+# Go Uptime running, which takes up to 30 seconds to notice the change of its configuration file. Screenshots in
 # dist/prints/status-page-limit/ (dist/ is in .gitignore). Requires agent-browser with Chrome, curl and python3.
 set -euo pipefail
 
@@ -17,12 +18,12 @@ PORT=${PORT:-18097}
 BASE="http://127.0.0.1:$PORT"
 USERNAME=admin
 PASSWORD='e2e-limit-password'
-GATUS_PID=""
+SERVER_PID=""
 STREAM_PID=""
 mkdir -p "$PRINTS"
 
-[ -x dist/gatus ] || { echo "dist/gatus not found: run make build"; exit 1; }
-HASH=$(printf '%s\n' "$PASSWORD" | dist/gatus password hash)
+[ -x dist/go-uptime ] || { echo "dist/go-uptime not found: run make build"; exit 1; }
+HASH=$(printf '%s\n' "$PASSWORD" | dist/go-uptime password hash)
 
 token_of() { printf 'e2e-push-token-%s-0123456789' "$1"; }
 ENDPOINTS="alpha bravo charlie delta echo"
@@ -61,7 +62,7 @@ CONFIG
 browser() { agent-browser --session e2e-status-page-limit "$@"; }
 cleanup() {
   browser close >/dev/null 2>&1 || true
-  for pid in "$STREAM_PID" "$GATUS_PID"; do
+  for pid in "$STREAM_PID" "$SERVER_PID"; do
     if [ -n "$pid" ]; then
       kill "$pid" >/dev/null 2>&1 || true
       wait "$pid" 2>/dev/null || true
@@ -76,7 +77,7 @@ step() { STEP=$((STEP + 1)); echo "==> $STEP. $*"; }
 fail() {
   echo "FAILED: $*"
   browser screenshot --full "$PRINTS/error.png" >/dev/null 2>&1 || true
-  tail -15 "$WORK/gatus.log"
+  tail -15 "$WORK/go-uptime.log"
   exit 1
 }
 js() { browser eval "$*" 2>/dev/null | tr -d '"'; }
@@ -98,24 +99,24 @@ expect_routes() { # key code
   expect "HEAD of the stream of $1" "$2" "$(code_of -I "$BASE/api/v1/status-pages/services/endpoints/$1/events")"
 }
 
-step "gatus config validate refuses a limit out of bounds or that is not an integer"
+step "go-uptime config validate refuses a limit out of bounds or that is not an integer"
 for invalid in 0 -1 1001 2.5 many; do
   write_config "$invalid" "$WORK/invalid.yaml"
-  if dist/gatus config validate --config "$WORK/invalid.yaml" >/dev/null 2>&1; then
+  if dist/go-uptime config validate --config "$WORK/invalid.yaml" >/dev/null 2>&1; then
     fail "config validate accepted maximum-endpoints-per-page: $invalid"
   fi
 done
 for valid in "" 1 400 1000; do
   write_config "$valid" "$WORK/valid.yaml"
-  dist/gatus config validate --config "$WORK/valid.yaml" >/dev/null 2>&1 || fail "config validate refused maximum-endpoints-per-page: '$valid'"
+  dist/go-uptime config validate --config "$WORK/valid.yaml" >/dev/null 2>&1 || fail "config validate refused maximum-endpoints-per-page: '$valid'"
 done
 
 write_config 3
-echo "==> Starting dist/gatus"
-dist/gatus --config "$WORK/config.yaml" > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+echo "==> Starting dist/go-uptime"
+dist/go-uptime --config "$WORK/config.yaml" > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 for _ in $(seq 1 60); do curl -sf "$BASE/health" >/dev/null && break; sleep 1; done
-curl -sf "$BASE/health" >/dev/null || fail "Gatus did not start"
+curl -sf "$BASE/health" >/dev/null || fail "Go Uptime did not start"
 # Right after the start the push endpoints may still be loading: the first push is retried
 for _ in $(seq 1 20); do
   [ "$(code_of "$BASE/api/push/$(token_of alpha)?status=up")" = 200 ] && break
@@ -200,7 +201,7 @@ browser wait '[data-testid="status-page-preview-truncated"]' >/dev/null || fail 
 expect "notice of the preview" "Showing the first 3 services." "$(js "document.querySelector('[data-testid=\"status-page-preview-truncated\"]').textContent.trim()")"
 browser screenshot "$PRINTS/04-admin-preview.png" >/dev/null
 
-step "Limit lowered to 2 with Gatus running: an open stream ends, and everything follows the new limit"
+step "Limit lowered to 2 with Go Uptime running: an open stream ends, and everything follows the new limit"
 curl -sN -H 'Accept: text/event-stream' "$BASE/api/v1/status-pages/services/endpoints/services_charlie/events" > "$WORK/stream.log" 2>&1 &
 STREAM_PID=$!
 sleep 1

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of the backup and restore of the administration, with agent-browser.
 #
 #   test/e2e/admin-backup.sh
@@ -17,7 +18,7 @@ PRINTS="$ROOT/dist/prints/admin-backup"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Gatus decodes it)
+# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Go Uptime decodes it)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 BACKUP_PASSWORD='correct horse battery'
 PUSH_TOKEN='keSDu7G855jvVat1xWiY2Gk4CkL1End5'
@@ -60,27 +61,27 @@ write_config target "status-pages:
       title: Jobs of the file
       groups: [jobs]"
 
-GATUS_PID=""
-start_gatus() {
-  GATUS_CONFIG_PATH="$WORK/$1.yaml" dist/gatus > "$WORK/$1.log" 2>&1 &
-  GATUS_PID=$!
+SERVER_PID=""
+start_server() {
+  GO_UPTIME_CONFIG_PATH="$WORK/$1.yaml" dist/go-uptime > "$WORK/$1.log" 2>&1 &
+  SERVER_PID=$!
   for _ in $(seq 1 60); do
     curl -sf "$BASE/health" >/dev/null && return 0
     sleep 1
   done
-  echo "Gatus did not start"; cat "$WORK/$1.log"; exit 1
+  echo "Go Uptime did not start"; cat "$WORK/$1.log"; exit 1
 }
-stop_gatus() {
-  if [ -n "$GATUS_PID" ]; then
-    kill "$GATUS_PID" >/dev/null 2>&1 || true
-    wait "$GATUS_PID" 2>/dev/null || true
-    GATUS_PID=""
+stop_server() {
+  if [ -n "$SERVER_PID" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
+    SERVER_PID=""
   fi
 }
 admin() { agent-browser --session e2e-admin-backup "$@"; }
 cleanup() {
   admin close >/dev/null 2>&1 || true
-  stop_gatus
+  stop_server
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -151,7 +152,7 @@ result_of() {
 }
 
 step "Source installation: an endpoint, a status page and a push key registered through the web"
-start_gatus source
+start_server source
 authenticated -H 'Content-Type: application/yaml' --data-binary "type: push
 name: backup
 group: jobs
@@ -180,7 +181,7 @@ grep -q "Backup downloaded" <<<"$(toast_text success)" || fail "unexpected toast
 python3 - "$WORK/plain.json" "$PUSH_TOKEN" <<'PY' || fail "the plain backup does not have the registered items"
 import json, sys
 backup = json.load(open(sys.argv[1]))
-assert backup["format"] == "gatus-admin-backup"
+assert backup["format"] == "go-uptime-admin-backup"
 assert [e["key"] for e in backup["endpoints"]] == ["jobs_backup"] and sys.argv[2] in backup["endpoints"][0]["definition"]
 assert [p["slug"] for p in backup["statusPages"]] == ["jobs"] and [k["name"] for k in backup["pushKeys"]] == ["akamai"]
 PY
@@ -196,13 +197,13 @@ for size in "1280 720" "1024 600"; do
 done
 admin set viewport 1280 900 >/dev/null
 admin download "$(testid backup-download)" "$WORK/encrypted.json" >/dev/null || fail "the encrypted backup was not downloaded"
-grep -q '"gatus-admin-backup-encrypted"' "$WORK/encrypted.json" || fail "the backup is not encrypted"
+grep -q '"go-uptime-admin-backup-encrypted"' "$WORK/encrypted.json" || fail "the backup is not encrypted"
 grep -q "$PUSH_TOKEN" "$WORK/encrypted.json" && fail "the encrypted backup has the token in plain text"
 admin close >/dev/null 2>&1 || true
-stop_gatus
+stop_server
 
 step "Target installation: preview with the status page of the file skipped"
-start_gatus target
+start_server target
 login_screen
 set_theme admin light
 admin open "$BASE/admin/backup" >/dev/null
@@ -334,5 +335,29 @@ admin click "$(testid restore-overwrite)" >/dev/null
 admin wait 2500 >/dev/null
 [ "$(js "document.querySelectorAll('[data-testid=\"restore-plan-table\"]').length")" = 0 ] || fail "the preview opened although an option changed during the request"
 admin reload >/dev/null
+
+step "Backups of v6, written while the project was called Gatus, are still recognised and previewed by the screen"
+# The two files were downloaded from the published image jniltinho/gatus:v6.3.0 (internal/adminbackup/testdata)
+LEGACY="$ROOT/internal/adminbackup/testdata"
+grep -q '"format": "gatus-admin-backup"' "$LEGACY/backup-v6.3.0.json" || fail "the plain fixture does not have the format of v6"
+admin reload >/dev/null
+admin wait "$(testid restore-file)" >/dev/null
+admin upload "$(testid restore-file)" "$LEGACY/backup-v6.3.0.json" >/dev/null
+admin wait 500 >/dev/null
+[ "$(js "document.querySelectorAll('[data-testid=\"restore-password\"]').length")" = 0 ] || fail "a plain backup of v6 was taken for an encrypted one"
+admin click "$(testid restore-preview)" >/dev/null
+admin wait "$(testid restore-plan-table)" >/dev/null || fail "the preview of a plain backup of v6 was not shown"
+[ "$(plan_action endpoint web_site)" = create ] || fail "the endpoint of the backup of v6 is not planned to be created"
+admin click "$(testid restore-plan-close)" >/dev/null
+admin reload >/dev/null
+admin wait "$(testid restore-file)" >/dev/null
+admin upload "$(testid restore-file)" "$LEGACY/backup-v6.3.0.enc.json" >/dev/null
+admin wait "$(testid restore-password)" >/dev/null || fail "the password of an encrypted backup of v6 is not asked"
+admin fill "$(testid restore-password)" "fixture-backup-password-123" >/dev/null
+admin click "$(testid restore-preview)" >/dev/null
+admin wait "$(testid restore-plan-table)" >/dev/null || fail "the preview of an encrypted backup of v6 was not shown"
+[ "$(plan_action endpoint web_site)" = create ] || fail "the endpoint of the encrypted backup of v6 is not planned to be created"
+admin screenshot "$PRINTS/09-restore-backup-of-v6.png" >/dev/null
+admin click "$(testid restore-plan-close)" >/dev/null
 
 echo "OK: $STEP steps; screenshots in $PRINTS"

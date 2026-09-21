@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
@@ -8,7 +10,7 @@ import (
 )
 
 func TestLoadWebConfiguration(t *testing.T) {
-	t.Setenv("GATUS_TEST_WEB_PORT", "9191")
+	t.Setenv("GO_UPTIME_TEST_WEB_PORT", "9191")
 	scenarios := []struct {
 		name            string
 		content         string
@@ -18,7 +20,7 @@ func TestLoadWebConfiguration(t *testing.T) {
 	}{
 		{name: "without a web section", content: "endpoints: []\n", expectedAddress: "0.0.0.0", expectedPort: 8080},
 		{name: "with a port", content: "web:\n  port: 9090\n", expectedAddress: "0.0.0.0", expectedPort: 9090},
-		{name: "with a port from the environment", content: "web:\n  port: ${GATUS_TEST_WEB_PORT}\n", expectedAddress: "0.0.0.0", expectedPort: 9191},
+		{name: "with a port from the environment", content: "web:\n  port: ${GO_UPTIME_TEST_WEB_PORT}\n", expectedAddress: "0.0.0.0", expectedPort: 9191},
 		{
 			// The certificate files do not exist: they must not be loaded to know where the server listens
 			name:            "with tls",

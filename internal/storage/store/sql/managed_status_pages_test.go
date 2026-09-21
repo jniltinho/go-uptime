@@ -1,10 +1,12 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
 	"errors"
 	"testing"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // managedStatusPageTestStores returns the stores of managedEndpointTestStores with an empty managed_status_pages table

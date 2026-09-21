@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package splunk implements the alerting provider that sends alerts to Splunk as events through the HTTP
 // Event Collector (HEC), authenticated with a HEC token.
 package splunk
@@ -11,9 +13,9 @@ import (
 	"net/http"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -182,6 +184,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	if cfg.Source != "" {
 		body.Source = cfg.Source
 	} else {
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the searches and indexes of Splunk
+		// written on v6 filter by this source and by the sourcetype below; both are configurable
 		body.Source = "gatus"
 	}
 	if cfg.SourceType != "" {

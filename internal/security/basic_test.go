@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package security
 
 import (
@@ -49,7 +51,7 @@ func TestBasicConfig_ValidateAndSetDefaultsWithSessionTTL(t *testing.T) {
 }
 
 // TestBasicConfig_isValid_PasswordHash refuses, when the configuration is validated, a password that is not the base64
-// of a bcrypt hash. It used to be accepted by gatus config validate and to panic when the server started.
+// of a bcrypt hash. It used to be accepted by go-uptime config validate and to panic when the server started.
 func TestBasicConfig_isValid_PasswordHash(t *testing.T) {
 	const valid = "JDJhJDA4JDFoRnpPY1hnaFl1OC9ISlFsa21VS09wOGlPU1ZOTDlHZG1qeTFvb3dIckRBUnlHUmNIRWlT"
 	if !(&BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: valid}).isValid() {

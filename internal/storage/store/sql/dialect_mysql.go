@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -5,10 +7,10 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
 	"github.com/TwiN/logr"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
 )
 
 // Numbers of the MySQL errors handled by the store

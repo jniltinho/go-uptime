@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: chart in the format of the monitor page of Uptime Kuma, see utils/responseTimeChart.js -->
   <div class="w-full">

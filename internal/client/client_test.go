@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package client
 
 import (
@@ -14,9 +16,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint/dns"
-	"gatus/v5/internal/pattern"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	"github.com/jniltinho/go-uptime/v7/internal/pattern"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 
 	ping "github.com/prometheus-community/pro-bing"
 	"golang.org/x/net/icmp"
@@ -706,7 +708,7 @@ func TestCheckSSHBanner(t *testing.T) {
 	t.Parallel()
 	cfg := &Config{Timeout: 3}
 	t.Run("no-auth-ssh", func(t *testing.T) {
-		connected, status, err := CheckSSHBanner(startSSHBannerServer(t, "SSH-2.0-Gatus_Test\r\n"), cfg)
+		connected, status, err := CheckSSHBanner(startSSHBannerServer(t, "SSH-2.0-GoUptime_Test\r\n"), cfg)
 		if err != nil {
 			t.Errorf("Expected: error != nil, got: %v ", err)
 		}

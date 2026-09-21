@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -10,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 
 	"github.com/labstack/echo/v5"
 )
@@ -29,18 +31,18 @@ import (
 // not tell which endpoints a protected page has.
 const (
 	// localsPublishedStatusPage is the key of the locals holding the status page captured by the middleware
-	localsPublishedStatusPage = "gatus.status-page"
+	localsPublishedStatusPage = "go-uptime.status-page"
 
 	statusPageUnauthorizedBody = `{"error":"authentication required"}`
 
 	// localsProtectedEventStream marks the event stream of a page that requires a login
-	localsProtectedEventStream = "gatus.status-page-protected-stream"
+	localsProtectedEventStream = "go-uptime.status-page-protected-stream"
 
 	// localsPrivateBadge marks the badge of a page that requires a login, whose Cache-Control is private
-	localsPrivateBadge = "gatus.status-page-private-badge"
+	localsPrivateBadge = "go-uptime.status-page-private-badge"
 
 	// localsProtectedPageHTML marks the HTML of a page that requires a login
-	localsProtectedPageHTML = "gatus.status-page-protected-html"
+	localsProtectedPageHTML = "go-uptime.status-page-protected-html"
 )
 
 // statusPageAuth returns the middleware of the routes of a status page

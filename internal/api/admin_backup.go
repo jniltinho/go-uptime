@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -10,12 +12,12 @@ import (
 	"strconv"
 	"time"
 
-	"gatus/v5/internal/adminbackup"
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/adminbackup"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 
 	"github.com/TwiN/logr"
 	"github.com/labstack/echo/v5"
@@ -107,7 +109,7 @@ func requireJSON(next echo.HandlerFunc) echo.HandlerFunc {
 // Request: Content-Type application/json is required, even without body; the body is optional and is a backupRequest
 // ({"password": "..."}).
 // Responses: 200 with the backup file as application/json, Content-Disposition: attachment with its file name
-// (gatus-backup-<date>-<time>.json, or .enc.json when encrypted) and Cache-Control: no-store; 400 when the body is not
+// (go-uptime-backup-<date>-<time>.json, or .enc.json when encrypted) and Cache-Control: no-store; 400 when the body is not
 // a valid backupRequest or the password has an invalid length; 415 when the Content-Type is not application/json; 422
 // when the backup exceeds the limits of size or of items; 429 with Retry-After: 5 when too many encrypted backups are
 // in progress; 501 when the storage does not support the administration; 503 while a start or a configuration reload is

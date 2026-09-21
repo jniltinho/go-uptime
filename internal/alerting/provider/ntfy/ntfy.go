@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ntfy implements the alerting provider that publishes alerts to a ntfy topic by posting a JSON
 // message to the ntfy server, optionally authenticated with an access token.
 package ntfy
@@ -12,9 +14,9 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -214,7 +216,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	message += formattedConditionResults
 	body, _ := json.Marshal(Body{
 		Topic:    cfg.Topic,
-		Title:    "Gatus: " + ep.DisplayName(),
+		Title:    "Go Uptime: " + ep.DisplayName(),
 		Message:  message,
 		Tags:     []string{tag},
 		Priority: cfg.Priority,

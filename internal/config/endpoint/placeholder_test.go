@@ -1,10 +1,12 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
 )
 
 func TestResolvePlaceholder(t *testing.T) {

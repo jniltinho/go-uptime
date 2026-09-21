@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -7,9 +9,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"

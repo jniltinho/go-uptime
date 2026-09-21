@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package cmd
 
 import (
@@ -12,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -127,7 +129,7 @@ func isLoopbackTarget(target string) bool {
 func checkHealth(ctx context.Context, target string) error {
 	client := &http.Client{
 		Transport: &http.Transport{
-			// The proxy of the environment is for the checks of Gatus, never for the server checking itself
+			// The proxy of the environment is for the checks of Go Uptime, never for the server checking itself
 			Proxy:           nil,
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: isLoopbackTarget(target)}, //nolint:gosec // only for the loopback
 		},

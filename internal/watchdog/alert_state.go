@@ -1,9 +1,11 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package watchdog
 
 import (
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 // RestorePersistedTriggeredAlerts deletes the persisted triggered alerts of ep whose configuration no longer matches

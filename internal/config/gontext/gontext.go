@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gontext implements the context shared by the endpoints of a suite: a concurrency-safe tree of values,
 // seeded by the context section of the suite, that endpoints read through [CONTEXT].path placeholders and write
 // through their store mappings.

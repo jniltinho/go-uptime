@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package pushkey keeps the global push keys (fork): the keys of the configuration file and the keys created through the
 // administration API, whose tokens are only stored as hashes
 package pushkey
@@ -14,12 +16,12 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gatus/v5/internal/config"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const (

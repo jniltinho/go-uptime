@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package static
 
 import (
@@ -42,7 +44,7 @@ func TestEmbed(t *testing.T) {
 			expectedContainString: "function",
 		},
 		{
-			// Fork: the Inter served by Gatus itself, see AGENTS.fork.md
+			// Fork: the Inter served by Go Uptime itself, see AGENTS.md
 			path:                  "fonts/inter-4-1-latin.woff2",
 			shouldExist:           true,
 			expectedContainString: "wOF2",

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package teams implements the alerting provider that sends alerts to Microsoft Teams as a MessageCard
 // through an incoming webhook connector.
 package teams
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -113,7 +115,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 }
 
 // Body is the MessageCard posted to the Teams webhook. ThemeColor is green when resolved and red when
-// triggered, and Title falls back to a Gatus default.
+// triggered, and Title falls back to a Go Uptime default.
 type Body struct {
 	Type       string    `json:"@type"`
 	Context    string    `json:"@context"`
@@ -161,7 +163,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		Text:       message + description,
 	}
 	if len(body.Title) == 0 {
-		body.Title = "&#x1F6A8; Gatus"
+		body.Title = "&#x1F6A8; Go Uptime"
 	}
 	if len(formattedConditionResults) > 0 {
 		body.Sections = append(body.Sections, Section{

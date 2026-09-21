@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -8,17 +10,17 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting/provider"
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/liveupdates"
-	"gatus/v5/internal/metrics"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/watchdog"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 	"gopkg.in/yaml.v3"
 )
 
@@ -72,7 +74,7 @@ type Item struct {
 	Group string `json:"group"`
 
 	// Type is the kind of check, derived from the URL: DNS, TCP, SCTP, UDP, ICMP, STARTTLS, TLS, HTTP, GRPC, WEBSOCKET,
-	// SSH or UNKNOWN, or PUSH for an endpoint that is not checked by Gatus and only receives its results through
+	// SSH or UNKNOWN, or PUSH for an endpoint that is not checked by Go Uptime and only receives its results through
 	// /api/push. It is omitted when a managed endpoint has no URL or its definition cannot be decoded.
 	Type string `json:"type,omitempty"`
 

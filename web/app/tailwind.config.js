@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 module.exports = {
   content: [
     './public/index.html',
@@ -7,7 +8,7 @@ module.exports = {
   theme: {
     fontFamily: {
       'mono': ['Consolas', 'Monaco', '"Courier New"', 'monospace'],
-      // Fork: the Inter is served by Gatus itself (see the @font-face of src/index.css); the system stack stays as the
+      // Fork: the Inter is served by Go Uptime itself (see the @font-face of src/index.css); the system stack stays as the
       // fallback, so the interface keeps working if the file does not load
       'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
     },

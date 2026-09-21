@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Fork: stack of the open dialogs of the administration (components/admin/AdminDialog.vue).
 //
 // - Dialogs are pushed when they open and removed by id when they close (never popped: a dialog can close and another

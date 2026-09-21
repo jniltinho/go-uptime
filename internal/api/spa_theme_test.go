@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -9,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
 )
 
 // themeCases is web/app/src/utils/theme.cases.json, the table shared with the inline script of index.html and with

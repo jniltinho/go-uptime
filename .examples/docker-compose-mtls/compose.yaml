@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 services:
   nginx:
     image: nginx:stable
@@ -9,8 +10,8 @@ services:
     networks:
       - mtls
 
-  gatus:
-    image: jniltinho/gatus:v6.3.0
+  go-uptime:
+    image: jniltinho/go-uptime:v7.0.0
     restart: always
     ports:
       - "8080:8080"
@@ -18,7 +19,7 @@ services:
       - ./config:/config
       - ./certs/client:/certs
     environment:
-      - GATUS_CONFIG_PATH=/config
+      - GO_UPTIME_CONFIG_PATH=/config
     networks:
       - mtls
 

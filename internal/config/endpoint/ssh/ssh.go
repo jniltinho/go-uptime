@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ssh holds the ssh section of an endpoint of the YAML configuration, i.e. the credentials used by the
 // endpoints whose URL starts with ssh://, and validates them.
 package ssh
@@ -7,10 +9,10 @@ import (
 )
 
 var (
-	// ErrEndpointWithoutSSHUsername is the error with which Gatus will panic if an endpoint with SSH monitoring is configured without a user.
+	// ErrEndpointWithoutSSHUsername is the error with which Go Uptime will panic if an endpoint with SSH monitoring is configured without a user.
 	ErrEndpointWithoutSSHUsername = errors.New("you must specify a username for each SSH endpoint")
 
-	// ErrEndpointWithoutSSHAuth is the error with which Gatus will panic if an endpoint with SSH monitoring is configured without a password or private key.
+	// ErrEndpointWithoutSSHAuth is the error with which Go Uptime will panic if an endpoint with SSH monitoring is configured without a password or private key.
 	ErrEndpointWithoutSSHAuth = errors.New("you must specify a password or private-key for each SSH endpoint")
 )
 

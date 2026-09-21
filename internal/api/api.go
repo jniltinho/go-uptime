@@ -1,4 +1,6 @@
-// Package api is the HTTP layer of Gatus, built on Echo v5: the JSON API under /api/v1, the badges and charts in SVG,
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
+// Package api is the HTTP layer of Go Uptime, built on Echo v5: the JSON API under /api/v1, the badges and charts in SVG,
 // the event streams (text/event-stream) of the live updates, the push routes compatible with the Uptime Kuma, the
 // health and metrics routes, the rendered single page application and the embedded static files.
 //
@@ -20,12 +22,12 @@ import (
 	"slices"
 	"strings"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/config/web"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/liveupdates"
-	static "gatus/v5/web"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
+	static "github.com/jniltinho/go-uptime/v7/web"
 
 	"github.com/TwiN/health"
 	"github.com/TwiN/logr"
@@ -35,7 +37,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// API is the HTTP API of Gatus: it owns the Echo router with every route of the package registered on it.
+// API is the HTTP API of Go Uptime: it owns the Echo router with every route of the package registered on it.
 type API struct {
 	router *echo.Echo
 }
@@ -158,7 +160,7 @@ func (a *API) createRouter(cfg *config.Config) *echo.Echo {
 	}
 	// Health endpoint
 	healthHandler := health.Handler().WithJSON(true)
-	// GET and HEAD /health: the health of the Gatus process itself, from github.com/TwiN/health.
+	// GET and HEAD /health: the health of the Go Uptime process itself, from github.com/TwiN/health.
 	//
 	// Authentication: none.
 	// Responses: 200 with the body {"status":"UP"} while the process is healthy; 500 with {"status":"DOWN"} otherwise. The

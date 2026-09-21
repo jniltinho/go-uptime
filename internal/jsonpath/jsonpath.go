@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package jsonpath evaluates the small JSON path dialect of the conditions, such as [BODY].data[0].name, against a
 // JSON document.
 package jsonpath

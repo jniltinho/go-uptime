@@ -1,11 +1,13 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
 	"fmt"
 	"unicode/utf8"
 
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 // ValidateStorageKeysConfig rejects, with the mysql storage, the endpoints, external endpoints, suites and endpoints of

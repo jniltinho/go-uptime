@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package suite
 
 // Status represents the status of a suite: its identity and one page of its most recent execution results, as

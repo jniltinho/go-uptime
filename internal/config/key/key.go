@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package key builds the key that uniquely identifies an endpoint, an external endpoint or a suite in the storage
 // and in the routes of the API.
 package key

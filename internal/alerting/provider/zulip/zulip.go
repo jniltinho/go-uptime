@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package zulip implements the alerting provider that posts alerts to a Zulip channel through the messages
 // REST API, authenticated as a bot with basic authentication.
 package zulip
@@ -11,9 +13,9 @@ import (
 	"net/url"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -127,7 +129,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	}
 	request.SetBasicAuth(cfg.BotEmail, cfg.BotAPIKey)
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Set("User-Agent", "Gatus")
+	request.Header.Set("User-Agent", "go-uptime/1.0")
 	response, err := client.GetHTTPClient(nil).Do(request)
 	if err != nil {
 		return err
@@ -162,6 +164,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 	topic := cfg.Topic
 	if len(topic) == 0 {
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the topic is where the messages of who
+		// did not configure one are already grouped; topic changes it
 		topic = "Gatus"
 	}
 	topic = strings.ReplaceAll(topic, "[ENDPOINT_NAME]", ep.Name)

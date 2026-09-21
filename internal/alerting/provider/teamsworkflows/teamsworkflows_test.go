@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package teamsworkflows
 
 import (
@@ -5,10 +7,10 @@ import (
 	"net/http"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -152,14 +154,14 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Gatus\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been triggered due to having failed 3 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-1\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false,\"facts\":[{\"title\":\"❌\",\"value\":\"[CONNECTED] == true\"},{\"title\":\"❌\",\"value\":\"[STATUS] == 200\"}]}],\"style\":\"Default\"}],\"style\":\"Attention\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
+			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Go Uptime\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been triggered due to having failed 3 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-1\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false,\"facts\":[{\"title\":\"❌\",\"value\":\"[CONNECTED] == true\"},{\"title\":\"❌\",\"value\":\"[STATUS] == 200\"}]}],\"style\":\"Default\"}],\"style\":\"Attention\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
 		},
 		{
 			Name:         "resolved",
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Gatus\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been resolved after passing successfully 5 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-2\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false,\"facts\":[{\"title\":\"✅\",\"value\":\"[CONNECTED] == true\"},{\"title\":\"✅\",\"value\":\"[STATUS] == 200\"}]}],\"style\":\"Default\"}],\"style\":\"Good\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
+			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Go Uptime\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been resolved after passing successfully 5 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-2\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false,\"facts\":[{\"title\":\"✅\",\"value\":\"[CONNECTED] == true\"},{\"title\":\"✅\",\"value\":\"[STATUS] == 200\"}]}],\"style\":\"Default\"}],\"style\":\"Good\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
 		},
 		{
 			Name:         "resolved-with-no-conditions",
@@ -167,7 +169,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Gatus\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been resolved after passing successfully 5 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-2\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false}],\"style\":\"Default\"}],\"style\":\"Good\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
+			ExpectedBody: "{\"attachments\":[{\"content\":{\"type\":\"AdaptiveCard\",\"version\":\"1.4\",\"body\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"Container\",\"wrap\":false,\"items\":[{\"type\":\"TextBlock\",\"text\":\"⛑️ Go Uptime\",\"wrap\":false,\"size\":\"Medium\",\"weight\":\"Bolder\"},{\"type\":\"TextBlock\",\"text\":\"An alert for **endpoint-name** has been resolved after passing successfully 5 time(s) in a row.\",\"wrap\":true},{\"type\":\"TextBlock\",\"text\":\"**Description**: description-2\",\"wrap\":true},{\"type\":\"FactSet\",\"wrap\":false}],\"style\":\"Default\"}],\"style\":\"Good\"}],\"msteams\":{\"width\":\"Full\"}},\"contentType\":\"application/vnd.microsoft.card.adaptive\"}],\"type\":\"message\"}",
 		},
 	}
 	for _, scenario := range scenarios {

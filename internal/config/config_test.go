@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
@@ -9,57 +11,57 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting"
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/alerting/provider"
-	"gatus/v5/internal/alerting/provider/awsses"
-	"gatus/v5/internal/alerting/provider/clickup"
-	"gatus/v5/internal/alerting/provider/custom"
-	"gatus/v5/internal/alerting/provider/datadog"
-	"gatus/v5/internal/alerting/provider/discord"
-	"gatus/v5/internal/alerting/provider/email"
-	"gatus/v5/internal/alerting/provider/gitea"
-	"gatus/v5/internal/alerting/provider/github"
-	"gatus/v5/internal/alerting/provider/gitlab"
-	"gatus/v5/internal/alerting/provider/googlechat"
-	"gatus/v5/internal/alerting/provider/gotify"
-	"gatus/v5/internal/alerting/provider/homeassistant"
-	"gatus/v5/internal/alerting/provider/ifttt"
-	"gatus/v5/internal/alerting/provider/ilert"
-	"gatus/v5/internal/alerting/provider/incidentio"
-	"gatus/v5/internal/alerting/provider/line"
-	"gatus/v5/internal/alerting/provider/matrix"
-	"gatus/v5/internal/alerting/provider/mattermost"
-	"gatus/v5/internal/alerting/provider/messagebird"
-	"gatus/v5/internal/alerting/provider/newrelic"
-	"gatus/v5/internal/alerting/provider/ntfy"
-	"gatus/v5/internal/alerting/provider/opsgenie"
-	"gatus/v5/internal/alerting/provider/pagerduty"
-	"gatus/v5/internal/alerting/provider/plivo"
-	"gatus/v5/internal/alerting/provider/pushover"
-	"gatus/v5/internal/alerting/provider/rocketchat"
-	"gatus/v5/internal/alerting/provider/sendgrid"
-	"gatus/v5/internal/alerting/provider/signal"
-	"gatus/v5/internal/alerting/provider/signl4"
-	"gatus/v5/internal/alerting/provider/slack"
-	"gatus/v5/internal/alerting/provider/splunk"
-	"gatus/v5/internal/alerting/provider/squadcast"
-	"gatus/v5/internal/alerting/provider/teams"
-	"gatus/v5/internal/alerting/provider/teamsworkflows"
-	"gatus/v5/internal/alerting/provider/telegram"
-	"gatus/v5/internal/alerting/provider/twilio"
-	"gatus/v5/internal/alerting/provider/vonage"
-	"gatus/v5/internal/alerting/provider/webex"
-	"gatus/v5/internal/alerting/provider/zapier"
-	"gatus/v5/internal/alerting/provider/zulip"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/config/tunneling"
-	"gatus/v5/internal/config/tunneling/sshtunnel"
-	"gatus/v5/internal/config/web"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/awsses"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/clickup"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/custom"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/datadog"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/discord"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/email"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/gitea"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/github"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/gitlab"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/googlechat"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/gotify"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/homeassistant"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/ifttt"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/ilert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/incidentio"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/line"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/matrix"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/mattermost"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/messagebird"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/newrelic"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/ntfy"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/opsgenie"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pagerduty"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/plivo"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pushover"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/rocketchat"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/sendgrid"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/signal"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/signl4"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/slack"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/splunk"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/squadcast"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/teams"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/teamsworkflows"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/telegram"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/twilio"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/vonage"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/webex"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/zapier"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/zulip"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling/sshtunnel"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 	"gopkg.in/yaml.v3"
 )
 
@@ -740,8 +742,8 @@ endpoints:
 	if config.Endpoints[0].Interval != 60*time.Second {
 		t.Errorf("Interval should have been %s, because it is the default value", 60*time.Second)
 	}
-	if userAgent := config.Endpoints[0].Headers["User-Agent"]; userAgent != endpoint.GatusUserAgent {
-		t.Errorf("User-Agent should've been %s because it's the default value, got %s", endpoint.GatusUserAgent, userAgent)
+	if userAgent := config.Endpoints[0].Headers["User-Agent"]; userAgent != endpoint.DefaultUserAgent {
+		t.Errorf("User-Agent should've been %s because it's the default value, got %s", endpoint.DefaultUserAgent, userAgent)
 	}
 }
 
@@ -1871,14 +1873,14 @@ endpoints:
 }
 
 func TestParseAndValidateConfigBytesWithLiteralDollarSign(t *testing.T) {
-	os.Setenv("GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign", "whatever")
+	os.Setenv("GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign", "whatever")
 	config, err := parseAndValidateConfigBytes([]byte(`
 endpoints:
   - name: website
     url: https://twin.sh/health
     conditions:
-      - "[BODY] == $$GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign"
-      - "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign"
+      - "[BODY] == $$GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign"
+      - "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign"
 `))
 	if err != nil {
 		t.Error("expected no error, got", err.Error())
@@ -1889,8 +1891,8 @@ endpoints:
 	if config.Endpoints[0].URL != "https://twin.sh/health" {
 		t.Errorf("URL should have been %s", "https://twin.sh/health")
 	}
-	if config.Endpoints[0].Conditions[0] != "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign" {
-		t.Errorf("Condition should have been %s", "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign")
+	if config.Endpoints[0].Conditions[0] != "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign" {
+		t.Errorf("Condition should have been %s", "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign")
 	}
 	if config.Endpoints[0].Conditions[1] != "[BODY] == whatever" {
 		t.Errorf("Condition should have been %s", "[BODY] == whatever")

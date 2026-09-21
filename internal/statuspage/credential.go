@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -7,8 +9,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/managedendpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/yaml.v3"
 )

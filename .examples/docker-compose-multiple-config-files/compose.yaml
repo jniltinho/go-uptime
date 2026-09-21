@@ -1,9 +1,10 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 services:
-  gatus:
-    image: jniltinho/gatus:v6.3.0
+  go-uptime:
+    image: jniltinho/go-uptime:v7.0.0
     ports:
       - "8080:8080"
     environment:
-      - GATUS_CONFIG_PATH=/config
+      - GO_UPTIME_CONFIG_PATH=/config
     volumes:
       - ./config:/config

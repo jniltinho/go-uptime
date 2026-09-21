@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -13,19 +15,19 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/maintenance"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -66,7 +68,7 @@ func newAdminTestEnvironment(t *testing.T) *adminTestEnvironment {
 	cfg := &config.Config{
 		Security:    &security.Config{Basic: &security.BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: base64.URLEncoding.EncodeToString(hash)}},
 		Admin:       &admin.Config{Enabled: true},
-		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		Maintenance: &maintenance.Config{Enabled: &disabled},
 		Endpoints:   []*endpoint.Endpoint{yamlEndpoint},
 	}

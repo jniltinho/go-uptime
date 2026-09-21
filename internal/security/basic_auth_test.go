@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package security
 
 import (
@@ -12,11 +14,11 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -24,7 +26,7 @@ import (
 
 func initializeLoginSessionTestStore(t *testing.T) {
 	t.Helper()
-	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10}); err != nil {
+	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10}); err != nil {
 		t.Fatalf("failed to initialize the store: %v", err)
 	}
 	t.Cleanup(func() {

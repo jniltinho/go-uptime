@@ -1,14 +1,15 @@
-# Gatus with the administration through the web (/admin): endpoints, status pages and push keys are created in the
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+# Go Uptime with the administration through the web (/admin): endpoints, status pages and push keys are created in the
 # browser and kept in SQLite. See config/config.yaml for the two steps before the first start.
 services:
-  gatus:
-    image: jniltinho/gatus:v6.3.0
+  go-uptime:
+    image: jniltinho/go-uptime:v7.0.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"   # publish it through a reverse proxy, not directly (docs/install-linux.md has an nginx example)
     volumes:
       - ./config:/config:ro
-      - gatus-data:/data
+      - go-uptime-data:/data
 
 volumes:
-  gatus-data:
+  go-uptime-data:

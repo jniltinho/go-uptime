@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # IDE
 *.iml
 .idea
@@ -16,8 +17,14 @@ node_modules
 *.db
 *.db-shm
 *.db-wal
-gatus
+go-uptime
+# The binary that `make install` built while the project was called Gatus, up to v6
+/gatus
 config/config.yml
 config.yaml
 # Pacotes de release e capturas de tela dos testes E2E (dist/prints)
 dist/
+
+# Python bytecode of the scripts of docs/
+__pycache__/
+*.pyc

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -8,16 +10,16 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/config/endpoint"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,7 +42,7 @@ func newAdminStatusPageEnvironment(t *testing.T, statusPagesEnabled bool) *admin
 	cfg := &config.Config{
 		Security:    &security.Config{Basic: &security.BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: base64.URLEncoding.EncodeToString(hash)}},
 		Admin:       &admin.Config{Enabled: true},
-		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		Endpoints:   []*endpoint.Endpoint{ep},
 		StatusPages: statusPages,
 	}

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -6,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting"
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/alerting/provider/custom"
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/custom"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
 )
 
 func newTestContext() Context {

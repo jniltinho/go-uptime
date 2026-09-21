@@ -1,9 +1,11 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
 	"fmt"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
 	"gopkg.in/yaml.v3"
 )
 

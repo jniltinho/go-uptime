@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package newrelic implements the alerting provider that records alerts in New Relic as custom GatusAlert
 // events through the Event API of the Insights collector, authenticated with an insert key.
 package newrelic
@@ -11,9 +13,9 @@ import (
 	"net/http"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -171,6 +173,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		successRate = float64(successCount) / float64(len(result.ConditionResults)) * 100
 	}
 	event := Event{
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): NRQL queries and alert conditions
+		// written on v6 select this event type, service and source
 		EventType:   "GatusAlert",
 		Timestamp:   time.Now().Unix() * 1000, // New Relic expects milliseconds
 		Service:     "Gatus",

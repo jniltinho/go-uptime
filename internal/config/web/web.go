@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package web models the web section of the YAML configuration: the address, port, read buffer size and optional TLS
 // certificate of the HTTP server. It validates the section, loading the certificate, and applies its defaults.
 package web

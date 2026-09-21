@@ -1,19 +1,20 @@
-> Full configuration reference of Gatus: endpoints, conditions, alerting, storage, security, UI, suites and deployment.
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
+> Full configuration reference of Go Uptime: endpoints, conditions, alerting, storage, security, UI, suites and deployment.
 > It comes from the README of the original [TwiN/gatus](https://github.com/TwiN/gatus), from which this project started,
-> and everything in it applies here. What [jniltinho/gatus](https://github.com/jniltinho/gatus) adds is documented apart:
+> and everything in it applies here. What [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime) adds is documented apart:
 > [admin-endpoints.md](admin-endpoints.md) (administration, login screen, backup),
 > [status-pages.md](status-pages.md) (public status pages, with an optional login of their own),
 > [push-monitoring.md](push-monitoring.md), [storage-mysql.md](storage-mysql.md) and [cli.md](cli.md). The summary and
 > the quick start are in the [README](../README.md).
 
-<a href="https://github.com/jniltinho/gatus">
+<a href="https://github.com/jniltinho/go-uptime">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="../.github/assets/logo-with-light-text.png">
-    <img alt="Gatus" src="../.github/assets/logo-with-dark-text.png" width="420">
+    <img alt="Go Uptime" src="../.github/assets/logo-with-dark-text.png" width="420">
   </picture>
 </a>
 
-Gatus is a developer-oriented health dashboard that gives you the ability to monitor your services using HTTP, ICMP, TCP, and even DNS
+Go Uptime is a developer-oriented health dashboard that gives you the ability to monitor your services using HTTP, ICMP, TCP, and even DNS
 queries as well as evaluate the result of said queries by using a list of conditions on values like the status code,
 the response time, the certificate expiration, the body and many others. The icing on top is that each of these health
 checks can be paired with alerting via Slack, Teams, PagerDuty, Discord, Twilio and many more.
@@ -22,21 +23,21 @@ checks can be paired with alerting via Slack, Teams, PagerDuty, Discord, Twilio 
   <summary><b>Quick start</b></summary>
 
 ```console
-docker run -p 8080:8080 --name gatus jniltinho/gatus:v6.3.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
 ```
 
-Images are published on [Docker Hub](https://hub.docker.com/r/jniltinho/gatus) with fixed tags only: there is no
+Images are published on [Docker Hub](https://hub.docker.com/r/jniltinho/go-uptime) with fixed tags only: there is no
 `latest` nor `stable`. For more details, see [Usage](#usage)
 </details>
 
-![Gatus dashboard](../.github/assets/dashboard-dark.jpg)
+![Go Uptime dashboard](../.github/assets/dashboard-dark.jpg)
 
-Have any feedback or questions? [Open an issue](https://github.com/jniltinho/gatus/issues/new).
+Have any feedback or questions? [Open an issue](https://github.com/jniltinho/go-uptime/issues/new).
 
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
-- [Why Gatus?](#why-gatus)
+- [Why Go Uptime?](#why-go-uptime)
 - [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -130,8 +131,8 @@ Have any feedback or questions? [Open an issue](https://github.com/jniltinho/gat
   - [Reloading configuration on the fly](#reloading-configuration-on-the-fly)
   - [Endpoint groups](#endpoint-groups)
   - [How do I sort by group by default?](#how-do-i-sort-by-group-by-default)
-  - [Exposing Gatus on a custom path](#exposing-gatus-on-a-custom-path)
-  - [Exposing Gatus on a custom port](#exposing-gatus-on-a-custom-port)
+  - [Exposing Go Uptime on a custom path](#exposing-go-uptime-on-a-custom-path)
+  - [Exposing Go Uptime on a custom port](#exposing-go-uptime-on-a-custom-port)
   - [Use environment variables in config files](#use-environment-variables-in-config-files)
   - [Configuring a startup delay](#configuring-a-startup-delay)
   - [Keeping your configuration small](#keeping-your-configuration-small)
@@ -153,18 +154,18 @@ Have any feedback or questions? [Open an issue](https://github.com/jniltinho/gat
   - [High level design overview](#high-level-design-overview)
 
 
-## Why Gatus?
+## Why Go Uptime?
 Before getting into the specifics, I want to address the most common question:
-> Why would I use Gatus when I can just use Prometheus’ Alertmanager, Cloudwatch or even Splunk?
+> Why would I use Go Uptime when I can just use Prometheus’ Alertmanager, Cloudwatch or even Splunk?
 
 Neither of these can tell you that there’s a problem if there are no clients actively calling the endpoint.
 In other words, it's because monitoring metrics mostly rely on existing traffic, which effectively means that unless
 your clients are already experiencing a problem, you won't be notified.
 
-Gatus, on the other hand, allows you to configure health checks for each of your features, which in turn allows it to
+Go Uptime, on the other hand, allows you to configure health checks for each of your features, which in turn allows it to
 monitor these features and potentially alert you before any clients are impacted.
 
-A sign you may want to look into Gatus is by simply asking yourself whether you'd receive an alert if your load balancer
+A sign you may want to look into Go Uptime is by simply asking yourself whether you'd receive an alert if your load balancer
 was to go down right now. Will any of your existing alerts be triggered? Your metrics won’t report an increase in errors
 if no traffic makes it to your applications. This puts you in a situation where your clients are the ones
 that will notify you about the degradation of your services rather than you reassuring them that you're working on
@@ -172,10 +173,10 @@ fixing the issue before they even know about it.
 
 
 ## Features
-The main features of Gatus are:
+The main features of Go Uptime are:
 
-- **Highly flexible health check conditions**: While checking the response status may be enough for some use cases, Gatus goes much further and allows you to add conditions on the response time, the response body and even the IP address.
-- **Ability to use Gatus for user acceptance tests**: Thanks to the point above, you can leverage this application to create automated user acceptance tests.
+- **Highly flexible health check conditions**: While checking the response status may be enough for some use cases, Go Uptime goes much further and allows you to add conditions on the response time, the response body and even the IP address.
+- **Ability to use Go Uptime for user acceptance tests**: Thanks to the point above, you can leverage this application to create automated user acceptance tests.
 - **Very easy to configure**: Not only is the configuration designed to be as readable as possible, it's also extremely easy to add a new service or a new endpoint to monitor.
 - **Alerting**: While having a pretty visual dashboard is useful to keep track of the state of your application(s), you probably don't want to stare at it all day. Thus, notifications via Slack, Mattermost, Messagebird, PagerDuty, Twilio, Google chat and Teams are supported out of the box with the ability to configure a custom alerting provider for any needs you might have, whether it be a different provider or a custom application that manages automated rollbacks.
 - **Metrics**
@@ -183,13 +184,13 @@ The main features of Gatus are:
 - **[Badges](#badges)**: ![Uptime 7d](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/7d/badge.svg) ![Response time 24h](https://status.twin.sh/api/v1/endpoints/core_blog-external/response-times/24h/badge.svg)
 - **Dark mode**
 
-![Gatus dashboard conditions](../.github/assets/dashboard-conditions.jpg)
+![Go Uptime dashboard conditions](../.github/assets/dashboard-conditions.jpg)
 
 
 ## Usage
 
 ```console
-docker run -p 8080:8080 --name gatus jniltinho/gatus:v6.3.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
 ```
 
 If you want to create your own configuration, see [Docker](#docker) for information on how to mount a configuration file.
@@ -222,9 +223,9 @@ If you want to test it locally, see [Docker](#docker).
 ## Configuration
 By default, the configuration file is expected to be at `config/config.yaml`.
 
-You can specify a custom path by setting the `GATUS_CONFIG_PATH` environment variable.
+You can specify a custom path by setting the `GO_UPTIME_CONFIG_PATH` environment variable.
 
-If `GATUS_CONFIG_PATH` points to a directory, all `*.yaml` and `*.yml` files inside said directory and its
+If `GO_UPTIME_CONFIG_PATH` points to a directory, all `*.yaml` and `*.yml` files inside said directory and its
 subdirectories are merged like so:
 - All maps/objects are deep merged (i.e. you could define `alerting.slack` in one file and `alerting.pagerduty` in another file)
 - All slices/arrays are appended (i.e. you can define `endpoints` in multiple files and each endpoint will be added to the final list of endpoints)
@@ -244,6 +245,7 @@ If you want to test it locally, see [Docker](#docker).
 | Parameter                    | Description                                                                                                                              | Default       |
 |:-----------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | `metrics`                    | Whether to expose metrics at `/metrics`.                                                                                                 | `false`       |
+| `metrics-namespace`          | Prefix of the names of the metrics. `gatus` keeps the names that the metrics had up to v6, for the dashboards and alerts written on them. Letters, digits and underscores, not starting with a digit. | `go_uptime`   |
 | `storage`                    | [Storage configuration](#storage).                                                                                                       | `{}`          |
 | `alerting`                   | [Alerting configuration](#alerting).                                                                                                     | `{}`          |
 | `announcements`              | [Announcements configuration](#announcements).                                                                                           | `[]`          |
@@ -257,9 +259,9 @@ If you want to test it locally, see [Docker](#docker).
 | `ui`                         | [UI configuration](#ui).                                                                                                                 | `{}`          |
 | `maintenance`                | [Maintenance configuration](#maintenance).                                                                                               | `{}`          |
 
-If you want more verbose logging, you may set the `GATUS_LOG_LEVEL` environment variable to `DEBUG`.
+If you want more verbose logging, you may set the `GO_UPTIME_LOG_LEVEL` environment variable to `DEBUG`.
 Conversely, if you want less verbose logging, you can set the aforementioned environment variable to `WARN`, `ERROR` or `FATAL`.
-The default value for `GATUS_LOG_LEVEL` is `INFO`.
+The default value for `GO_UPTIME_LOG_LEVEL` is `INFO`.
 
 ### Endpoints
 Endpoints are URLs, applications, or services that you want to monitor. Each endpoint has a list of conditions that are
@@ -309,13 +311,13 @@ You may use the following placeholders in the body (`endpoints[].body`):
 - `[RANDOM_STRING_N]` (resolves to a random string of numbers and letters of length N (max: 8192))
 
 ### External Endpoints
-Unlike regular endpoints, external endpoints are not monitored by Gatus, but they are instead pushed programmatically.
-This allows you to monitor anything you want, even when what you want to check lives in an environment that would not normally be accessible by Gatus.
+Unlike regular endpoints, external endpoints are not monitored by Go Uptime, but they are instead pushed programmatically.
+This allows you to monitor anything you want, even when what you want to check lives in an environment that would not normally be accessible by Go Uptime.
 
 For instance:
-- You can create your own agent that lives in a private network and pushes the status of your services to a publicly-exposed Gatus instance
-- You can monitor services that are not supported by Gatus
-- You can implement your own monitoring system while using Gatus as the dashboard
+- You can create your own agent that lives in a private network and pushes the status of your services to a publicly-exposed Go Uptime instance
+- You can monitor services that are not supported by Go Uptime
+- You can implement your own monitoring system while using Go Uptime as the dashboard
 
 | Parameter                                 | Description                                                                                                                       | Default        |
 |:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------|:---------------|
@@ -342,7 +344,7 @@ external-endpoints:
         send-on-resolved: true
 ```
 
-To push the status of an external endpoint, you can use [gatus-cli](https://github.com/TwiN/gatus-cli):
+To push the status of an external endpoint, you can use [gatus-cli](https://github.com/TwiN/gatus-cli), the command line of the original project, whose API for external endpoints is the same:
 ```
 gatus-cli external-endpoint push --url https://status.example.org --key "core_ext-ep-test" --token "potato" --success
 ```
@@ -360,7 +362,7 @@ Where:
 
 You must also pass the token as a `Bearer` token in the `Authorization` header.
 
-In the jniltinho/gatus fork, external endpoints also receive pushes in the format of the Uptime Kuma
+In the jniltinho/go-uptime fork, external endpoints also receive pushes in the format of the Uptime Kuma
 (`/api/push/<token>?status=up&msg=OK&ping=`), and Push endpoints and global keys can be managed through the web. See
 [push-monitoring.md](push-monitoring.md).
 
@@ -498,7 +500,7 @@ Here are some examples of conditions you can use:
 | `[CERTIFICATE_EXPIRATION]` | Resolves into the duration before certificate expiration (valid units are "s", "m", "h".) | `24h`, `48h`, 0 (if not protocol with certs) |
 | `[DOMAIN_EXPIRATION]`      | Resolves into the duration before the domain expires (valid units are "s", "m", "h".)     | `24h`, `48h`, `1234h56m78s`                  |
 
-In the jniltinho/gatus fork, the expiration of the TLS certificate is also shown discreetly on the details page of the
+In the jniltinho/go-uptime fork, the expiration of the TLS certificate is also shown discreetly on the details page of the
 endpoint, without any condition, and on the status pages with `show-certificate-expiration: true`. See
 [status-pages.md](status-pages.md).
 | `[DNS_RCODE]`              | Resolves into the DNS status of the response                                              | `NOERROR`                                    |
@@ -537,7 +539,7 @@ Allows you to configure the application wide defaults for the dashboard's UI. So
 | `ui.dashboard-heading`    | Dashboard title between header and endpoints                                                                                             | `Health Dashboard`                                  |
 | `ui.dashboard-subheading` | Dashboard description between header and endpoints                                                                                       | `Monitor the health of your endpoints in real-time` |
 | `ui.header`               | Header at the top of the dashboard. Also used as the title on the OIDC login page.                                                       | `Status`                                            |
-| `ui.logo`                 | URL to the logo to display in the header, on the public status pages and on the login page. Without it, the logo embedded in Gatus (`/logo-192x192.png`) is shown; `none` shows no logo. | `"/logo-192x192.png"` |
+| `ui.logo`                 | URL to the logo to display in the header, on the public status pages and on the login page. Without it, the logo embedded in Go Uptime (`/logo-192x192.png`) is shown; `none` shows no logo. | `"/logo-192x192.png"` |
 | `ui.link`                 | Link to open when the logo is clicked.                                                                                                   | `""`                                                |
 | `ui.favicon.default`      | Favourite default icon to display in web browser tab or address bar.                                                                     | `/favicon.ico`                                      |
 | `ui.favicon.size16x16`    | Favourite icon to display in web browser for 16x16 size.                                                                                 | `/favicon-16x16.png`                                |
@@ -591,7 +593,7 @@ announcements:
 ```
 
 If at least one announcement is archived, a **Past Announcements** section will be rendered at the bottom of the status page:
-![Gatus past announcements section](../.github/assets/past-announcements.jpg)
+![Go Uptime past announcements section](../.github/assets/past-announcements.jpg)
 
 
 ### Storage
@@ -628,18 +630,18 @@ See [examples/docker-compose-sqlite-storage](../.examples/docker-compose-sqlite-
 ```yaml
 storage:
   type: postgres
-  path: "postgres://user:password@127.0.0.1:5432/gatus?sslmode=disable"
+  path: "postgres://user:password@127.0.0.1:5432/go_uptime?sslmode=disable"
 ```
 See [examples/docker-compose-postgres-storage](../.examples/docker-compose-postgres-storage) for an example.
 
-- If `storage.type` is `mysql` (jniltinho/gatus fork, MySQL 8.4+ and MariaDB 10.11+), `storage.path` must be a DSN of
+- If `storage.type` is `mysql` (jniltinho/go-uptime fork, MySQL 8.4+ and MariaDB 10.11+), `storage.path` must be a DSN of
   [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql#dsn-data-source-name):
 ```yaml
 storage:
   type: mysql
-  path: "gatus:password@tcp(127.0.0.1:3306)/gatus"
+  path: "go_uptime:password@tcp(127.0.0.1:3306)/go_uptime"
 ```
-See [docs/storage-mysql.md](storage-mysql.md) for the parameters set by Gatus, the limits and the tests, and
+See [docs/storage-mysql.md](storage-mysql.md) for the parameters set by Go Uptime, the limits and the tests, and
 [examples/docker-compose-mariadb-storage](../.examples/docker-compose-mariadb-storage) for an example.
 
 
@@ -739,7 +741,7 @@ endpoints:
       - "[STATUS] == 200"
 ```
 
-> 📝 Note that Gatus will use the [gcloud default credentials](https://cloud.google.com/docs/authentication/application-default-credentials) within its environment to generate the token.
+> 📝 Note that Go Uptime will use the [gcloud default credentials](https://cloud.google.com/docs/authentication/application-default-credentials) within its environment to generate the token.
 
 This example shows you how you can use the `client.tls` configuration to perform an mTLS query to a backend API:
 
@@ -759,8 +761,8 @@ endpoints:
 > 📝 Note that if running in a container, you must volume mount the certificate and key into the container.
 
 ### Tunneling
-Gatus supports SSH tunneling to monitor internal services through jump hosts or bastion servers.
-This is particularly useful for monitoring services that are not directly accessible from where Gatus is deployed.
+Go Uptime supports SSH tunneling to monitor internal services through jump hosts or bastion servers.
+This is particularly useful for monitoring services that are not directly accessible from where Go Uptime is deployed.
 
 SSH tunnels are defined globally in the `tunneling` section and then referenced by name in endpoint client configurations.
 
@@ -801,7 +803,7 @@ endpoints:
 
 
 ### Alerting
-Gatus supports multiple alerting providers, such as Slack and PagerDuty, and supports different alerts for each
+Go Uptime supports multiple alerting providers, such as Slack and PagerDuty, and supports different alerts for each
 individual endpoints with configurable descriptions and thresholds.
 
 Alerts are configured at the endpoint level like so:
@@ -930,7 +932,7 @@ endpoints:
         description: "healthcheck failed"
 ```
 
-If the `access-key-id` and `secret-access-key` are not defined Gatus will fall back to IAM authentication.
+If the `access-key-id` and `secret-access-key` are not defined Go Uptime will fall back to IAM authentication.
 
 Make sure you have the ability to use `ses:SendEmail`.
 
@@ -1003,7 +1005,7 @@ To find Assignee IDs:
 
 #### Configuring Datadog alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                            | Description                                                                                | Default           |
 |:-------------------------------------|:-------------------------------------------------------------------------------------------|:------------------|
@@ -1042,7 +1044,7 @@ endpoints:
 |:-------------------------------------|:-------------------------------------------------------------------------------------------|:------------------------------------|
 | `alerting.discord`                   | Configuration for alerts of type `discord`                                                 | `{}`                                |
 | `alerting.discord.webhook-url`       | Discord Webhook URL                                                                        | Required `""`                       |
-| `alerting.discord.title`             | Title of the notification                                                                  | `":helmet_with_white_cross: Gatus"` |
+| `alerting.discord.title`             | Title of the notification                                                                  | `":helmet_with_white_cross: Go Uptime"` |
 | `alerting.discord.message-content`   | Message content to send before the embed (useful for pinging users/roles, e.g. `<@123>`)   | `""`                                |
 | `alerting.discord.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                                 |
 | `alerting.discord.overrides`         | List of overrides that may be prioritized over the default configuration                   | `[]`                                |
@@ -1211,7 +1213,7 @@ endpoints:
 | Parameter                           | Description                                                                                                         | Default       |
 |:------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:--------------|
 | `alerting.gitlab`                   | Configuration for alerts of type `gitlab`                                                                           | `{}`          |
-| `alerting.gitlab.webhook-url`       | GitLab alert webhook URL (e.g. `https://gitlab.com/yourusername/example/alerts/notify/gatus/xxxxxxxxxxxxxxxx.json`) | Required `""` |
+| `alerting.gitlab.webhook-url`       | GitLab alert webhook URL (e.g. `https://gitlab.com/yourusername/example/alerts/notify/go-uptime/xxxxxxxxxxxxxxxx.json`) | Required `""` |
 | `alerting.gitlab.authorization-key` | GitLab alert authorization key.                                                                                     | Required `""` |
 | `alerting.gitlab.severity`          | Override default severity (critical), can be one of `critical, high, medium, low, info, unknown`                    | `""`          |
 | `alerting.gitlab.monitoring-tool`   | Override the monitoring tool name (gatus)                                                                           | `"gatus"`     |
@@ -1227,7 +1229,7 @@ https://docs.gitlab.com/ee/operations/incident_management/integrations.html#conf
 ```yaml
 alerting:
   gitlab:
-    webhook-url: "https://gitlab.com/hlidotbe/example/alerts/notify/gatus/xxxxxxxxxxxxxxxx.json"
+    webhook-url: "https://gitlab.com/hlidotbe/example/alerts/notify/go-uptime/xxxxxxxxxxxxxxxx.json"
     authorization-key: "12345"
 
 endpoints:
@@ -1287,7 +1289,7 @@ endpoints:
 | `alerting.gotify.server-url`                  | Gotify server URL                                                                           | Required `""`         |
 | `alerting.gotify.token`                       | Token that is used for authentication.                                                      | Required `""`         |
 | `alerting.gotify.priority`                    | Priority of the alert according to Gotify standards.                                        | `5`                   |
-| `alerting.gotify.title`                       | Title of the notification                                                                   | `"Gatus: <endpoint>"` |
+| `alerting.gotify.title`                       | Title of the notification                                                                   | `"Go Uptime: <endpoint>"` |
 | `alerting.gotify.default-alert`               | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert). | N/A                   |
 
 ```yaml
@@ -1324,6 +1326,7 @@ Here's an example of what the notifications look like:
 |:-------------------------------------------|:---------------------------------------------------------------------------------------|:--------------|
 | `alerting.homeassistant.url`               | HomeAssistant instance URL                                                             | Required `""` |
 | `alerting.homeassistant.token`             | Long-lived access token from HomeAssistant                                             | Required `""` |
+| `alerting.homeassistant.event-type`        | Type of the event fired in HomeAssistant                                               | `gatus_alert` |
 | `alerting.homeassistant.default-alert`     | Default alert configuration to use for endpoints with an alert of the appropriate type | `{}`          |
 | `alerting.homeassistant.overrides`         | List of overrides that may be prioritized over the default configuration               | `[]`          |
 | `alerting.homeassistant.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration    | `""`          |
@@ -1350,7 +1353,7 @@ endpoints:
         success-threshold: 2
 ```
 
-The alerts will be sent as events to HomeAssistant with the event type `gatus_alert`. The event data includes:
+The alerts will be sent as events to HomeAssistant with the event type `gatus_alert`, the name that the event has had since the project was called Gatus and that existing automations listen to. `alerting.homeassistant.event-type` changes it (letters, digits, `_` and `-`). The event data includes:
 - `status`: "triggered" or "resolved"
 - `endpoint`: The name of the monitored endpoint
 - `description`: The alert description if provided
@@ -1368,14 +1371,14 @@ You can use these events in HomeAssistant automations to:
 Example HomeAssistant automation:
 ```yaml
 automation:
-  - alias: "Gatus Alert Handler"
+  - alias: "Go Uptime Alert Handler"
     trigger:
       platform: event
       event_type: gatus_alert
     action:
       - service: notify.notify
         data_template:
-          title: "Gatus Alert: {{ trigger.event.data.event_data.endpoint }}"
+          title: "Go Uptime Alert: {{ trigger.event.data.event_data.endpoint }}"
           message: >
             Status: {{ trigger.event.data.event_data.status }}
             {% if trigger.event.data.event_data.description %}
@@ -1391,12 +1394,12 @@ To get your HomeAssistant long-lived access token:
 2. Click on your profile name (bottom left)
 3. Scroll down to "Long-Lived Access Tokens"
 4. Click "Create Token"
-5. Give it a name (e.g., "Gatus")
+5. Give it a name (e.g., "Go Uptime")
 6. Copy the token - you'll only see it once!
 
 ##### Native Home Assistant Integration
 
-Gatus can be integrated into [Home Assistant](https://www.home-assistant.io/) to monitor the status of your endpoints directly from your home automation dashboard.
+The Gatus integration of [Home Assistant](https://www.home-assistant.io/), written for the original project, reads the same API and also works with Go Uptime, to monitor the status of your endpoints directly from your home automation dashboard.
 
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=gatus)
 
@@ -1409,10 +1412,10 @@ To add the integration, click the button above or:
 
 1. In Home Assistant, navigate to **Settings** > **Devices & Services**.
 2. Click **Add Integration** in the bottom-right corner.
-3. Search for **Gatus** and select it.
-4. Enter the base URL of your Gatus instance (e.g., `http://192.168.1.50:8080`).
+3. Search for **Go Uptime** and select it.
+4. Enter the base URL of your Go Uptime instance (e.g., `http://192.168.1.50:8080`).
 
-Home Assistant will create a binary sensor for each endpoint configured in Gatus. Because these sensors use the `connectivity` device class, they will show as `Connected` (Up) when the endpoint is healthy, and `Disconnected` (Down) when the endpoint is unhealthy.
+Home Assistant will create a binary sensor for each endpoint configured in Go Uptime. Because these sensors use the `connectivity` device class, they will show as `Connected` (Up) when the endpoint is healthy, and `Disconnected` (Down) when the endpoint is unhealthy.
 
 ###### Automation Example
 
@@ -1420,7 +1423,7 @@ You can easily set up a UI automation in Home Assistant to receive mobile notifi
 
 1. Navigate to **Settings** > **Automations & Scenes** > **Create Automation** > **Create new automation**.
 2. Under **Triggers**, click **Add Trigger** and select **State**.
-3. In the **Entity** field, select the Gatus binary sensor(s) you want to monitor.
+3. In the **Entity** field, select the Go Uptime binary sensor(s) you want to monitor.
 4. Set the **To** field to `off` (since a state of `off` represents a disconnected/down endpoint).
 5. Under **Actions**, click **Add Action** and select **Perform action**.
 6. Select your notification service (e.g., `Send a notification via mobile_app_<your_device_name>`).
@@ -1432,8 +1435,8 @@ You can easily set up a UI automation in Home Assistant to receive mobile notifi
 For advanced users, here is the YAML representation of the automation:
 
 ```yaml
-alias: "Notify when Gatus endpoint goes down"
-description: "Sends a mobile notification if a Gatus endpoint goes down"
+alias: "Notify when Go Uptime endpoint goes down"
+description: "Sends a mobile notification if a Go Uptime endpoint goes down"
 trigger:
   - platform: state
     entity_id:
@@ -1443,7 +1446,7 @@ trigger:
 action:
   - action: notify.mobile_app_your_device_name
     data:
-      title: "Gatus Alert"
+      title: "Go Uptime Alert"
       message: "The endpoint {{ trigger.to_state.name }} is down!"
 ```
 
@@ -1452,7 +1455,7 @@ action:
 
 #### Configuring IFTTT alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                          | Description                                                                                | Default       |
 |:-----------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -1703,7 +1706,7 @@ endpoints:
 
 #### Configuring New Relic alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                             | Description                                                                                | Default       |
 |:--------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -1755,7 +1758,7 @@ Example:
 alerting:
   n8n:
     webhook-url: "https://your-n8n-instance.com/webhook/your-webhook-id"
-    title: "Gatus Monitoring"
+    title: "Go Uptime Monitoring"
     default-alert:
       send-on-resolved: true
 
@@ -1799,13 +1802,13 @@ The JSON payload sent to the n8n webhook will include:
 | `alerting.ntfy.overrides[].*`        | See `alerting.ntfy.*` parameters                                                                                                             | `{}`              |
 
 [ntfy](https://github.com/binwiederhier/ntfy) is an amazing project that allows you to subscribe to desktop
-and mobile notifications, making it an awesome addition to Gatus.
+and mobile notifications, making it an awesome addition to Go Uptime.
 
 Example:
 ```yaml
 alerting:
   ntfy:
-    topic: "gatus-test-topic"
+    topic: "go-uptime-test-topic"
     priority: 2
     token: faketoken
     default-alert:
@@ -1815,7 +1818,7 @@ alerting:
     # override the to key above for the specified groups
     overrides:
       - group: "other"
-        topic: "gatus-other-test-topic"
+        topic: "go-uptime-other-test-topic"
         priority: 4
         click: "https://example.com"
 
@@ -1848,7 +1851,7 @@ endpoints:
 | `alerting.opsgenie`               | Configuration for alerts of type `opsgenie`                                                | `{}`                 |
 | `alerting.opsgenie.api-key`       | Opsgenie API Key                                                                           | Required `""`        |
 | `alerting.opsgenie.priority`      | Priority level of the alert.                                                               | `P1`                 |
-| `alerting.opsgenie.source`        | Source field of the alert.                                                                 | `gatus`              |
+| `alerting.opsgenie.source`        | Source field of the alert.                                                                 | `gatus`                  |
 | `alerting.opsgenie.entity-prefix` | Entity field prefix.                                                                       | `gatus-`             |
 | `alerting.opsgenie.alias-prefix`  | Alias field prefix.                                                                        | `gatus-healthcheck-` |
 | `alerting.opsgenie.tags`          | Tags of alert.                                                                             | `[]`                 |
@@ -1925,7 +1928,7 @@ endpoints:
 
 #### Configuring Plivo alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                          | Description                                                                                | Default       |
 |:-----------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -1971,7 +1974,7 @@ endpoints:
 | `alerting.pushover`                   | Configuration for alerts of type `pushover`                                                                  | `{}`                  |
 | `alerting.pushover.application-token` | Pushover application token                                                                                   | `""`                  |
 | `alerting.pushover.user-key`          | User or group key                                                                                            | `""`                  |
-| `alerting.pushover.title`             | Fixed title for all messages sent via Pushover                                                               | `"Gatus: <endpoint>"` |
+| `alerting.pushover.title`             | Fixed title for all messages sent via Pushover                                                               | `"Go Uptime: <endpoint>"` |
 | `alerting.pushover.priority`          | Priority of all messages, ranging from -2 (very low) to 2 (emergency)                                        | `0`                   |
 | `alerting.pushover.resolved-priority` | Override the priority of messages on resolved, ranging from -2 (very low) to 2 (emergency)                   | `0`                   |
 | `alerting.pushover.sound`             | Sound of all messages<br />See [sounds](https://pushover.net/api#sounds) for all valid choices.              | `""`                  |
@@ -2004,7 +2007,7 @@ endpoints:
 
 #### Configuring Rocket.Chat alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                               | Description                                                                                | Default       |
 |:----------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2036,7 +2039,7 @@ endpoints:
 
 #### Configuring SendGrid alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                             | Description                                                                                | Default       |
 |:--------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2070,7 +2073,7 @@ endpoints:
 
 #### Configuring Signal alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                           | Description                                                                                | Default       |
 |:------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2139,7 +2142,7 @@ endpoints:
 |:-----------------------------------|:-------------------------------------------------------------------------------------------|:------------------------------------|
 | `alerting.slack`                   | Configuration for alerts of type `slack`                                                   | `{}`                                |
 | `alerting.slack.webhook-url`       | Slack Webhook URL                                                                          | Required `""`                       |
-| `alerting.slack.title`             | Title of the notification                                                                  | `":helmet_with_white_cross: Gatus"` |
+| `alerting.slack.title`             | Title of the notification                                                                  | `":helmet_with_white_cross: Go Uptime"` |
 | `alerting.slack.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                                 |
 | `alerting.slack.overrides`         | List of overrides that may be prioritized over the default configuration                   | `[]`                                |
 | `alerting.slack.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration        | `""`                                |
@@ -2180,7 +2183,7 @@ Here's an example of what the notifications look like:
 | `alerting.splunk`                   | Configuration for alerts of type `splunk`                                                  | `{}`            |
 | `alerting.splunk.hec-url`           | Splunk HEC (HTTP Event Collector) URL                                                      | Required `""`   |
 | `alerting.splunk.hec-token`         | Splunk HEC token                                                                           | Required `""`   |
-| `alerting.splunk.source`            | Event source                                                                               | `"gatus"`       |
+| `alerting.splunk.source`            | Event source                                                                               | `"gatus"`           |
 | `alerting.splunk.sourcetype`        | Event source type                                                                          | `"gatus:alert"` |
 | `alerting.splunk.index`             | Splunk index                                                                               | `""`            |
 | `alerting.splunk.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A             |
@@ -2209,7 +2212,7 @@ endpoints:
 
 #### Configuring Squadcast alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                              | Description                                                                                | Default       |
 |:---------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2248,7 +2251,7 @@ endpoints:
 | `alerting.teams`                   | Configuration for alerts of type `teams`                                                   | `{}`                |
 | `alerting.teams.webhook-url`       | Teams Webhook URL                                                                          | Required `""`       |
 | `alerting.teams.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                 |
-| `alerting.teams.title`             | Title of the notification                                                                  | `"&#x1F6A8; Gatus"` |
+| `alerting.teams.title`             | Title of the notification                                                                  | `"&#x1F6A8; Go Uptime"` |
 | `alerting.teams.client.insecure`   | Whether to skip TLS verification                                                           | `false`             |
 | `alerting.teams.overrides`         | List of overrides that may be prioritized over the default configuration                   | `[]`                |
 | `alerting.teams.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration        | `""`                |
@@ -2306,7 +2309,7 @@ Here's an example of what the notifications look like:
 |:---------------------------------------------|:-------------------------------------------------------------------------------------------|:-------------------|
 | `alerting.teams-workflows`                   | Configuration for alerts of type `teams`                                                   | `{}`               |
 | `alerting.teams-workflows.webhook-url`       | Teams Webhook URL                                                                          | Required `""`      |
-| `alerting.teams-workflows.title`             | Title of the notification                                                                  | `"&#x26D1; Gatus"` |
+| `alerting.teams-workflows.title`             | Title of the notification                                                                  | `"&#x26D1; Go Uptime"` |
 | `alerting.teams-workflows.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert) | N/A                |
 | `alerting.teams-workflows.overrides`         | List of overrides that may be prioritized over the default configuration                   | `[]`               |
 | `alerting.teams-workflows.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration        | `""`               |
@@ -2438,7 +2441,7 @@ endpoints:
 
 #### Configuring Vonage alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                           | Description                                                                                | Default       |
 |:------------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2457,7 +2460,7 @@ alerting:
   vonage:
     api-key: "YOUR_API_KEY"
     api-secret: "YOUR_API_SECRET"
-    from: "Gatus"
+    from: "Go Uptime"
     to: "+1234567890"
 ```
 
@@ -2476,7 +2479,7 @@ endpoints:
 
 #### Configuring Webex alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                          | Description                                                                                | Default       |
 |:-----------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2506,7 +2509,7 @@ endpoints:
 
 #### Configuring Zapier alerts
 
-> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please remove this warning and create a pull request, or comment on [#1223](https://github.com/TwiN/gatus/discussions/1223) with whether the provider works as intended. Thank you for your cooperation.
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
 
 | Parameter                       | Description                                                                                | Default       |
 |:--------------------------------|:-------------------------------------------------------------------------------------------|:--------------|
@@ -2541,8 +2544,8 @@ endpoints:
 | `alerting.zulip.bot-email`         | Bot Email                                                                           | Required `""` |
 | `alerting.zulip.bot-api-key`       | Bot API key                                                                         | Required `""` |
 | `alerting.zulip.domain`            | Full organization domain (e.g.: yourZulipDomain.zulipchat.com)                      | Required `""` |
-| `alerting.zulip.channel-id`        | The channel ID where Gatus will send the alerts                                     | Required `""` |
-| `alerting.zulip.topic`             | The topic under which the alerts will be sent.<br />Supports the `[ENDPOINT_NAME]`, `[ENDPOINT_GROUP]` and `[ALERT_DESCRIPTION]` placeholders. | `Gatus`       |
+| `alerting.zulip.channel-id`        | The channel ID where Go Uptime will send the alerts                                     | Required `""` |
+| `alerting.zulip.topic`             | The topic under which the alerts will be sent.<br />Supports the `[ENDPOINT_NAME]`, `[ENDPOINT_GROUP]` and `[ALERT_DESCRIPTION]` placeholders. | `Gatus`           |
 | `alerting.zulip.overrides`         | List of overrides that may be prioritized over the default configuration            | `[]`          |
 | `alerting.zulip.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration | `""`          |
 | `alerting.zulip.overrides[].*`     | See `alerting.zulip.*` parameters                                                   | `{}`          |
@@ -2550,11 +2553,11 @@ endpoints:
 ```yaml
 alerting:
   zulip:
-    bot-email: gatus-bot@some.zulip.org
+    bot-email: go-uptime-bot@some.zulip.org
     bot-api-key: "********************************"
     domain: some.zulip.org
     channel-id: 123456
-    topic: "[ENDPOINT_NAME]" # Optional; groups each endpoint's alerts under its own topic. Defaults to "Gatus"
+    topic: "[ENDPOINT_NAME]" # Optional; groups each endpoint's alerts under its own topic. Defaults to "Go Uptime"
 
 endpoints:
   - name: website
@@ -2588,7 +2591,7 @@ endpoints:
 While they're called alerts, you can use this feature to call anything.
 
 For instance, you could automate rollbacks by having an application that keeps tracks of new deployments, and by
-leveraging Gatus, you could have Gatus call that application endpoint when an endpoint starts failing. Your application
+leveraging Go Uptime, you could have Go Uptime call that application endpoint when an endpoint starts failing. Your application
 would then check if the endpoint that started failing was part of the recently deployed application, and if it was,
 then automatically roll it back.
 
@@ -2670,7 +2673,7 @@ alerting:
       success-threshold: 5
 ```
 
-As a result, your Gatus configuration looks a lot tidier:
+As a result, your Go Uptime configuration looks a lot tidier:
 ```yaml
 endpoints:
   - name: example
@@ -2794,9 +2797,9 @@ endpoints:
 | `security.basic`                        | HTTP Basic configuration                                                           | `{}`          |
 | `security.basic.username`               | Username for Basic authentication.                                                 | Required `""` |
 | `security.basic.password-bcrypt-base64` | Password hashed with Bcrypt and then encoded with base64 for Basic authentication. | Required `""` |
-| `security.basic.session-ttl`            | Validity of the sessions of the login screen (jniltinho/gatus fork), from `5m` to `720h`. | `8h`          |
+| `security.basic.session-ttl`            | Validity of the sessions of the login screen (jniltinho/go-uptime fork), from `5m` to `720h`. | `8h`          |
 
-In the jniltinho/gatus fork, the dashboard and the administration show a login screen with logout instead of the
+In the jniltinho/go-uptime fork, the dashboard and the administration show a login screen with logout instead of the
 native dialog of the browser, with sessions stored in the database and a limit of failed logins, while
 `Authorization: Basic` keeps working for scripts. See [docs/admin-endpoints.md](admin-endpoints.md#login-screen).
 
@@ -2808,7 +2811,7 @@ security:
     password-bcrypt-base64: "JDJhJDEwJHRiMnRFakxWazZLdXBzRERQazB1TE8vckRLY05Yb1hSdnoxWU0yQ1FaYXZRSW1McmladDYu"
 ```
 
-To generate `password-bcrypt-base64` without `htpasswd` (jniltinho/gatus fork), run
+To generate `password-bcrypt-base64` without `htpasswd` (jniltinho/go-uptime fork), run
 `python3 docs/generate-admin-password.py`, which only needs Python 3 and accepts `--cost` (for example `--cost 9`). See
 [admin-endpoints.md](admin-endpoints.md#configuration).
 
@@ -2842,13 +2845,13 @@ security:
     #session-ttl: 8h
 ```
 
-Confused? Read [Securing Gatus with OIDC using Auth0](https://twin.sh/articles/56/securing-gatus-with-oidc-using-auth0).
+Confused? Read [Securing Gatus with OIDC using Auth0](https://twin.sh/articles/56/securing-gatus-with-oidc-using-auth0), written for the original project.
 
 
 ### TLS Encryption
-Gatus supports basic encryption with TLS. To enable this, certificate files in PEM format have to be provided.
+Go Uptime supports basic encryption with TLS. To enable this, certificate files in PEM format have to be provided.
 
-The example below shows an example configuration which makes gatus respond on port 4443 to HTTPS requests:
+The example below shows an example configuration which makes go-uptime respond on port 4443 to HTTPS requests:
 ```yaml
 web:
   port: 4443
@@ -2862,15 +2865,19 @@ web:
 To enable metrics, you must set `metrics` to `true`. Doing so will expose Prometheus-friendly metrics at the `/metrics`
 endpoint on the same port your application is configured to run on (`web.port`).
 
+The names below have the default prefix, `go_uptime_`. It comes from `metrics-namespace`: with `metrics-namespace: gatus`
+the metrics keep, name by name, the ones they had while the project was called Gatus (`gatus_results_total` and so on),
+which is what a dashboard or an alert written on v6 expects.
+
 | Metric name                                  | Type    | Description                                                                | Labels                          | Relevant endpoint types |
 |:---------------------------------------------|:--------|:---------------------------------------------------------------------------|:--------------------------------|:------------------------|
-| gatus_results_total                          | counter | Number of results per endpoint per success state                           | key, group, name, type, success | All                     |
-| gatus_results_code_total                     | counter | Total number of results by code                                            | key, group, name, type, code    | DNS, HTTP               |
-| gatus_results_connected_total                | counter | Total number of results in which a connection was successfully established | key, group, name, type          | All                     |
-| gatus_results_duration_seconds               | gauge   | Duration of the request in seconds                                         | key, group, name, type          | All                     |
-| gatus_results_certificate_expiration_seconds | gauge   | Number of seconds until the certificate expires                            | key, group, name, type          | HTTP, STARTTLS          |
-| gatus_results_domain_expiration_seconds      | gauge   | Number of seconds until the domains expires                                | key, group, name, type          | HTTP, STARTTLS          |
-| gatus_results_endpoint_success               | gauge   | Displays whether or not the endpoint was a success (0 failure, 1 success)  | key, group, name, type          | All                     |
+| go_uptime_results_total                          | counter | Number of results per endpoint per success state                           | key, group, name, type, success | All                     |
+| go_uptime_results_code_total                     | counter | Total number of results by code                                            | key, group, name, type, code    | DNS, HTTP               |
+| go_uptime_results_connected_total                | counter | Total number of results in which a connection was successfully established | key, group, name, type          | All                     |
+| go_uptime_results_duration_seconds               | gauge   | Duration of the request in seconds                                         | key, group, name, type          | All                     |
+| go_uptime_results_certificate_expiration_seconds | gauge   | Number of seconds until the certificate expires                            | key, group, name, type          | HTTP, STARTTLS          |
+| go_uptime_results_domain_expiration_seconds      | gauge   | Number of seconds until the domains expires                                | key, group, name, type          | HTTP, STARTTLS          |
+| go_uptime_results_endpoint_success               | gauge   | Displays whether or not the endpoint was a success (0 failure, 1 success)  | key, group, name, type          | All                     |
 
 See [examples/docker-compose-grafana-prometheus](../.examples/docker-compose-grafana-prometheus) for further documentation as well as an example.
 
@@ -2900,9 +2907,9 @@ endpoints:
 | `connectivity.checker.target`   | Host to use for validating connectivity    | Required `""` |
 | `connectivity.checker.interval` | Interval at which to validate connectivity | `1m`          |
 
-While Gatus is used to monitor other services, it is possible for Gatus itself to lose connectivity to the internet.
-In order to prevent Gatus from reporting endpoints as unhealthy when Gatus itself is unhealthy, you may configure
-Gatus to periodically check for internet connectivity.
+While Go Uptime is used to monitor other services, it is possible for Go Uptime itself to lose connectivity to the internet.
+In order to prevent Go Uptime from reporting endpoints as unhealthy when Go Uptime itself is unhealthy, you may configure
+Go Uptime to periodically check for internet connectivity.
 
 All endpoint executions are skipped while the connectivity checker deems connectivity to be down.
 
@@ -2915,11 +2922,11 @@ connectivity:
 
 
 ### Remote instances (EXPERIMENTAL)
-This feature allows you to retrieve endpoint statuses from a remote Gatus instance.
+This feature allows you to retrieve endpoint statuses from a remote Go Uptime instance.
 
 There are two main use cases for this:
-- You have multiple Gatus instances running on different machines, and you wish to visually expose the statuses through a single dashboard
-- You have one or more Gatus instances that are not publicly accessible (e.g. behind a firewall), and you wish to retrieve
+- You have multiple Go Uptime instances running on different machines, and you wish to visually expose the statuses through a single dashboard
+- You have one or more Go Uptime instances that are not publicly accessible (e.g. behind a firewall), and you wish to retrieve
 
 This is an experimental feature. It may be removed or updated in a breaking manner at any time. Furthermore,
 there are known issues with this feature. If you'd like to provide some feedback, please write a comment in [#64](https://github.com/TwiN/gatus/issues/64).
@@ -2942,30 +2949,30 @@ remote:
 
 
 ## Deployment
-Many examples can be found in the [.examples](../.examples) folder, but this section will focus on the most popular ways of deploying Gatus.
+Many examples can be found in the [.examples](../.examples) folder, but this section will focus on the most popular ways of deploying Go Uptime.
 
 
 ### Docker
-To run Gatus locally with Docker:
+To run Go Uptime locally with Docker:
 ```console
-docker run -p 8080:8080 --name gatus jniltinho/gatus:v6.3.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
 ```
 
 Other than using one of the examples provided in the [.examples](../.examples) folder, you can also try it out locally by
 creating a configuration file, we'll call it `config.yaml` for this example, and running the following
 command:
 ```console
-docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/config.yaml,target=/config/config.yaml --name gatus jniltinho/gatus:v6.3.0
+docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.0.0
 ```
 
 If you're on Windows, replace `"$(pwd)"` by the absolute path to your current directory, e.g.:
 ```console
-docker run -p 8080:8080 --mount type=bind,source=C:/Users/Chris/Desktop/config.yaml,target=/config/config.yaml --name gatus jniltinho/gatus:v6.3.0
+docker run -p 8080:8080 --mount type=bind,source=C:/Users/Chris/Desktop/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.0.0
 ```
 
 To build the image locally:
 ```console
-docker build . -t gatus:dev
+docker build . -t go-uptime:dev
 ```
 
 
@@ -2978,11 +2985,11 @@ Once Helm is set up properly, add the repository as follows:
 ```console
 helm repo add twin https://twin.github.io/helm-charts
 helm repo update
-helm install gatus twin/gatus
+helm install go-uptime twin/gatus --set image.repository=jniltinho/go-uptime --set image.tag=v7.0.0
 ```
 
-The chart is the one of the original project and deploys its image by default. To run this project with it, set the
-image: `--set image.repository=jniltinho/gatus --set image.tag=v6.3.0`.
+The chart (`twin/gatus`) is the one of the original project, Gatus, and deploys its image by default: the two `--set`
+above point it at this project. The image keeps `/gatus` as a link to the binary, so a chart that calls it still works.
 
 To get more details, please check [chart's configuration](https://github.com/TwiN/helm-charts/blob/master/charts/gatus/README.md).
 
@@ -2991,8 +2998,8 @@ To get more details, please check [chart's configuration](https://github.com/Twi
 
 #### Kubernetes
 
-Gatus can be deployed on Kubernetes using Terraform by using the following module: [terraform-kubernetes-gatus](https://github.com/TwiN/terraform-kubernetes-gatus). It belongs to the
-original project too: point its image at `jniltinho/gatus` with a fixed tag.
+Go Uptime can be deployed on Kubernetes with the Terraform module of the original project, Gatus: [terraform-kubernetes-gatus](https://github.com/TwiN/terraform-kubernetes-gatus). It belongs to the
+original project too: point its image at `jniltinho/go-uptime` with a fixed tag.
 
 
 ## Running the tests
@@ -3037,13 +3044,13 @@ will send a `POST` request to `http://localhost:8080/playground` with the follow
 
 
 ### Recommended interval
-To ensure that Gatus provides reliable and accurate results (i.e. response time), Gatus limits the number of
+To ensure that Go Uptime provides reliable and accurate results (i.e. response time), Go Uptime limits the number of
 endpoints/suites that can be evaluated at the same time.
 In other words, even if you have multiple endpoints with the same interval, they are not guaranteed to run at the same time.
 
 The number of concurrent evaluations is determined by the `concurrency` configuration parameter, which defaults to `3`.
 
-You can test this yourself by running Gatus with several endpoints configured with a very short, unrealistic interval,
+You can test this yourself by running Go Uptime with several endpoints configured with a very short, unrealistic interval,
 such as 1ms. You'll notice that the response time does not fluctuate - that is because while endpoints are evaluated on
 different goroutines, there's a semaphore that controls how many endpoints/suites from running at the same time.
 
@@ -3053,13 +3060,13 @@ Unfortunately, there is a drawback. If you have a lot of endpoints, including so
 The interval does not include the duration of the request itself, which means that if an endpoint has an interval of 30s
 and the request takes 2s to complete, the timestamp between two evaluations will be 32s, not 30s.
 
-While this does not prevent Gatus' from performing health checks on all other endpoints, it may cause Gatus to be unable
+While this does not prevent Go Uptime' from performing health checks on all other endpoints, it may cause Go Uptime to be unable
 to respect the configured interval, for instance, assuming `concurrency` is set to `1`:
 - Endpoint A has an interval of 5s, and times out after 10s to complete
 - Endpoint B has an interval of 5s, and takes 1ms to complete
 - Endpoint B will be unable to run every 5s, because endpoint A's health evaluation takes longer than its interval
 
-To sum it up, while Gatus can handle any interval you throw at it, you're better off having slow requests with
+To sum it up, while Go Uptime can handle any interval you throw at it, you're better off having slow requests with
 higher interval.
 
 As a rule of thumb, I personally set the interval for more complex health checks to `5m` (5 minutes) and
@@ -3151,7 +3158,7 @@ syntax.
 
 ### Monitoring an endpoint using gRPC
 You can monitor gRPC services by prefixing `endpoints[].url` with `grpc://` or `grpcs://`.
-Gatus executes the standard `grpc.health.v1.Health/Check` RPC against the target.
+Go Uptime executes the standard `grpc.health.v1.Health/Check` RPC against the target.
 
 ```yaml
 endpoints:
@@ -3202,7 +3209,7 @@ endpoints:
 Only the placeholders `[CONNECTED]`, `[IP]` and `[RESPONSE_TIME]` are supported for endpoints of type ICMP.
 You can specify a domain prefixed by `icmp://`, or an IP address prefixed by `icmp://`.
 
-If you run Gatus on Linux, please read the Linux section on [https://github.com/prometheus-community/pro-bing#linux]
+If you run Go Uptime on Linux, please read the Linux section on [https://github.com/prometheus-community/pro-bing#linux]
 if you encounter any problems.
 
 Prior to `v5.31.0`, some environment setups required adding `CAP_NET_RAW` capabilities to allow pings to work.
@@ -3339,14 +3346,14 @@ endpoints:
       - "[CERTIFICATE_EXPIRATION] > 240h"
 ```
 
-> ⚠ The usage of the `[DOMAIN_EXPIRATION]` placeholder requires Gatus to use RDAP, or as a fallback, send a request to the official IANA WHOIS service
+> ⚠ The usage of the `[DOMAIN_EXPIRATION]` placeholder requires Go Uptime to use RDAP, or as a fallback, send a request to the official IANA WHOIS service
 > [through a library](https://github.com/TwiN/whois) and in some cases, a secondary request to a TLD-specific WHOIS server (e.g. `whois.nic.sh`).
-> To prevent the WHOIS service from throttling your IP address if you send too many requests, Gatus will prevent you from
+> To prevent the WHOIS service from throttling your IP address if you send too many requests, Go Uptime will prevent you from
 > using the `[DOMAIN_EXPIRATION]` placeholder on an endpoint with an interval of less than `5m`.
 
 
 ### Concurrency
-By default, Gatus allows up to 3 endpoints/suites to be monitored concurrently. This provides a balance between performance and resource usage while maintaining accurate response time measurements.
+By default, Go Uptime allows up to 3 endpoints/suites to be monitored concurrently. This provides a balance between performance and resource usage while maintaining accurate response time measurements.
 
 You can configure the concurrency level using the `concurrency` parameter:
 
@@ -3369,32 +3376,32 @@ concurrency: 0
 **Use cases for higher concurrency:**
 - You have a large number of endpoints to monitor
 - You want to monitor endpoints at very short intervals (< 5s)
-- You're using Gatus for load testing scenarios
+- You're using Go Uptime for load testing scenarios
 
 **Legacy configuration:**
 The `disable-monitoring-lock` parameter is deprecated but still supported for backward compatibility. It's equivalent to setting `concurrency: 0`.
 
 
 ### Reloading configuration on the fly
-For the sake of convenience, Gatus automatically reloads the configuration on the fly if the loaded configuration file
-is updated while Gatus is running.
+For the sake of convenience, Go Uptime automatically reloads the configuration on the fly if the loaded configuration file
+is updated while Go Uptime is running.
 
 By default, the application will exit if the updating configuration is invalid, but you can configure
-Gatus to continue running if the configuration file is updated with an invalid configuration by
+Go Uptime to continue running if the configuration file is updated with an invalid configuration by
 setting `skip-invalid-config-update` to `true`.
 
 Keep in mind that it is in your best interest to ensure the validity of the configuration file after each update you
-apply to the configuration file while Gatus is running by looking at the log and making sure that you do not see the
+apply to the configuration file while Go Uptime is running by looking at the log and making sure that you do not see the
 following message:
 ```
 The configuration file was updated, but it is not valid. The old configuration will continue being used.
 ```
-Failure to do so may result in Gatus being unable to start if the application is restarted for whatever reason.
+Failure to do so may result in Go Uptime being unable to start if the application is restarted for whatever reason.
 
 I recommend not setting `skip-invalid-config-update` to `true` to avoid a situation like this, but the choice is yours
 to make.
 
-**If you are not using a file storage**, updating the configuration while Gatus is running is effectively
+**If you are not using a file storage**, updating the configuration while Go Uptime is running is effectively
 the same as restarting the application.
 
 > 📝 Updates may not be detected if the config file is bound instead of the config folder. See [#151](https://github.com/TwiN/gatus/issues/151).
@@ -3442,7 +3449,7 @@ endpoints:
 
 The configuration above will result in a dashboard that looks like this when sorting by group:
 
-![Gatus Endpoint Groups](../.github/assets/endpoint-groups.jpg)
+![Go Uptime Endpoint Groups](../.github/assets/endpoint-groups.jpg)
 
 
 ### How do I sort by group by default?
@@ -3455,14 +3462,14 @@ Note that if a user has already sorted the dashboard by a different field, the d
 clears their browser's localstorage.
 
 
-### Exposing Gatus on a custom path
-Currently, you can expose the Gatus UI using a fully qualified domain name (FQDN) such as `status.example.org`. However, it does not support path-based routing, which means you cannot expose it through a URL like `example.org/status/`.
+### Exposing Go Uptime on a custom path
+Currently, you can expose the Go Uptime UI using a fully qualified domain name (FQDN) such as `status.example.org`. However, it does not support path-based routing, which means you cannot expose it through a URL like `example.org/status/`.
 
 For more information, see https://github.com/TwiN/gatus/issues/88.
 
 
-### Exposing Gatus on a custom port
-By default, Gatus is exposed on port `8080`, but you may specify a different port by setting the `web.port` parameter:
+### Exposing Go Uptime on a custom port
+By default, Go Uptime is exposed on port `8080`, but you may specify a different port by setting the `web.port` parameter:
 ```yaml
 web:
   port: 8081
@@ -3484,11 +3491,11 @@ ui:
 ⚠️ When your configuration parameter contains a `$` symbol, you have to escape `$` with `$$`.
 
 ### Configuring a startup delay
-If, for any reason, you need Gatus to wait for a given amount of time before monitoring the endpoints on application start, you can use the `GATUS_DELAY_START_SECONDS` environment variable to make Gatus sleep on startup.
+If, for any reason, you need Go Uptime to wait for a given amount of time before monitoring the endpoints on application start, you can use the `GO_UPTIME_DELAY_START_SECONDS` environment variable to make Go Uptime sleep on startup.
 
 
 ### Keeping your configuration small
-While not specific to Gatus, you can leverage YAML anchors to create a default configuration.
+While not specific to Go Uptime, you can leverage YAML anchors to create a default configuration.
 If you have a large configuration file, this should help you keep things clean.
 
 <details>
@@ -3539,7 +3546,7 @@ endpoints:
 
 
 ### How to fix 431 Request Header Fields Too Large error
-Depending on where your environment is deployed and what kind of middleware or reverse proxy sits in front of Gatus,
+Depending on where your environment is deployed and what kind of middleware or reverse proxy sits in front of Go Uptime,
 you may run into this issue. This could be because the request headers are too large, e.g. big cookies.
 
 By default, `web.read-buffer-size` is set to `8192`, but increasing this value like so will raise the limit of the headers of a request:
@@ -3555,7 +3562,7 @@ web:
 ![Uptime 7d](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/7d/badge.svg)
 ![Uptime 30d](https://status.twin.sh/api/v1/endpoints/core_blog-external/uptimes/30d/badge.svg)
 
-Gatus can automatically generate an SVG badge for one of your monitored endpoints.
+Go Uptime can automatically generate an SVG badge for one of your monitored endpoints.
 This allows you to put badges in your individual applications' README or even create your own status page if you
 desire.
 
@@ -3667,7 +3674,7 @@ endpoints:
 
 
 ### API
-Gatus provides a simple read-only API that can be queried in order to programmatically determine endpoint status and history.
+Go Uptime provides a simple read-only API that can be queried in order to programmatically determine endpoint status and history.
 
 All endpoints are available via a GET request to the following endpoint:
 ```
@@ -3692,7 +3699,7 @@ See [TwiN/gatus-sdk](https://github.com/TwiN/gatus-sdk)
 
 
 #### Raw Data
-Gatus exposes the raw data for one of your monitored endpoints.
+Go Uptime exposes the raw data for one of your monitored endpoints.
 This allows you to track and aggregate data in your own applications for monitored endpoints. For instance if you want to track uptime for a period longer than 7 days.
 
 ##### Uptime
@@ -3725,11 +3732,11 @@ https://example.com/api/v1/endpoints/core_frontend/response-times/24h
 
 
 ### Installing as binary
-You can download the fork binaries (`linux/amd64` and `linux/arm64`) from the [releases](https://github.com/jniltinho/gatus/releases), or build it from source:
+You can download the fork binaries (`linux/amd64` and `linux/arm64`) from the [releases](https://github.com/jniltinho/go-uptime/releases), or build it from source:
 ```
-make build   # dist/gatus
+make build   # dist/go-uptime
 ```
 
 
 ### High level design overview
-![Gatus diagram](../.github/assets/gatus-diagram.jpg)
+![Go Uptime diagram](../.github/assets/go-uptime-diagram.jpg)

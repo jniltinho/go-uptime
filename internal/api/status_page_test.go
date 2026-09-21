@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -12,13 +14,13 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -225,7 +227,7 @@ func TestStatusPage_OIDCWithoutSession(t *testing.T) {
 	securityConfig := &security.Config{OIDC: &security.OIDCConfig{
 		IssuerURL:    issuer.URL,
 		RedirectURL:  "http://localhost:8080/authorization-code/callback",
-		ClientID:     "gatus",
+		ClientID:     "go-uptime",
 		ClientSecret: "secret",
 		Scopes:       []string{"openid"},
 	}}

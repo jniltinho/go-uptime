@@ -1,15 +1,16 @@
-BINARY=gatus
-DOCKER_IMAGE ?= jniltinho/gatus
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+BINARY=go-uptime
+DOCKER_IMAGE ?= jniltinho/go-uptime
 DOCKER_PLATFORMS ?= linux/amd64,linux/arm64
 VERSION ?= dev
 DIST := dist
 RELEASE_ARCHS := amd64 arm64
-# Versão, commit e data gravados no binário, mostrados por `gatus version`
+# Versão, commit e data gravados no binário, mostrados por `go-uptime version`
 GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 # Cada -X entre aspas simples, senão uma versão com espaço partiria o -ldflags; e só o alfabeto de uma versão é aceito,
 # porque o valor é interpolado num comando do shell
-LDFLAGS := -s -w -X 'gatus/v5/cmd.Version=$(VERSION)' -X 'gatus/v5/cmd.GitCommit=$(GIT_COMMIT)' -X 'gatus/v5/cmd.BuildDate=$(BUILD_DATE)'
+LDFLAGS := -s -w -X 'github.com/jniltinho/go-uptime/v7/cmd.Version=$(VERSION)' -X 'github.com/jniltinho/go-uptime/v7/cmd.GitCommit=$(GIT_COMMIT)' -X 'github.com/jniltinho/go-uptime/v7/cmd.BuildDate=$(BUILD_DATE)'
 
 .PHONY: check-version
 check-version:
@@ -21,11 +22,11 @@ install:
 
 .PHONY: run
 run:
-	ENVIRONMENT=dev GATUS_CONFIG_PATH=./config.yaml go run .
+	ENVIRONMENT=dev GO_UPTIME_CONFIG_PATH=./config.yaml go run .
 
 .PHONY: run-binary
 run-binary:
-	ENVIRONMENT=dev GATUS_CONFIG_PATH=./config.yaml ./$(BINARY)
+	ENVIRONMENT=dev GO_UPTIME_CONFIG_PATH=./config.yaml ./$(BINARY)
 
 .PHONY: clean
 clean:
@@ -62,7 +63,7 @@ release-cross: check-version
 	@for arch in $(RELEASE_ARCHS); do \
 		mkdir -p $(DIST)/pkg/linux_$$arch && \
 		CGO_ENABLED=0 GOOS=linux GOARCH=$$arch go build -trimpath -ldflags "$(LDFLAGS)" -o $(DIST)/pkg/linux_$$arch/$(BINARY) . && \
-		tar -czf $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz -C $(DIST)/pkg/linux_$$arch $(BINARY) -C $(CURDIR) config.yaml LICENSE README.md && \
+		tar -czf $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz -C $(DIST)/pkg/linux_$$arch $(BINARY) -C $(CURDIR) config.yaml LICENSE NOTICE README.md && \
 		echo "  $(DIST)/$(BINARY)_$(VERSION)_linux_$$arch.tar.gz" || exit 1; \
 	done
 
@@ -84,11 +85,11 @@ docker-build: check-version
 		--build-arg VERSION=$(VERSION) \
 		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		-t jniltinho/gatus:$(VERSION) .
+		-t $(DOCKER_IMAGE):$(VERSION) .
 
 .PHONY: docker-run
 docker-run:
-	docker run -p 8080:8080 --name gatus jniltinho/gatus:$(VERSION)
+	docker run -p 8080:8080 --name go-uptime $(DOCKER_IMAGE):$(VERSION)
 
 .PHONY: docker-build-and-run
 docker-build-and-run: docker-build docker-run

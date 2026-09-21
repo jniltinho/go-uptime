@@ -1,20 +1,22 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 import (
 	"errors"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint/heartbeat"
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/heartbeat"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
 )
 
 var (
-	// ErrExternalEndpointWithNoToken is the error with which Gatus will panic if an external endpoint is configured without a token.
+	// ErrExternalEndpointWithNoToken is the error with which Go Uptime will panic if an external endpoint is configured without a token.
 	ErrExternalEndpointWithNoToken = errors.New("you must specify a token for each external endpoint")
 
-	// ErrExternalEndpointHeartbeatIntervalTooLow is the error with which Gatus will panic if an external endpoint's heartbeat interval is less than 10 seconds.
+	// ErrExternalEndpointHeartbeatIntervalTooLow is the error with which Go Uptime will panic if an external endpoint's heartbeat interval is less than 10 seconds.
 	ErrExternalEndpointHeartbeatIntervalTooLow = errors.New("heartbeat interval must be at least 10 seconds")
 
 	// ErrExternalEndpointHeartbeatRetriesOutOfRange is returned when the heartbeat retries of an external endpoint are not
@@ -26,8 +28,8 @@ var (
 	ErrExternalEndpointHeartbeatRetriesWithoutInterval = errors.New("heartbeat retries require a heartbeat interval")
 )
 
-// ExternalEndpoint is an endpoint whose result is pushed from outside Gatus, which means that
-// said endpoints are not monitored by Gatus itself; Gatus only displays their results and takes
+// ExternalEndpoint is an endpoint whose result is pushed from outside Go Uptime, which means that
+// said endpoints are not monitored by Go Uptime itself; Go Uptime only displays their results and takes
 // care of alerting
 type ExternalEndpoint struct {
 	// Enabled defines whether to enable the monitoring of the endpoint

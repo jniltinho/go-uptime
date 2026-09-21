@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
@@ -8,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"gatus/v5/internal/config/web"
 	"github.com/TwiN/deepmerge"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,7 +20,7 @@ var ErrConfigPathNotFound = errors.New("configuration path not found")
 
 // LoadWebConfiguration reads only the web section of the configuration, with its default address and port, without
 // validating the rest of the configuration, without loading the TLS certificates and without opening anything. It is
-// what `gatus healthcheck` needs to know where the server listens.
+// what `go-uptime healthcheck` needs to know where the server listens.
 func LoadWebConfiguration(configPath string) (*web.Config, error) {
 	configBytes, err := readConfigurationBytes(configPath)
 	if err != nil {
@@ -48,7 +50,7 @@ func LoadWebConfiguration(configPath string) (*web.Config, error) {
 
 // RequireConfigPath returns ErrConfigPathNotFound when configPath does not exist. LoadConfiguration falls back on the
 // default paths when the given one is missing, which is right for the environment but wrong for a path typed by the
-// operator: `gatus config validate --config typo.yaml` would validate another file.
+// operator: `go-uptime config validate --config typo.yaml` would validate another file.
 func RequireConfigPath(configPath string) error {
 	if _, err := os.Stat(configPath); err != nil {
 		return fmt.Errorf("%w: %s", ErrConfigPathNotFound, configPath)
@@ -101,7 +103,7 @@ func readConfigurationBytes(configPath string) ([]byte, error) {
 // expandEnvironmentVariables expands the environment variables of the configuration, keeping a literal "$" for "$$",
 // like parseAndValidateConfigBytes
 func expandEnvironmentVariables(yamlBytes []byte) []byte {
-	expanded := strings.ReplaceAll(string(yamlBytes), "$$", "__GATUS_LITERAL_DOLLAR_SIGN__")
+	expanded := strings.ReplaceAll(string(yamlBytes), "$$", "__GO_UPTIME_LITERAL_DOLLAR_SIGN__")
 	expanded = os.ExpandEnv(expanded)
-	return []byte(strings.ReplaceAll(expanded, "__GATUS_LITERAL_DOLLAR_SIGN__", "$"))
+	return []byte(strings.ReplaceAll(expanded, "__GO_UPTIME_LITERAL_DOLLAR_SIGN__", "$"))
 }

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -6,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/statuspage"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 )
 
 func TestStatusPage_EndpointDetails(t *testing.T) {
@@ -36,7 +38,7 @@ func TestStatusPage_EndpointDetails(t *testing.T) {
 		}
 	}
 
-	// The details page is served by the HTML route, and its chart and badges by the routes by key of the original Gatus
+	// The details page is served by the HTML route, and its chart and badges by the routes by key of the original Go Uptime
 	for _, target := range []string{"/status/infra/endpoints/core_api", "/api/v1/endpoints/core_api/response-times/24h/history", "/api/v1/endpoints/core_api/health/badge.svg"} {
 		if response, body := doStatusPageRequest(t, app, http.MethodGet, target); response.StatusCode != http.StatusOK || response.Header.Get("WWW-Authenticate") != "" {
 			t.Errorf("%s: expected 200 without authentication, got %d: %s", target, response.StatusCode, body)

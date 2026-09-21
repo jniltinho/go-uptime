@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="dashboard-container bg-background">
     <div class="container mx-auto px-4 py-4 max-w-7xl">
@@ -208,6 +209,7 @@ import Loading from '@/components/Loading.vue'
 import AnnouncementBanner from '@/components/AnnouncementBanner.vue'
 import PastAnnouncements from '@/components/PastAnnouncements.vue'
 import { PROTECTED_API_HEADERS, notifyUnauthorized } from '@/utils/auth'
+import { readPreference, removePreference, writePreference } from '@/utils/storage'
 
 const props = defineProps({
   announcements: {
@@ -235,9 +237,9 @@ const itemsPerPage = 96
 const searchQuery = ref('')
 const showOnlyFailing = ref(false)
 const showRecentFailures = ref(false)
-const showAverageResponseTime = ref(localStorage.getItem('gatus:show-average-response-time') !== 'false')
+const showAverageResponseTime = ref(readPreference('show-average-response-time') !== 'false')
 const groupByGroup = ref(false)
-const sortBy = ref(localStorage.getItem('gatus:sort-by') || 'name')
+const sortBy = ref(readPreference('sort-by') || 'name')
 const uncollapsedGroups = ref(new Set())
 const resultPageSize = 50
 
@@ -528,7 +530,7 @@ const goToPage = (page) => {
 
 const toggleShowAverageResponseTime = () => {
   showAverageResponseTime.value = !showAverageResponseTime.value
-  localStorage.setItem('gatus:show-average-response-time', showAverageResponseTime.value ? 'true' : 'false')
+  writePreference('show-average-response-time', showAverageResponseTime.value ? 'true' : 'false')
 }
 
 const showTooltip = (result, event, action = 'hover') => {
@@ -558,21 +560,21 @@ const toggleGroupCollapse = (groupName) => {
   }
   // Save to localStorage
   const uncollapsed = Array.from(uncollapsedGroups.value)
-  localStorage.setItem('gatus:uncollapsed-groups', JSON.stringify(uncollapsed))
-  localStorage.removeItem('gatus:collapsed-groups') // Remove old key if it exists
+  writePreference('uncollapsed-groups', JSON.stringify(uncollapsed))
+  removePreference('collapsed-groups') // A key that older versions wrote: removed under both prefixes
 }
 
 const initializeCollapsedGroups = () => {
   // Get saved uncollapsed groups from localStorage
   try {
-    const saved = localStorage.getItem('gatus:uncollapsed-groups')
+    const saved = readPreference('uncollapsed-groups')
     if (saved) {
       uncollapsedGroups.value = new Set(JSON.parse(saved))
     }
     // If no saved state, uncollapsedGroups stays empty (all collapsed by default)
   } catch (e) {
     console.warn('Failed to parse saved uncollapsed groups:', e)
-    localStorage.removeItem('gatus:uncollapsed-groups')
+    removePreference('uncollapsed-groups')
     // On error, uncollapsedGroups stays empty (all collapsed by default)
   }
 }

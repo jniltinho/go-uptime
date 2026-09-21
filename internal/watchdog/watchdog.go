@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package watchdog runs the monitoring: one goroutine per endpoint and per suite, limited by the configured
 // concurrency. Each execution stores its result, updates the metrics, handles the alerts and publishes the live
 // update. Endpoints managed from the administration are started, stopped and restarted individually, and push
@@ -8,9 +10,9 @@ import (
 	"context"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/metrics"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -55,7 +57,7 @@ func Monitor(cfg *config.Config) {
 	for _, externalEndpoint := range cfg.ExternalEndpoints {
 		// Check if the external endpoint is enabled and is using heartbeat
 		// If the external endpoint does not use heartbeat, then it does not need to be monitored periodically, because
-		// alerting is checked every time an external endpoint is pushed to Gatus, unlike normal endpoints.
+		// alerting is checked every time an external endpoint is pushed to Go Uptime, unlike normal endpoints.
 		if externalEndpoint.IsEnabled() && externalEndpoint.Heartbeat.Interval > 0 {
 			// Fork: the heartbeat is in the registry, so that it can be stopped by key
 			if err := endpoints.startExternal(externalEndpoint, SourceConfig); err != nil {

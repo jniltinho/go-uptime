@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Theme of the web interface (fork): used by the settings of the dashboard, the public status pages and the login
 // screen. The same rule is applied by the server (internal/config/ui and internal/api) and by the inline script of
 // public/index.html before the first paint; the three are tested with theme.cases.json.
@@ -61,7 +62,7 @@ export const applyTheme = (theme) => {
     meta.setAttribute('content', THEMES[selected].themeColor)
   }
   if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
-    window.dispatchEvent(new CustomEvent('gatus:theme', { detail: { theme: selected } }))
+    window.dispatchEvent(new CustomEvent('go-uptime:theme', { detail: { theme: selected } }))
   }
   return selected
 }

@@ -1,11 +1,13 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
 	"sync"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 // AffectedStatusPage is a status page of the configuration file that selects the old key of a renamed managed endpoint

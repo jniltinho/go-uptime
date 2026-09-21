@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package discord implements the alerting provider that sends alerts to a Discord channel through an
 // incoming webhook.
 package discord
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -24,7 +26,7 @@ var (
 )
 
 // Config holds the webhook URL and the optional title and content of the message. An empty Title means
-// the default Gatus title.
+// the default Go Uptime title.
 type Config struct {
 	WebhookURL     string `yaml:"webhook-url"`
 	Title          string `yaml:"title,omitempty"`           // Title of the message that will be sent
@@ -154,7 +156,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	if alertDescription := alert.GetDescription(); len(alertDescription) > 0 {
 		description = ":\n> " + alertDescription
 	}
-	title := ":helmet_with_white_cross: Gatus"
+	title := ":helmet_with_white_cross: Go Uptime"
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

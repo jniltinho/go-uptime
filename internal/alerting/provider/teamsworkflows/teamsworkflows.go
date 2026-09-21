@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package teamsworkflows implements the alerting provider that sends alerts to Microsoft Teams as an
 // Adaptive Card through the webhook of a Workflows (Power Automate) flow.
 package teamsworkflows
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -157,7 +159,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 
 	// Configure default title if it's not provided
-	title := "⛑️ Gatus"
+	title := "⛑️ Go Uptime"
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

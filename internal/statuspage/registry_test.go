@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -6,12 +8,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gatus/v5/internal/config"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const testConfig = `
@@ -55,7 +57,7 @@ func loadTestConfig(t *testing.T, yaml string) *config.Config {
 
 func initializeSQLiteStore(t *testing.T) store.ManagedStatusPageStore {
 	t.Helper()
-	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}); err != nil {
+	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}
 	t.Cleanup(func() { store.Get().Close() })

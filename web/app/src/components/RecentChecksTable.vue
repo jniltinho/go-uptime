@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div>
     <button
@@ -58,6 +59,7 @@
 // remembered in the browser.
 import { computed, ref } from 'vue'
 import { ChevronDown, ChevronRight } from 'lucide-vue-next'
+import { readPreference, writePreference } from '@/utils/storage'
 
 const props = defineProps({
   results: { type: Array, default: () => [] },
@@ -73,11 +75,11 @@ const STATUS_CLASSES = {
   down: 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300',
 }
 
-const STORAGE_KEY = 'gatus:show-recent-checks-table'
+const PREFERENCE = 'show-recent-checks-table'
 
 const readExpanded = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'true'
+    return readPreference(PREFERENCE) === 'true'
   } catch (e) {
     return false
   }
@@ -88,7 +90,7 @@ const expanded = ref(readExpanded())
 const toggle = () => {
   expanded.value = !expanded.value
   try {
-    localStorage.setItem(STORAGE_KEY, expanded.value ? 'true' : 'false')
+    writePreference(PREFERENCE, expanded.value ? 'true' : 'false')
   } catch (e) {
     // The table keeps working without the browser storage
   }

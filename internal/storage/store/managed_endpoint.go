@@ -1,8 +1,10 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package store
 
 import (
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/sql"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/sql"
 )
 
 var _ ManagedEndpointStore = (*sql.Store)(nil)

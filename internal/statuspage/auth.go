@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -10,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/security"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 )
 
 // Fork: login of a status page. A page with auth answers 401 on every route of the page without the credential of that

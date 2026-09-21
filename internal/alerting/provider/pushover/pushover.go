@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package pushover implements the alerting provider that sends push notifications through the Pushover
 // Messages REST API.
 package pushover
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -47,7 +49,7 @@ type Config struct {
 	UserKey string `yaml:"user-key"`
 
 	// The title of your message
-	// default: "Gatus: <endpoint>""
+	// default: "Go Uptime: <endpoint>""
 	Title string `yaml:"title,omitempty"`
 
 	// Priority of all messages, ranging from -2 (very low) to 2 (Emergency)
@@ -201,7 +203,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		message += " with the following description: " + alert.GetDescription()
 	}
 	message += formattedConditionResults
-	title := "Gatus: " + ep.DisplayName()
+	title := "Go Uptime: " + ep.DisplayName()
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package github implements the alerting provider that opens an issue in a GitHub repository when an alert
 // is triggered and closes it when the alert is resolved, through the GitHub REST API.
 package github
@@ -10,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/google/go-github/v48/github"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
 )
@@ -117,6 +119,8 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	if err != nil {
 		return err
 	}
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the issue is found again by the equality of
+	// this title, so another title would leave the issues opened by v6 unresolved
 	title := "alert(gatus): " + ep.DisplayName()
 	if !resolved {
 		_, _, err := cfg.githubClient.Issues.Create(context.Background(), cfg.repositoryOwner, cfg.repositoryName, &github.IssueRequest{

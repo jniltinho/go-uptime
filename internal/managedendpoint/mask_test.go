@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -16,7 +18,7 @@ headers:
 client:
   oauth2:
     token-url: https://sso.example.com/token
-    client-id: gatus
+    client-id: go-uptime
     client-secret: s3cret
 ssh:
   username: monitor
@@ -44,7 +46,7 @@ func TestMaskSecrets(t *testing.T) {
 	if headers["Authorization"] != Mask || headers["X-Api-Key"] != Mask || headers["Accept"] != "application/json" {
 		t.Errorf("unexpected masked headers: %v", headers)
 	}
-	if nestedMap(document, "client", "oauth2")["client-secret"] != Mask || nestedMap(document, "client", "oauth2")["client-id"] != "gatus" {
+	if nestedMap(document, "client", "oauth2")["client-secret"] != Mask || nestedMap(document, "client", "oauth2")["client-id"] != "go-uptime" {
 		t.Errorf("unexpected masked oauth2: %v", nestedMap(document, "client", "oauth2"))
 	}
 	ssh := nestedMap(document, "ssh")

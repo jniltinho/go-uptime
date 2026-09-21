@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: in compact mode (the details page) the card has no header of its own and the bars are the ones of the
        public details page: the name, the group, the host and the status are already in the header of the page -->

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package cmd
 
 import (
@@ -7,17 +9,17 @@ import (
 	"syscall"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/controller"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/liveupdates"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/metrics"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/watchdog"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/controller"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 	"github.com/spf13/cobra"
 )
 
@@ -37,9 +39,9 @@ func init() {
 	rootCmd.AddCommand(serveCmd)
 }
 
-// runServe starts Gatus and blocks until a termination signal
+// runServe starts Go Uptime and blocks until a termination signal
 func runServe(cmd *cobra.Command, _ []string) error {
-	if delayInSeconds, _ := strconv.Atoi(os.Getenv(GatusDelayStartEnvVar)); delayInSeconds > 0 {
+	if delayInSeconds, _ := strconv.Atoi(lookupEnvironment(DelayStartEnvVar, LegacyDelayStartEnvVar)); delayInSeconds > 0 {
 		logr.Infof("Delaying start by %d seconds", delayInSeconds)
 		time.Sleep(time.Duration(delayInSeconds) * time.Second)
 	}

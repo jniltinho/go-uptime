@@ -1,3 +1,4 @@
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 name: Release
 
 on:
@@ -38,7 +39,7 @@ jobs:
           # Notas a partir da release anterior: a maior tag abaixo desta, o que inclui as antigas vX.Y.Z-fork.N
           # (a v6.0.0 parte da v5.36.0-fork.27), para não listar todo o histórico.
           previous=$(git tag --list 'v[0-9]*' --sort=-v:refname | sed -n "/^${GITHUB_REF_NAME//./\\.}\$/{n;p;q}" || true)
-          packages=(dist/gatus_*_linux_amd64.tar.gz dist/gatus_*_linux_arm64.tar.gz)
+          packages=(dist/go-uptime_*_linux_amd64.tar.gz dist/go-uptime_*_linux_arm64.tar.gz)
           # A release pode já existir quando as notas foram escritas à mão logo depois da tag: nesse caso só faltam
           # os pacotes, e criar de novo falharia deixando a release sem binário nenhum
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then

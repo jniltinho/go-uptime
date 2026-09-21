@@ -1,12 +1,14 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
 	"errors"
 	"strings"
 
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/storage"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 var (
@@ -49,7 +51,7 @@ func ValidateAdminConfig(config *Config) error {
 		}
 	}
 	if config.Storage.Type == storage.TypePostgres || config.Storage.Type == storage.TypeMySQL {
-		logr.Warn("[config.ValidateAdminConfig] With multiple Gatus instances sharing the same PostgreSQL, MySQL or MariaDB database, endpoint changes made through the administration only apply to the other instances after they restart or reload their configuration")
+		logr.Warn("[config.ValidateAdminConfig] With multiple Go Uptime instances sharing the same PostgreSQL, MySQL or MariaDB database, endpoint changes made through the administration only apply to the other instances after they restart or reload their configuration")
 	}
 	return nil
 }

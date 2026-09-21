@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package gitea
 
 import (
@@ -6,10 +8,10 @@ import (
 	"testing"
 
 	"code.gitea.io/sdk/gitea"
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 // isIgnorableTestError checks if an error is expected during testing when making API calls with dummy credentials

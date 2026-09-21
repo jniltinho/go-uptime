@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package cmd
 
 import (
@@ -13,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/security"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -74,7 +76,7 @@ func TestVersion(t *testing.T) {
 	Version = "6.0.0"
 	defer func() { Version = previous }()
 	// Without any configuration: the command does not depend on it
-	t.Setenv(GatusConfigPathEnvVar, filepath.Join(t.TempDir(), "missing.yaml"))
+	t.Setenv(ConfigPathEnvVar, filepath.Join(t.TempDir(), "missing.yaml"))
 	output, err := execute(t, "", "version")
 	if err != nil || !strings.Contains(output, "6.0.0") {
 		t.Errorf("expected the version, got %q and %v", output, err)
@@ -91,18 +93,24 @@ func TestResolveConfigPath(t *testing.T) {
 		expected      string
 		expectedError bool
 	}{
-		{name: "the flag wins over the environment", arguments: []string{"--config", fromFlag}, environment: map[string]string{GatusConfigPathEnvVar: fromEnvironment}, expected: fromFlag},
-		{name: "only the environment", environment: map[string]string{GatusConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
-		{name: "the deprecated variable", environment: map[string]string{GatusConfigFileEnvVar: fromEnvironment}, expected: fromEnvironment},
-		{name: "the current variable wins over the deprecated one", environment: map[string]string{GatusConfigPathEnvVar: fromEnvironment, GatusConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
+		{name: "the flag wins over the environment", arguments: []string{"--config", fromFlag}, environment: map[string]string{ConfigPathEnvVar: fromEnvironment}, expected: fromFlag},
+		{name: "only the environment", environment: map[string]string{ConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
+		{name: "the deprecated variable", environment: map[string]string{LegacyConfigFileEnvVar: fromEnvironment}, expected: fromEnvironment},
+		{name: "the current variable wins over the deprecated one", environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
+		{name: "the name that the variable had in Gatus", environment: map[string]string{LegacyConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
+		{name: "the new name wins over the one of Gatus", environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigPathEnvVar: fromFlag}, expected: fromEnvironment},
+		{name: "the one of Go Uptime wins over the deprecated one", environment: map[string]string{LegacyConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
+		{name: "an empty new name does not hide the one of Gatus", environment: map[string]string{ConfigPathEnvVar: "", LegacyConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
+		{name: "empty names do not hide the deprecated one", environment: map[string]string{ConfigPathEnvVar: "", LegacyConfigPathEnvVar: "", LegacyConfigFileEnvVar: fromEnvironment}, expected: fromEnvironment},
+		{name: "the flag wins over every variable", arguments: []string{"--config", fromFlag}, environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromEnvironment}, expected: fromFlag},
+		{name: "an explicit empty flag is still refused", arguments: []string{"--config", ""}, environment: map[string]string{ConfigPathEnvVar: fromEnvironment}, expectedError: true},
 		{name: "nothing, so the default paths of the load", expected: ""},
 		{name: "a path typed by the operator that does not exist", arguments: []string{"--config", filepath.Join(t.TempDir(), "typo.yaml")}, expectedError: true},
-		{name: "a missing path of the environment is left to the load, as before", environment: map[string]string{GatusConfigPathEnvVar: "/missing.yaml"}, expected: "/missing.yaml"},
+		{name: "a missing path of the environment is left to the load, as before", environment: map[string]string{ConfigPathEnvVar: "/missing.yaml"}, expected: "/missing.yaml"},
 	}
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			t.Setenv(GatusConfigPathEnvVar, "")
-			t.Setenv(GatusConfigFileEnvVar, "")
+			clearConfigurationEnvironment(t)
 			for name, value := range scenario.environment {
 				t.Setenv(name, value)
 			}
@@ -121,8 +129,62 @@ func TestResolveConfigPath(t *testing.T) {
 	}
 }
 
+// clearConfigurationEnvironment unsets, for the test, every variable that the commands read, under both names, and
+// forgets the legacy variables already warned about
+func clearConfigurationEnvironment(t *testing.T) {
+	t.Helper()
+	for _, name := range []string{ConfigPathEnvVar, LogLevelEnvVar, DelayStartEnvVar, LegacyConfigPathEnvVar, LegacyConfigFileEnvVar, LegacyLogLevelEnvVar, LegacyDelayStartEnvVar} {
+		t.Setenv(name, "")
+	}
+	warnedLegacyVariables.Range(func(key, _ any) bool {
+		warnedLegacyVariables.Delete(key)
+		return true
+	})
+}
+
+func TestLookupEnvironment(t *testing.T) {
+	scenarios := []struct {
+		name        string
+		environment map[string]string
+		expected    string
+	}{
+		{name: "only the new name", environment: map[string]string{LogLevelEnvVar: "DEBUG"}, expected: "DEBUG"},
+		{name: "only the name of Gatus", environment: map[string]string{LegacyLogLevelEnvVar: "WARN"}, expected: "WARN"},
+		{name: "both: the new one wins and the old one is ignored", environment: map[string]string{LogLevelEnvVar: "DEBUG", LegacyLogLevelEnvVar: "WARN"}, expected: "DEBUG"},
+		{name: "an empty new name counts as not set", environment: map[string]string{LogLevelEnvVar: "", LegacyLogLevelEnvVar: "WARN"}, expected: "WARN"},
+		{name: "neither", expected: ""},
+	}
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(t *testing.T) {
+			clearConfigurationEnvironment(t)
+			for name, value := range scenario.environment {
+				t.Setenv(name, value)
+			}
+			if actual := lookupEnvironment(LogLevelEnvVar, LegacyLogLevelEnvVar); actual != scenario.expected {
+				t.Errorf("expected %q, got %q", scenario.expected, actual)
+			}
+		})
+	}
+	t.Run("a legacy variable is warned about once", func(t *testing.T) {
+		clearConfigurationEnvironment(t)
+		t.Setenv(LegacyDelayStartEnvVar, "3")
+		for i := 0; i < 3; i++ {
+			if actual := lookupEnvironment(DelayStartEnvVar, LegacyDelayStartEnvVar); actual != "3" {
+				t.Fatalf("expected the value of the legacy variable, got %q", actual)
+			}
+		}
+		if _, warned := warnedLegacyVariables.Load(LegacyDelayStartEnvVar); !warned {
+			t.Error("expected the legacy variable to be recorded as warned")
+		}
+		if _, warned := warnedLegacyVariables.Load(DelayStartEnvVar); warned {
+			t.Error("expected the new variable never to be warned about")
+		}
+	})
+}
+
 func TestResolveLogLevel(t *testing.T) {
-	t.Setenv(GatusLogLevelEnvVar, "DEBUG")
+	clearConfigurationEnvironment(t)
+	t.Setenv(LogLevelEnvVar, "DEBUG")
 	resetFlags(rootCmd)
 	if level := resolveLogLevel(rootCmd); level != "DEBUG" {
 		t.Errorf("expected the environment, got %q", level)
@@ -139,7 +201,7 @@ func TestResolveLogLevel(t *testing.T) {
 // environment
 func TestReloadUsesTheResolvedPath(t *testing.T) {
 	started := writeConfiguration(t, validConfiguration)
-	t.Setenv(GatusConfigPathEnvVar, writeConfiguration(t, "endpoints: []\n"))
+	t.Setenv(ConfigPathEnvVar, writeConfiguration(t, "endpoints: []\n"))
 	previous := serveConfigPath
 	serveConfigPath = started
 	defer func() { serveConfigPath = previous }()
@@ -155,8 +217,8 @@ func TestReloadUsesTheResolvedPath(t *testing.T) {
 func TestConfigValidate(t *testing.T) {
 	directory := t.TempDir()
 	t.Chdir(directory)
-	t.Setenv(GatusConfigPathEnvVar, "")
-	t.Setenv(GatusConfigFileEnvVar, "")
+	t.Setenv(ConfigPathEnvVar, "")
+	t.Setenv(LegacyConfigFileEnvVar, "")
 	t.Run("valid", func(t *testing.T) {
 		output, err := execute(t, "", "config", "validate", "--config", writeConfiguration(t, validConfiguration))
 		if err != nil || !strings.Contains(output, "The configuration is valid") {
@@ -203,7 +265,7 @@ func TestConfigValidate(t *testing.T) {
 		}
 	})
 	t.Run("opens-no-storage", func(t *testing.T) {
-		database := filepath.Join(t.TempDir(), "gatus.db")
+		database := filepath.Join(t.TempDir(), "go-uptime.db")
 		withStorage := validConfiguration + "storage:\n  type: sqlite\n  path: " + database + "\n"
 		if _, err := execute(t, "", "config", "validate", "--config", writeConfiguration(t, withStorage)); err != nil {
 			t.Fatalf("expected a valid configuration, got %v", err)
@@ -370,7 +432,7 @@ func TestHealthcheck(t *testing.T) {
 	t.Run("url-does-not-read-the-configuration", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(healthy))
 		defer server.Close()
-		t.Setenv(GatusConfigPathEnvVar, writeConfiguration(t, "this is: [not valid"))
+		t.Setenv(ConfigPathEnvVar, writeConfiguration(t, "this is: [not valid"))
 		if _, err := execute(t, "", "healthcheck", "--url", server.URL+"/health"); err != nil {
 			t.Errorf("expected --url not to depend on the configuration, got %v", err)
 		}
@@ -388,7 +450,7 @@ func TestHealthcheck(t *testing.T) {
 	t.Run("the-start-delay-does-not-apply", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(healthy))
 		defer server.Close()
-		t.Setenv(GatusDelayStartEnvVar, "30")
+		t.Setenv(DelayStartEnvVar, "30")
 		started := time.Now()
 		if _, err := execute(t, "", "healthcheck", "--url", server.URL+"/health"); err != nil {
 			t.Fatal(err)

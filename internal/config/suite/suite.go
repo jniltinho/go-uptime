@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package suite models the suites section of the YAML configuration: groups of endpoints executed one after the
 // other with a shared context. It validates a suite and applies its defaults, executes it, and defines the Status and
 // Result objects that the storage keeps and the HTTP API serializes.
@@ -10,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
 )
 
 var (

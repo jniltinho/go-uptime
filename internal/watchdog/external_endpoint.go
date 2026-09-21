@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package watchdog
 
 import (
@@ -5,9 +7,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // monitorExternalEndpointHeartbeat records a failure for every full heartbeat interval without an accepted push, until
@@ -35,7 +37,7 @@ func executeExternalEndpointHeartbeat(ctx context.Context, ee *endpoint.External
 		return
 	}
 	defer monitoringSemaphore.Release(1)
-	// If there's a connectivity checker configured, check if Gatus has internet connectivity
+	// If there's a connectivity checker configured, check if Go Uptime has internet connectivity
 	if cfg.Connectivity != nil && cfg.Connectivity.Checker != nil && !cfg.Connectivity.Checker.IsConnected() {
 		logr.Infof("[watchdog.executeExternalEndpointHeartbeat] No connectivity; skipping execution")
 		return

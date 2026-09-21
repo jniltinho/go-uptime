@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package store defines the Store interface, implemented by the memory and sql packages, and holds the store in use
 // by the process. Besides the results, events and uptime of the endpoints and suites, a store keeps what is managed
 // from the administration: endpoints, status pages, push keys and login sessions.
@@ -7,14 +9,14 @@ import (
 	"context"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store/common/paging"
-	"gatus/v5/internal/storage/store/memory"
-	"gatus/v5/internal/storage/store/sql"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/memory"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/sql"
 )
 
 // Store is the interface that each store should implement

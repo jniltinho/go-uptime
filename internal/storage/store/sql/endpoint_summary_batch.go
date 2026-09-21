@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -5,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // GetEndpointSummaries returns the latest maximumResults results and the uptimes of the endpoints with the given keys,

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # Retakes the screenshots of docs/screenshots, so that they all come from the same version and the same data.
 #
 #   make build && docs/screenshots/capture.sh
 #
-# Starts dist/gatus with a temporary SQLite, registers endpoints, a status page and push keys through the administration
+# Starts dist/go-uptime with a temporary SQLite, registers endpoints, a status page and push keys through the administration
 # API (9 endpoints in all, so that the dashboard is exactly three rows), lets the history fill for HISTORY_SECONDS
 # (default 210) and captures every screen at 1280x900 with agent-browser. The endpoints check real hosts every 5 seconds
 # while it runs. Requires agent-browser with Chrome and curl.
@@ -18,24 +19,24 @@ USERNAME=admin
 PASSWORD='screenshots-password'
 HISTORY_SECONDS=${HISTORY_SECONDS:-210}
 PUSH_TOKEN=keSDu7G855jvVat1xWiY2Gk4CkL1End5
-GATUS_PID=""
+SERVER_PID=""
 PUSHER_PID=""
 
-browser() { agent-browser --session gatus-screenshots "$@"; }
+browser() { agent-browser --session go-uptime-screenshots "$@"; }
 cleanup() {
   browser close >/dev/null 2>&1 || true
   [ -n "$PUSHER_PID" ] && kill "$PUSHER_PID" >/dev/null 2>&1 || true
-  if [ -n "$GATUS_PID" ]; then
-    kill "$GATUS_PID" >/dev/null 2>&1 || true
-    wait "$GATUS_PID" 2>/dev/null || true
+  if [ -n "$SERVER_PID" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
   rm -rf "$WORK"
 }
 trap cleanup EXIT
 
-[ -x "$ROOT/dist/gatus" ] || { echo "dist/gatus not found: run make build"; exit 1; }
-VERSION=$("$ROOT/dist/gatus" version | awk '{print $2}')
-HASH=$(printf '%s\n' "$PASSWORD" | "$ROOT/dist/gatus" password hash)
+[ -x "$ROOT/dist/go-uptime" ] || { echo "dist/go-uptime not found: run make build"; exit 1; }
+VERSION=$("$ROOT/dist/go-uptime" version | awk '{print $2}')
+HASH=$(printf '%s\n' "$PASSWORD" | "$ROOT/dist/go-uptime" password hash)
 
 endpoint() { # group name url [extra condition]
   printf '  - name: %s\n    group: %s\n    url: "%s"\n    interval: 5s\n    conditions:\n      - "[STATUS] == 200"\n      - "[RESPONSE_TIME] < 2000"\n' "$2" "$1" "$3"
@@ -91,11 +92,11 @@ CONFIG
 CONFIG
 } > "$WORK/config.yaml"
 
-echo "==> Starting dist/gatus $VERSION"
-"$ROOT/dist/gatus" --config "$WORK/config.yaml" > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+echo "==> Starting dist/go-uptime $VERSION"
+"$ROOT/dist/go-uptime" --config "$WORK/config.yaml" > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 for _ in $(seq 1 60); do curl -sf "$BASE/health" >/dev/null && break; sleep 1; done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus did not start"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime did not start"; cat "$WORK/go-uptime.log"; exit 1; }
 
 api() { # method path content-type body
   local code

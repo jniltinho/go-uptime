@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Collapsed groups of a public status page: which state a group is shown in, and how the choice of a visitor is
 // remembered between visits without leaving the name of a group in the browser.
 //
@@ -6,7 +7,11 @@
 // name of the group, for every page: nothing readable is stored. crypto.subtle only exists in a secure context (HTTPS
 // or localhost); without it, or without storage, the choice is kept for the visit and not remembered.
 
-export const STORAGE_KEY = 'gatus:status-page-groups'
+import { preferenceKey, readPreference, writePreference } from './storage.js'
+
+// The preference of the choices, and its key in the browser (see storage.js, which also migrates the key of v6)
+export const PREFERENCE = 'status-page-groups'
+export const STORAGE_KEY = preferenceKey(PREFERENCE)
 export const MAXIMUM_CHOICES = 500
 export const COLLAPSED = 'c'
 export const EXPANDED = 'e'
@@ -77,7 +82,7 @@ const defaultStorage = () => {
 export const readChoices = (storage = defaultStorage()) => {
   const choices = new Map()
   try {
-    const parsed = JSON.parse(storage?.getItem(STORAGE_KEY) || 'null')
+    const parsed = JSON.parse((storage ? readPreference(PREFERENCE, storage) : null) || 'null')
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
       return choices
     }
@@ -105,8 +110,7 @@ export const writeChoice = (key, choice, storage = defaultStorage()) => {
     while (choices.size > MAXIMUM_CHOICES) {
       choices.delete(choices.keys().next().value)
     }
-    storage.setItem(STORAGE_KEY, JSON.stringify(Object.fromEntries(choices)))
-    return true
+    return writePreference(PREFERENCE, JSON.stringify(Object.fromEntries(choices)), storage)
   } catch {
     return false
   }

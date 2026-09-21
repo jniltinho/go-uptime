@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package incidentio implements the alerting provider that sends alert events to incident.io through the
 // HTTP alert source of its REST API.
 package incidentio
@@ -13,10 +15,10 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -201,7 +203,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 
 	body, _ := json.Marshal(Body{
 		AlertSourceConfigID: alertSourceID,
-		Title:               "Gatus: " + ep.DisplayName(),
+		Title:               "Go Uptime: " + ep.DisplayName(),
 		Status:              status,
 		DeduplicationKey:    alert.ResolveKey,
 		Description:         message,

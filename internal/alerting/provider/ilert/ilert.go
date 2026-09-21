@@ -1,5 +1,7 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ilert implements the alerting provider that sends alert events to ilert through the events REST API
-// of its Gatus integration, identified by an integration key.
+// of its Go Uptime integration, identified by an integration key.
 package ilert
 
 import (
@@ -10,13 +12,15 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
 const (
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): this is the path of the integration in the
+	// API of iLert, not a name of ours
 	restAPIUrl = "https://api.ilert.com/api/v1/events/gatus/"
 )
 

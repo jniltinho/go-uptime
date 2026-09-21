@@ -1,12 +1,14 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint/heartbeat"
-	"gatus/v5/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/heartbeat"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
 )
 
 func TestExternalEndpoint_ValidateAndSetDefaults(t *testing.T) {

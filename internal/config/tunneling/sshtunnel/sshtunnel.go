@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package sshtunnel holds the configuration of one SSH tunnel of the tunneling section of the YAML configuration and
 // implements the tunnel itself: a lazily established SSH connection through which the checks dial their target.
 package sshtunnel

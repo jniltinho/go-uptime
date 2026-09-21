@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package opsgenie implements the alerting provider that creates alerts in Opsgenie and closes them once
 // resolved, through the REST Alert API authenticated with a GenieKey API key.
 package opsgenie
@@ -12,9 +14,9 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -66,6 +68,9 @@ func (cfg *Config) Validate() error {
 		return ErrAPIKeyNotSet
 	}
 	if len(cfg.Source) == 0 {
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the alias identifies the alert to close,
+		// and source and entity feed the routing rules of Opsgenie; another default would leave the alerts opened by v6
+		// unresolved. The three are configurable
 		cfg.Source = "gatus"
 	}
 	if len(cfg.EntityPrefix) == 0 {

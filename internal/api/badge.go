@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -9,13 +11,13 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint/ui"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 
 	"github.com/labstack/echo/v5"
 )
@@ -192,7 +194,7 @@ func HealthBadge(c *echo.Context) error {
 // Authentication: none (public group).
 // Request: the path parameter key is the key of the endpoint, unescaped once with url.QueryUnescape and not
 // lower-cased.
-// Responses: 200 with the JSON object {"schemaVersion": 1, "label": "gatus", "message": "up"|"down"|"?",
+// Responses: 200 with the JSON object {"schemaVersion": 1, "label": "go-uptime", "message": "up"|"down"|"?",
 // "color": "brightgreen"|"red"|"yellow"}, Cache-Control: no-cache, no-store, must-revalidate and Expires: 0; 400 when
 // the key cannot be unescaped or the time range is invalid; 404 when no endpoint has the key; 500 on an error of the
 // storage or of the encoding. Errors are text/plain, and the 500 carries the text of the error.
@@ -423,12 +425,12 @@ func generateHealthBadgeSVG(healthStatus string) []byte {
 }
 
 // generateHealthBadgeShields returns the JSON of the health badge in the endpoint badge format of shields.io:
-// schemaVersion 1, the label "gatus", the health status as the message and its colour.
+// schemaVersion 1, the label "go-uptime", the health status as the message and its colour.
 func generateHealthBadgeShields(healthStatus string) ([]byte, error) {
 	color := getBadgeShieldsColorFromHealth(healthStatus)
 	data := map[string]interface{}{
 		"schemaVersion": 1,
-		"label":         "gatus",
+		"label":         "go-uptime",
 		"message":       healthStatus,
 		"color":         color,
 	}

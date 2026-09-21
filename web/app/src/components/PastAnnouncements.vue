@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div v-if="announcements && announcements.length" class="past-announcements">
     <h2 class="text-2xl font-semibold text-foreground mb-6">Past Announcements</h2>

@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
@@ -18,6 +19,7 @@ const memoryStorage = (initial = {}) => {
   return {
     getItem: (key) => (items.has(key) ? items.get(key) : null),
     setItem: (key, value) => { items.set(key, String(value)) },
+    removeItem: (key) => { items.delete(key) },
     raw: () => items.get(STORAGE_KEY)
   }
 }

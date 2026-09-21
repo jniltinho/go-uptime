@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package dns holds the dns section of an endpoint of the YAML configuration, which turns the endpoint into a DNS
 // query, and validates its query name and query type.
 package dns
@@ -10,10 +12,10 @@ import (
 )
 
 var (
-	// ErrDNSWithNoQueryName is the error with which gatus will panic if a dns is configured without query name
+	// ErrDNSWithNoQueryName is the error with which Go Uptime will panic if a dns is configured without query name
 	ErrDNSWithNoQueryName = errors.New("you must specify a query name in the DNS configuration")
 
-	// ErrDNSWithInvalidQueryType is the error with which gatus will panic if a dns is configured with invalid query type
+	// ErrDNSWithInvalidQueryType is the error with which Go Uptime will panic if a dns is configured with invalid query type
 	ErrDNSWithInvalidQueryType = errors.New("invalid query type in the DNS configuration")
 )
 

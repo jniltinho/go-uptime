@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package security authenticates the requests of the protected routes, with basic authentication (security.basic)
 // or OpenID Connect (security.oidc). Basic authentication accepts both the Authorization header, for scripts, and the
 // session cookie created by the login screen, whose sessions are kept in the store; failed logins are rate limited
@@ -9,18 +11,18 @@ import (
 	"net/http"
 	"sync"
 
-	"gatus/v5/internal/httpx"
 	g8 "github.com/TwiN/g8/v2"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
 	"github.com/labstack/echo/v5"
 )
 
 const (
-	cookieNameState   = "gatus_state"
-	cookieNameNonce   = "gatus_nonce"
-	cookieNameSession = "gatus_session"
+	cookieNameState   = "go_uptime_state"
+	cookieNameNonce   = "go_uptime_nonce"
+	cookieNameSession = "go_uptime_session"
 )
 
-// Config is the security configuration for Gatus
+// Config is the security configuration for Go Uptime
 type Config struct {
 	Basic *BasicConfig `yaml:"basic,omitempty"`
 	OIDC  *OIDCConfig  `yaml:"oidc,omitempty"`

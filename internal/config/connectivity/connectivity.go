@@ -1,4 +1,6 @@
-// Package connectivity models the connectivity section of the YAML configuration: a checker that tells whether Gatus
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
+// Package connectivity models the connectivity section of the YAML configuration: a checker that tells whether Go Uptime
 // itself can reach the internet, so that endpoints are not evaluated (and alerts not sent) while it cannot. It
 // validates the section, applies its defaults and performs the check.
 package connectivity
@@ -8,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
 )
 
 var (
@@ -43,7 +45,7 @@ func (c *Config) ValidateAndSetDefaults() error {
 	return nil
 }
 
-// Checker is the configuration for making sure Gatus has access to the internet.
+// Checker is the configuration for making sure Go Uptime has access to the internet.
 type Checker struct {
 	Target   string        `yaml:"target"`             // e.g. 1.1.1.1:53
 	Interval time.Duration `yaml:"interval,omitempty"` // Interval is the minimum time between two checks; defaults to 60s, at least 5s
@@ -59,7 +61,7 @@ func (c *Checker) Check() bool {
 	return connected
 }
 
-// IsConnected returns whether Gatus has connectivity. The result of Check is cached: a new check is only made when
+// IsConnected returns whether Go Uptime has connectivity. The result of Check is cached: a new check is only made when
 // more than Interval has elapsed since the previous one.
 func (c *Checker) IsConnected() bool {
 	if now := time.Now(); now.After(c.lastCheck.Add(c.Interval)) {

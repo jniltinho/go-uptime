@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package maintenance holds the configuration of the maintenance windows during which alerts are not sent: the
 // global maintenance section of the YAML configuration and the maintenance-windows of an endpoint. It validates a
 // window, applies its defaults and tells whether the current time is within it.
@@ -102,7 +104,7 @@ func (c *Config) ValidateAndSetDefaults() error {
 	return nil
 }
 
-// IsUnderMaintenance checks whether the endpoints that Gatus monitors are within the configured maintenance window
+// IsUnderMaintenance checks whether the endpoints that Go Uptime monitors are within the configured maintenance window
 func (c *Config) IsUnderMaintenance() bool {
 	if !c.IsEnabled() {
 		return false

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package pagerduty implements the alerting provider that triggers and resolves PagerDuty incidents through
 // the Events API v2, keeping the dedup key returned by PagerDuty as the alert's resolve key.
 package pagerduty
@@ -10,10 +12,10 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -158,7 +160,9 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		DedupKey:    resolveKey,
 		EventAction: eventAction,
 		Payload: Payload{
-			Summary:  message,
+			Summary: message,
+			// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): rules and filters of PagerDuty match
+			// the source of the event
 			Source:   "Gatus",
 			Severity: "critical",
 		},

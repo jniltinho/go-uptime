@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of the login screen of security.basic, with agent-browser.
 #
 #   test/e2e/login.sh
 #
-# Starts the locally built Gatus (temporary SQLite, basic auth, administration, a suite and a status page), goes through
+# Starts the locally built Go Uptime (temporary SQLite, basic auth, administration, a suite and a status page), goes through
 # the login screen (redirections, refused redirects, wrong password, logout and limit of failed logins), checks that the
 # public status pages open without login and that curl -u keeps working, and saves screenshots in dist/prints/login/
 # (dist/ is in .gitignore). Requires agent-browser with Chrome installed and python3.
@@ -17,7 +18,7 @@ PRINTS="$ROOT/dist/prints/login"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Gatus decodes it)
+# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Go Uptime decodes it)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 
 for command in agent-browser python3 curl; do
@@ -38,7 +39,7 @@ web:
   port: $PORT
 storage:
   type: sqlite
-  path: "$WORK/gatus.db"
+  path: "$WORK/go-uptime.db"
 security:
   basic:
     username: $USERNAME
@@ -69,13 +70,13 @@ status-pages:
       groups: [core]
 CONFIG
 
-GATUS_CONFIG_PATH="$WORK/config.yaml" dist/gatus > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+GO_UPTIME_CONFIG_PATH="$WORK/config.yaml" dist/go-uptime > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 browser() { agent-browser --session e2e-login "$@"; }
 cleanup() {
   browser close >/dev/null 2>&1 || true
-  kill "$GATUS_PID" >/dev/null 2>&1 || true
-  wait "$GATUS_PID" 2>/dev/null || true
+  kill "$SERVER_PID" >/dev/null 2>&1 || true
+  wait "$SERVER_PID" 2>/dev/null || true
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -84,7 +85,7 @@ for _ in $(seq 1 60); do
   curl -sf "$BASE/health" >/dev/null && break
   sleep 1
 done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus did not start"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime did not start"; cat "$WORK/go-uptime.log"; exit 1; }
 
 STEP=0
 step() {
@@ -94,7 +95,7 @@ step() {
 fail() {
   echo "FAILED: $*"
   browser screenshot --full "$PRINTS/error.png" >/dev/null 2>&1 || true
-  tail -20 "$WORK/gatus.log"
+  tail -20 "$WORK/go-uptime.log"
   exit 1
 }
 testid() {
@@ -134,7 +135,7 @@ echo "$headers" | grep -qi '^WWW-Authenticate' && fail "the frontend should not 
 
 step "Sessions through the API: login, cookie on a protected route, logout and old token refused"
 [ "$(http_status -c "$WORK/session.txt" -H 'Content-Type: application/json' -d "$(login_json "$PASSWORD")" "$BASE/api/v1/auth/login")" = 204 ] || fail "expected 204 for the login through the API"
-grep -q gatus_session "$WORK/session.txt" || fail "the login did not set the session cookie"
+grep -q go_uptime_session "$WORK/session.txt" || fail "the login did not set the session cookie"
 [ "$(http_status -b "$WORK/session.txt" "$BASE/api/v1/endpoints/statuses")" = 200 ] || fail "the session cookie should authenticate the protected routes"
 [ "$(http_status -b "$WORK/session.txt" -c "$WORK/after-logout.txt" -X POST "$BASE/api/v1/auth/logout")" = 204 ] || fail "expected 204 for the logout through the API"
 [ "$(http_status -b "$WORK/session.txt" "$BASE/api/v1/endpoints/statuses")" = 401 ] || fail "the token of a closed session should be refused"
@@ -230,7 +231,7 @@ wait_for logout-button
 wait_for admin-link
 [ "$(js 'document.querySelector("header h1").textContent.trim()')" = Status ] || fail "expected the default header Status on the dashboard, got $(js 'document.querySelector("header h1").textContent')"
 [ "$(js 'new URL(document.querySelector("header img").src).pathname')" = "/logo-192x192.png" ] || fail "the dashboard header should show the embedded logo without ui.logo"
-[ "$(js '!document.body.innerText.includes("Gatus") && document.querySelector("#social, a[href*=\"github.com\"], a[href*=\"gatus.io\"]") === null')" = true ] || fail "the dashboard should not show the Gatus name, the GitHub link nor the Powered by footer"
+[ "$(js '!document.body.innerText.includes("Go Uptime") && !document.body.innerText.includes("Gatus") && document.querySelector("#social, a[href*=\"github.com\"], a[href*=\"gatus.io\"]") === null')" = true ] || fail "the dashboard should not show the Go Uptime name, the GitHub link nor the Powered by footer"
 [ "$(js 'document.title')" = "Health Dashboard | Status" ] || fail "expected the default title, got $(js 'document.title')"
 browser open "$BASE/endpoints/core_health" >/dev/null
 wait_for recent-checks-card

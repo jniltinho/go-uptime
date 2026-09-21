@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -10,10 +12,10 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 
 	"github.com/TwiN/logr"
 	"github.com/labstack/echo/v5"

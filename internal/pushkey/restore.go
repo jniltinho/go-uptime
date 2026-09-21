@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package pushkey
 
 import (
@@ -9,10 +11,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Restore of the push keys of a backup of the administration (fork, see the adminbackup package)

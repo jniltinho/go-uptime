@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 # End-to-end tests of the collapsible groups of the public status pages, with agent-browser.
 #
 #   make build && test/e2e/status-page-groups.sh
@@ -19,12 +20,12 @@ PASSWORD='e2e-groups-password'
 PAGE_USERNAME=customer
 PAGE_PASSWORD='e2e-page-password'
 CACHE_SECONDS=31
-GATUS_PID=""
+SERVER_PID=""
 mkdir -p "$PRINTS"
 
-[ -x dist/gatus ] || { echo "dist/gatus not found: run make build"; exit 1; }
-HASH=$(printf '%s\n' "$PASSWORD" | dist/gatus password hash)
-PAGE_HASH=$(printf '%s\n' "$PAGE_PASSWORD" | dist/gatus password hash)
+[ -x dist/go-uptime ] || { echo "dist/go-uptime not found: run make build"; exit 1; }
+HASH=$(printf '%s\n' "$PASSWORD" | dist/go-uptime password hash)
+PAGE_HASH=$(printf '%s\n' "$PAGE_PASSWORD" | dist/go-uptime password hash)
 
 token_of() { printf 'e2e-push-token-%s-0123456789' "$1"; }
 push_endpoint() { # group name
@@ -95,9 +96,9 @@ CONFIG
 browser() { agent-browser --session e2e-status-page-groups "$@"; }
 cleanup() {
   browser close >/dev/null 2>&1 || true
-  if [ -n "$GATUS_PID" ]; then
-    kill "$GATUS_PID" >/dev/null 2>&1 || true
-    wait "$GATUS_PID" 2>/dev/null || true
+  if [ -n "$SERVER_PID" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
   rm -rf "$WORK"
 }
@@ -108,7 +109,7 @@ step() { STEP=$((STEP + 1)); echo "==> $STEP. $*"; }
 fail() {
   echo "FAILED: $*"
   browser screenshot --full "$PRINTS/error.png" >/dev/null 2>&1 || true
-  tail -15 "$WORK/gatus.log"
+  tail -15 "$WORK/go-uptime.log"
   exit 1
 }
 js() { browser eval "$*" 2>/dev/null | tr -d '"'; }
@@ -124,7 +125,7 @@ toggle() { echo "[data-testid=\"status-group-toggle-$1\"]"; }
 expanded() { js "document.querySelector('[data-testid=\"status-group-toggle-$1\"]')?.getAttribute('aria-expanded')"; }
 rows() { js "document.querySelectorAll('[data-testid=\"status-group-$1\"] li').length"; }
 counts() { js "document.querySelector('[data-testid=\"status-group-counts-$1\"]')?.textContent.trim()"; }
-stored() { js "localStorage.getItem('gatus:status-page-groups') || ''"; }
+stored() { js "localStorage.getItem('go-uptime:status-page-groups') || ''"; }
 # refresh makes the page fetch its payload again, as it does when the tab becomes visible, without waiting 60 seconds
 refresh() {
   browser eval "Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }); document.dispatchEvent(new Event('visibilitychange'))" >/dev/null
@@ -139,11 +140,11 @@ set_theme() {
   browser eval "document.cookie = 'theme=$1; path=/; max-age=31536000; samesite=strict'; (() => { const themes = { dark: ['dark', '#030712'], light: ['', '#f7f9fb'], bio: ['theme-bio', '#f2f8fa'] }; const theme = themes['$1'] ? '$1' : 'light'; for (const name in themes) { if (themes[name][0]) { document.documentElement.classList.toggle(themes[name][0], name === theme) } } const meta = document.querySelector('meta[name=\"theme-color\"]'); if (meta) { meta.setAttribute('content', themes[theme][1]) } })()" >/dev/null 2>&1 || true
 }
 
-echo "==> Starting dist/gatus"
-dist/gatus --config "$WORK/config.yaml" > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+echo "==> Starting dist/go-uptime"
+dist/go-uptime --config "$WORK/config.yaml" > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 for _ in $(seq 1 60); do curl -sf "$BASE/health" >/dev/null && break; sleep 1; done
-curl -sf "$BASE/health" >/dev/null || fail "Gatus did not start"
+curl -sf "$BASE/health" >/dev/null || fail "Go Uptime did not start"
 # Right after the start the push endpoints may still be loading: the first push is retried
 for _ in $(seq 1 20); do
   [ "$(curl -s -o /dev/null -w '%{http_code}' "$BASE/api/push/$(token_of gateway)?status=up")" = 200 ] && break

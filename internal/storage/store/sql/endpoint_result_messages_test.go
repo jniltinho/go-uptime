@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -7,8 +9,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 // The messages and origins of the results must be read back, cut without breaking UTF-8 characters, and deleted in
@@ -69,7 +71,7 @@ func TestConformance_EndpointResultMessages(t *testing.T) {
 		t.Errorf("expected the pushed failure with its message, got %+v", failure)
 	}
 	if check.Message != "" || check.Origin != "" {
-		t.Errorf("expected no message nor origin for a check of Gatus, got %+v", check)
+		t.Errorf("expected no message nor origin for a check of Go Uptime, got %+v", check)
 	}
 	if len(long.Message) > endpoint.MaximumResultMessageLength || !utf8.ValidString(long.Message) || !strings.HasPrefix(longMessage, long.Message) {
 		t.Errorf("expected the long message to be cut at a character boundary, got %d bytes", len(long.Message))

@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="dashboard-container bg-background">
     <div class="container mx-auto px-4 py-4 max-w-7xl">
@@ -170,6 +171,7 @@ import { certificateClass, certificateDate, certificateOfResults, certificateTex
 import { PROTECTED_API_HEADERS, notifyUnauthorized } from '@/utils/auth'
 import { watchEndpointResults } from '@/utils/liveUpdates'
 import { CHART_PERIOD_OPTIONS, readStoredPeriod, storePeriod } from '@/utils/responseTimeChart'
+import { readPreference, writePreference } from '@/utils/storage'
 
 const router = useRouter()
 const route = useRoute()
@@ -183,7 +185,7 @@ const eventItems = computed(() => events.value.map((event) => ({ key: `${event.t
 const currentPage = ref(1)
 const resultPageSize = 50
 const showResponseTimeChartAndBadges = ref(false)
-const showAverageResponseTime = ref(localStorage.getItem('gatus:show-average-response-time') !== 'false')
+const showAverageResponseTime = ref(readPreference('show-average-response-time') !== 'false')
 // Fork: period of the response time chart, remembered in the browser
 const selectedChartPeriod = ref(readStoredPeriod())
 const isRefreshing = ref(false)
@@ -222,7 +224,7 @@ const certificate = computed(() => {
 
 const toggleShowAverageResponseTime = () => {
   showAverageResponseTime.value = !showAverageResponseTime.value
-  localStorage.setItem('gatus:show-average-response-time', showAverageResponseTime.value ? 'true' : 'false')
+  writePreference('show-average-response-time', showAverageResponseTime.value ? 'true' : 'false')
 }
 
 // describeEvents returns the events of the endpoint, from the newest to the oldest, with their texts

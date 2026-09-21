@@ -1,6 +1,7 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # Screenshots
 
-The screens of [jniltinho/gatus](https://github.com/jniltinho/gatus), captured at 1280×900 by
+The screens of [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime), captured at 1280×900 by
 [capture.sh](capture.sh), which starts a local instance, registers endpoints, a status page and push keys through the
 administration and lets the history fill before taking the pictures: run it again whenever a screen changes. Dark mode
 is the default; the public pages are shown in light mode, which every visitor can switch with the button in the header.
@@ -93,7 +94,7 @@ when the page allows it, the table of checks with the messages. A check that fai
 
 ## How these were taken
 
-A local Gatus with `admin.enabled`, `security.basic` and a handful of endpoints, captured with
+A local Go Uptime with `admin.enabled`, `security.basic` and a handful of endpoints, captured with
 [agent-browser](https://www.npmjs.com/package/agent-browser) at 1280×900. The end-to-end scripts in `test/e2e/` save
 their own screenshots under `dist/prints/`, which stays out of git; the ones in this folder are curated by hand and
 should be retaken whenever a screen changes shape.

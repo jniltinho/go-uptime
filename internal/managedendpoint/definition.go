@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -7,10 +9,10 @@ import (
 	"io"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 	"gopkg.in/yaml.v3"
 )
 
@@ -29,7 +31,7 @@ const (
 )
 
 var (
-	// ErrPushNotTestable is returned when testing a push endpoint, which Gatus does not check
+	// ErrPushNotTestable is returned when testing a push endpoint, which Go Uptime does not check
 	ErrPushNotTestable = errors.New("push endpoints cannot be tested: send a push to their URL instead")
 
 	// ErrPushTokenInUse is returned when the push token of an endpoint is already used
@@ -51,7 +53,7 @@ type PushOption struct {
 // Parsed is a decoded managed endpoint definition: an active endpoint, which may receive push, or a push endpoint.
 // Exactly one of Endpoint and Push is set, except for a Parsed built from a state in conflict or invalid.
 type Parsed struct {
-	// Endpoint is the active endpoint, checked by Gatus
+	// Endpoint is the active endpoint, checked by Go Uptime
 	Endpoint *endpoint.Endpoint
 
 	// PushOption is the push option of the active endpoint, if any

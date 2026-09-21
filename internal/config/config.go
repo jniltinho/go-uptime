@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package config loads the YAML configuration of the application, from a single file or from a directory whose files
 // are merged, expands the environment variables it references, and validates every section while applying its
 // defaults. The Config it returns is the root object from which the rest of the application reads its settings; each
@@ -10,38 +12,39 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting"
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/alerting/provider"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/config/announcement"
-	"gatus/v5/internal/config/connectivity"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/config/maintenance"
-	"gatus/v5/internal/config/push"
-	"gatus/v5/internal/config/remote"
-	"gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/config/tunneling"
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/config/web"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/storage"
 	"github.com/TwiN/deepmerge"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/config/announcement"
+	"github.com/jniltinho/go-uptime/v7/internal/config/connectivity"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/config/remote"
+	"github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 	"gopkg.in/yaml.v3"
 )
 
 const (
 	// DefaultConfigurationFilePath is the default path that will be used to search for the configuration file
-	// if a custom path isn't configured through the GATUS_CONFIG_PATH environment variable
+	// if a custom path isn't configured through the GO_UPTIME_CONFIG_PATH environment variable
 	DefaultConfigurationFilePath = "config/config.yaml"
 
 	// DefaultFallbackConfigurationFilePath is the default fallback path that will be used to search for the
@@ -56,6 +59,9 @@ var (
 	// ErrNoEndpointOrSuiteInConfig is an error returned when a configuration file or directory has no endpoints configured
 	ErrNoEndpointOrSuiteInConfig = errors.New("configuration should contain at least one endpoint or suite")
 
+	// ErrInvalidMetricsNamespace is returned when metrics-namespace is not a valid prefix of a Prometheus metric name
+	ErrInvalidMetricsNamespace = errors.New("metrics-namespace must start with a letter or an underscore and have only letters, digits and underscores")
+
 	// ErrConfigFileNotFound is an error returned when a configuration file could not be found
 	ErrConfigFileNotFound = errors.New("configuration file not found")
 
@@ -69,11 +75,15 @@ var (
 // Config is the main configuration structure
 type Config struct {
 	// Debug Whether to enable debug logs
-	// Deprecated: Use the GATUS_LOG_LEVEL environment variable instead
+	// Deprecated: Use the GO_UPTIME_LOG_LEVEL environment variable instead
 	Debug bool `yaml:"debug,omitempty"`
 
 	// Metrics Whether to expose metrics at /metrics
 	Metrics bool `yaml:"metrics,omitempty"`
+
+	// MetricsNamespace is the prefix of the names of the metrics. It defaults to DefaultMetricsNamespace; "gatus" keeps
+	// the names that the metrics had up to v6, for the dashboards and alerts written on them.
+	MetricsNamespace string `yaml:"metrics-namespace,omitempty"`
 
 	// SkipInvalidConfigUpdate Whether to make the application ignore invalid configuration
 	// if the configuration file is updated while the application is running
@@ -100,7 +110,7 @@ type Config struct {
 	// Push is the configuration of the push monitoring: global push keys and endpoints that receive push (fork)
 	Push *push.Config `yaml:"push,omitempty"`
 
-	// Security is the configuration for securing access to Gatus
+	// Security is the configuration for securing access to Go Uptime
 	Security *security.Config `yaml:"security,omitempty"`
 
 	// Alerting is the configuration for alerting providers
@@ -127,7 +137,7 @@ type Config struct {
 	// Maintenance is the configuration for creating a maintenance window in which no alerts are sent
 	Maintenance *maintenance.Config `yaml:"maintenance,omitempty"`
 
-	// Remote is the configuration for remote Gatus instances
+	// Remote is the configuration for remote Go Uptime instances
 	// WARNING: This is in ALPHA and may change or be completely removed in the future
 	Remote *remote.Config `yaml:"remote,omitempty"`
 
@@ -302,15 +312,15 @@ func walkConfigDir(path string, fn fs.WalkDirFunc) error {
 	})
 }
 
-// parseAndValidateConfigBytes parses a Gatus configuration file into a Config struct and validates its parameters
+// parseAndValidateConfigBytes parses a Go Uptime configuration file into a Config struct and validates its parameters
 func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
-	// Replace $$ with __GATUS_LITERAL_DOLLAR_SIGN__ to prevent os.ExpandEnv from treating "$$" as if it was an
-	// environment variable. This allows Gatus to support literal "$" in the configuration file.
-	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "$$", "__GATUS_LITERAL_DOLLAR_SIGN__"))
+	// Replace $$ with __GO_UPTIME_LITERAL_DOLLAR_SIGN__ to prevent os.ExpandEnv from treating "$$" as if it was an
+	// environment variable. This allows Go Uptime to support literal "$" in the configuration file.
+	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "$$", "__GO_UPTIME_LITERAL_DOLLAR_SIGN__"))
 	// Expand environment variables
 	yamlBytes = []byte(os.ExpandEnv(string(yamlBytes)))
-	// Replace __GATUS_LITERAL_DOLLAR_SIGN__ with "$" to restore the literal "$" in the configuration file
-	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "__GATUS_LITERAL_DOLLAR_SIGN__", "$"))
+	// Replace __GO_UPTIME_LITERAL_DOLLAR_SIGN__ with "$" to restore the literal "$" in the configuration file
+	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "__GO_UPTIME_LITERAL_DOLLAR_SIGN__", "$"))
 	// Parse configuration file
 	if err = yaml.Unmarshal(yamlBytes, &config); err != nil {
 		return
@@ -322,7 +332,7 @@ func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
 		// XXX: Remove this in v6.0.0
 		if config.Debug {
 			logr.Warn("WARNING: The 'debug' configuration has been deprecated and will be removed in v6.0.0")
-			logr.Warn("WARNING: Please use the GATUS_LOG_LEVEL environment variable instead")
+			logr.Warn("WARNING: Please use the GO_UPTIME_LOG_LEVEL environment variable instead")
 		}
 		// XXX: End of v6.0.0 removals
 		ValidateAlertingConfig(config.Alerting, config.Endpoints, config.ExternalEndpoints)
@@ -360,6 +370,9 @@ func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
 			return nil, err
 		}
 		if err := ValidateSuitesConfig(config); err != nil {
+			return nil, err
+		}
+		if err := ValidateMetricsConfig(config); err != nil {
 			return nil, err
 		}
 		if err := ValidateUniqueKeys(config); err != nil {
@@ -589,6 +602,40 @@ func ValidateSuitesConfig(config *Config) error {
 	}
 	logr.Infof("[config.ValidateSuitesConfig] Validated %d suite(s)", len(config.Suites))
 	return nil
+}
+
+const (
+	// DefaultMetricsNamespace is the default prefix of the names of the metrics
+	DefaultMetricsNamespace = "go_uptime"
+
+	// LegacyMetricsNamespace is the prefix that the metrics had while the project was called Gatus, up to v6
+	LegacyMetricsNamespace = "gatus"
+)
+
+// metricsNamespacePattern is what Prometheus accepts at the start of a metric name, without the colon, which is
+// reserved for recording rules
+var metricsNamespacePattern = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+
+// ValidateMetricsConfig validates metrics-namespace and sets its default. It is validated even when metrics is false,
+// so that turning the metrics on later cannot fail on a value that was already there.
+func ValidateMetricsConfig(config *Config) error {
+	if len(config.MetricsNamespace) == 0 {
+		config.MetricsNamespace = DefaultMetricsNamespace
+		return nil
+	}
+	if !metricsNamespacePattern.MatchString(config.MetricsNamespace) {
+		return fmt.Errorf("%w: %q", ErrInvalidMetricsNamespace, config.MetricsNamespace)
+	}
+	return nil
+}
+
+// GetMetricsNamespace returns the prefix of the names of the metrics. It is safe to call on a configuration that was
+// not validated, such as the ones built by tests.
+func (config *Config) GetMetricsNamespace() string {
+	if config == nil || len(config.MetricsNamespace) == 0 {
+		return DefaultMetricsNamespace
+	}
+	return config.MetricsNamespace
 }
 
 // ValidateUniqueKeys makes sure that no key is shared between the endpoints, the external endpoints, the suites and

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -7,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
 )
 
 // Renames of a managed endpoint and changes of the status pages take the locks in the same order, so they never

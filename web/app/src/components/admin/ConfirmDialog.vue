@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: confirmation on top of AdminDialog. The focus starts on Cancel, and Escape and the close button cancel -->
   <AdminDialog

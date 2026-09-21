@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package endpoint models the endpoints and external-endpoints sections of the YAML configuration. It validates
 // them and applies their defaults, performs the health check of an endpoint (HTTP, DNS, TCP, UDP, SCTP, ICMP, TLS,
 // STARTTLS, gRPC, WebSocket and SSH) and evaluates its conditions, and defines the Status, Result, Event and
@@ -21,14 +23,14 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint/dns"
-	sshconfig "gatus/v5/internal/config/endpoint/ssh"
-	"gatus/v5/internal/config/endpoint/ui"
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	sshconfig "github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ssh"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -46,8 +48,10 @@ const (
 	// UserAgentHeader is the name of the header used to specify the request's user agent
 	UserAgentHeader = "User-Agent"
 
-	// GatusUserAgent is the default user agent that Gatus uses to send requests.
-	GatusUserAgent = "Gatus/1.0"
+	// DefaultUserAgent is the user agent of the requests of the checks, unless the endpoint sets its own User-Agent
+	// header. It has no version of the project on purpose: a rule of a firewall that allows it must not break on every
+	// release. It was "Gatus/1.0" up to v6.
+	DefaultUserAgent = "go-uptime/1.0"
 
 	// TypeDNS is the Type of an endpoint that has a DNS configuration, whatever its URL.
 	TypeDNS Type = "DNS"
@@ -77,19 +81,19 @@ const (
 )
 
 var (
-	// ErrEndpointWithNoCondition is the error with which Gatus will panic if an endpoint is configured with no conditions
+	// ErrEndpointWithNoCondition is the error with which Go Uptime will panic if an endpoint is configured with no conditions
 	ErrEndpointWithNoCondition = errors.New("you must specify at least one condition per endpoint")
 
-	// ErrEndpointWithNoURL is the error with which Gatus will panic if an endpoint is configured with no url
+	// ErrEndpointWithNoURL is the error with which Go Uptime will panic if an endpoint is configured with no url
 	ErrEndpointWithNoURL = errors.New("you must specify an url for each endpoint")
 
-	// ErrUnknownEndpointType is the error with which Gatus will panic if an endpoint has an unknown type
+	// ErrUnknownEndpointType is the error with which Go Uptime will panic if an endpoint has an unknown type
 	ErrUnknownEndpointType = errors.New("unknown endpoint type")
 
-	// ErrInvalidConditionFormat is the error with which Gatus will panic if a condition has an invalid format
+	// ErrInvalidConditionFormat is the error with which Go Uptime will panic if a condition has an invalid format
 	ErrInvalidConditionFormat = errors.New("invalid condition format: does not match '<VALUE> <COMPARATOR> <VALUE>'")
 
-	// ErrInvalidEndpointIntervalForDomainExpirationPlaceholder is the error with which Gatus will panic if an endpoint
+	// ErrInvalidEndpointIntervalForDomainExpirationPlaceholder is the error with which Go Uptime will panic if an endpoint
 	// has both an interval smaller than 5 minutes and a condition with DomainExpirationPlaceholder.
 	// This is because the free whois service we are using should not be abused, especially considering the fact that
 	// the data takes a while to be updated.
@@ -245,7 +249,7 @@ func (e *Endpoint) ValidateAndSetDefaults() error {
 	}
 	// Automatically add user agent header if there isn't one specified in the endpoint configuration
 	if !hasHeader(e.Headers, UserAgentHeader) {
-		e.Headers[UserAgentHeader] = GatusUserAgent
+		e.Headers[UserAgentHeader] = DefaultUserAgent
 	}
 	// Automatically add "Content-Type: application/json" header if there's no Content-Type set
 	// and endpoint.GraphQL is set to true
@@ -515,7 +519,7 @@ func (e *Endpoint) call(result *Result) {
 			maps.Copy(wsHeaders, e.Headers)
 		}
 		if !hasHeader(wsHeaders, UserAgentHeader) {
-			wsHeaders[UserAgentHeader] = GatusUserAgent
+			wsHeaders[UserAgentHeader] = DefaultUserAgent
 		}
 		result.Connected, result.Body, err = client.QueryWebSocket(e.URL, e.getParsedBody(), wsHeaders, e.ClientConfig)
 		if err != nil {

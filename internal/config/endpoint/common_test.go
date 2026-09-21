@@ -1,10 +1,12 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package endpoint
 
 import (
 	"errors"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
 )
 
 func TestValidateEndpointNameGroupAndAlerts(t *testing.T) {

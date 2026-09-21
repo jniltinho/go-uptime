@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -8,8 +10,8 @@ import (
 	"slices"
 	"strings"
 
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
 
 	"github.com/labstack/echo/v5"
 )
@@ -29,7 +31,7 @@ var adminMediaTypes = []string{"application/json", "application/yaml", "applicat
 //
 // The expected origin is derived only from the Host header and the scheme (TLS or X-Forwarded-Proto). Pages cannot
 // set Host, Origin or Sec-Fetch-* and a cross-site request with a custom header such as X-Forwarded-Proto requires a
-// CORS preflight that Gatus does not allow, so this is safe against CSRF. X-Forwarded-Host is ignored on purpose, and
+// CORS preflight that Go Uptime does not allow, so this is safe against CSRF. X-Forwarded-Host is ignored on purpose, and
 // so is Echo's Scheme(), which trusts any X-Forwarded-* header.
 //
 // GET, HEAD and OPTIONS pass untouched. For POST, PUT, PATCH and DELETE it answers, with the body {"error": "..."}: 403

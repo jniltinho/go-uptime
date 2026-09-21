@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package storage holds the storage section of the configuration: the type of the store (memory, sqlite, postgres or
 // mysql), its path or DSN, caching and how many results and events are kept per endpoint.
 package storage
@@ -27,7 +29,7 @@ var (
 
 	// ErrMySQLStorageInvalidPath is returned when the path of a mysql storage is not a valid DSN. It never includes the
 	// path, which contains the password.
-	ErrMySQLStorageInvalidPath = errors.New("mysql storage requires storage.path to be a valid DSN, for example gatus:password@tcp(mariadb:3306)/gatus")
+	ErrMySQLStorageInvalidPath = errors.New("mysql storage requires storage.path to be a valid DSN, for example go_uptime:password@tcp(mariadb:3306)/go_uptime")
 )
 
 // Config is the configuration for storage

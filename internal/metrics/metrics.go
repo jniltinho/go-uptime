@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package metrics publishes the results of the endpoints and suites as Prometheus metrics, when metrics is enabled in
 // the configuration. The metrics are registered again on every configuration reload, because the extra labels may
 // change.
@@ -8,13 +10,11 @@ import (
 	"strconv"
 	"sync/atomic"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
 	"github.com/prometheus/client_golang/prometheus"
 )
-
-const namespace = "gatus" // The prefix of the metrics
 
 var (
 	resultTotal                        *prometheus.CounterVec
@@ -84,7 +84,7 @@ func UnregisterPrometheusMetrics() {
 	registeredExtraLabels.Store(nil)
 }
 
-// InitializePrometheusMetrics registers the Gatus metrics on reg (the default registerer when nil), with the extra
+// InitializePrometheusMetrics registers the metrics on reg (the default registerer when nil), with the extra
 // labels of the configuration. Metrics registered by a previous call are unregistered first, so it is safe to call on
 // every configuration reload.
 func InitializePrometheusMetrics(cfg *config.Config, reg prometheus.Registerer) {
@@ -100,6 +100,8 @@ func InitializePrometheusMetrics(cfg *config.Config, reg prometheus.Registerer) 
 	// Store the registerer for later unregistration
 	currentRegisterer = reg
 
+	// The prefix of the names comes from the configuration: go_uptime by default, gatus for the names of v6
+	namespace := cfg.GetMetricsNamespace()
 	extraLabels := cfg.GetUniqueExtraMetricLabels()
 	labels := slices.Clone(extraLabels)
 	registeredExtraLabels.Store(&labels)

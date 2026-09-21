@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package rocketchat implements the alerting provider that sends alerts to Rocket.Chat through an incoming
 // webhook.
 package rocketchat
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -162,14 +164,14 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 	body := Body{
 		Text:     "",
-		Username: "Gatus",
+		Username: "Go Uptime",
 		Attachments: []Attachment{
 			{
-				Title:      "🚨 Gatus Alert",
+				Title:      "🚨 Go Uptime Alert",
 				Text:       message + description,
 				Color:      color,
-				AuthorName: "Gatus",
-				AuthorIcon: "https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png",
+				AuthorName: "Go Uptime",
+				AuthorIcon: "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
 			},
 		},
 	}

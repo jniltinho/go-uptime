@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package watchdog
 
 import (
@@ -5,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 func newAlertStateTestEndpoint(alertEnabled bool) *endpoint.Endpoint {
@@ -28,7 +30,7 @@ func newAlertStateTestEndpoint(alertEnabled bool) *endpoint.Endpoint {
 }
 
 func TestRestorePersistedTriggeredAlerts(t *testing.T) {
-	err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50})
+	err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50})
 	if err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}

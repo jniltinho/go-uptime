@@ -1,8 +1,10 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package cmd
 
 import (
-	"gatus/v5/internal/config"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
 )
 
 // loadUpdatedConfiguration loads and validates a modified configuration while the current one is still running.

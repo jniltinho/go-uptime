@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -6,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // BenchmarkMySQLInsertEndpointResult compares InsertEndpointResult with the arguments interpolated by the driver (the
@@ -15,7 +17,7 @@ import (
 func BenchmarkMySQLInsertEndpointResult(b *testing.B) {
 	servers := mysqlTestServers()
 	if len(servers) == 0 {
-		b.Skip("GATUS_TEST_MYSQL_URL and GATUS_TEST_MARIADB_URL are not set")
+		b.Skip("GO_UPTIME_TEST_MYSQL_URL and GO_UPTIME_TEST_MARIADB_URL are not set")
 	}
 	for _, name := range []string{"mysql", "mariadb"} {
 		dsn, exists := servers[name]

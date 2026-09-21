@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package security
 
 import (
@@ -14,10 +16,10 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,10 +27,10 @@ import (
 const (
 	// LocalsClientIP is the key of the locals of a request holding the IP address of its client (netip.Addr), computed
 	// by the api package with status-pages.trusted-proxies. Without it, the IP address of the connection is used.
-	LocalsClientIP = "gatus.client-ip"
+	LocalsClientIP = "go-uptime.client-ip"
 
 	// localsBasicAuthentication is the key of the locals of a request holding its basicAuthentication
-	localsBasicAuthentication = "gatus.basic-authentication"
+	localsBasicAuthentication = "go-uptime.basic-authentication"
 
 	// localsUsername is the key of the store of a request holding the username of its authenticated user
 	localsUsername = "username"

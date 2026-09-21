@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -18,18 +20,18 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/maintenance"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -77,17 +79,17 @@ type contractAnswer struct {
 
 var (
 	contractTimestamp   = regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})`)
-	contractSession     = regexp.MustCompile(`gatus_session=[^;]*`)
+	contractSession     = regexp.MustCompile(`go_uptime_session=[^;]*`)
 	contractCookieDate  = regexp.MustCompile(`(?i)expires=[^;]*`)
 	contractBuildAssets = regexp.MustCompile(`(app|chunk-vendors)\.[0-9a-f]+\.(js|css)`)
-	contractBackupName  = regexp.MustCompile(`gatus-backup-\d{8}-\d{6}`)
+	contractBackupName  = regexp.MustCompile(`go-uptime-backup-\d{8}-\d{6}`)
 )
 
 func normalizeContract(value string) string {
 	value = contractTimestamp.ReplaceAllString(value, "<timestamp>")
-	value = contractSession.ReplaceAllString(value, "gatus_session=<token>")
+	value = contractSession.ReplaceAllString(value, "go_uptime_session=<token>")
 	value = contractCookieDate.ReplaceAllString(value, "expires=<date>")
-	value = contractBackupName.ReplaceAllString(value, "gatus-backup-<date>")
+	value = contractBackupName.ReplaceAllString(value, "go-uptime-backup-<date>")
 	return contractBuildAssets.ReplaceAllString(value, "$1.<hash>.$2")
 }
 
@@ -125,7 +127,7 @@ func contractConfig(t *testing.T) *config.Config {
 		Security:    &security.Config{Basic: &security.BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: hash("secret")}},
 		Admin:       &admin.Config{Enabled: true},
 		Maintenance: &maintenance.Config{Enabled: &disabled},
-		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		// "100%" and "%61pi" are there for the escaping: %61 is "a", so a key unescaped once too many becomes core_api,
 		// which is ANOTHER endpoint, with another state
 		Endpoints:         []*endpoint.Endpoint{newEndpoint("api", "core"), newEndpoint("db", "core"), newEndpoint("100%", "core"), newEndpoint("%61pi", "core")},

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package metrics
 
 import (
@@ -5,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/endpoint/dns"
-	"gatus/v5/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
@@ -17,7 +19,10 @@ import (
 // Note: Because of the global Prometheus registry, this test can only safely verify one label set per process.
 // If the function is called with a different set of labels for the same metric, a panic will occur.
 func TestInitializePrometheusMetrics(t *testing.T) {
+	// The expected output of the tests of this file is the one of v6, name by name: it is what metrics-namespace: gatus
+	// must keep reproducing for the dashboards written before the project was renamed
 	cfgWithExtras := &config.Config{
+		MetricsNamespace: config.LegacyMetricsNamespace,
 		Endpoints: []*endpoint.Endpoint{
 			{
 				Name:  "TestEP",
@@ -68,6 +73,7 @@ func TestPublishMetricsForEndpoint_withExtraLabels(t *testing.T) {
 	// Only test one label set per process due to Prometheus registry limits.
 	reg := prometheus.NewRegistry()
 	cfg := &config.Config{
+		MetricsNamespace: config.LegacyMetricsNamespace,
 		Endpoints: []*endpoint.Endpoint{
 			{
 				Name: "ep-extra",
@@ -113,7 +119,7 @@ gatus_results_total{bar="my-bar",foo="my-foo",group="g1",key="g1_ep-extra",name=
 
 func TestPublishMetricsForEndpoint(t *testing.T) {
 	reg := prometheus.NewRegistry()
-	InitializePrometheusMetrics(&config.Config{}, reg)
+	InitializePrometheusMetrics(&config.Config{MetricsNamespace: config.LegacyMetricsNamespace}, reg)
 
 	httpEndpoint := &endpoint.Endpoint{Name: "http-ep-name", Group: "http-ep-group", URL: "https://example.org"}
 	PublishMetricsForEndpoint(httpEndpoint, &endpoint.Result{
@@ -243,7 +249,7 @@ gatus_results_endpoint_success{group="http-ep-group",key="http-ep-group_http-ep-
 
 func TestPublishMetricsForSuite(t *testing.T) {
 	reg := prometheus.NewRegistry()
-	InitializePrometheusMetrics(&config.Config{}, reg)
+	InitializePrometheusMetrics(&config.Config{MetricsNamespace: config.LegacyMetricsNamespace}, reg)
 
 	testSuite := &suite.Suite{
 		Name:  "test-suite",
@@ -301,7 +307,7 @@ gatus_suite_results_total{group="test-group",key="test-group_test-suite",name="t
 
 func TestPublishMetricsForSuite_NoGroup(t *testing.T) {
 	reg := prometheus.NewRegistry()
-	InitializePrometheusMetrics(&config.Config{}, reg)
+	InitializePrometheusMetrics(&config.Config{MetricsNamespace: config.LegacyMetricsNamespace}, reg)
 
 	testSuite := &suite.Suite{
 		Name:  "no-group-suite",

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package rocketchat
 
 import (
@@ -6,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -64,8 +66,8 @@ func TestAlertProvider_Send(t *testing.T) {
 			mockRoundTripper: test.MockRoundTripper(func(r *http.Request) *http.Response {
 				body := make(map[string]interface{})
 				json.NewDecoder(r.Body).Decode(&body)
-				if body["username"] != "Gatus" {
-					t.Errorf("expected username to be 'Gatus', got %v", body["username"])
+				if body["username"] != "Go Uptime" {
+					t.Errorf("expected username to be 'Go Uptime', got %v", body["username"])
 				}
 				attachments := body["attachments"].([]interface{})
 				if len(attachments) != 1 {

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package sql
 
 import (
@@ -7,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 const (
@@ -19,8 +21,8 @@ const (
 	managedEndpointTestStatusPage = "managed-test-page"
 )
 
-// managedEndpointTestStores returns a SQLite store and, when GATUS_TEST_POSTGRES_URL, GATUS_TEST_MYSQL_URL or
-// GATUS_TEST_MARIADB_URL are set, a PostgreSQL, MySQL or MariaDB store. MySQL and MariaDB stores use a database of their
+// managedEndpointTestStores returns a SQLite store and, when GO_UPTIME_TEST_POSTGRES_URL, GO_UPTIME_TEST_MYSQL_URL or
+// GO_UPTIME_TEST_MARIADB_URL are set, a PostgreSQL, MySQL or MariaDB store. MySQL and MariaDB stores use a database of their
 // own, removed when the test ends.
 func managedEndpointTestStores(t *testing.T) map[string]*Store {
 	t.Helper()
@@ -31,8 +33,8 @@ func managedEndpointTestStores(t *testing.T) map[string]*Store {
 	}
 	t.Cleanup(sqliteStore.Close)
 	stores["sqlite"] = sqliteStore
-	if postgresURL := os.Getenv("GATUS_TEST_POSTGRES_URL"); postgresURL == "" {
-		t.Log("GATUS_TEST_POSTGRES_URL is not set, skipping PostgreSQL")
+	if postgresURL := os.Getenv("GO_UPTIME_TEST_POSTGRES_URL"); postgresURL == "" {
+		t.Log("GO_UPTIME_TEST_POSTGRES_URL is not set, skipping PostgreSQL")
 	} else {
 		postgresStore, err := NewStore("postgres", postgresURL, true, storage.DefaultMaximumNumberOfResults, storage.DefaultMaximumNumberOfEvents)
 		if err != nil {

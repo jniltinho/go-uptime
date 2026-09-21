@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -5,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Fork: the reasons of a failed check published by a page that shows messages. They are a closed set: the text of the
@@ -254,7 +256,7 @@ type ResultPayload struct {
 	Message string `json:"message,omitempty"`
 
 	// Origin is where the result comes from (fork): "push" for a result received through the push API, omitted for a
-	// check made by Gatus. Like Message, it is only set on the details page of an endpoint of a page that shows
+	// check made by Go Uptime. Like Message, it is only set on the details page of an endpoint of a page that shows
 	// messages.
 	Origin string `json:"origin,omitempty"`
 }

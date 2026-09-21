@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -7,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage/store/common"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // TestBuildPayload_GroupSummary counts, in each group, only the endpoints listed in it: a featured endpoint is listed in

@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <AdminListLayout title="Push keys" description="Global keys accept push for every endpoint that receives push, at /api/push/<key>/<endpoint-key>" active="push-keys">
     <template #actions>

@@ -1,10 +1,12 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
 	"errors"
 	"testing"
 
-	"gatus/v5/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
 )
 
 func TestParseAndValidateConfigBytes_StatusPages(t *testing.T) {

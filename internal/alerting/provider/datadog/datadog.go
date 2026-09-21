@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package datadog implements the alerting provider that publishes alerts as events in Datadog through the
 // Datadog Events REST API.
 package datadog
@@ -11,9 +13,9 @@ import (
 	"net/http"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -159,6 +161,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		}
 	}
 	tags := []string{
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): monitors and dashboards of Datadog
+		// written on v6 filter by this tag and by the source type below
 		"source:gatus",
 		fmt.Sprintf("endpoint:%s", ep.Name),
 		fmt.Sprintf("status:%s", alertType),

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package squadcast implements the alerting provider that triggers and resolves Squadcast incidents through
 // an incoming webhook.
 package squadcast
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -118,6 +120,9 @@ type Body struct {
 // buildRequestBody builds the request body for the provider
 func (provider *AlertProvider) buildRequestBody(ep *endpoint.Endpoint, alert *alert.Alert, result *endpoint.Result, resolved bool) ([]byte, error) {
 	var message, status string
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the resolve event is matched to the incident
+	// by this identifier, so another prefix would leave the incidents opened by v6 unresolved; the source tag below is
+	// kept for the routing rules
 	eventID := fmt.Sprintf("gatus-%s", ep.Key())
 	if resolved {
 		message = fmt.Sprintf("RESOLVED: %s", ep.DisplayName())

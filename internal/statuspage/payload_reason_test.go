@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package statuspage
 
 import (
@@ -7,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage/store/common"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Fork: the reason of a failed check on a page that shows messages
@@ -50,7 +52,7 @@ func TestPublicMessage_FailureReason(t *testing.T) {
 		},
 		{
 			name:      "name that does not resolve",
-			result:    common.ResultSummary{Errors: []string{`Get "https://sso.example.org": dial tcp: lookup sso.example.org on 127.0.0.11:53: no such host`}},
+			result:    common.ResultSummary{Errors: []string{`Get "https://sso.gatus.io": dial tcp: lookup sso.gatus.io on 127.0.0.11:53: no such host`}},
 			expected:  ReasonDNSError,
 			forbidden: []string{"127.0.0.11", "lookup", "no such host"},
 		},

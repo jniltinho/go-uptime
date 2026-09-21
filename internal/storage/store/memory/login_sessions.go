@@ -1,12 +1,14 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package memory
 
 import (
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
-// CreateLoginSession persists a new login session. With the memory storage, sessions are lost when Gatus restarts.
+// CreateLoginSession persists a new login session. With the memory storage, sessions are lost when Go Uptime restarts.
 func (s *Store) CreateLoginSession(session *common.LoginSession) error {
 	s.loginSessionsMutex.Lock()
 	defer s.loginSessionsMutex.Unlock()

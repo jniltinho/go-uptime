@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package telegram implements the alerting provider that sends alerts to a Telegram chat through the
 // sendMessage method of the Bot API.
 package telegram
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -166,9 +168,9 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 	var text string
 	if len(alert.GetDescription()) > 0 {
-		text = fmt.Sprintf("⛑ *Gatus* \n%s \n*Description* \n%s  \n%s", message, alert.GetDescription(), formattedConditionResults)
+		text = fmt.Sprintf("⛑ *Go Uptime* \n%s \n*Description* \n%s  \n%s", message, alert.GetDescription(), formattedConditionResults)
 	} else {
-		text = fmt.Sprintf("⛑ *Gatus* \n%s%s", message, formattedConditionResults)
+		text = fmt.Sprintf("⛑ *Go Uptime* \n%s%s", message, formattedConditionResults)
 	}
 	bodyAsJSON, _ := json.Marshal(Body{
 		ChatID:    cfg.ID,

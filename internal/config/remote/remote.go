@@ -1,10 +1,12 @@
-// Package remote models the remote section of the YAML configuration: other Gatus instances whose endpoint statuses
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
+// Package remote models the remote section of the YAML configuration: other Go Uptime instances whose endpoint statuses
 // are retrieved and merged into the ones of this instance. It validates the section and applies its defaults.
 package remote
 
 import (
-	"gatus/v5/internal/client"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
 )
 
 // NOTICE: This is an experimental alpha feature and may be updated/removed in future versions.
@@ -19,7 +21,7 @@ type Config struct {
 	ClientConfig *client.Config `yaml:"client,omitempty"`
 }
 
-// Instance is a remote Gatus instance to retrieve endpoint statuses from.
+// Instance is a remote Go Uptime instance to retrieve endpoint statuses from.
 type Instance struct {
 	EndpointPrefix string `yaml:"endpoint-prefix"` // EndpointPrefix is prepended to the name of every endpoint retrieved from the instance
 	URL            string `yaml:"url"`             // URL of the endpoint statuses API of the instance

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package cmd
 
 import (
@@ -5,18 +7,18 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 // The history of managed endpoints must be preserved on startup and reload, even without admin.enabled
 func TestInitializeStorage_PreservesManagedEndpointHistory(t *testing.T) {
-	cfg := &config.Config{Storage: &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}}
+	cfg := &config.Config{Storage: &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}}
 	if err := store.Initialize(cfg.Storage); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}
@@ -50,7 +52,7 @@ func TestInitializeStorage_PreservesManagedEndpointHistory(t *testing.T) {
 
 // The history of a renamed managed endpoint must be preserved under its new key on startup and reload (fork)
 func TestInitializeStorage_PreservesRenamedManagedEndpointHistory(t *testing.T) {
-	cfg := &config.Config{Storage: &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}}
+	cfg := &config.Config{Storage: &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}}
 	if err := store.Initialize(cfg.Storage); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}

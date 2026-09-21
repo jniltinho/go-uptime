@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package managedendpoint
 
 import (
@@ -5,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 func TestPrepare_MySQLKeyLength(t *testing.T) {

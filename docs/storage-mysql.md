@@ -1,6 +1,7 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 # MySQL and MariaDB storage
 
-> Feature exclusive to the [jniltinho/gatus](https://github.com/jniltinho/gatus) fork. In the original Gatus, the
+> Not in Gatus, the project that Go Uptime derives from: there, the
 > request for MySQL/MariaDB was closed ([TwiN/gatus#283](https://github.com/TwiN/gatus/issues/283)) and the
 > implementation was not merged ([TwiN/gatus#1003](https://github.com/TwiN/gatus/pull/1003)): the maintainer decided not
 > to support more storage types.
@@ -17,7 +18,7 @@
 | MariaDB  | 10.11 LTS | 10.11.19 and 12.3.3 |
 
 The minimums are the oldest LTS versions still supported by their vendors (MySQL 8.0 and MariaDB 10.6 reached their end
-of life in 2026). Gatus does not refuse older servers, but it logs a warning at startup and they are not supported.
+of life in 2026). Go Uptime does not refuse older servers, but it logs a warning at startup and they are not supported.
 Amazon Aurora, TiDB and PlanetScale/Vitess are not tested.
 
 ## Configuration
@@ -25,7 +26,7 @@ Amazon Aurora, TiDB and PlanetScale/Vitess are not tested.
 ```yaml
 storage:
   type: mysql
-  path: "gatus:${MARIADB_PASSWORD}@tcp(mariadb:3306)/gatus"
+  path: "go_uptime:${MARIADB_PASSWORD}@tcp(mariadb:3306)/go_uptime"
   caching: true
 ```
 
@@ -33,7 +34,7 @@ storage:
 `user:password@tcp(host:port)/database?parameters`. An invalid DSN fails the validation of the configuration, and the
 password is never written to the logs.
 
-Gatus overrides these parameters, whatever the DSN and the server configuration say, because the storage relies on
+Go Uptime overrides these parameters, whatever the DSN and the server configuration say, because the storage relies on
 them:
 
 | What | Value | Why |
@@ -53,36 +54,36 @@ most 25 connections, recycled every 3 minutes.
 ## Creating the database
 
 ```sql
-CREATE DATABASE gatus CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-CREATE USER 'gatus'@'%' IDENTIFIED BY 'a-long-password';
-GRANT ALL PRIVILEGES ON gatus.* TO 'gatus'@'%';
+CREATE DATABASE go_uptime CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER 'go_uptime'@'%' IDENTIFIED BY 'a-long-password';
+GRANT ALL PRIVILEGES ON go_uptime.* TO 'go_uptime'@'%';
 ```
 
-The tables are created automatically when Gatus starts, and starting again on an existing schema keeps the data. They
+The tables are created automatically when Go Uptime starts, and starting again on an existing schema keeps the data. They
 use InnoDB (required for the foreign keys) and `utf8mb4_bin`.
 
 With Docker, see [`.examples/docker-compose-mariadb-storage`](../.examples/docker-compose-mariadb-storage): the image of
-the original Gatus (`twinproduction/gatus`) does not include this storage, use `jniltinho/gatus` with a fixed tag.
+the original Gatus (`twinproduction/gatus`) does not include this storage, use `jniltinho/go-uptime` with a fixed tag.
 
 ## Limits
 
 - **Keys of at most 768 characters.** The key of an endpoint, external endpoint, suite or endpoint of a suite
   (`group_name`) must fit in an InnoDB index. Longer keys fail the validation of the configuration and of the
   administration with a message citing the limit. SQLite and PostgreSQL have no such limit.
-- **InnoDB page size of 16K** (the default). Gatus fails at startup with a smaller `innodb_page_size`.
+- **InnoDB page size of 16K** (the default). Go Uptime fails at startup with a smaller `innodb_page_size`.
 - **25 connections.** With many endpoints checked at the same time, checks wait for a free connection instead of
   exceeding `max_connections`.
 
 ## Behavior
 
 - A check result is written in a transaction. A deadlock or a lock wait timeout rolls back the whole transaction, and
-  Gatus tries again, up to 3 attempts. Nothing is written halfway.
+  Go Uptime tries again, up to 3 attempts. Nothing is written halfway.
 - The history older than 48 hours is merged into daily uptime entries, like with SQLite and PostgreSQL.
 - `ON DELETE CASCADE` foreign keys remove the results, events, uptimes and triggered alerts of a removed endpoint.
 
 ## Multiple instances
 
-Several Gatus instances can share the same database, as with PostgreSQL. Endpoints and status pages changed through the
+Several Go Uptime instances can share the same database, as with PostgreSQL. Endpoints and status pages changed through the
 administration only apply to the other instances after they reload their configuration or restart.
 
 MariaDB Galera clusters are not tested: the insertion of check results retries certification conflicts, but the
@@ -91,8 +92,8 @@ changes made through the administration do not.
 ## Backup
 
 ```bash
-mariadb-dump -ugatus -p --single-transaction gatus > gatus.sql   # MariaDB
-mysqldump -ugatus -p --single-transaction gatus > gatus.sql      # MySQL
+mariadb-dump -ugo_uptime -p --single-transaction go_uptime > go-uptime.sql   # MariaDB
+mysqldump -ugo_uptime -p --single-transaction go_uptime > go-uptime.sql      # MySQL
 ```
 
 ## Migrating and going back
@@ -118,18 +119,18 @@ The tests of the SQL storage also run on MySQL and MariaDB when these variables 
 databases (each test uses a database of its own):
 
 ```bash
-docker run -d --name gatus-test-mysql -p 127.0.0.1:53306:3306 -e MYSQL_ROOT_PASSWORD=gatus-root mysql:8.4.11
-docker run -d --name gatus-test-mariadb -p 127.0.0.1:53307:3306 -e MARIADB_ROOT_PASSWORD=gatus-root mariadb:10.11.19
+docker run -d --name go-uptime-test-mysql -p 127.0.0.1:53306:3306 -e MYSQL_ROOT_PASSWORD=go-uptime-root mysql:8.4.11
+docker run -d --name go-uptime-test-mariadb -p 127.0.0.1:53307:3306 -e MARIADB_ROOT_PASSWORD=go-uptime-root mariadb:10.11.19
 
-GATUS_TEST_MYSQL_URL='root:gatus-root@tcp(127.0.0.1:53306)/' \
-GATUS_TEST_MARIADB_URL='root:gatus-root@tcp(127.0.0.1:53307)/' \
+GO_UPTIME_TEST_MYSQL_URL='root:go-uptime-root@tcp(127.0.0.1:53306)/' \
+GO_UPTIME_TEST_MARIADB_URL='root:go-uptime-root@tcp(127.0.0.1:53307)/' \
   go test ./storage/... -race
 ```
 
 The end-to-end tests accept another storage:
 
 ```bash
-E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:gatus-root@tcp(127.0.0.1:53307)/gatus_e2e' test/e2e/status-pages.sh
+E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:go-uptime-root@tcp(127.0.0.1:53307)/go_uptime_e2e' test/e2e/status-pages.sh
 ```
 
 Use an empty database: the scripts expect a storage without data.

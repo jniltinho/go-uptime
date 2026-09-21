@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: events of an endpoint, collapsed by default like the Checks table, on the dashboard and on the public status pages -->
   <div>
@@ -34,17 +35,18 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { ArrowDownCircle, ArrowUpCircle, ChevronDown, ChevronRight, PlayCircle } from 'lucide-vue-next'
+import { readPreference, writePreference } from '@/utils/storage'
 
 const props = defineProps({
   // Events from the most recent to the oldest: { key, type, text, dateTime, timeAgo }
   items: { type: Array, default: () => [] }
 })
 
-const STORAGE_KEY = 'gatus:show-events'
+const PREFERENCE = 'show-events'
 
 const readExpanded = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'true'
+    return readPreference(PREFERENCE) === 'true'
   } catch (e) {
     return false
   }
@@ -57,7 +59,7 @@ const latest = computed(() => props.items[0] || null)
 const toggle = () => {
   expanded.value = !expanded.value
   try {
-    localStorage.setItem(STORAGE_KEY, expanded.value ? 'true' : 'false')
+    writePreference(PREFERENCE, expanded.value ? 'true' : 'false')
   } catch (e) {
     // The events keep working without the browser storage
   }

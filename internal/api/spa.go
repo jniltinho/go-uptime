@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -5,9 +7,9 @@ import (
 	_ "embed"
 	"html/template"
 
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/httpx"
-	static "gatus/v5/web"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	static "github.com/jniltinho/go-uptime/v7/web"
 
 	"github.com/TwiN/logr"
 	"github.com/labstack/echo/v5"

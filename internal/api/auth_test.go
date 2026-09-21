@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -12,11 +14,11 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -43,7 +45,7 @@ func newAuthTestConfig(t *testing.T) *config.Config {
 	cfg := &config.Config{
 		Security: &security.Config{Basic: newAuthTestBasicConfig(t, "secret")},
 		Admin:    &admin.Config{Enabled: true},
-		Storage:  &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10},
+		Storage:  &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10},
 	}
 	if err := store.Initialize(cfg.Storage); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
@@ -80,7 +82,7 @@ func doAuthTestRequest(t *testing.T, app *echo.Echo, method, path, body string, 
 	defer response.Body.Close()
 	result := authTestResponse{status: response.StatusCode, header: response.Header}
 	for _, cookie := range response.Cookies() {
-		if cookie.Name == "gatus_session" {
+		if cookie.Name == "go_uptime_session" {
 			result.session = cookie
 		}
 	}
@@ -97,7 +99,7 @@ func authTestHeader(key, value string) func(*http.Request) {
 
 func authTestSession(session *http.Cookie) func(*http.Request) {
 	return func(request *http.Request) {
-		request.AddCookie(&http.Cookie{Name: "gatus_session", Value: session.Value})
+		request.AddCookie(&http.Cookie{Name: "go_uptime_session", Value: session.Value})
 	}
 }
 

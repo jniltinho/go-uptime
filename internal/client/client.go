@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package client runs the checks of the endpoints: HTTP, gRPC, TCP, UDP, SCTP, TLS and STARTTLS, DNS, ICMP, SSH and
 // WebSocket. It also builds the HTTP client of an endpoint from its client configuration (timeout, redirects, proxy,
 // custom DNS resolver, OAuth2, Identity-Aware Proxy, mutual TLS and SSH tunnel). The HTTP client and the ICMP pinger
@@ -415,12 +417,12 @@ func ShouldRunPingerAsPrivileged() bool {
 	// linux should also be set to false, but there are potential complications
 	// See https://github.com/TwiN/gatus/pull/748 and https://github.com/TwiN/gatus/issues/697#issuecomment-2081700989
 	//
-	// Note that for this to work on Linux, Gatus must run with sudo privileges. (in certain cases)
+	// Note that for this to work on Linux, Go Uptime must run with sudo privileges. (in certain cases)
 	// See https://github.com/prometheus-community/pro-bing#linux
 	if runtime.GOOS == "windows" {
 		return true
 	}
-	// To actually check for cap_net_raw capabilities, we would need to add "kernel.org/pub/linux/libs/security/libcap/cap" to gatus.
+	// To actually check for cap_net_raw capabilities, we would need to add "kernel.org/pub/linux/libs/security/libcap/cap" to Go Uptime.
 	// Or use a syscall and check for permission errors, but this requires platform specific compilation
 	// As a backstop we can simply check the effective user id and run as privileged when running as root
 	return os.Geteuid() == 0

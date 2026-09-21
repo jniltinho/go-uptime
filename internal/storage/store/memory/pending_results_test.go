@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package memory
 
 import (
@@ -5,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // Pending results do not create events, and the other results are compared with the last healthy or unhealthy event

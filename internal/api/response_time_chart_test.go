@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package api
 
 import (
@@ -10,15 +12,15 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/endpoint/heartbeat"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/heartbeat"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 
 	"github.com/labstack/echo/v5"
 )
@@ -235,7 +237,7 @@ func TestResponseTimeChart_Public(t *testing.T) {
 
 func TestEndpointIntervalSeconds(t *testing.T) {
 	cfg := &config.Config{
-		Storage:   &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:   &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		Endpoints: []*endpoint.Endpoint{{Name: "site", Group: "file", Interval: 2 * time.Minute}},
 		ExternalEndpoints: []*endpoint.ExternalEndpoint{
 			{Name: "beat", Group: "file", Heartbeat: heartbeat.Config{Interval: 30 * time.Second}},

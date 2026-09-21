@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <Badge :variant="variant" class="flex items-center gap-1">
     <span :class="['w-2 h-2 rounded-full', dotClass]"></span>

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package config
 
 import (
@@ -17,7 +19,7 @@ security:
   oidc:
     issuer-url: "https://sso.example.com"
     redirect-url: "https://status.example.com/authorization-code/callback"
-    client-id: "gatus"
+    client-id: "go-uptime"
     client-secret: "secret"
     scopes: ["openid"]
 `
@@ -25,7 +27,7 @@ security:
 const adminTestSQLiteStorage = `
 storage:
   type: sqlite
-  path: /tmp/gatus-admin-test.db
+  path: /tmp/go-uptime-admin-test.db
 `
 
 const adminTestEndpoints = `

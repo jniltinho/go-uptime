@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package tunneling models the tunneling section of the YAML configuration: the named SSH tunnels that the clients
 // of the endpoints can go through. It validates the tunnels and keeps one shared connection per tunnel name.
 package tunneling
@@ -7,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"gatus/v5/internal/config/tunneling/sshtunnel"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling/sshtunnel"
 )
 
 // Config represents the tunneling configuration

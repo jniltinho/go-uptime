@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package slack implements the alerting provider that sends alerts to Slack through an incoming webhook.
 package slack
 
@@ -9,9 +11,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -111,7 +113,7 @@ type Body struct {
 }
 
 // Attachment is the coloured block of the message that carries the alert text: green when resolved, red when
-// triggered. Its title is the configured one, or a Gatus default.
+// triggered. Its title is the configured one, or a Go Uptime default.
 type Attachment struct {
 	Title  string  `json:"title"`
 	Text   string  `json:"text"`
@@ -163,7 +165,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		},
 	}
 	if len(body.Attachments[0].Title) == 0 {
-		body.Attachments[0].Title = ":helmet_with_white_cross: Gatus"
+		body.Attachments[0].Title = ":helmet_with_white_cross: Go Uptime"
 	}
 	if len(formattedConditionResults) > 0 {
 		body.Attachments[0].Fields = append(body.Attachments[0].Fields, Field{

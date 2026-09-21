@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the security.basic.password-bcrypt-base64 value of Gatus, without htpasswd.
+# Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+"""Generate the security.basic.password-bcrypt-base64 value of Go Uptime, without htpasswd.
 
-Since the binary has a command line, `gatus password hash` does the same without Python (see docs/cli.md). This script
+Since the binary has a command line, `go-uptime password hash` does the same without Python (see docs/cli.md). This script
 stays for whoever does not have the binary at hand.
 
 Equivalent to:
@@ -183,7 +184,7 @@ def read_password(from_stdin):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate security.basic.password-bcrypt-base64 for the config.yaml of Gatus, without htpasswd.")
+    parser = argparse.ArgumentParser(description="Generate security.basic.password-bcrypt-base64 for the config.yaml of Go Uptime, without htpasswd.")
     parser.add_argument("--username", help="also print the security and admin blocks of config.yaml with this username")
     parser.add_argument("--cost", type=int, default=10, help="bcrypt cost, from 4 to 31 (default: 10, like htpasswd -C 10)")
     parser.add_argument("--stdin", action="store_true", help="read the password from the standard input instead of asking for it")
@@ -199,7 +200,7 @@ def main():
         print("Warning: bcrypt only uses the first 72 bytes of the password.", file=sys.stderr)
 
     hashed, implementation = bcrypt_hash(password, args.cost, args.pure_python)
-    # Base64 with the URL alphabet (with padding), which is how Gatus decodes the value
+    # Base64 with the URL alphabet (with padding), which is how Go Uptime decodes the value
     value = base64.urlsafe_b64encode(hashed).decode("ascii")
 
     if args.username:

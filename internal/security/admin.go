@@ -1,10 +1,12 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package security
 
 import (
 	"net/http"
 
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
 	"github.com/labstack/echo/v5"
 )
 

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package signl4 implements the alerting provider that sends alerts to SIGNL4 through the team's inbound
 // webhook, whose URL is built from the team secret.
 package signl4
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -146,10 +148,12 @@ func (provider *AlertProvider) buildRequestBody(ep *endpoint.Endpoint, alert *al
 	}
 	message += conditionResults
 	body := Body{
-		Title:         title,
-		Message:       message,
-		XS4Service:    ep.DisplayName(),
-		XS4Status:     status,
+		Title:      title,
+		Message:    message,
+		XS4Service: ep.DisplayName(),
+		XS4Status:  status,
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the resolution is matched to the alert
+		// by this identifier, so another prefix would leave the alerts opened by v6 unresolved
 		XS4ExternalID: fmt.Sprintf("gatus-%s", ep.Key()),
 	}
 	bodyAsJSON, err := json.Marshal(body)

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package liveupdates notifies, in real time, the pages that watch an endpoint that a new result was stored for it
 // (fork). A notification carries no data: the pages fetch the endpoint again through the existing routes.
 package liveupdates

@@ -1,9 +1,10 @@
 ---
 name: create-release
-description: Cria a tag de versão e a GitHub Release de jniltinho/gatus (tags vX.Y.Z, SemVer simples), publica a imagem jniltinho/gatus no Docker Hub com make docker-release e ajusta as notas. Use quando pedirem para criar ou publicar uma release, gerar uma tag de versão ou publicar a imagem do fork.
+description: Cria a tag de versão e a GitHub Release de jniltinho/go-uptime (tags vX.Y.Z, SemVer simples), publica a imagem jniltinho/go-uptime no Docker Hub com make docker-release e ajusta as notas. Use quando pedirem para criar ou publicar uma release, gerar uma tag de versão ou publicar a imagem do fork.
 ---
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 
-# Releases de jniltinho/gatus
+# Releases de jniltinho/go-uptime
 
 Esta skill guia o processo completo de criar a tag de versão, a GitHub Release e a imagem de container.
 
@@ -26,12 +27,12 @@ echo "Última release: ${LAST_TAG:-none}"
 
 ## Esquema de versão
 
-SemVer simples, `vX.Y.Z`, a partir da `v6.0.0`. O projeto deixou de ser fork do TwiN/gatus, então a versão não segue mais a do upstream, e as tags `v5.36.0-fork.N` ficam só como histórico: nunca criar outra.
+SemVer simples, `vX.Y.Z`, a partir da `v6.0.0`. O projeto derivou do TwiN/gatus e é independente desde a v6.0.0 (chamou-se `jniltinho/gatus` até a v6.3.0 e go-uptime a partir da v7.0.0), então a versão não segue mais a do upstream, e as tags `v5.36.0-fork.N` ficam só como histórico: nunca criar outra.
 
 - **Z** (patch): correções, sem mudança de comportamento para quem opera.
 - **Y** (minor): recurso novo, compatível com a configuração e a API existentes.
 - **X** (major): mudança que exige ação de quem opera (configuração, API, linha de comando).
-- O módulo Go continua `gatus/v5`: nada fora de `internal/` é importável, então a versão maior da tag não precisa acompanhar.
+- O módulo Go é `github.com/jniltinho/go-uptime/v7`: o sufixo `/v7` acompanha a versão maior das tags. Uma futura `v8.0.0` exige trocar o caminho do módulo (go.mod, imports e os `-ldflags -X` do `Makefile` e do `Dockerfile`) no mesmo PR.
 
 ```bash
 NEXT=v6.0.1   # escolha pelo que mudou desde $LAST_TAG: git log --oneline "$LAST_TAG"..HEAD
@@ -79,7 +80,7 @@ O workflow não publica imagens. Com o checkout na tag:
 
 ```bash
 git checkout "$NEXT"
-make docker-release VERSION="${NEXT#v}"      # publica jniltinho/gatus:$NEXT (amd64 e arm64), nunca latest
+make docker-release VERSION="${NEXT#v}"      # publica jniltinho/go-uptime:$NEXT (amd64 e arm64), nunca latest
 git checkout master
 ```
 
@@ -95,9 +96,9 @@ cat > "/tmp/release-notes-$NEXT.md" << 'NOTES'
 ## ✨ Novidades
 - ...
 
-**Imagem:** `jniltinho/gatus:vX.Y.Z` (linux/amd64, linux/arm64)
+**Imagem:** `jniltinho/go-uptime:vX.Y.Z` (linux/amd64, linux/arm64)
 
-**Full Changelog**: https://github.com/jniltinho/gatus/compare/vANTERIOR...vNOVA
+**Full Changelog**: https://github.com/jniltinho/go-uptime/compare/vANTERIOR...vNOVA
 NOTES
 
 gh release edit "$NEXT" --title "$NEXT" --notes-file "/tmp/release-notes-$NEXT.md"
@@ -107,11 +108,11 @@ gh release edit "$NEXT" --title "$NEXT" --notes-file "/tmp/release-notes-$NEXT.m
 
 ```bash
 gh release view "$NEXT"
-docker buildx imagetools inspect "jniltinho/gatus:$NEXT"
+docker buildx imagetools inspect "jniltinho/go-uptime:$NEXT"
 ```
 
 - Título igual a `$NEXT`, sem marca de pré-release
-- Assets: `gatus_X.Y.Z_linux_amd64.tar.gz` e `gatus_X.Y.Z_linux_arm64.tar.gz`
+- Assets: `go-uptime_X.Y.Z_linux_amd64.tar.gz` e `go-uptime_X.Y.Z_linux_arm64.tar.gz`
 - Imagem com as plataformas `linux/amd64` e `linux/arm64`; a tag `latest` não foi alterada
 - Link de Full Changelog correto
 
@@ -124,8 +125,13 @@ publicada. Ele faz backup na versão antiga e restaura na nova, sobe a nova sobr
 Python de `docs/` contra as duas:
 
 ```bash
-OLD_IMAGE=jniltinho/gatus:$LAST_TAG NEW_IMAGE=<imagem candidata> test/e2e/upgrade.sh
+OLD_IMAGE=jniltinho/go-uptime:$LAST_TAG NEW_IMAGE=<imagem candidata> test/e2e/upgrade.sh
 ```
+
+Na **v7.0.0** a versão anterior foi publicada com o nome antigo: `OLD_IMAGE=jniltinho/gatus:v6.3.0`. É o teste que sustenta
+a promessa de `docs/migrating-from-gatus.md` (variáveis `GATUS_*`, `/gatus` na imagem, backups da v6, preferências do
+navegador), então ele continua valendo a pena durante a série 7.x: rode-o também contra `jniltinho/gatus:v6.3.0` quando
+uma mudança tocar em algo dessa lista.
 
 ### 7. Depois da release: versões dos exemplos
 
@@ -134,15 +140,15 @@ contam o que mudou numa versão ("restores on `v6.0.0`", link das notas) são hi
 
 ```bash
 OLD=${LAST_TAG#v}; NEW=${NEXT#v}
-grep -rlE "v$OLD|gatus_${OLD}_" README.md docs/*.md .examples | xargs sed -i -E \
-  "s#jniltinho/gatus:v$OLD#jniltinho/gatus:v$NEW#g; s#gatus_${OLD}_#gatus_${NEW}_#g; s#image\.tag=v$OLD#image.tag=v$NEW#g"
+grep -rlE "v$OLD|go-uptime_${OLD}_" README.md docs/*.md .examples | xargs sed -i -E \
+  "s#jniltinho/go-uptime:v$OLD#jniltinho/go-uptime:v$NEW#g; s#go-uptime_${OLD}_#go-uptime_${NEW}_#g; s#image\.tag=v$OLD#image.tag=v$NEW#g"
 ```
 
-`docs/install-linux.md` é a exceção: ele baixa `docs/systemd/gatus.service` **da tag**, então precisa citar a versão nova
+`docs/install-linux.md` é a exceção: ele baixa `docs/systemd/go-uptime.service` **da tag**, então precisa citar a versão nova
 já no commit que recebe a tag. Troque-o num PR **antes** da tag:
 
 ```bash
-sed -i "s/^VERSION=$OLD\$/VERSION=$NEW/; s#jniltinho/gatus/v$OLD/docs/systemd#jniltinho/gatus/v$NEW/docs/systemd#" docs/install-linux.md
+sed -i "s/^VERSION=$OLD\$/VERSION=$NEW/; s#jniltinho/go-uptime/v$OLD/docs/systemd#jniltinho/go-uptime/v$NEW/docs/systemd#" docs/install-linux.md
 grep -rnE "$OLD" README.md docs/*.md .examples   # o que sobrar deve ser só história
 ```
 
@@ -154,7 +160,7 @@ a release entrega, se houver.
 | Artefato | Onde | Status |
 |----------|------|--------|
 | Tarball `linux/amd64` e `linux/arm64` | GitHub Release (workflow) | ✅ |
-| Imagem `jniltinho/gatus:<tag>` amd64/arm64 | Docker Hub (`make docker-release`) | ✅ |
+| Imagem `jniltinho/go-uptime:<tag>` amd64/arm64 | Docker Hub (`make docker-release`) | ✅ |
 | Tag `latest` | — | ❌ intencionalmente: só tags de versão |
 | Publicação da imagem pelo workflow | — | ❌ ainda não; exigirá secrets do Docker Hub |
 | `.deb`/`.rpm`, outros sistemas | — | ❌ fora do escopo |

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package push resolves the pushes received through /api/push (fork): the push token of an endpoint identifies it,
 // and a global push key accepts push for every endpoint that receives push
 package push
@@ -7,12 +9,12 @@ import (
 	"crypto/subtle"
 	"strings"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
 )
 
 // Target is an endpoint that receives a push
@@ -20,7 +22,7 @@ type Target struct {
 	// Key is the key of the endpoint
 	Key string
 
-	// External is the external endpoint that receives the push, or nil for an active endpoint monitored by Gatus
+	// External is the external endpoint that receives the push, or nil for an active endpoint monitored by Go Uptime
 	External *endpoint.ExternalEndpoint
 
 	// Managed is whether the endpoint is managed through the administration, in which case the push is only accepted

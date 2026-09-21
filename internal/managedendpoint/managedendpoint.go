@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package managedendpoint parses, validates and serializes the endpoints managed through the administration API.
 package managedendpoint
 
@@ -7,11 +9,11 @@ import (
 	"slices"
 	"sort"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/alerting/provider"
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
 	"gopkg.in/yaml.v3"
 )
 

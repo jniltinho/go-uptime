@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package gitea implements the alerting provider that opens an issue in a Gitea repository when an alert is
 // triggered and closes it when the alert is resolved, through the Gitea API.
 package gitea
@@ -11,9 +13,9 @@ import (
 	"strings"
 
 	"code.gitea.io/sdk/gitea"
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -128,6 +130,8 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	if err != nil {
 		return err
 	}
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the issue is found again by the equality of
+	// this title, so another title would leave the issues opened by v6 unresolved
 	title := "alert(gatus): " + ep.DisplayName()
 	if !resolved {
 		_, _, err = cfg.giteaClient.CreateIssue(

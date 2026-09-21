@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Minimal YAML serializer for endpoint definitions (objects, arrays, strings, numbers and booleans)
 
 const RESERVED_SCALAR = /^(true|false|yes|no|on|off|null|~|[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)$/i

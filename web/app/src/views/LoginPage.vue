@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="relative min-h-screen bg-background px-4 text-foreground" data-testid="login-page">
     <div class="absolute right-4 top-4">

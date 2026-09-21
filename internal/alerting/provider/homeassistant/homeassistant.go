@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package homeassistant implements the alerting provider that fires a gatus_alert event in Home Assistant
 // through its REST API, authenticated with a long-lived access token.
 package homeassistant
@@ -9,10 +11,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,21 +26,46 @@ var (
 	ErrURLNotSet              = errors.New("url not set")
 	ErrTokenNotSet            = errors.New("token not set")
 	ErrDuplicateGroupOverride = errors.New("duplicate group override")
+	ErrInvalidEventType       = errors.New("event-type must have only letters, digits, underscores and hyphens")
 )
 
-// Config holds the base URL of the Home Assistant instance and the access token sent as a bearer token.
+// DefaultEventType is the event fired when event-type is not set. It is kept from Gatus on purpose (see AGENTS.md,
+// "Names kept from Gatus"): the automations of Home Assistant written on v6 listen to this event.
+const DefaultEventType = "gatus_alert"
+
+// eventTypePattern is what an event type may have, since it is part of the path of the request: no slash, and no dot
+// either, so that it can never be the segment "." or "..", which a proxy in between would resolve
+var eventTypePattern = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+
+// Config holds the base URL of the Home Assistant instance, the access token sent as a bearer token and, optionally,
+// the type of the event to fire.
 type Config struct {
 	URL   string `yaml:"url"`
 	Token string `yaml:"token"`
+
+	// EventType is the type of the event fired in Home Assistant, in the path of the request and in the event_type of
+	// its body. It defaults to DefaultEventType.
+	EventType string `yaml:"event-type,omitempty"`
 }
 
-// Validate checks that URL and Token are set.
+// GetEventType returns the type of the event to fire
+func (cfg *Config) GetEventType() string {
+	if len(cfg.EventType) == 0 {
+		return DefaultEventType
+	}
+	return cfg.EventType
+}
+
+// Validate checks that URL and Token are set and that the event type, when set, can be part of a path.
 func (cfg *Config) Validate() error {
 	if len(cfg.URL) == 0 {
 		return ErrURLNotSet
 	}
 	if len(cfg.Token) == 0 {
 		return ErrTokenNotSet
+	}
+	if len(cfg.EventType) > 0 && !eventTypePattern.MatchString(cfg.EventType) {
+		return ErrInvalidEventType
 	}
 	return nil
 }
@@ -49,6 +77,9 @@ func (cfg *Config) Merge(override *Config) {
 	}
 	if len(override.Token) > 0 {
 		cfg.Token = override.Token
+	}
+	if len(override.EventType) > 0 {
+		cfg.EventType = override.EventType
 	}
 }
 
@@ -89,8 +120,8 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	if err != nil {
 		return err
 	}
-	buffer := bytes.NewBuffer(provider.buildRequestBody(ep, alert, result, resolved))
-	request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/events/gatus_alert", cfg.URL), buffer)
+	buffer := bytes.NewBuffer(provider.buildRequestBody(cfg.GetEventType(), ep, alert, result, resolved))
+	request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/events/%s", cfg.URL, cfg.GetEventType()), buffer)
 	if err != nil {
 		return err
 	}
@@ -126,9 +157,9 @@ type Body struct {
 }
 
 // buildRequestBody builds the request body for the provider
-func (provider *AlertProvider) buildRequestBody(ep *endpoint.Endpoint, alert *alert.Alert, result *endpoint.Result, resolved bool) []byte {
+func (provider *AlertProvider) buildRequestBody(eventType string, ep *endpoint.Endpoint, alert *alert.Alert, result *endpoint.Result, resolved bool) []byte {
 	body := Body{
-		EventType: "gatus_alert",
+		EventType: eventType,
 		EventData: struct {
 			Status      string `json:"status"`
 			Endpoint    string `json:"endpoint"`

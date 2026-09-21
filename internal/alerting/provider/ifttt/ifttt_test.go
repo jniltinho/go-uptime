@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package ifttt
 
 import (
@@ -6,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -20,12 +22,12 @@ func TestAlertProvider_Validate(t *testing.T) {
 	}{
 		{
 			name:     "valid",
-			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "gatus_alert"}},
+			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "go_uptime_alert"}},
 			expected: nil,
 		},
 		{
 			name:     "invalid-webhook-key",
-			provider: AlertProvider{DefaultConfig: Config{EventName: "gatus_alert"}},
+			provider: AlertProvider{DefaultConfig: Config{EventName: "go_uptime_alert"}},
 			expected: ErrWebhookKeyNotSet,
 		},
 		{
@@ -58,15 +60,15 @@ func TestAlertProvider_Send(t *testing.T) {
 	}{
 		{
 			name:     "triggered",
-			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "gatus_alert"}},
+			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "go_uptime_alert"}},
 			alert:    alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			resolved: false,
 			mockRoundTripper: test.MockRoundTripper(func(r *http.Request) *http.Response {
 				if r.Host != "maker.ifttt.com" {
 					t.Errorf("expected host maker.ifttt.com, got %s", r.Host)
 				}
-				if r.URL.Path != "/trigger/gatus_alert/with/key/ifttt-webhook-key-123" {
-					t.Errorf("expected path /trigger/gatus_alert/with/key/ifttt-webhook-key-123, got %s", r.URL.Path)
+				if r.URL.Path != "/trigger/go_uptime_alert/with/key/ifttt-webhook-key-123" {
+					t.Errorf("expected path /trigger/go_uptime_alert/with/key/ifttt-webhook-key-123, got %s", r.URL.Path)
 				}
 				body := make(map[string]interface{})
 				json.NewDecoder(r.Body).Decode(&body)
@@ -88,12 +90,12 @@ func TestAlertProvider_Send(t *testing.T) {
 		},
 		{
 			name:     "resolved",
-			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "gatus_resolved"}},
+			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "go_uptime_resolved"}},
 			alert:    alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			resolved: true,
 			mockRoundTripper: test.MockRoundTripper(func(r *http.Request) *http.Response {
-				if r.URL.Path != "/trigger/gatus_resolved/with/key/ifttt-webhook-key-123" {
-					t.Errorf("expected path /trigger/gatus_resolved/with/key/ifttt-webhook-key-123, got %s", r.URL.Path)
+				if r.URL.Path != "/trigger/go_uptime_resolved/with/key/ifttt-webhook-key-123" {
+					t.Errorf("expected path /trigger/go_uptime_resolved/with/key/ifttt-webhook-key-123, got %s", r.URL.Path)
 				}
 				body := make(map[string]interface{})
 				json.NewDecoder(r.Body).Decode(&body)
@@ -111,7 +113,7 @@ func TestAlertProvider_Send(t *testing.T) {
 		},
 		{
 			name:     "error-response",
-			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "gatus_alert"}},
+			provider: AlertProvider{DefaultConfig: Config{WebhookKey: "ifttt-webhook-key-123", EventName: "go_uptime_alert"}},
 			alert:    alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			resolved: false,
 			mockRoundTripper: test.MockRoundTripper(func(r *http.Request) *http.Response {

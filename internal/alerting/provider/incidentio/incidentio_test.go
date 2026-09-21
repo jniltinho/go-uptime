@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package incidentio
 
 import (
@@ -7,10 +9,10 @@ import (
 	"net/http"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -202,7 +204,7 @@ func TestAlertProvider_BuildRequestBody(t *testing.T) {
 			Resolved:                   false,
 			ExpectedAlertSourceID:      "some-id",
 			ExpectedStatus:             "firing",
-			ExpectedTitle:              "Gatus: endpoint-name",
+			ExpectedTitle:              "Go Uptime: endpoint-name",
 			ExpectedDescription:        "An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1 and the following conditions:  🔴 [CONNECTED] == true  🔴 [STATUS] == 200  ",
 			ShouldHaveDeduplicationKey: true,
 		},
@@ -213,7 +215,7 @@ func TestAlertProvider_BuildRequestBody(t *testing.T) {
 			Resolved:                   true,
 			ExpectedAlertSourceID:      "some-id",
 			ExpectedStatus:             "resolved",
-			ExpectedTitle:              "Gatus: endpoint-name",
+			ExpectedTitle:              "Go Uptime: endpoint-name",
 			ExpectedDescription:        "An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2 and the following conditions:  🟢 [CONNECTED] == true  🟢 [STATUS] == 200  ",
 			ShouldHaveDeduplicationKey: true,
 		},
@@ -224,7 +226,7 @@ func TestAlertProvider_BuildRequestBody(t *testing.T) {
 			Resolved:                   true,
 			ExpectedAlertSourceID:      "some-id",
 			ExpectedStatus:             "resolved",
-			ExpectedTitle:              "Gatus: endpoint-name",
+			ExpectedTitle:              "Go Uptime: endpoint-name",
 			ExpectedDescription:        "An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2 and the following conditions:  🟢 [CONNECTED] == true  🟢 [STATUS] == 200  ",
 			ExpectedSourceURL:          "some-source-url",
 			ExpectedMetadata:           map[string]interface{}{"service": "some-service", "team": "very-core"},
@@ -237,7 +239,7 @@ func TestAlertProvider_BuildRequestBody(t *testing.T) {
 			Resolved:                   false,
 			ExpectedAlertSourceID:      "different-id",
 			ExpectedStatus:             "firing",
-			ExpectedTitle:              "Gatus: endpoint-name",
+			ExpectedTitle:              "Go Uptime: endpoint-name",
 			ExpectedDescription:        "An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1 and the following conditions:  🔴 [CONNECTED] == true  🔴 [STATUS] == 200  ",
 			ShouldHaveDeduplicationKey: true,
 		},

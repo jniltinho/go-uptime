@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package mattermost implements the alerting provider that sends alerts to a Mattermost channel through an
 // incoming webhook.
 package mattermost
@@ -10,9 +12,9 @@ import (
 	"io"
 	"net/http"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 
@@ -108,7 +110,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 }
 
 // Body is the JSON payload posted to the Mattermost webhook. The alert itself is carried by Attachments, and
-// Username and IconURL identify Gatus as the author.
+// Username and IconURL identify Go Uptime as the author.
 type Body struct {
 	Channel     string       `json:"channel,omitempty"` // Optional channel override
 	Text        string       `json:"text"`
@@ -163,12 +165,12 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	body := Body{
 		Channel:  cfg.Channel,
 		Text:     "",
-		Username: "gatus",
-		IconURL:  "https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png",
+		Username: "go-uptime",
+		IconURL:  "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
 		Attachments: []Attachment{
 			{
-				Title:    ":helmet_with_white_cross: Gatus",
-				Fallback: "Gatus - " + message,
+				Title:    ":helmet_with_white_cross: Go Uptime",
+				Fallback: "Go Uptime - " + message,
 				Text:     message + description,
 				Short:    false,
 				Color:    color,

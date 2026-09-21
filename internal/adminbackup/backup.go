@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package adminbackup
 
 import (
@@ -5,12 +7,12 @@ import (
 	"sort"
 	"time"
 
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage/store"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 var (
@@ -30,7 +32,7 @@ type Backup struct {
 	// Body is the content of the file: a File encoded in indented JSON or, when Encrypted, the envelope that seals it.
 	Body []byte
 
-	// Filename is the suggested name of the file, gatus-backup-YYYYMMDD-HHMMSS.json with the UTC time of the backup, or
+	// Filename is the suggested name of the file, go-uptime-backup-YYYYMMDD-HHMMSS.json with the UTC time of the backup, or
 	// the same name ending in .enc.json when Encrypted.
 	Filename string
 
@@ -69,13 +71,13 @@ func Build(author, password string) (*Backup, error) {
 	if len(body) > MaximumPlaintextBytes {
 		return nil, ErrTooLarge
 	}
-	backup := &Backup{Body: body, Filename: "gatus-backup-" + now.Format("20060102-150405") + ".json", Endpoints: len(file.Endpoints), StatusPages: len(file.StatusPages), PushKeys: len(file.PushKeys)}
+	backup := &Backup{Body: body, Filename: "go-uptime-backup-" + now.Format("20060102-150405") + ".json", Endpoints: len(file.Endpoints), StatusPages: len(file.StatusPages), PushKeys: len(file.PushKeys)}
 	if len(password) > 0 {
 		if backup.Body, err = Encrypt(body, password); err != nil {
 			return nil, err
 		}
 		backup.Encrypted = true
-		backup.Filename = "gatus-backup-" + now.Format("20060102-150405") + ".enc.json"
+		backup.Filename = "go-uptime-backup-" + now.Format("20060102-150405") + ".enc.json"
 	}
 	logr.Infof("[adminbackup.Build] Backup with %d endpoints, %d status pages and %d push keys (encrypted=%v) downloaded by %s", backup.Endpoints, backup.StatusPages, backup.PushKeys, backup.Encrypted, auditAuthor(author))
 	return backup, nil
@@ -96,7 +98,7 @@ func readRegistered(author string, now time.Time) (*File, error) {
 	if !endpointsOK || !statusPagesOK || !pushKeysOK {
 		return nil, ErrStorageNotSupported
 	}
-	file := &File{Format: Format, Version: Version, CreatedAt: now, CreatedBy: author, GatusVersion: gatusVersion(), Endpoints: []Endpoint{}, StatusPages: []StatusPage{}, PushKeys: []PushKey{}}
+	file := &File{Format: Format, Version: Version, CreatedAt: now, CreatedBy: author, AppVersion: appVersion(), Endpoints: []Endpoint{}, StatusPages: []StatusPage{}, PushKeys: []PushKey{}}
 	storedEndpoints, err := managedEndpointStore.ListManagedEndpoints()
 	if err != nil {
 		return nil, err

@@ -1,3 +1,4 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: with three themes a button that toggles does not say where it goes. This is a button that shows the theme in
        use and opens a menu with one option per theme, used by the settings of the dashboard, the header of the public
@@ -121,10 +122,10 @@ const handleThemeChange = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleOutsideClick)
-  window.addEventListener('gatus:theme', handleThemeChange)
+  window.addEventListener('go-uptime:theme', handleThemeChange)
 })
 onUnmounted(() => {
   document.removeEventListener('click', handleOutsideClick)
-  window.removeEventListener('gatus:theme', handleThemeChange)
+  window.removeEventListener('go-uptime:theme', handleThemeChange)
 })
 </script>

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 // Package ui models the ui section of the YAML configuration: the texts, logo, favicons, buttons, custom CSS, theme
 // and default sorting and filtering of the dashboard. It validates the section, applies its defaults and makes sure
 // that the index template renders with it.
@@ -9,9 +11,9 @@ import (
 	"html/template"
 	"strings"
 
-	"gatus/v5/internal/storage"
-	static "gatus/v5/web"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	static "github.com/jniltinho/go-uptime/v7/web"
 )
 
 const (
@@ -52,7 +54,7 @@ var (
 	ErrInvalidDefaultFilterBy = errors.New("invalid default-filter-by value: must be 'none', 'failing', or 'unstable'")
 )
 
-// Config is the configuration for the UI of Gatus
+// Config is the configuration for the UI of Go Uptime
 type Config struct {
 	Title               string   `yaml:"title,omitempty"`                // Title of the page
 	Description         string   `yaml:"description,omitempty"`          // Meta description of the page

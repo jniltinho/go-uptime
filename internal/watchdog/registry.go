@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package watchdog
 
 import (
@@ -7,11 +9,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/metrics"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
 )
 
 // Source identifies what an endpoint monitored by the watchdog comes from

@@ -1,3 +1,5 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
+
 package zulip
 
 import (
@@ -7,10 +9,10 @@ import (
 	"net/url"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {
@@ -283,8 +285,8 @@ func TestAlertProvider_Send(t *testing.T) {
 		if req.Header.Get("Content-Type") != "application/x-www-form-urlencoded" {
 			t.Errorf("ExpectedError Content-Type header to be application/x-www-form-urlencoded, got %s", req.Header.Get("Content-Type"))
 		}
-		if req.Header.Get("User-Agent") != "Gatus" {
-			t.Errorf("ExpectedError User-Agent header to be Gatus, got %s", req.Header.Get("User-Agent"))
+		if req.Header.Get("User-Agent") != "go-uptime/1.0" {
+			t.Errorf("ExpectedError User-Agent header to be go-uptime/1.0, got %s", req.Header.Get("User-Agent"))
 		}
 	}
 	basicConfig := Config{
