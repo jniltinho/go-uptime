@@ -125,7 +125,7 @@ func contractConfig(t *testing.T) *config.Config {
 		Security:    &security.Config{Basic: &security.BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: hash("secret")}},
 		Admin:       &admin.Config{Enabled: true},
 		Maintenance: &maintenance.Config{Enabled: &disabled},
-		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		// "100%" and "%61pi" are there for the escaping: %61 is "a", so a key unescaped once too many becomes core_api,
 		// which is ANOTHER endpoint, with another state
 		Endpoints:         []*endpoint.Endpoint{newEndpoint("api", "core"), newEndpoint("db", "core"), newEndpoint("100%", "core"), newEndpoint("%61pi", "core")},

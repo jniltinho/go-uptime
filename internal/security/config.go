@@ -20,7 +20,7 @@ const (
 	cookieNameSession = "go_uptime_session"
 )
 
-// Config is the security configuration for Gatus
+// Config is the security configuration for Go Uptime
 type Config struct {
 	Basic *BasicConfig `yaml:"basic,omitempty"`
 	OIDC  *OIDCConfig  `yaml:"oidc,omitempty"`

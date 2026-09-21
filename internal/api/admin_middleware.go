@@ -29,7 +29,7 @@ var adminMediaTypes = []string{"application/json", "application/yaml", "applicat
 //
 // The expected origin is derived only from the Host header and the scheme (TLS or X-Forwarded-Proto). Pages cannot
 // set Host, Origin or Sec-Fetch-* and a cross-site request with a custom header such as X-Forwarded-Proto requires a
-// CORS preflight that Gatus does not allow, so this is safe against CSRF. X-Forwarded-Host is ignored on purpose, and
+// CORS preflight that Go Uptime does not allow, so this is safe against CSRF. X-Forwarded-Host is ignored on purpose, and
 // so is Echo's Scheme(), which trusts any X-Forwarded-* header.
 //
 // GET, HEAD and OPTIONS pass untouched. For POST, PUT, PATCH and DELETE it answers, with the body {"error": "..."}: 403

@@ -113,7 +113,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 }
 
 // Body is the MessageCard posted to the Teams webhook. ThemeColor is green when resolved and red when
-// triggered, and Title falls back to a Gatus default.
+// triggered, and Title falls back to a Go Uptime default.
 type Body struct {
 	Type       string    `json:"@type"`
 	Context    string    `json:"@context"`

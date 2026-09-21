@@ -108,7 +108,7 @@ type Config struct {
 	// Push is the configuration of the push monitoring: global push keys and endpoints that receive push (fork)
 	Push *push.Config `yaml:"push,omitempty"`
 
-	// Security is the configuration for securing access to Gatus
+	// Security is the configuration for securing access to Go Uptime
 	Security *security.Config `yaml:"security,omitempty"`
 
 	// Alerting is the configuration for alerting providers
@@ -135,7 +135,7 @@ type Config struct {
 	// Maintenance is the configuration for creating a maintenance window in which no alerts are sent
 	Maintenance *maintenance.Config `yaml:"maintenance,omitempty"`
 
-	// Remote is the configuration for remote Gatus instances
+	// Remote is the configuration for remote Go Uptime instances
 	// WARNING: This is in ALPHA and may change or be completely removed in the future
 	Remote *remote.Config `yaml:"remote,omitempty"`
 
@@ -310,15 +310,15 @@ func walkConfigDir(path string, fn fs.WalkDirFunc) error {
 	})
 }
 
-// parseAndValidateConfigBytes parses a Gatus configuration file into a Config struct and validates its parameters
+// parseAndValidateConfigBytes parses a Go Uptime configuration file into a Config struct and validates its parameters
 func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
-	// Replace $$ with __GATUS_LITERAL_DOLLAR_SIGN__ to prevent os.ExpandEnv from treating "$$" as if it was an
-	// environment variable. This allows Gatus to support literal "$" in the configuration file.
-	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "$$", "__GATUS_LITERAL_DOLLAR_SIGN__"))
+	// Replace $$ with __GO_UPTIME_LITERAL_DOLLAR_SIGN__ to prevent os.ExpandEnv from treating "$$" as if it was an
+	// environment variable. This allows Go Uptime to support literal "$" in the configuration file.
+	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "$$", "__GO_UPTIME_LITERAL_DOLLAR_SIGN__"))
 	// Expand environment variables
 	yamlBytes = []byte(os.ExpandEnv(string(yamlBytes)))
-	// Replace __GATUS_LITERAL_DOLLAR_SIGN__ with "$" to restore the literal "$" in the configuration file
-	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "__GATUS_LITERAL_DOLLAR_SIGN__", "$"))
+	// Replace __GO_UPTIME_LITERAL_DOLLAR_SIGN__ with "$" to restore the literal "$" in the configuration file
+	yamlBytes = []byte(strings.ReplaceAll(string(yamlBytes), "__GO_UPTIME_LITERAL_DOLLAR_SIGN__", "$"))
 	// Parse configuration file
 	if err = yaml.Unmarshal(yamlBytes, &config); err != nil {
 		return

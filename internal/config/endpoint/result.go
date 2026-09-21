@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Result of the evaluation of an Endpoint: the outcome of one health check made by Gatus, or of one result pushed
+// Result of the evaluation of an Endpoint: the outcome of one health check made by Go Uptime, or of one result pushed
 // to an external endpoint. It is serialized in the status API responses; the fields tagged json:"-" are only used
 // while evaluating the conditions.
 type Result struct {
@@ -39,7 +39,7 @@ type Result struct {
 	// Message is the message of a pushed result (fork). It is never part of the public status pages.
 	Message string `json:"message,omitempty"`
 
-	// Origin is where the result comes from (fork): ResultOriginPush for pushed results, empty for the checks of Gatus
+	// Origin is where the result comes from (fork): ResultOriginPush for pushed results, empty for the checks of Go Uptime
 	Origin string `json:"origin,omitempty"`
 
 	// Pending is whether the result is pending (fork): a push with status=pending, or a failure of a push endpoint

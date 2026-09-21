@@ -28,7 +28,7 @@ func newAlertStateTestEndpoint(alertEnabled bool) *endpoint.Endpoint {
 }
 
 func TestRestorePersistedTriggeredAlerts(t *testing.T) {
-	err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50})
+	err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50})
 	if err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}

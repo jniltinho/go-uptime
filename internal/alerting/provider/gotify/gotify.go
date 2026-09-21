@@ -27,7 +27,7 @@ var (
 )
 
 // Config holds the address and the application token of the Gotify server and the priority and title of the
-// messages. An empty Title means Gatus followed by the display name of the endpoint.
+// messages. An empty Title means Go Uptime followed by the display name of the endpoint.
 type Config struct {
 	ServerURL string `yaml:"server-url"`         // URL of the Gotify server
 	Token     string `yaml:"token"`              // Token to use when sending a message to the Gotify server

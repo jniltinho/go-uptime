@@ -395,7 +395,7 @@ func (s *Store) insertEndpointResultWithoutRetry(ep *endpoint.Endpoint, result *
 	}
 	// Clean up outdated uptime entries
 	// In most cases, this would be handled by mergeHourlyUptimeEntriesOlderThanMergeThresholdIntoDailyUptimeEntries,
-	// but if Gatus was temporarily shut down, we might have some old entries that need to be cleaned up
+	// but if Go Uptime was temporarily shut down, we might have some old entries that need to be cleaned up
 	ageOfOldestUptimeEntry, err := s.getAgeOfOldestEndpointUptimeEntry(tx, endpointID)
 	if err != nil {
 		logr.Errorf("[sql.InsertEndpointResult] Failed to retrieve oldest endpoint uptime entry for endpoint with key=%s: %s", ep.Key(), err.Error())

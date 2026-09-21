@@ -111,7 +111,7 @@ type Body struct {
 }
 
 // Attachment is the coloured block of the message that carries the alert text: green when resolved, red when
-// triggered. Its title is the configured one, or a Gatus default.
+// triggered. Its title is the configured one, or a Go Uptime default.
 type Attachment struct {
 	Title  string  `json:"title"`
 	Text   string  `json:"text"`

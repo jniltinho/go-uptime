@@ -55,7 +55,7 @@ func Monitor(cfg *config.Config) {
 	for _, externalEndpoint := range cfg.ExternalEndpoints {
 		// Check if the external endpoint is enabled and is using heartbeat
 		// If the external endpoint does not use heartbeat, then it does not need to be monitored periodically, because
-		// alerting is checked every time an external endpoint is pushed to Gatus, unlike normal endpoints.
+		// alerting is checked every time an external endpoint is pushed to Go Uptime, unlike normal endpoints.
 		if externalEndpoint.IsEnabled() && externalEndpoint.Heartbeat.Interval > 0 {
 			// Fork: the heartbeat is in the registry, so that it can be stopped by key
 			if err := endpoints.startExternal(externalEndpoint, SourceConfig); err != nil {

@@ -17,10 +17,10 @@ import (
 
 // TestMeasureEndpointLimit is the reproducible measurement behind the ceiling of maximum-endpoints-per-page and the
 // memory budget of the cache: 1000 endpoints with 50 results each, shown by several pages. It only runs with
-// GATUS_MEASURE_ENDPOINT_LIMIT=1, and its numbers are in docs/status-pages.md.
+// GO_UPTIME_MEASURE_ENDPOINT_LIMIT=1, and its numbers are in docs/status-pages.md.
 func TestMeasureEndpointLimit(t *testing.T) {
-	if os.Getenv("GATUS_MEASURE_ENDPOINT_LIMIT") != "1" {
-		t.Skip("set GATUS_MEASURE_ENDPOINT_LIMIT=1 to measure")
+	if os.Getenv("GO_UPTIME_MEASURE_ENDPOINT_LIMIT") != "1" {
+		t.Skip("set GO_UPTIME_MEASURE_ENDPOINT_LIMIT=1 to measure")
 	}
 	if err := store.Initialize(&storage.Config{Type: storage.TypeMemory, MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}); err != nil {
 		t.Fatal(err)

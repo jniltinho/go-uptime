@@ -72,7 +72,7 @@ type Item struct {
 	Group string `json:"group"`
 
 	// Type is the kind of check, derived from the URL: DNS, TCP, SCTP, UDP, ICMP, STARTTLS, TLS, HTTP, GRPC, WEBSOCKET,
-	// SSH or UNKNOWN, or PUSH for an endpoint that is not checked by Gatus and only receives its results through
+	// SSH or UNKNOWN, or PUSH for an endpoint that is not checked by Go Uptime and only receives its results through
 	// /api/push. It is omitted when a managed endpoint has no URL or its definition cannot be decoded.
 	Type string `json:"type,omitempty"`
 

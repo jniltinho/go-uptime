@@ -131,7 +131,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-// Fork: the Inter of the interface is served by Gatus itself, from the embedded static files
+// Fork: the Inter of the interface is served by Go Uptime itself, from the embedded static files
 func TestFontsAreServed(t *testing.T) {
 	for _, path := range []string{"/fonts/inter-4-1-latin.woff2", "/fonts/inter-4-1-latin-ext.woff2"} {
 		t.Run(path, func(t *testing.T) {

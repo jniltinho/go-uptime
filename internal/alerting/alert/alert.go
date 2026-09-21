@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	// ErrAlertWithInvalidDescription is the error with which Gatus will panic if an alert has an invalid character
+	// ErrAlertWithInvalidDescription is the error with which Go Uptime will panic if an alert has an invalid character
 	ErrAlertWithInvalidDescription = errors.New("alert description must not have \" or \\")
 
 	// ErrAlertWithInvalidMinimumReminderInterval is returned by Alert.ValidateAndSetDefaults when

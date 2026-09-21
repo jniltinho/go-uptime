@@ -1871,14 +1871,14 @@ endpoints:
 }
 
 func TestParseAndValidateConfigBytesWithLiteralDollarSign(t *testing.T) {
-	os.Setenv("GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign", "whatever")
+	os.Setenv("GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign", "whatever")
 	config, err := parseAndValidateConfigBytes([]byte(`
 endpoints:
   - name: website
     url: https://twin.sh/health
     conditions:
-      - "[BODY] == $$GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign"
-      - "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign"
+      - "[BODY] == $$GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign"
+      - "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign"
 `))
 	if err != nil {
 		t.Error("expected no error, got", err.Error())
@@ -1889,8 +1889,8 @@ endpoints:
 	if config.Endpoints[0].URL != "https://twin.sh/health" {
 		t.Errorf("URL should have been %s", "https://twin.sh/health")
 	}
-	if config.Endpoints[0].Conditions[0] != "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign" {
-		t.Errorf("Condition should have been %s", "[BODY] == $GATUS_TestParseAndValidateConfigBytesWithLiteralDollarSign")
+	if config.Endpoints[0].Conditions[0] != "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign" {
+		t.Errorf("Condition should have been %s", "[BODY] == $GO_UPTIME_TestParseAndValidateConfigBytesWithLiteralDollarSign")
 	}
 	if config.Endpoints[0].Conditions[1] != "[BODY] == whatever" {
 		t.Errorf("Condition should have been %s", "[BODY] == whatever")

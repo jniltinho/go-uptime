@@ -29,7 +29,7 @@ const (
 )
 
 var (
-	// ErrPushNotTestable is returned when testing a push endpoint, which Gatus does not check
+	// ErrPushNotTestable is returned when testing a push endpoint, which Go Uptime does not check
 	ErrPushNotTestable = errors.New("push endpoints cannot be tested: send a push to their URL instead")
 
 	// ErrPushTokenInUse is returned when the push token of an endpoint is already used
@@ -51,7 +51,7 @@ type PushOption struct {
 // Parsed is a decoded managed endpoint definition: an active endpoint, which may receive push, or a push endpoint.
 // Exactly one of Endpoint and Push is set, except for a Parsed built from a state in conflict or invalid.
 type Parsed struct {
-	// Endpoint is the active endpoint, checked by Gatus
+	// Endpoint is the active endpoint, checked by Go Uptime
 	Endpoint *endpoint.Endpoint
 
 	// PushOption is the push option of the active endpoint, if any

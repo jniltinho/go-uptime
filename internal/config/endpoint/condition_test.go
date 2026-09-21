@@ -432,7 +432,7 @@ func TestCondition_evaluate(t *testing.T) {
 			ExpectedOutput:  "[BODY].data.id (1) > 5",
 		},
 		{
-			Name:            "body-jsonpath-float-using-greater-than-issue433", // As of v5.3.1, Gatus will convert a float to an int. We're losing precision, but it's better than just returning 0
+			Name:            "body-jsonpath-float-using-greater-than-issue433", // As of v5.3.1, Go Uptime will convert a float to an int. We're losing precision, but it's better than just returning 0
 			Condition:       Condition("[BODY].balance > 100"),
 			Result:          &Result{Body: []byte(`{"balance": "123.40000000000005"}`)},
 			ExpectedSuccess: true,
@@ -743,7 +743,7 @@ func TestCondition_evaluate(t *testing.T) {
 		{
 			Name:                        "has-key-of-map",
 			Condition:                   Condition("has([BODY].article) == true"),
-			Result:                      &Result{Body: []byte("{\n  \"article\": {\n    \"id\": 123,\n    \"title\": \"Hello, world!\",\n    \"author\": \"John Doe\",\n    \"tags\": [\"hello\", \"world\"],\n    \"content\": \"I really like Gatus!\"\n  }\n}")},
+			Result:                      &Result{Body: []byte("{\n  \"article\": {\n    \"id\": 123,\n    \"title\": \"Hello, world!\",\n    \"author\": \"John Doe\",\n    \"tags\": [\"hello\", \"world\"],\n    \"content\": \"I really like Go Uptime!\"\n  }\n}")},
 			DontResolveFailedConditions: false,
 			ExpectedSuccess:             true,
 			ExpectedOutput:              "has([BODY].article) == true",

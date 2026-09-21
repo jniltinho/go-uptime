@@ -16,7 +16,7 @@ import (
 )
 
 // The conformance tests run the same scenarios on every available database, SQLite always, PostgreSQL with
-// GATUS_TEST_POSTGRES_URL and MySQL and MariaDB with GATUS_TEST_MYSQL_URL and GATUS_TEST_MARIADB_URL (fork), and
+// GO_UPTIME_TEST_POSTGRES_URL and MySQL and MariaDB with GO_UPTIME_TEST_MYSQL_URL and GO_UPTIME_TEST_MARIADB_URL (fork), and
 // compare what the store returns with what it returns with SQLite.
 
 type conformanceStore struct {
@@ -32,7 +32,7 @@ func newConformanceStores(t *testing.T, maximumNumberOfResults, maximumNumberOfE
 	}
 	t.Cleanup(sqliteStore.Close)
 	stores := []conformanceStore{{name: "sqlite", store: sqliteStore}}
-	if url := os.Getenv("GATUS_TEST_POSTGRES_URL"); len(url) > 0 {
+	if url := os.Getenv("GO_UPTIME_TEST_POSTGRES_URL"); len(url) > 0 {
 		postgresStore, err := NewStore("postgres", url, false, maximumNumberOfResults, maximumNumberOfEvents)
 		if err != nil {
 			t.Fatalf("failed to create the postgres store: %v", err)

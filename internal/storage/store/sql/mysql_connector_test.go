@@ -15,14 +15,14 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-// mysqlTestServers returns the DSNs of the MySQL and MariaDB test servers, from GATUS_TEST_MYSQL_URL and
-// GATUS_TEST_MARIADB_URL. The DSN user must be allowed to create databases.
+// mysqlTestServers returns the DSNs of the MySQL and MariaDB test servers, from GO_UPTIME_TEST_MYSQL_URL and
+// GO_UPTIME_TEST_MARIADB_URL. The DSN user must be allowed to create databases.
 func mysqlTestServers() map[string]string {
 	servers := make(map[string]string)
-	if dsn := os.Getenv("GATUS_TEST_MYSQL_URL"); len(dsn) > 0 {
+	if dsn := os.Getenv("GO_UPTIME_TEST_MYSQL_URL"); len(dsn) > 0 {
 		servers["mysql"] = dsn
 	}
-	if dsn := os.Getenv("GATUS_TEST_MARIADB_URL"); len(dsn) > 0 {
+	if dsn := os.Getenv("GO_UPTIME_TEST_MARIADB_URL"); len(dsn) > 0 {
 		servers["mariadb"] = dsn
 	}
 	return servers
@@ -65,7 +65,7 @@ func forEachMySQLTestServer(t *testing.T, test func(t *testing.T, dsn string)) {
 	t.Helper()
 	servers := mysqlTestServers()
 	if len(servers) == 0 {
-		t.Skip("GATUS_TEST_MYSQL_URL and GATUS_TEST_MARIADB_URL are not set")
+		t.Skip("GO_UPTIME_TEST_MYSQL_URL and GO_UPTIME_TEST_MARIADB_URL are not set")
 	}
 	for name, dsn := range servers {
 		t.Run(name, func(t *testing.T) {

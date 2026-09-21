@@ -49,7 +49,7 @@ func ValidateAdminConfig(config *Config) error {
 		}
 	}
 	if config.Storage.Type == storage.TypePostgres || config.Storage.Type == storage.TypeMySQL {
-		logr.Warn("[config.ValidateAdminConfig] With multiple Gatus instances sharing the same PostgreSQL, MySQL or MariaDB database, endpoint changes made through the administration only apply to the other instances after they restart or reload their configuration")
+		logr.Warn("[config.ValidateAdminConfig] With multiple Go Uptime instances sharing the same PostgreSQL, MySQL or MariaDB database, endpoint changes made through the administration only apply to the other instances after they restart or reload their configuration")
 	}
 	return nil
 }

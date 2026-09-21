@@ -108,7 +108,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 }
 
 // Body is the JSON payload posted to the Mattermost webhook. The alert itself is carried by Attachments, and
-// Username and IconURL identify Gatus as the author.
+// Username and IconURL identify Go Uptime as the author.
 type Body struct {
 	Channel     string       `json:"channel,omitempty"` // Optional channel override
 	Text        string       `json:"text"`

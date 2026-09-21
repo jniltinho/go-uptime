@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	// ErrEndpointWithNoName is the error with which Gatus will panic if an endpoint is configured with no name
+	// ErrEndpointWithNoName is the error with which Go Uptime will panic if an endpoint is configured with no name
 	ErrEndpointWithNoName = errors.New("you must specify a name for each endpoint")
 
-	// ErrEndpointWithInvalidNameOrGroup is the error with which Gatus will panic if an endpoint has an invalid character where it shouldn't
+	// ErrEndpointWithInvalidNameOrGroup is the error with which Go Uptime will panic if an endpoint has an invalid character where it shouldn't
 	ErrEndpointWithInvalidNameOrGroup = errors.New("endpoint name and group must not have \" or \\")
 )
 

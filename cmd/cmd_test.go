@@ -97,7 +97,7 @@ func TestResolveConfigPath(t *testing.T) {
 		{name: "the current variable wins over the deprecated one", environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
 		{name: "the name that the variable had in Gatus", environment: map[string]string{LegacyConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
 		{name: "the new name wins over the one of Gatus", environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigPathEnvVar: fromFlag}, expected: fromEnvironment},
-		{name: "the one of Gatus wins over the deprecated one", environment: map[string]string{LegacyConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
+		{name: "the one of Go Uptime wins over the deprecated one", environment: map[string]string{LegacyConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromFlag}, expected: fromEnvironment},
 		{name: "an empty new name does not hide the one of Gatus", environment: map[string]string{ConfigPathEnvVar: "", LegacyConfigPathEnvVar: fromEnvironment}, expected: fromEnvironment},
 		{name: "empty names do not hide the deprecated one", environment: map[string]string{ConfigPathEnvVar: "", LegacyConfigPathEnvVar: "", LegacyConfigFileEnvVar: fromEnvironment}, expected: fromEnvironment},
 		{name: "the flag wins over every variable", arguments: []string{"--config", fromFlag}, environment: map[string]string{ConfigPathEnvVar: fromEnvironment, LegacyConfigPathEnvVar: fromEnvironment, LegacyConfigFileEnvVar: fromEnvironment}, expected: fromFlag},
@@ -263,7 +263,7 @@ func TestConfigValidate(t *testing.T) {
 		}
 	})
 	t.Run("opens-no-storage", func(t *testing.T) {
-		database := filepath.Join(t.TempDir(), "gatus.db")
+		database := filepath.Join(t.TempDir(), "go-uptime.db")
 		withStorage := validConfiguration + "storage:\n  type: sqlite\n  path: " + database + "\n"
 		if _, err := execute(t, "", "config", "validate", "--config", writeConfiguration(t, withStorage)); err != nil {
 			t.Fatalf("expected a valid configuration, got %v", err)

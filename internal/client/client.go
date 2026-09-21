@@ -415,7 +415,7 @@ func ShouldRunPingerAsPrivileged() bool {
 	// linux should also be set to false, but there are potential complications
 	// See https://github.com/TwiN/gatus/pull/748 and https://github.com/TwiN/gatus/issues/697#issuecomment-2081700989
 	//
-	// Note that for this to work on Linux, Gatus must run with sudo privileges. (in certain cases)
+	// Note that for this to work on Linux, Go Uptime must run with sudo privileges. (in certain cases)
 	// See https://github.com/prometheus-community/pro-bing#linux
 	if runtime.GOOS == "windows" {
 		return true

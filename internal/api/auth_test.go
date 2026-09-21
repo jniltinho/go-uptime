@@ -43,7 +43,7 @@ func newAuthTestConfig(t *testing.T) *config.Config {
 	cfg := &config.Config{
 		Security: &security.Config{Basic: newAuthTestBasicConfig(t, "secret")},
 		Admin:    &admin.Config{Enabled: true},
-		Storage:  &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10},
+		Storage:  &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 10, MaximumNumberOfEvents: 10},
 	}
 	if err := store.Initialize(cfg.Storage); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)

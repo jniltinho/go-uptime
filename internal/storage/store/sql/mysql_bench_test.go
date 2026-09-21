@@ -15,7 +15,7 @@ import (
 func BenchmarkMySQLInsertEndpointResult(b *testing.B) {
 	servers := mysqlTestServers()
 	if len(servers) == 0 {
-		b.Skip("GATUS_TEST_MYSQL_URL and GATUS_TEST_MARIADB_URL are not set")
+		b.Skip("GO_UPTIME_TEST_MYSQL_URL and GO_UPTIME_TEST_MARIADB_URL are not set")
 	}
 	for _, name := range []string{"mysql", "mariadb"} {
 		dsn, exists := servers[name]

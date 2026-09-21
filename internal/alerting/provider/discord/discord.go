@@ -24,7 +24,7 @@ var (
 )
 
 // Config holds the webhook URL and the optional title and content of the message. An empty Title means
-// the default Gatus title.
+// the default Go Uptime title.
 type Config struct {
 	WebhookURL     string `yaml:"webhook-url"`
 	Title          string `yaml:"title,omitempty"`           // Title of the message that will be sent

@@ -79,19 +79,19 @@ const (
 )
 
 var (
-	// ErrEndpointWithNoCondition is the error with which Gatus will panic if an endpoint is configured with no conditions
+	// ErrEndpointWithNoCondition is the error with which Go Uptime will panic if an endpoint is configured with no conditions
 	ErrEndpointWithNoCondition = errors.New("you must specify at least one condition per endpoint")
 
-	// ErrEndpointWithNoURL is the error with which Gatus will panic if an endpoint is configured with no url
+	// ErrEndpointWithNoURL is the error with which Go Uptime will panic if an endpoint is configured with no url
 	ErrEndpointWithNoURL = errors.New("you must specify an url for each endpoint")
 
-	// ErrUnknownEndpointType is the error with which Gatus will panic if an endpoint has an unknown type
+	// ErrUnknownEndpointType is the error with which Go Uptime will panic if an endpoint has an unknown type
 	ErrUnknownEndpointType = errors.New("unknown endpoint type")
 
-	// ErrInvalidConditionFormat is the error with which Gatus will panic if a condition has an invalid format
+	// ErrInvalidConditionFormat is the error with which Go Uptime will panic if a condition has an invalid format
 	ErrInvalidConditionFormat = errors.New("invalid condition format: does not match '<VALUE> <COMPARATOR> <VALUE>'")
 
-	// ErrInvalidEndpointIntervalForDomainExpirationPlaceholder is the error with which Gatus will panic if an endpoint
+	// ErrInvalidEndpointIntervalForDomainExpirationPlaceholder is the error with which Go Uptime will panic if an endpoint
 	// has both an interval smaller than 5 minutes and a condition with DomainExpirationPlaceholder.
 	// This is because the free whois service we are using should not be abused, especially considering the fact that
 	// the data takes a while to be updated.

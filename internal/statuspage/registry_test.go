@@ -55,7 +55,7 @@ func loadTestConfig(t *testing.T, yaml string) *config.Config {
 
 func initializeSQLiteStore(t *testing.T) store.ManagedStatusPageStore {
 	t.Helper()
-	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}); err != nil {
+	if err := store.Initialize(&storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50}); err != nil {
 		t.Fatalf("failed to initialize store: %v", err)
 	}
 	t.Cleanup(func() { store.Get().Close() })

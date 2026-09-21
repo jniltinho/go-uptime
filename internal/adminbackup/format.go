@@ -20,7 +20,7 @@ const (
 	// that a backup made before the change of name can be restored, and never written.
 	LegacyFormat = "gatus-admin-backup"
 
-	// Version is the version of the backup file written by this version of Gatus, and the highest one it reads
+	// Version is the version of the backup file written by this version of Go Uptime, and the highest one it reads
 	Version = 1
 
 	// MaximumPlaintextBytes is the maximum size of a backup file without encryption
@@ -51,7 +51,7 @@ type File struct {
 	Format string `json:"format"`
 
 	// Version is the version of the format of the file. It is 1, and a restore refuses a value below 1 or above the
-	// version written by the running Gatus.
+	// version written by the running Go Uptime.
 	Version int `json:"version"`
 
 	// CreatedAt is when the backup was made, as an RFC 3339 timestamp in UTC. It is only informative.

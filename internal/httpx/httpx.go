@@ -1,4 +1,4 @@
-// Package httpx holds what the handlers need from the HTTP framework, in one place. Gatus moved from Fiber (fasthttp)
+// Package httpx holds what the handlers need from the HTTP framework, in one place. Go Uptime moved from Fiber (fasthttp)
 // to Echo v5 (net/http), and several methods kept their name while changing their meaning: echo.Context.Get reads the
 // store of the request and not a header, Path returns the registered route and not the path of the request, and the
 // body can only be read once. Every handler goes through these functions, so that those rules live here and not in

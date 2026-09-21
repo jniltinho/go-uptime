@@ -40,7 +40,7 @@ func newAdminStatusPageEnvironment(t *testing.T, statusPagesEnabled bool) *admin
 	cfg := &config.Config{
 		Security:    &security.Config{Basic: &security.BasicConfig{Username: "admin", PasswordBcryptHashBase64Encoded: base64.URLEncoding.EncodeToString(hash)}},
 		Admin:       &admin.Config{Enabled: true},
-		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:     &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		Endpoints:   []*endpoint.Endpoint{ep},
 		StatusPages: statusPages,
 	}

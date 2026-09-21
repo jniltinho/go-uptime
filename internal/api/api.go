@@ -1,4 +1,4 @@
-// Package api is the HTTP layer of Gatus, built on Echo v5: the JSON API under /api/v1, the badges and charts in SVG,
+// Package api is the HTTP layer of Go Uptime, built on Echo v5: the JSON API under /api/v1, the badges and charts in SVG,
 // the event streams (text/event-stream) of the live updates, the push routes compatible with the Uptime Kuma, the
 // health and metrics routes, the rendered single page application and the embedded static files.
 //
@@ -35,7 +35,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// API is the HTTP API of Gatus: it owns the Echo router with every route of the package registered on it.
+// API is the HTTP API of Go Uptime: it owns the Echo router with every route of the package registered on it.
 type API struct {
 	router *echo.Echo
 }
@@ -158,7 +158,7 @@ func (a *API) createRouter(cfg *config.Config) *echo.Echo {
 	}
 	// Health endpoint
 	healthHandler := health.Handler().WithJSON(true)
-	// GET and HEAD /health: the health of the Gatus process itself, from github.com/TwiN/health.
+	// GET and HEAD /health: the health of the Go Uptime process itself, from github.com/TwiN/health.
 	//
 	// Authentication: none.
 	// Responses: 200 with the body {"status":"UP"} while the process is healthy; 500 with {"status":"DOWN"} otherwise. The

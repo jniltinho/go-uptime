@@ -20,7 +20,7 @@ type Target struct {
 	// Key is the key of the endpoint
 	Key string
 
-	// External is the external endpoint that receives the push, or nil for an active endpoint monitored by Gatus
+	// External is the external endpoint that receives the push, or nil for an active endpoint monitored by Go Uptime
 	External *endpoint.ExternalEndpoint
 
 	// Managed is whether the endpoint is managed through the administration, in which case the push is only accepted

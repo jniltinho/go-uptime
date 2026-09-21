@@ -101,7 +101,7 @@ func readConfigurationBytes(configPath string) ([]byte, error) {
 // expandEnvironmentVariables expands the environment variables of the configuration, keeping a literal "$" for "$$",
 // like parseAndValidateConfigBytes
 func expandEnvironmentVariables(yamlBytes []byte) []byte {
-	expanded := strings.ReplaceAll(string(yamlBytes), "$$", "__GATUS_LITERAL_DOLLAR_SIGN__")
+	expanded := strings.ReplaceAll(string(yamlBytes), "$$", "__GO_UPTIME_LITERAL_DOLLAR_SIGN__")
 	expanded = os.ExpandEnv(expanded)
-	return []byte(strings.ReplaceAll(expanded, "__GATUS_LITERAL_DOLLAR_SIGN__", "$"))
+	return []byte(strings.ReplaceAll(expanded, "__GO_UPTIME_LITERAL_DOLLAR_SIGN__", "$"))
 }

@@ -35,7 +35,7 @@ func executeExternalEndpointHeartbeat(ctx context.Context, ee *endpoint.External
 		return
 	}
 	defer monitoringSemaphore.Release(1)
-	// If there's a connectivity checker configured, check if Gatus has internet connectivity
+	// If there's a connectivity checker configured, check if Go Uptime has internet connectivity
 	if cfg.Connectivity != nil && cfg.Connectivity.Checker != nil && !cfg.Connectivity.Checker.IsConnected() {
 		logr.Infof("[watchdog.executeExternalEndpointHeartbeat] No connectivity; skipping execution")
 		return

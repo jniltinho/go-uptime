@@ -29,7 +29,7 @@ func monitorEndpoint(ep *endpoint.Endpoint, cfg *config.Config, extraLabels []st
 		}
 	}
 	// Just in case somebody wandered all the way to here and wonders, "what about ExternalEndpoints?"
-	// Alerting is checked every time an external endpoint is pushed to Gatus, so they're not monitored
+	// Alerting is checked every time an external endpoint is pushed to Go Uptime, so they're not monitored
 	// periodically like they are for normal endpoints.
 }
 
@@ -43,7 +43,7 @@ func executeEndpoint(ctx context.Context, ep *endpoint.Endpoint, cfg *config.Con
 		return
 	}
 	defer monitoringSemaphore.Release(1)
-	// If there's a connectivity checker configured, check if Gatus has internet connectivity
+	// If there's a connectivity checker configured, check if Go Uptime has internet connectivity
 	if cfg.Connectivity != nil && cfg.Connectivity.Checker != nil && !cfg.Connectivity.Checker.IsConnected() {
 		logr.Infof("[watchdog.executeEndpoint] No connectivity; skipping execution")
 		return

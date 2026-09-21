@@ -1,5 +1,5 @@
 // Package ilert implements the alerting provider that sends alert events to ilert through the events REST API
-// of its Gatus integration, identified by an integration key.
+// of its Go Uptime integration, identified by an integration key.
 package ilert
 
 import (

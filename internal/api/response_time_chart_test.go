@@ -235,7 +235,7 @@ func TestResponseTimeChart_Public(t *testing.T) {
 
 func TestEndpointIntervalSeconds(t *testing.T) {
 	cfg := &config.Config{
-		Storage:   &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "gatus.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
+		Storage:   &storage.Config{Type: storage.TypeSQLite, Path: filepath.Join(t.TempDir(), "go-uptime.db"), MaximumNumberOfResults: 100, MaximumNumberOfEvents: 50},
 		Endpoints: []*endpoint.Endpoint{{Name: "site", Group: "file", Interval: 2 * time.Minute}},
 		ExternalEndpoints: []*endpoint.ExternalEndpoint{
 			{Name: "beat", Group: "file", Heartbeat: heartbeat.Config{Interval: 30 * time.Second}},

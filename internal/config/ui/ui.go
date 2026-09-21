@@ -52,7 +52,7 @@ var (
 	ErrInvalidDefaultFilterBy = errors.New("invalid default-filter-by value: must be 'none', 'failing', or 'unstable'")
 )
 
-// Config is the configuration for the UI of Gatus
+// Config is the configuration for the UI of Go Uptime
 type Config struct {
 	Title               string   `yaml:"title,omitempty"`                // Title of the page
 	Description         string   `yaml:"description,omitempty"`          // Meta description of the page

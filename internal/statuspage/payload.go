@@ -254,7 +254,7 @@ type ResultPayload struct {
 	Message string `json:"message,omitempty"`
 
 	// Origin is where the result comes from (fork): "push" for a result received through the push API, omitted for a
-	// check made by Gatus. Like Message, it is only set on the details page of an endpoint of a page that shows
+	// check made by Go Uptime. Like Message, it is only set on the details page of an endpoint of a page that shows
 	// messages.
 	Origin string `json:"origin,omitempty"`
 }

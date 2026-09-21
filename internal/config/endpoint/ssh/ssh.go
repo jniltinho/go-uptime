@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	// ErrEndpointWithoutSSHUsername is the error with which Gatus will panic if an endpoint with SSH monitoring is configured without a user.
+	// ErrEndpointWithoutSSHUsername is the error with which Go Uptime will panic if an endpoint with SSH monitoring is configured without a user.
 	ErrEndpointWithoutSSHUsername = errors.New("you must specify a username for each SSH endpoint")
 
-	// ErrEndpointWithoutSSHAuth is the error with which Gatus will panic if an endpoint with SSH monitoring is configured without a password or private key.
+	// ErrEndpointWithoutSSHAuth is the error with which Go Uptime will panic if an endpoint with SSH monitoring is configured without a password or private key.
 	ErrEndpointWithoutSSHAuth = errors.New("you must specify a password or private-key for each SSH endpoint")
 )
 
