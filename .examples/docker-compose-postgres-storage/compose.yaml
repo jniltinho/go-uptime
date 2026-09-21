@@ -19,7 +19,7 @@ services:
     image: jniltinho/go-uptime:v7.0.0
     restart: always
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"   # only on this machine: the example password is public
     environment:
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
