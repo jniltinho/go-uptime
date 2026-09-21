@@ -171,7 +171,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 				Text:       message + description,
 				Color:      color,
 				AuthorName: "Go Uptime",
-				AuthorIcon: "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
+				AuthorIcon: "https://raw.githubusercontent.com/jniltinho/go-uptime/main/.github/assets/logo.png",
 			},
 		},
 	}

@@ -103,7 +103,7 @@ Os que já são configuráveis MUST continuar sendo, e o provedor do Home Assist
 - **THEN** o título da mensagem diz Go Uptime
 
 ### Requirement: Scripts baixados por URL
-`docs/manager-go-uptime.py` MUST aceitar `--url`, `GO_UPTIME_URL`, `GO_UPTIME_USERNAME` e `GO_UPTIME_PASSWORD`, e MUST aceitar `--gatus-url`, `GATUS_URL`, `GATUS_USERNAME` e `GATUS_PASSWORD` como apelidos, com as novas vencendo. O caminho antigo, `docs/manager-gatus.py`, MUST continuar em `master` durante a série 7.x como um arquivo **completo e executável sozinho**, idêntico byte a byte ao novo, porque quem o baixa por URL não baixa o outro; um teste MUST falhar quando os dois arquivos diferirem.
+`docs/manager-go-uptime.py` MUST aceitar `--url`, `GO_UPTIME_URL`, `GO_UPTIME_USERNAME` e `GO_UPTIME_PASSWORD`, e MUST aceitar `--gatus-url`, `GATUS_URL`, `GATUS_USERNAME` e `GATUS_PASSWORD` como apelidos, com as novas vencendo. O caminho antigo, `docs/manager-gatus.py`, MUST continuar em `main` (a branch padrão, que se chamava `master` até a v6) durante a série 7.x como um arquivo **completo e executável sozinho**, idêntico byte a byte ao novo, porque quem o baixa por URL não baixa o outro; um teste MUST falhar quando os dois arquivos diferirem.
 
 #### Scenario: Script antigo baixado sozinho
 - **WHEN** alguém baixa só `docs/manager-gatus.py` para uma pasta vazia e executa `GATUS_URL=… GATUS_PASSWORD=… python3 manager-gatus.py endpoints` contra a v7

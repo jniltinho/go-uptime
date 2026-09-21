@@ -46,7 +46,7 @@ pages.
 With Docker, using a fixed version (`latest` is never published):
 
 ```bash
-mkdir -p config && curl -sL -o config/config.yaml https://raw.githubusercontent.com/jniltinho/go-uptime/master/config.yaml
+mkdir -p config && curl -sL -o config/config.yaml https://raw.githubusercontent.com/jniltinho/go-uptime/main/config.yaml
 docker run -d --name go-uptime -p 127.0.0.1:8080:8080 -v "$PWD/config:/config" jniltinho/go-uptime:v7.0.0
 ```
 

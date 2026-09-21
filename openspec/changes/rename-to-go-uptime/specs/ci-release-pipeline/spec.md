@@ -6,6 +6,17 @@
 
 ## MODIFIED Requirements
 
+### Requirement: Workflow de CI
+O repositório MUST ter `.github/workflows/ci.yml`, executado em push para `main` e em pull requests para `main`, que faça checkout com histórico completo antes de configurar o Go pela versão de `go.mod`, execute `make lint` e `make build`, e execute os testes Go com detector de race, com os privilégios exigidos pelo teste de ICMP e preservando os caches do Go. Quando existirem testes do store em PostgreSQL, o workflow MUST disponibilizar um PostgreSQL para eles. O workflow MUST falhar se qualquer etapa falhar.
+
+#### Scenario: Código do fork sem formatação
+- **WHEN** um pull request adiciona um arquivo Go que não passa no `gofmt`
+- **THEN** o CI falha na etapa de lint
+
+#### Scenario: Pull request correto
+- **WHEN** um pull request passa em lint, build e testes
+- **THEN** o CI conclui com sucesso
+
 ### Requirement: Alvos do Makefile
 O `Makefile` MUST oferecer:
 - `build`: binário estático em `dist/go-uptime`, com `CGO_ENABLED=0` só nas receitas que geram binários para distribuir (`build` e `release-cross`), nunca exportado para os testes;
@@ -67,3 +78,11 @@ O repositório MUST ter `.github/workflows/release.yml`, executado no push de ta
 #### Scenario: Notas da segunda release
 - **WHEN** a tag `v7.0.1` é publicada
 - **THEN** as notas da release cobrem apenas os commits desde `v7.0.0`
+
+### Requirement: Limpeza dos workflows herdados
+O fork MUST NOT manter workflows que dependam de segredos ou processos do projeto original: `benchmark.yml`, `labeler.yml`, `publish-custom.yml`, `publish-experimental.yml`, `publish-latest.yml`, `publish-release.yml`, `regenerate-static-assets.yml`, `test.yml` e `test-ui.yml` MUST ser removidos, com os testes Go cobertos por `ci.yml`. O Dependabot MUST atualizar apenas `github-actions`.
+
+#### Scenario: Push para main
+- **WHEN** um commit é enviado para `main`
+- **THEN** apenas o workflow de CI é executado
+- **AND** nenhum login em registry de container é tentado

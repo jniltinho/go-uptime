@@ -166,7 +166,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		Channel:  cfg.Channel,
 		Text:     "",
 		Username: "go-uptime",
-		IconURL:  "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
+		IconURL:  "https://raw.githubusercontent.com/jniltinho/go-uptime/main/.github/assets/logo.png",
 		Attachments: []Attachment{
 			{
 				Title:    ":helmet_with_white_cross: Go Uptime",
