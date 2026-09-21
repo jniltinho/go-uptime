@@ -242,7 +242,7 @@ O formulário de endpoints da administração MUST consultar `/api/v1/admin/stat
 - **THEN** o formulário mostra "Este endpoint aparecerá publicamente nas páginas: infra"
 
 ### Requirement: Testes ponta a ponta das status pages
-O roteiro `test/e2e/status-pages.sh` MUST subir o Gatus compilado localmente com SQLite temporário, `security.basic` e `admin.enabled` e usar o `agent-browser` para:
+O roteiro `test/e2e/status-pages.sh` MUST subir o Go Uptime compilado localmente com SQLite temporário, `security.basic` e `admin.enabled` e usar o `agent-browser` para:
 - criar uma página pelas telas, pré-visualizar e publicar;
 - abrir `/status/<slug>` numa sessão sem credenciais e conferir pela lista de requisições que nenhuma foi a `/api/v1/config` e nenhuma recebeu 401;
 - abrir `/status/a%2Fb` e `/status/nao-existe` na mesma sessão e conferir "Página não encontrada" sem 401;

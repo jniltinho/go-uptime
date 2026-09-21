@@ -16,7 +16,7 @@ Um erro na criação da tabela MUST interromper a inicialização. As páginas g
 Se a listagem das páginas gerenciadas falhar na carga, o sistema MUST publicar as páginas do YAML, MUST NOT publicar nenhuma gerenciada, MUST registrar o erro no log e MUST sinalizar a origem gerenciada como indisponível na listagem da administração.
 
 #### Scenario: Reinício
-- **WHEN** um administrador cria e habilita a página `clientes` e o Gatus é reiniciado
+- **WHEN** um administrador cria e habilita a página `clientes` e o Go Uptime é reiniciado
 - **THEN** `GET /api/v1/status-pages/clientes` responde 200 depois da partida
 
 #### Scenario: Administração desligada depois
@@ -62,7 +62,7 @@ As rotas `/api/v1/admin/status-pages/*` MUST existir apenas com `admin.enabled: 
 - **AND** `GET /api/v1/admin/status-pages/infra/preview` responde 200
 
 ### Requirement: Criação de página
-`POST /api/v1/admin/status-pages` MUST aceitar a definição em JSON ou YAML, decodificada de forma estrita, validar com as regras das páginas do YAML e gravar com versão 1. Sem o campo `enabled`, a página MUST ser criada desabilitada. A resposta MUST ser 201 com a definição e `ETag`. Uma página criada com `enabled: true` MUST ficar disponível na API pública sem reiniciar nem recarregar o Gatus. MUST responder:
+`POST /api/v1/admin/status-pages` MUST aceitar a definição em JSON ou YAML, decodificada de forma estrita, validar com as regras das páginas do YAML e gravar com versão 1. Sem o campo `enabled`, a página MUST ser criada desabilitada. A resposta MUST ser 201 com a definição e `ETag`. Uma página criada com `enabled: true` MUST ficar disponível na API pública sem reiniciar nem recarregar o Go Uptime. MUST responder:
 - 400 para definição inválida, slug reservado ou campo desconhecido;
 - 409 para slug usado por outra página, citando a origem;
 - 501 quando o storage não suporta páginas gerenciadas.

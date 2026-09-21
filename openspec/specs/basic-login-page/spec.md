@@ -40,7 +40,7 @@ Nos outros casos, MUST levar ao dashboard `/`. Sem `security.basic`, ou com `sec
 - **THEN** a SPA abre o dashboard `/` em todos os casos
 
 ### Requirement: Sessões de login
-Um login com sucesso MUST criar uma sessão nova identificada por um token aleatório de 32 bytes, ignorando qualquer cookie de sessão recebido, e enviar o cookie `gatus_session` com `HttpOnly`, `Path=/`, `SameSite=Strict` e `Max-Age` igual à validade da sessão. O cookie MUST ter `Secure` quando a conexão for TLS ou `X-Forwarded-Proto` for `https`.
+Um login com sucesso MUST criar uma sessão nova identificada por um token aleatório de 32 bytes, ignorando qualquer cookie de sessão recebido, e enviar o cookie `go_uptime_session` com `HttpOnly`, `Path=/`, `SameSite=Strict` e `Max-Age` igual à validade da sessão. O cookie MUST ter `Secure` quando a conexão for TLS ou `X-Forwarded-Proto` for `https`.
 
 O storage MUST guardar só o hash SHA-256 do token, com o usuário, o fingerprint da credencial (usuário e hash bcrypt configurados) e as datas de criação e de expiração:
 - com `sqlite`, `postgres` e `mysql`, na tabela `login_sessions`, com a chave primária em `CHAR(64)` no PostgreSQL e no MySQL/MariaDB e com índice em `expires_at`;
@@ -49,7 +49,7 @@ O storage MUST guardar só o hash SHA-256 do token, com o usuário, o fingerprin
 A validade MUST ser `security.basic.session-ttl`, com padrão de 8 horas, e a configuração MUST ser recusada fora da faixa de 5 minutos a 30 dias. Cada requisição protegida MUST consultar a sessão no storage, sem cache. Uma sessão expirada, removida ou com fingerprint diferente da credencial atual MUST ser recusada a partir da requisição seguinte, em qualquer instância que use o mesmo banco. Sessões expiradas MUST ser removidas no login e quando forem encontradas numa consulta, sem tarefa em segundo plano.
 
 #### Scenario: Sessão sobrevive a um reinício
-- **WHEN** o administrador faz login com storage `sqlite` e o Gatus reinicia antes da expiração
+- **WHEN** o administrador faz login com storage `sqlite` e o Go Uptime reinicia antes da expiração
 - **THEN** a mesma sessão continua autenticando as requisições
 
 #### Scenario: Troca de senha
@@ -65,7 +65,7 @@ A validade MUST ser `security.basic.session-ttl`, com padrão de 8 horas, e a co
 - **THEN** a tabela `login_sessions` não contém o token em texto, só o hash SHA-256
 
 #### Scenario: Fixação de sessão
-- **WHEN** uma requisição de login com credenciais corretas traz um cookie `gatus_session` já existente
+- **WHEN** uma requisição de login com credenciais corretas traz um cookie `go_uptime_session` já existente
 - **THEN** a resposta cria uma sessão nova com outro token
 
 #### Scenario: Validade inválida
@@ -90,7 +90,7 @@ O login MUST recusar com 415 corpos que não sejam JSON e com 413 corpos acima d
 
 #### Scenario: Login pela API
 - **WHEN** um cliente envia `POST /api/v1/auth/login` com as credenciais corretas e `Content-Type: application/json`
-- **THEN** a resposta é 204 com `Set-Cookie: gatus_session=...; HttpOnly; SameSite=Strict`
+- **THEN** a resposta é 204 com `Set-Cookie: go_uptime_session=...; HttpOnly; SameSite=Strict`
 
 #### Scenario: Login de outro site
 - **WHEN** chega `POST /api/v1/auth/login` com `Origin: https://site-malicioso.exemplo`
@@ -117,7 +117,7 @@ Com `security.basic` sem `security.oidc`, as rotas protegidas da API MUST aceita
 - **THEN** a resposta é 200
 
 #### Scenario: Curl com cookie antigo
-- **WHEN** `curl -u admin:senha` pede `GET /api/v1/endpoints/statuses` com um cookie `gatus_session` expirado
+- **WHEN** `curl -u admin:senha` pede `GET /api/v1/endpoints/statuses` com um cookie `go_uptime_session` expirado
 - **THEN** a resposta é 200
 
 #### Scenario: Curl sem credenciais
