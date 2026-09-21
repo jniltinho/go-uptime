@@ -55,6 +55,15 @@ PY
 CLI_HASH=$(printf '%s\n' "$PASSWORD" | docker run --rm -i "$NEW_IMAGE" password hash)
 [ -n "$CLI_HASH" ] && [ "$CLI_HASH" != "$HASH" ] && ok "go-uptime password hash of the new image gives another hash (own salt) of the same password"
 [ "$(docker run --rm --entrypoint /gatus "$NEW_IMAGE" version)" = "$(docker run --rm "$NEW_IMAGE" version)" ] && ok "the new image still answers to /gatus, the path that a compose file of v6 may call" || fail "/gatus is gone from the new image"
+# A second copy of the binary would answer too: the link is checked in the file system of the image
+link_container=$(docker create "$NEW_IMAGE")
+link=$(docker export "$link_container" | tar -tvf - 2>/dev/null | awk '$NF == "/go-uptime" && $(NF-2) == "gatus" {print $(NF-2), $(NF-1), $NF}')
+docker rm "$link_container" >/dev/null
+[ "$link" = "gatus -> /go-uptime" ] && ok "/gatus is a symbolic link to /go-uptime, not a second binary" || fail "/gatus is not a symbolic link to /go-uptime: '$link'"
+license_container=$(docker create "$NEW_IMAGE")
+licenses=$(docker export "$license_container" | tar -tf - 2>/dev/null | grep -cE "^(LICENSE|NOTICE)$")
+docker rm "$license_container" >/dev/null
+[ "$licenses" = 2 ] && ok "the image carries LICENSE and NOTICE" || fail "LICENSE and NOTICE are not both in the image"
 
 write_config() { # directory hash
   cat > "$1/config.yaml" <<CONFIG
