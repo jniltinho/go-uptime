@@ -4,6 +4,8 @@
 // Uptime Kuma 2.x, fed by the routes /api/v1/endpoints/{key}/response-time-chart and
 // /api/v1/status-pages/{slug}/endpoints/{key}/response-time-chart. The abscissas are timestamps in milliseconds.
 
+import { preferenceKey, readPreference, writePreference } from './storage.js'
+
 export const RECENT_PERIOD = 'recent'
 
 export const CHART_PERIODS = Object.freeze([RECENT_PERIOD, '3h', '6h', '24h', '1w'])
@@ -17,7 +19,9 @@ export const CHART_PERIOD_OPTIONS = Object.freeze([
   { value: '1w', label: '1w' }
 ])
 
-export const CHART_PERIOD_STORAGE_KEY = 'gatus:response-time-chart-period'
+// The preference of the period, and its key in the browser (see storage.js, which also migrates the key of Gatus)
+export const CHART_PERIOD_PREFERENCE = 'response-time-chart-period'
+export const CHART_PERIOD_STORAGE_KEY = preferenceKey(CHART_PERIOD_PREFERENCE)
 
 export const CHART_COLORS = Object.freeze({
   line: '#5CDD8B',
@@ -259,7 +263,7 @@ const browserStorage = () => (typeof window === 'undefined' ? null : window.loca
 export const readStoredPeriod = (storage) => {
   try {
     const store = storage === undefined ? browserStorage() : storage
-    const value = store ? store.getItem(CHART_PERIOD_STORAGE_KEY) : null
+    const value = store ? readPreference(CHART_PERIOD_PREFERENCE, store) : null
     return isChartPeriod(value) ? value : RECENT_PERIOD
   } catch (error) {
     return RECENT_PERIOD
@@ -274,7 +278,7 @@ export const storePeriod = (period, storage) => {
   try {
     const store = storage === undefined ? browserStorage() : storage
     if (store) {
-      store.setItem(CHART_PERIOD_STORAGE_KEY, period)
+      writePreference(CHART_PERIOD_PREFERENCE, period, store)
     }
   } catch (error) {
     // The choice is only a convenience

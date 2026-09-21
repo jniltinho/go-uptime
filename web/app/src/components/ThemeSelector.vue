@@ -121,10 +121,10 @@ const handleThemeChange = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleOutsideClick)
-  window.addEventListener('gatus:theme', handleThemeChange)
+  window.addEventListener('go-uptime:theme', handleThemeChange)
 })
 onUnmounted(() => {
   document.removeEventListener('click', handleOutsideClick)
-  window.removeEventListener('gatus:theme', handleThemeChange)
+  window.removeEventListener('go-uptime:theme', handleThemeChange)
 })
 </script>

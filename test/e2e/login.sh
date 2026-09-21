@@ -134,7 +134,7 @@ echo "$headers" | grep -qi '^WWW-Authenticate' && fail "the frontend should not 
 
 step "Sessions through the API: login, cookie on a protected route, logout and old token refused"
 [ "$(http_status -c "$WORK/session.txt" -H 'Content-Type: application/json' -d "$(login_json "$PASSWORD")" "$BASE/api/v1/auth/login")" = 204 ] || fail "expected 204 for the login through the API"
-grep -q gatus_session "$WORK/session.txt" || fail "the login did not set the session cookie"
+grep -q go_uptime_session "$WORK/session.txt" || fail "the login did not set the session cookie"
 [ "$(http_status -b "$WORK/session.txt" "$BASE/api/v1/endpoints/statuses")" = 200 ] || fail "the session cookie should authenticate the protected routes"
 [ "$(http_status -b "$WORK/session.txt" -c "$WORK/after-logout.txt" -X POST "$BASE/api/v1/auth/logout")" = 204 ] || fail "expected 204 for the logout through the API"
 [ "$(http_status -b "$WORK/session.txt" "$BASE/api/v1/endpoints/statuses")" = 401 ] || fail "the token of a closed session should be refused"

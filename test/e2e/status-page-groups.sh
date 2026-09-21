@@ -124,7 +124,7 @@ toggle() { echo "[data-testid=\"status-group-toggle-$1\"]"; }
 expanded() { js "document.querySelector('[data-testid=\"status-group-toggle-$1\"]')?.getAttribute('aria-expanded')"; }
 rows() { js "document.querySelectorAll('[data-testid=\"status-group-$1\"] li').length"; }
 counts() { js "document.querySelector('[data-testid=\"status-group-counts-$1\"]')?.textContent.trim()"; }
-stored() { js "localStorage.getItem('gatus:status-page-groups') || ''"; }
+stored() { js "localStorage.getItem('go-uptime:status-page-groups') || ''"; }
 # refresh makes the page fetch its payload again, as it does when the tab becomes visible, without waiting 60 seconds
 refresh() {
   browser eval "Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }); document.dispatchEvent(new Event('visibilitychange'))" >/dev/null

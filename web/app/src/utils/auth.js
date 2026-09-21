@@ -5,7 +5,7 @@ export const PROTECTED_API_HEADERS = Object.freeze({ 'X-Requested-With': 'XMLHtt
 
 // Event dispatched on window when the protected API answers 401: App.vue reloads the configuration and, without a
 // session, opens the login screen
-export const UNAUTHORIZED_EVENT = 'gatus:unauthorized'
+export const UNAUTHORIZED_EVENT = 'go-uptime:unauthorized'
 
 export const notifyUnauthorized = () => {
   window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT))

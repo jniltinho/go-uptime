@@ -47,6 +47,7 @@ import { RefreshCw } from 'lucide-vue-next'
 // Fork: the theme rule (cookie, otherwise the default theme of the server) lives in utils/theme.js
 import ThemeSelector from '@/components/ThemeSelector.vue'
 import { applyTheme as applyDocumentTheme, currentTheme } from '@/utils/theme'
+import { readPreference, writePreference } from '@/utils/storage'
 
 const emit = defineEmits(['refreshData'])
 
@@ -61,12 +62,12 @@ const REFRESH_INTERVALS = [
 ]
 const DEFAULT_REFRESH_INTERVAL = '300'
 const STORAGE_KEYS = {
-  REFRESH_INTERVAL: 'gatus:refresh-interval'
+  REFRESH_INTERVAL: 'refresh-interval'
 }
 
 // Helper functions
 function getStoredRefreshInterval() {
-  const stored = localStorage.getItem(STORAGE_KEYS.REFRESH_INTERVAL)
+  const stored = readPreference(STORAGE_KEYS.REFRESH_INTERVAL)
   const parsedValue = stored && parseInt(stored)
   const isValid = parsedValue && parsedValue >= 10 && REFRESH_INTERVALS.some(i => i.value === stored)
   return isValid ? stored : DEFAULT_REFRESH_INTERVAL
@@ -84,7 +85,7 @@ const formatRefreshInterval = (value) => {
 }
 
 const setRefreshInterval = (seconds) => {
-  localStorage.setItem(STORAGE_KEYS.REFRESH_INTERVAL, seconds)
+  writePreference(STORAGE_KEYS.REFRESH_INTERVAL, seconds)
   if (refreshIntervalHandler) {
     clearInterval(refreshIntervalHandler)
   }

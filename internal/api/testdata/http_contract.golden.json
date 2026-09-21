@@ -1045,7 +1045,7 @@
         "no-store"
       ],
       "Set-Cookie": [
-        "gatus_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; SameSite=Strict"
+        "go_uptime_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; SameSite=Strict"
       ],
       "Vary": [
         "Accept-Encoding"
@@ -1137,7 +1137,7 @@
         "no-store"
       ],
       "Set-Cookie": [
-        "gatus_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict"
+        "go_uptime_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict"
       ],
       "Vary": [
         "Accept-Encoding"
@@ -1151,7 +1151,7 @@
         "no-store"
       ],
       "Set-Cookie": [
-        "gatus_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; SameSite=Strict"
+        "go_uptime_session=\u003ctoken\u003e; Path=/; Max-Age=28800; HttpOnly; SameSite=Strict"
       ],
       "Vary": [
         "Accept-Encoding"
@@ -1195,7 +1195,7 @@
         "no-store"
       ],
       "Set-Cookie": [
-        "gatus_session=\u003ctoken\u003e; Path=/; expires=\u003cdate\u003e; HttpOnly; SameSite=Strict"
+        "go_uptime_session=\u003ctoken\u003e; Path=/; expires=\u003cdate\u003e; HttpOnly; SameSite=Strict"
       ],
       "Vary": [
         "Accept-Encoding"

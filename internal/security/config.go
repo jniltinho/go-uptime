@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	cookieNameState   = "gatus_state"
-	cookieNameNonce   = "gatus_nonce"
-	cookieNameSession = "gatus_session"
+	cookieNameState   = "go_uptime_state"
+	cookieNameNonce   = "go_uptime_nonce"
+	cookieNameSession = "go_uptime_session"
 )
 
 // Config is the security configuration for Gatus

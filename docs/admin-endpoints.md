@@ -83,7 +83,7 @@ security:
 
 - **Sessions:** a successful login creates a session in the `login_sessions` table, where only the SHA-256 hash of the
   token is stored. With `storage.type: memory`, sessions are kept in memory and every restart asks for a new login.
-  The `gatus_session` cookie is `HttpOnly`, `SameSite=Strict`, and `Secure` when the connection is TLS or
+  The `go_uptime_session` cookie is `HttpOnly`, `SameSite=Strict`, and `Secure` when the connection is TLS or
   `X-Forwarded-Proto` is `https`.
 - Sessions survive restarts and reloads of the configuration. The logout, and a change of `username` or
   `password-bcrypt-base64`, end them immediately on every instance that uses the same database.

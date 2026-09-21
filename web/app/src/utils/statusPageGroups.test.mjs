@@ -18,6 +18,7 @@ const memoryStorage = (initial = {}) => {
   return {
     getItem: (key) => (items.has(key) ? items.get(key) : null),
     setItem: (key, value) => { items.set(key, String(value)) },
+    removeItem: (key) => { items.delete(key) },
     raw: () => items.get(STORAGE_KEY)
   }
 }

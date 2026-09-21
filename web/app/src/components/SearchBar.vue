@@ -45,10 +45,11 @@ import { ref, onMounted } from 'vue'
 import { Search } from 'lucide-vue-next'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
+import { readPreference, writePreference } from '@/utils/storage'
 
 const searchQuery = ref('')
-const filterBy = ref(localStorage.getItem('gatus:filter-by') || (typeof window !== 'undefined' && window.config?.defaultFilterBy) || 'none')
-const sortBy = ref(localStorage.getItem('gatus:sort-by') || (typeof window !== 'undefined' && window.config?.defaultSortBy) || 'name')
+const filterBy = ref(readPreference('filter-by') || (typeof window !== 'undefined' && window.config?.defaultFilterBy) || 'none')
+const sortBy = ref(readPreference('sort-by') || (typeof window !== 'undefined' && window.config?.defaultSortBy) || 'name')
 
 const filterOptions = [
   { label: 'None', value: 'none' },
@@ -67,7 +68,7 @@ const emit = defineEmits(['search', 'update:showOnlyFailing', 'update:showRecent
 const handleFilterChange = (value, store = true) => {
   filterBy.value = value
   if (store)
-    localStorage.setItem('gatus:filter-by', value)
+    writePreference('filter-by', value)
   
   // Reset all filter states first
   emit('update:showOnlyFailing', false)
@@ -84,7 +85,7 @@ const handleFilterChange = (value, store = true) => {
 const handleSortChange = (value, store = true) => {
   sortBy.value = value
   if (store)
-    localStorage.setItem('gatus:sort-by', value)
+    writePreference('sort-by', value)
 
   emit('update:sortBy', value)
   emit('update:groupByGroup', value === 'group')

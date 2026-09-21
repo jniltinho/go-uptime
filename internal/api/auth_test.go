@@ -80,7 +80,7 @@ func doAuthTestRequest(t *testing.T, app *echo.Echo, method, path, body string, 
 	defer response.Body.Close()
 	result := authTestResponse{status: response.StatusCode, header: response.Header}
 	for _, cookie := range response.Cookies() {
-		if cookie.Name == "gatus_session" {
+		if cookie.Name == "go_uptime_session" {
 			result.session = cookie
 		}
 	}
@@ -97,7 +97,7 @@ func authTestHeader(key, value string) func(*http.Request) {
 
 func authTestSession(session *http.Cookie) func(*http.Request) {
 	return func(request *http.Request) {
-		request.AddCookie(&http.Cookie{Name: "gatus_session", Value: session.Value})
+		request.AddCookie(&http.Cookie{Name: "go_uptime_session", Value: session.Value})
 	}
 }
 

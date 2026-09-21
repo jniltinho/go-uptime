@@ -36,6 +36,10 @@ class MemoryStorage {
   setItem(key, value) {
     this.values[key] = String(value)
   }
+
+  removeItem(key) {
+    delete this.values[key]
+  }
 }
 
 // Recent

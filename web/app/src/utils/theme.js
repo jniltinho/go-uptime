@@ -61,7 +61,7 @@ export const applyTheme = (theme) => {
     meta.setAttribute('content', THEMES[selected].themeColor)
   }
   if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
-    window.dispatchEvent(new CustomEvent('gatus:theme', { detail: { theme: selected } }))
+    window.dispatchEvent(new CustomEvent('go-uptime:theme', { detail: { theme: selected } }))
   }
   return selected
 }
