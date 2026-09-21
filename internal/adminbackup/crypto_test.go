@@ -82,7 +82,7 @@ func cloneFields(fields map[string]any) map[string]any {
 func TestEnvelopeHeaderEncoding(t *testing.T) {
 	header := envelopeHeader{Format: EncryptedFormat, Version: 1, KDF: envelopeKDF{Name: "argon2id", Time: 2, MemoryKiB: 19456, Threads: 1, Salt: "AAAAAAAAAAAAAAAAAAAAAA=="}, Cipher: envelopeCipher{Name: "aes-256-gcm", Nonce: "AAAAAAAAAAAAAAAA"}}
 	encoded, _ := json.Marshal(header)
-	expected := `{"format":"gatus-admin-backup-encrypted","version":1,"kdf":{"name":"argon2id","time":2,"memoryKiB":19456,"threads":1,"salt":"AAAAAAAAAAAAAAAAAAAAAA=="},"cipher":{"name":"aes-256-gcm","nonce":"AAAAAAAAAAAAAAAA"}}`
+	expected := `{"format":"go-uptime-admin-backup-encrypted","version":1,"kdf":{"name":"argon2id","time":2,"memoryKiB":19456,"threads":1,"salt":"AAAAAAAAAAAAAAAAAAAAAA=="},"cipher":{"name":"aes-256-gcm","nonce":"AAAAAAAAAAAAAAAA"}}`
 	if string(encoded) != expected {
 		t.Errorf("unexpected header encoding:\n%s\n%s", encoded, expected)
 	}
@@ -107,7 +107,7 @@ func TestUnwrap(t *testing.T) {
 func FuzzDecrypt(f *testing.F) {
 	sealed, _ := Encrypt([]byte(validBackup), testPassword)
 	f.Add(sealed)
-	f.Add([]byte(`{"format":"gatus-admin-backup-encrypted"}`))
+	f.Add([]byte(`{"format":"go-uptime-admin-backup-encrypted"}`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		if _, err := Decrypt(data, testPassword); err != nil && !errors.Is(err, ErrInvalidFile) && !errors.Is(err, ErrInvalidPassword) && !errors.Is(err, ErrBusy) {
 			t.Errorf("unexpected error type: %v", err)

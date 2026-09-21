@@ -20,9 +20,12 @@ import {
 } from './adminBackup.js'
 
 test('detects the format of the parsed file', () => {
+  assert.equal(detectBackupFormat({ format: 'go-uptime-admin-backup', version: 1 }), 'plain')
+  assert.equal(detectBackupFormat({ format: 'go-uptime-admin-backup-encrypted', version: 1 }), 'encrypted')
+  // The files written up to v6, while the project was called Gatus, are still restored
   assert.equal(detectBackupFormat({ format: 'gatus-admin-backup', version: 1 }), 'plain')
   assert.equal(detectBackupFormat({ format: 'gatus-admin-backup-encrypted', version: 1 }), 'encrypted')
-  for (const value of [null, undefined, 'gatus-admin-backup', 42, [], [{ format: 'gatus-admin-backup' }], {}, { format: 'other' }, { format: 'GATUS-ADMIN-BACKUP' }]) {
+  for (const value of [null, undefined, 'go-uptime-admin-backup', 42, [], [{ format: 'go-uptime-admin-backup' }], {}, { format: 'other' }, { format: 'GO-UPTIME-ADMIN-BACKUP' }]) {
     assert.equal(detectBackupFormat(value), 'unknown')
   }
 })
@@ -50,13 +53,13 @@ test('counts the password in UTF-8 bytes and validates it', () => {
 })
 
 test('reads the name of the file from Content-Disposition', () => {
-  assert.equal(filenameFromContentDisposition('attachment; filename="gatus-backup-20260916-180000.enc.json"'), 'gatus-backup-20260916-180000.enc.json')
-  assert.equal(filenameFromContentDisposition('attachment; filename=gatus-backup-20260916-180000.json'), 'gatus-backup-20260916-180000.json')
-  assert.equal(filenameFromContentDisposition("attachment; filename*=UTF-8''gatus%20backup.json; filename=\"x.json\""), 'gatus backup.json')
+  assert.equal(filenameFromContentDisposition('attachment; filename="go-uptime-backup-20260916-180000.enc.json"'), 'go-uptime-backup-20260916-180000.enc.json')
+  assert.equal(filenameFromContentDisposition('attachment; filename=go-uptime-backup-20260916-180000.json'), 'go-uptime-backup-20260916-180000.json')
+  assert.equal(filenameFromContentDisposition("attachment; filename*=UTF-8''go-uptime%20backup.json; filename=\"x.json\""), 'go-uptime backup.json')
   assert.equal(filenameFromContentDisposition('attachment; filename="../../etc/passwd"'), 'passwd')
-  assert.equal(filenameFromContentDisposition('attachment; filename=""'), 'gatus-backup.json')
-  assert.equal(filenameFromContentDisposition('attachment'), 'gatus-backup.json')
-  assert.equal(filenameFromContentDisposition(null), 'gatus-backup.json')
+  assert.equal(filenameFromContentDisposition('attachment; filename=""'), 'go-uptime-backup.json')
+  assert.equal(filenameFromContentDisposition('attachment'), 'go-uptime-backup.json')
+  assert.equal(filenameFromContentDisposition(null), 'go-uptime-backup.json')
   assert.equal(filenameFromContentDisposition(undefined, 'other.json'), 'other.json')
 })
 
@@ -107,7 +110,7 @@ test('formats the warnings', () => {
 })
 
 test('builds the body of the preview and of the restore', () => {
-  const file = { format: 'gatus-admin-backup', version: 1 }
+  const file = { format: 'go-uptime-admin-backup', version: 1 }
   assert.deepEqual(buildRestoreBody({ file, format: 'plain', password: 'ignored', overwrite: true }), { file, overwrite: true, disableEndpoints: false })
   assert.deepEqual(
     buildRestoreBody({ file, format: 'encrypted', password: 'correct horse battery', disableEndpoints: true, fingerprint: 'f' }),
@@ -154,15 +157,15 @@ test('describes the errors of the backup and of the restore', () => {
 })
 
 test('reads the Blob and the name of a download', async () => {
-  const response = new Response('{"format":"gatus-admin-backup"}', {
+  const response = new Response('{"format":"go-uptime-admin-backup"}', {
     status: 200,
-    headers: { 'Content-Disposition': 'attachment; filename="gatus-backup-20260916-180000.json"' },
+    headers: { 'Content-Disposition': 'attachment; filename="go-uptime-backup-20260916-180000.json"' },
   })
   const { blob, filename } = await readBlobResponse(response)
-  assert.equal(filename, 'gatus-backup-20260916-180000.json')
-  assert.equal(await blob.text(), '{"format":"gatus-admin-backup"}')
+  assert.equal(filename, 'go-uptime-backup-20260916-180000.json')
+  assert.equal(await blob.text(), '{"format":"go-uptime-admin-backup"}')
   const fallback = await readBlobResponse(new Response('x', { status: 200 }))
-  assert.equal(fallback.filename, 'gatus-backup.json')
+  assert.equal(fallback.filename, 'go-uptime-backup.json')
 })
 
 test('throws the errors of a download and notifies a 401', async () => {

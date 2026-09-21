@@ -1,0 +1,16 @@
+{
+  "format": "gatus-admin-backup-encrypted",
+  "version": 1,
+  "kdf": {
+    "name": "argon2id",
+    "time": 2,
+    "memoryKiB": 19456,
+    "threads": 1,
+    "salt": "YCklBZkdDNnHCEY6GYTmjg=="
+  },
+  "cipher": {
+    "name": "aes-256-gcm",
+    "nonce": "9xvzzAZ+WTHjWJft"
+  },
+  "data": "MWLFrt8IlG+OqhoeVMHPRnZBbfwDERSRQaqzTx59Ccq7oyb4h9nlx5eNaNnGIUJ9JtoVaLq7AV0RQON7zEK//La2Aumbr/nqIufxI8CuR/R+nGEf4XzJg7lJRQScO64btKAg8uy1YL11rFXLVJ2se4K0F4qDAwTw4qksqY/dd2xb3IfyN5EQM3NdAgrML2MiW+RY+c2NlKqcpvS+Iv0WUgGyJoYywnXRu7F04QK50Fc4XMFo89bsetFumKBdVDSgDpOSyeDt6fA5t+6YXz0xzjjUHis/MYHHcIPvc4CGvN3DXJ1opPWg862Cuua7sAoihGZp9Ag0lPQNLdWgp6TRB5L9ngpZPdiIlzaJ6/9bzd5+uhHnH2flAK3tiFxTCs+x3HtBxxEkK2G/I37e9BSil5eYEypkUvYs5QrBE+8b94iFUEDuejo80u1zHFgTaiQx1YfXiTPXOgBjNTE4EU/QjdsTiF+stlIVtj0ZhnMZwlpBVn7oAUAwDYG0nsJRmGonRPIpTIIEE6wMurOHwLEEn5/E/k0Yz47E466BfM4oUG918jIThRe95DosaZBhpF6qCrKiy5tsAubWqXDYfbPPqT8C50vadBG8RK5UM/B8pEknQ4jdr/CR3X9Yp1twb49bTh4gzwWVYOH8e1MlyCYRM7es3uUjw2a+LL/smGj+Zk+UFAldaSoEG7dndAVQswfhU+SDIbS+pYAhCrQJK6YvhW086YxAGmdJHZelfz8U9oaX98y9NfzUg1XVvjErDSUtNWj4M2fJtyHy6oHoqO84jOnsCXj4HZYK9CVewU574cKW/KZCav5RFgRzPKaQZ2yTodQX3pY1EgMczEwu+q0R9ifyctw6HwNJIpYqV1xiClN4t14OdfFFL6qFZMEpAl6B0JAhMMSChkH1aKHkwywGRBIQe/x5MdryAVgdPYsta4I="
+}

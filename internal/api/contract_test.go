@@ -80,14 +80,14 @@ var (
 	contractSession     = regexp.MustCompile(`gatus_session=[^;]*`)
 	contractCookieDate  = regexp.MustCompile(`(?i)expires=[^;]*`)
 	contractBuildAssets = regexp.MustCompile(`(app|chunk-vendors)\.[0-9a-f]+\.(js|css)`)
-	contractBackupName  = regexp.MustCompile(`gatus-backup-\d{8}-\d{6}`)
+	contractBackupName  = regexp.MustCompile(`go-uptime-backup-\d{8}-\d{6}`)
 )
 
 func normalizeContract(value string) string {
 	value = contractTimestamp.ReplaceAllString(value, "<timestamp>")
 	value = contractSession.ReplaceAllString(value, "gatus_session=<token>")
 	value = contractCookieDate.ReplaceAllString(value, "expires=<date>")
-	value = contractBackupName.ReplaceAllString(value, "gatus-backup-<date>")
+	value = contractBackupName.ReplaceAllString(value, "go-uptime-backup-<date>")
 	return contractBuildAssets.ReplaceAllString(value, "$1.<hash>.$2")
 }
 

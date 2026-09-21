@@ -14,7 +14,11 @@ import (
 
 const (
 	// Format identifies a backup file
-	Format = "gatus-admin-backup"
+	Format = "go-uptime-admin-backup"
+
+	// LegacyFormat identifies a backup file written while the project was called Gatus, up to v6. It is still read, so
+	// that a backup made before the change of name can be restored, and never written.
+	LegacyFormat = "gatus-admin-backup"
 
 	// Version is the version of the backup file written by this version of Gatus, and the highest one it reads
 	Version = 1
@@ -42,7 +46,8 @@ var (
 // refused, and the encoded file cannot exceed MaximumPlaintextBytes (2 MiB). Nothing in it is encrypted or masked: the
 // definitions carry the secrets of the endpoints in clear, which is why a backup should be downloaded with a password.
 type File struct {
-	// Format identifies a backup file. It is always "gatus-admin-backup"; any other value is refused.
+	// Format identifies a backup file. It is "go-uptime-admin-backup", or "gatus-admin-backup" in a file written up to
+	// v6, which is still read; any other value is refused. Once decoded it is always the current one.
 	Format string `json:"format"`
 
 	// Version is the version of the format of the file. It is 1, and a restore refuses a value below 1 or above the
@@ -56,9 +61,13 @@ type File struct {
 	// OIDC subject. It is empty when unknown and only informative.
 	CreatedBy string `json:"createdBy"`
 
-	// GatusVersion is the version of the Gatus module that wrote the file, e.g. "v6.0.0". It is omitted when the binary
-	// does not know its version, such as a development build, and only informative.
-	GatusVersion string `json:"gatusVersion,omitempty"`
+	// AppVersion is the version of the module that wrote the file, e.g. "v7.0.0". It is omitted when the binary does not
+	// know its version, such as a development build, and only informative.
+	AppVersion string `json:"appVersion,omitempty"`
+
+	// LegacyGatusVersion is the name that AppVersion had in the files written up to v6. It is only read: once decoded,
+	// its value is in AppVersion and it is empty, so that it is never written.
+	LegacyGatusVersion string `json:"gatusVersion,omitempty"`
 
 	// Endpoints are the managed endpoints, ordered by key. The list is required, may be empty but not null, holds at most
 	// MaximumEndpoints (1000) items and no two items with the same key.
@@ -148,9 +157,15 @@ func Decode(data []byte) (*File, error) {
 	if err := decodeStrict(data, &file); err != nil {
 		return nil, invalidFile("%s", err.Error())
 	}
-	if file.Format != Format {
+	if file.Format != Format && file.Format != LegacyFormat {
 		return nil, invalidFile("unknown format %q", file.Format)
 	}
+	// A file of v6 becomes a file of today: whatever is encoded from it has the current format and field
+	file.Format = Format
+	if len(file.AppVersion) == 0 {
+		file.AppVersion = file.LegacyGatusVersion
+	}
+	file.LegacyGatusVersion = ""
 	if file.Version < 1 || file.Version > Version {
 		return nil, invalidFile("unsupported version %d", file.Version)
 	}
@@ -204,8 +219,8 @@ func Encode(file *File) ([]byte, error) {
 	return json.MarshalIndent(file, "", "  ")
 }
 
-// gatusVersion returns the version of the module of the binary, if known
-func gatusVersion() string {
+// appVersion returns the version of the module of the binary, if known
+func appVersion() string {
 	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
 		return info.Main.Version
 	}

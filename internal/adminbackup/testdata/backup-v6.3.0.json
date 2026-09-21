@@ -1,0 +1,27 @@
+{
+  "format": "gatus-admin-backup",
+  "version": 1,
+  "createdAt": "2026-09-21T18:39:01.853742245Z",
+  "createdBy": "admin",
+  "endpoints": [
+    {
+      "key": "web_site",
+      "definition": "conditions:\n    - '[STATUS] == 200'\ngroup: web\ninterval: 5m\nname: site\nurl: https://example.org\n"
+    }
+  ],
+  "statusPages": [
+    {
+      "slug": "web",
+      "definition": "slug: web\ntitle: Web\ngroups:\n    - web\nenabled: true\n"
+    }
+  ],
+  "pushKeys": [
+    {
+      "name": "fixture",
+      "tokenHash": "3becaeedd1bb48de0be43d6253ac9329bd58a1d920e2bdfe19644170e4262559",
+      "hint": "TK5Y",
+      "createdAt": "2026-09-21T18:39:01.786Z",
+      "createdBy": "admin"
+    }
+  ]
+}

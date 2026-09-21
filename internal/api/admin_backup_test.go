@@ -198,7 +198,7 @@ func TestAdminBackupAndRestore(t *testing.T) {
 
 	// Plain backup
 	response, plain := source.request(t, http.MethodPost, "/api/v1/admin/backup", "application/json", "{}", nil)
-	if response.StatusCode != http.StatusOK || !strings.HasPrefix(response.Header.Get("Content-Disposition"), `attachment; filename="gatus-backup-`) || response.Header.Get("Cache-Control") != "no-store" {
+	if response.StatusCode != http.StatusOK || !strings.HasPrefix(response.Header.Get("Content-Disposition"), `attachment; filename="go-uptime-backup-`) || response.Header.Get("Cache-Control") != "no-store" {
 		t.Fatalf("unexpected backup response: %d %v %s", response.StatusCode, response.Header, plain)
 	}
 	var backup struct {
