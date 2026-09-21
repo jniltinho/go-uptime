@@ -335,4 +335,28 @@ admin wait 2500 >/dev/null
 [ "$(js "document.querySelectorAll('[data-testid=\"restore-plan-table\"]').length")" = 0 ] || fail "the preview opened although an option changed during the request"
 admin reload >/dev/null
 
+step "Backups of v6, written while the project was called Gatus, are still recognised and previewed by the screen"
+# The two files were downloaded from the published image jniltinho/gatus:v6.3.0 (internal/adminbackup/testdata)
+LEGACY="$ROOT/internal/adminbackup/testdata"
+grep -q '"format": "gatus-admin-backup"' "$LEGACY/backup-v6.3.0.json" || fail "the plain fixture does not have the format of v6"
+admin reload >/dev/null
+admin wait "$(testid restore-file)" >/dev/null
+admin upload "$(testid restore-file)" "$LEGACY/backup-v6.3.0.json" >/dev/null
+admin wait 500 >/dev/null
+[ "$(js "document.querySelectorAll('[data-testid=\"restore-password\"]').length")" = 0 ] || fail "a plain backup of v6 was taken for an encrypted one"
+admin click "$(testid restore-preview)" >/dev/null
+admin wait "$(testid restore-plan-table)" >/dev/null || fail "the preview of a plain backup of v6 was not shown"
+[ "$(plan_action endpoint web_site)" = create ] || fail "the endpoint of the backup of v6 is not planned to be created"
+admin click "$(testid restore-plan-close)" >/dev/null
+admin reload >/dev/null
+admin wait "$(testid restore-file)" >/dev/null
+admin upload "$(testid restore-file)" "$LEGACY/backup-v6.3.0.enc.json" >/dev/null
+admin wait "$(testid restore-password)" >/dev/null || fail "the password of an encrypted backup of v6 is not asked"
+admin fill "$(testid restore-password)" "fixture-backup-password-123" >/dev/null
+admin click "$(testid restore-preview)" >/dev/null
+admin wait "$(testid restore-plan-table)" >/dev/null || fail "the preview of an encrypted backup of v6 was not shown"
+[ "$(plan_action endpoint web_site)" = create ] || fail "the endpoint of the encrypted backup of v6 is not planned to be created"
+admin screenshot "$PRINTS/09-restore-backup-of-v6.png" >/dev/null
+admin click "$(testid restore-plan-close)" >/dev/null
+
 echo "OK: $STEP steps; screenshots in $PRINTS"
