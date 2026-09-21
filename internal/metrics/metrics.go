@@ -14,8 +14,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-const namespace = "gatus" // The prefix of the metrics
-
 var (
 	resultTotal                        *prometheus.CounterVec
 	resultDurationSeconds              *prometheus.GaugeVec
@@ -84,7 +82,7 @@ func UnregisterPrometheusMetrics() {
 	registeredExtraLabels.Store(nil)
 }
 
-// InitializePrometheusMetrics registers the Gatus metrics on reg (the default registerer when nil), with the extra
+// InitializePrometheusMetrics registers the metrics on reg (the default registerer when nil), with the extra
 // labels of the configuration. Metrics registered by a previous call are unregistered first, so it is safe to call on
 // every configuration reload.
 func InitializePrometheusMetrics(cfg *config.Config, reg prometheus.Registerer) {
@@ -100,6 +98,8 @@ func InitializePrometheusMetrics(cfg *config.Config, reg prometheus.Registerer) 
 	// Store the registerer for later unregistration
 	currentRegisterer = reg
 
+	// The prefix of the names comes from the configuration: go_uptime by default, gatus for the names of v6
+	namespace := cfg.GetMetricsNamespace()
 	extraLabels := cfg.GetUniqueExtraMetricLabels()
 	labels := slices.Clone(extraLabels)
 	registeredExtraLabels.Store(&labels)

@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
@@ -56,6 +57,9 @@ var (
 	// ErrNoEndpointOrSuiteInConfig is an error returned when a configuration file or directory has no endpoints configured
 	ErrNoEndpointOrSuiteInConfig = errors.New("configuration should contain at least one endpoint or suite")
 
+	// ErrInvalidMetricsNamespace is returned when metrics-namespace is not a valid prefix of a Prometheus metric name
+	ErrInvalidMetricsNamespace = errors.New("metrics-namespace must start with a letter or an underscore and have only letters, digits and underscores")
+
 	// ErrConfigFileNotFound is an error returned when a configuration file could not be found
 	ErrConfigFileNotFound = errors.New("configuration file not found")
 
@@ -74,6 +78,10 @@ type Config struct {
 
 	// Metrics Whether to expose metrics at /metrics
 	Metrics bool `yaml:"metrics,omitempty"`
+
+	// MetricsNamespace is the prefix of the names of the metrics. It defaults to DefaultMetricsNamespace; "gatus" keeps
+	// the names that the metrics had up to v6, for the dashboards and alerts written on them.
+	MetricsNamespace string `yaml:"metrics-namespace,omitempty"`
 
 	// SkipInvalidConfigUpdate Whether to make the application ignore invalid configuration
 	// if the configuration file is updated while the application is running
@@ -362,6 +370,9 @@ func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
 		if err := ValidateSuitesConfig(config); err != nil {
 			return nil, err
 		}
+		if err := ValidateMetricsConfig(config); err != nil {
+			return nil, err
+		}
 		if err := ValidateUniqueKeys(config); err != nil {
 			return nil, err
 		}
@@ -589,6 +600,40 @@ func ValidateSuitesConfig(config *Config) error {
 	}
 	logr.Infof("[config.ValidateSuitesConfig] Validated %d suite(s)", len(config.Suites))
 	return nil
+}
+
+const (
+	// DefaultMetricsNamespace is the default prefix of the names of the metrics
+	DefaultMetricsNamespace = "go_uptime"
+
+	// LegacyMetricsNamespace is the prefix that the metrics had while the project was called Gatus, up to v6
+	LegacyMetricsNamespace = "gatus"
+)
+
+// metricsNamespacePattern is what Prometheus accepts at the start of a metric name, without the colon, which is
+// reserved for recording rules
+var metricsNamespacePattern = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+
+// ValidateMetricsConfig validates metrics-namespace and sets its default. It is validated even when metrics is false,
+// so that turning the metrics on later cannot fail on a value that was already there.
+func ValidateMetricsConfig(config *Config) error {
+	if len(config.MetricsNamespace) == 0 {
+		config.MetricsNamespace = DefaultMetricsNamespace
+		return nil
+	}
+	if !metricsNamespacePattern.MatchString(config.MetricsNamespace) {
+		return fmt.Errorf("%w: %q", ErrInvalidMetricsNamespace, config.MetricsNamespace)
+	}
+	return nil
+}
+
+// GetMetricsNamespace returns the prefix of the names of the metrics. It is safe to call on a configuration that was
+// not validated, such as the ones built by tests.
+func (config *Config) GetMetricsNamespace() string {
+	if config == nil || len(config.MetricsNamespace) == 0 {
+		return DefaultMetricsNamespace
+	}
+	return config.MetricsNamespace
 }
 
 // ValidateUniqueKeys makes sure that no key is shared between the endpoints, the external endpoints, the suites and
