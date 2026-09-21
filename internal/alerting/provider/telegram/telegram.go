@@ -166,9 +166,9 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 	var text string
 	if len(alert.GetDescription()) > 0 {
-		text = fmt.Sprintf("⛑ *Gatus* \n%s \n*Description* \n%s  \n%s", message, alert.GetDescription(), formattedConditionResults)
+		text = fmt.Sprintf("⛑ *Go Uptime* \n%s \n*Description* \n%s  \n%s", message, alert.GetDescription(), formattedConditionResults)
 	} else {
-		text = fmt.Sprintf("⛑ *Gatus* \n%s%s", message, formattedConditionResults)
+		text = fmt.Sprintf("⛑ *Go Uptime* \n%s%s", message, formattedConditionResults)
 	}
 	bodyAsJSON, _ := json.Marshal(Body{
 		ChatID:    cfg.ID,

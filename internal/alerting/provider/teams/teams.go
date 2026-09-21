@@ -161,7 +161,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		Text:       message + description,
 	}
 	if len(body.Title) == 0 {
-		body.Title = "&#x1F6A8; Gatus"
+		body.Title = "&#x1F6A8; Go Uptime"
 	}
 	if len(formattedConditionResults) > 0 {
 		body.Sections = append(body.Sections, Section{

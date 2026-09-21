@@ -47,7 +47,7 @@ type Config struct {
 	UserKey string `yaml:"user-key"`
 
 	// The title of your message
-	// default: "Gatus: <endpoint>""
+	// default: "Go Uptime: <endpoint>""
 	Title string `yaml:"title,omitempty"`
 
 	// Priority of all messages, ranging from -2 (very low) to 2 (Emergency)
@@ -201,7 +201,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		message += " with the following description: " + alert.GetDescription()
 	}
 	message += formattedConditionResults
-	title := "Gatus: " + ep.DisplayName()
+	title := "Go Uptime: " + ep.DisplayName()
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

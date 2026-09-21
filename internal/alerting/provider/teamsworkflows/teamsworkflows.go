@@ -157,7 +157,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 
 	// Configure default title if it's not provided
-	title := "⛑️ Gatus"
+	title := "⛑️ Go Uptime"
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

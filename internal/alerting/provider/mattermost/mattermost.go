@@ -163,12 +163,12 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	body := Body{
 		Channel:  cfg.Channel,
 		Text:     "",
-		Username: "gatus",
-		IconURL:  "https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png",
+		Username: "go-uptime",
+		IconURL:  "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
 		Attachments: []Attachment{
 			{
-				Title:    ":helmet_with_white_cross: Gatus",
-				Fallback: "Gatus - " + message,
+				Title:    ":helmet_with_white_cross: Go Uptime",
+				Fallback: "Go Uptime - " + message,
 				Text:     message + description,
 				Short:    false,
 				Color:    color,

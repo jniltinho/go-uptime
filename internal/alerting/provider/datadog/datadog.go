@@ -159,6 +159,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		}
 	}
 	tags := []string{
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): monitors and dashboards of Datadog
+		// written on v6 filter by this tag and by the source type below
 		"source:gatus",
 		fmt.Sprintf("endpoint:%s", ep.Name),
 		fmt.Sprintf("status:%s", alertType),

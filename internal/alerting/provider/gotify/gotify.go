@@ -131,7 +131,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		message += " with the following description: " + alert.GetDescription()
 	}
 	message += formattedConditionResults
-	title := "Gatus: " + ep.DisplayName()
+	title := "Go Uptime: " + ep.DisplayName()
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

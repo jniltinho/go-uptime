@@ -17,6 +17,8 @@ import (
 )
 
 const (
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): this is the path of the integration in the
+	// API of iLert, not a name of ours
 	restAPIUrl = "https://api.ilert.com/api/v1/events/gatus/"
 )
 

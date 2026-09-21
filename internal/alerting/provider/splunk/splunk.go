@@ -182,6 +182,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	if cfg.Source != "" {
 		body.Source = cfg.Source
 	} else {
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the searches and indexes of Splunk
+		// written on v6 filter by this source and by the sourcetype below; both are configurable
 		body.Source = "gatus"
 	}
 	if cfg.SourceType != "" {

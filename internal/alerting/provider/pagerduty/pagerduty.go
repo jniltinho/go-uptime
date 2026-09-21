@@ -158,7 +158,9 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		DedupKey:    resolveKey,
 		EventAction: eventAction,
 		Payload: Payload{
-			Summary:  message,
+			Summary: message,
+			// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): rules and filters of PagerDuty match
+			// the source of the event
 			Source:   "Gatus",
 			Severity: "critical",
 		},

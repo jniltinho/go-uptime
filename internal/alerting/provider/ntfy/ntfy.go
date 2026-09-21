@@ -214,7 +214,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	message += formattedConditionResults
 	body, _ := json.Marshal(Body{
 		Topic:    cfg.Topic,
-		Title:    "Gatus: " + ep.DisplayName(),
+		Title:    "Go Uptime: " + ep.DisplayName(),
 		Message:  message,
 		Tags:     []string{tag},
 		Priority: cfg.Priority,

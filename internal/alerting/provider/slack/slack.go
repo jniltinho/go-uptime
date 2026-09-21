@@ -163,7 +163,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		},
 	}
 	if len(body.Attachments[0].Title) == 0 {
-		body.Attachments[0].Title = ":helmet_with_white_cross: Gatus"
+		body.Attachments[0].Title = ":helmet_with_white_cross: Go Uptime"
 	}
 	if len(formattedConditionResults) > 0 {
 		body.Attachments[0].Fields = append(body.Attachments[0].Fields, Field{

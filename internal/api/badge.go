@@ -192,7 +192,7 @@ func HealthBadge(c *echo.Context) error {
 // Authentication: none (public group).
 // Request: the path parameter key is the key of the endpoint, unescaped once with url.QueryUnescape and not
 // lower-cased.
-// Responses: 200 with the JSON object {"schemaVersion": 1, "label": "gatus", "message": "up"|"down"|"?",
+// Responses: 200 with the JSON object {"schemaVersion": 1, "label": "go-uptime", "message": "up"|"down"|"?",
 // "color": "brightgreen"|"red"|"yellow"}, Cache-Control: no-cache, no-store, must-revalidate and Expires: 0; 400 when
 // the key cannot be unescaped or the time range is invalid; 404 when no endpoint has the key; 500 on an error of the
 // storage or of the encoding. Errors are text/plain, and the 500 carries the text of the error.
@@ -423,12 +423,12 @@ func generateHealthBadgeSVG(healthStatus string) []byte {
 }
 
 // generateHealthBadgeShields returns the JSON of the health badge in the endpoint badge format of shields.io:
-// schemaVersion 1, the label "gatus", the health status as the message and its colour.
+// schemaVersion 1, the label "go-uptime", the health status as the message and its colour.
 func generateHealthBadgeShields(healthStatus string) ([]byte, error) {
 	color := getBadgeShieldsColorFromHealth(healthStatus)
 	data := map[string]interface{}{
 		"schemaVersion": 1,
-		"label":         "gatus",
+		"label":         "go-uptime",
 		"message":       healthStatus,
 		"color":         color,
 	}

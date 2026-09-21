@@ -66,6 +66,9 @@ func (cfg *Config) Validate() error {
 		return ErrAPIKeyNotSet
 	}
 	if len(cfg.Source) == 0 {
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the alias identifies the alert to close,
+		// and source and entity feed the routing rules of Opsgenie; another default would leave the alerts opened by v6
+		// unresolved. The three are configurable
 		cfg.Source = "gatus"
 	}
 	if len(cfg.EntityPrefix) == 0 {

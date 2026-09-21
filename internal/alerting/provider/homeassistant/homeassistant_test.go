@@ -2,7 +2,9 @@ package homeassistant
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
@@ -123,6 +125,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 	description := "test-description"
 	provider := AlertProvider{DefaultConfig: Config{URL: "http://homeassistant:8123", Token: "token"}}
 	body := provider.buildRequestBody(
+		DefaultEventType,
 		&endpoint.Endpoint{Name: "endpoint-name"},
 		&alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 		&endpoint.Result{
@@ -154,5 +157,47 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 	}
 	if decodedBody.EventData.Conditions[1].Success {
 		t.Error("expected second condition to be unsuccessful")
+	}
+}
+
+func TestConfig_EventType(t *testing.T) {
+	cfg := Config{URL: "http://homeassistant:8123", Token: "token"}
+	if err := cfg.Validate(); err != nil || cfg.GetEventType() != "gatus_alert" {
+		t.Fatalf("expected the event of v6 by default, got %q (err=%v)", cfg.GetEventType(), err)
+	}
+	cfg.EventType = "go_uptime_alert"
+	if err := cfg.Validate(); err != nil || cfg.GetEventType() != "go_uptime_alert" {
+		t.Errorf("expected the configured event type, got %q (err=%v)", cfg.GetEventType(), err)
+	}
+	for _, invalid := range []string{"with space", "a/b", "../admin", "a?b"} {
+		cfg.EventType = invalid
+		if err := cfg.Validate(); !errors.Is(err, ErrInvalidEventType) {
+			t.Errorf("expected %q to be refused, got %v", invalid, err)
+		}
+	}
+	base := Config{URL: "http://homeassistant:8123", Token: "token"}
+	base.Merge(&Config{EventType: "team_alert"})
+	if base.GetEventType() != "team_alert" {
+		t.Errorf("expected the override to set the event type, got %q", base.GetEventType())
+	}
+}
+
+// The event type is in the path of the request and in its body
+func TestAlertProvider_SendUsesTheEventType(t *testing.T) {
+	var path string
+	var body Body
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path = r.URL.Path
+		_ = json.NewDecoder(r.Body).Decode(&body)
+	}))
+	defer server.Close()
+	for eventType, expected := range map[string]string{"": "gatus_alert", "go_uptime_alert": "go_uptime_alert"} {
+		provider := AlertProvider{DefaultConfig: Config{URL: server.URL, Token: "token", EventType: eventType}}
+		if err := provider.Send(&endpoint.Endpoint{Name: "api"}, &alert.Alert{}, &endpoint.Result{}, false); err != nil {
+			t.Fatal(err)
+		}
+		if path != "/api/events/"+expected || body.EventType != expected {
+			t.Errorf("expected the event %q in the path and in the body, got %q and %q", expected, path, body.EventType)
+		}
 	}
 }

@@ -21,7 +21,9 @@ import (
 // Defaults applied by Config.Validate: DefaultSeverity when no severity is set and DefaultMonitoringTool when
 // no monitoring tool name is set.
 const (
-	DefaultSeverity       = "critical"
+	DefaultSeverity = "critical"
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): GitLab groups and deduplicates the alerts by
+	// monitoring_tool, and the title of the alert derives from it; it is configurable (monitoring-tool)
 	DefaultMonitoringTool = "gatus"
 )
 

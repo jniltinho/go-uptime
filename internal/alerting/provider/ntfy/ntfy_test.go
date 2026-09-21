@@ -111,42 +111,42 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 1}},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1}`,
 		},
 		{
 			Name:         "resolved",
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 2}},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2\n🟢 [CONNECTED] == true\n🟢 [STATUS] == 200","tags":["white_check_mark"],"priority":2}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2\n🟢 [CONNECTED] == true\n🟢 [STATUS] == 200","tags":["white_check_mark"],"priority":2}`,
 		},
 		{
 			Name:         "triggered-email",
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 1, Email: "test@example.com", Click: "example.com"}},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 		},
 		{
 			Name:         "resolved-email",
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 2, Email: "test@example.com", Click: "example.com"}},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2\n🟢 [CONNECTED] == true\n🟢 [STATUS] == 200","tags":["white_check_mark"],"priority":2,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been resolved after passing successfully 5 time(s) in a row with the following description: description-2\n🟢 [CONNECTED] == true\n🟢 [STATUS] == 200","tags":["white_check_mark"],"priority":2,"email":"test@example.com","click":"example.com"}`,
 		},
 		{
 			Name:         "group-override",
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 5, Email: "test@example.com", Click: "example.com"}, Overrides: []Override{{Group: "g", Config: Config{Topic: "group-topic", Priority: 4, Email: "override@test.com", Click: "test.com"}}}},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: `{"topic":"group-topic","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":4,"email":"override@test.com","click":"test.com"}`,
+			ExpectedBody: `{"topic":"group-topic","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":4,"email":"override@test.com","click":"test.com"}`,
 		},
 		{
 			Name:         "alert-override",
 			Provider:     AlertProvider{DefaultConfig: Config{URL: "https://ntfy.sh", Topic: "example", Priority: 5, Email: "test@example.com", Click: "example.com"}, Overrides: []Override{{Group: "g", Config: Config{Topic: "group-topic", Priority: 4, Email: "override@test.com", Click: "test.com"}}}},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3, ProviderOverride: map[string]any{"topic": "alert-topic"}},
 			Resolved:     false,
-			ExpectedBody: `{"topic":"alert-topic","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":4,"email":"override@test.com","click":"test.com"}`,
+			ExpectedBody: `{"topic":"alert-topic","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":4,"email":"override@test.com","click":"test.com"}`,
 		},
 	}
 	for _, scenario := range scenarios {
@@ -195,7 +195,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "",
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type": "application/json",
 			},
@@ -206,7 +206,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "",
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type":  "application/json",
 				"Authorization": "Bearer tk_mytoken",
@@ -218,7 +218,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "",
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type": "application/json",
 				"Firebase":     "no",
@@ -230,7 +230,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "",
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type": "application/json",
 				"Cache":        "no",
@@ -242,7 +242,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "",
-			ExpectedBody: `{"topic":"example","title":"Gatus: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type": "application/json",
 				"Firebase":     "no",
@@ -255,7 +255,7 @@ func TestAlertProvider_Send(t *testing.T) {
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
 			Group:        "test-group",
-			ExpectedBody: `{"topic":"example","title":"Gatus: test-group/endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
+			ExpectedBody: `{"topic":"example","title":"Go Uptime: test-group/endpoint-name","message":"An alert has been triggered due to having failed 3 time(s) in a row with the following description: description-1\n🔴 [CONNECTED] == true\n🔴 [STATUS] == 200","tags":["rotating_light"],"priority":1,"email":"test@example.com","click":"example.com"}`,
 			ExpectedHeaders: map[string]string{
 				"Content-Type":  "application/json",
 				"Authorization": "Bearer tk_test_token",

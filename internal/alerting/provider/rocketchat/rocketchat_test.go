@@ -64,8 +64,8 @@ func TestAlertProvider_Send(t *testing.T) {
 			mockRoundTripper: test.MockRoundTripper(func(r *http.Request) *http.Response {
 				body := make(map[string]interface{})
 				json.NewDecoder(r.Body).Decode(&body)
-				if body["username"] != "Gatus" {
-					t.Errorf("expected username to be 'Gatus', got %v", body["username"])
+				if body["username"] != "Go Uptime" {
+					t.Errorf("expected username to be 'Go Uptime', got %v", body["username"])
 				}
 				attachments := body["attachments"].([]interface{})
 				if len(attachments) != 1 {

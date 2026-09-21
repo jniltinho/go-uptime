@@ -152,14 +152,14 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#DD0000\",\"title\":\"\\u0026#x1F6A8; Gatus\",\"text\":\"An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row: description-1\",\"sections\":[{\"activityTitle\":\"Condition results\",\"text\":\"\\u0026#x274C; - `[CONNECTED] == true`\\u003cbr/\\u003e\\u0026#x274C; - `[STATUS] == 200`\\u003cbr/\\u003e\"}]}",
+			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#DD0000\",\"title\":\"\\u0026#x1F6A8; Go Uptime\",\"text\":\"An alert for *endpoint-name* has been triggered due to having failed 3 time(s) in a row: description-1\",\"sections\":[{\"activityTitle\":\"Condition results\",\"text\":\"\\u0026#x274C; - `[CONNECTED] == true`\\u003cbr/\\u003e\\u0026#x274C; - `[STATUS] == 200`\\u003cbr/\\u003e\"}]}",
 		},
 		{
 			Name:         "resolved",
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#36A64F\",\"title\":\"\\u0026#x1F6A8; Gatus\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row: description-2\",\"sections\":[{\"activityTitle\":\"Condition results\",\"text\":\"\\u0026#x2705; - `[CONNECTED] == true`\\u003cbr/\\u003e\\u0026#x2705; - `[STATUS] == 200`\\u003cbr/\\u003e\"}]}",
+			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#36A64F\",\"title\":\"\\u0026#x1F6A8; Go Uptime\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row: description-2\",\"sections\":[{\"activityTitle\":\"Condition results\",\"text\":\"\\u0026#x2705; - `[CONNECTED] == true`\\u003cbr/\\u003e\\u0026#x2705; - `[STATUS] == 200`\\u003cbr/\\u003e\"}]}",
 		},
 		{
 			Name:         "resolved-with-no-conditions",
@@ -167,7 +167,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{},
 			Alert:        alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#36A64F\",\"title\":\"\\u0026#x1F6A8; Gatus\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row: description-2\"}",
+			ExpectedBody: "{\"@type\":\"MessageCard\",\"@context\":\"http://schema.org/extensions\",\"themeColor\":\"#36A64F\",\"title\":\"\\u0026#x1F6A8; Go Uptime\",\"text\":\"An alert for *endpoint-name* has been resolved after passing successfully 5 time(s) in a row: description-2\"}",
 		},
 	}
 	for _, scenario := range scenarios {

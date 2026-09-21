@@ -171,6 +171,8 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 		successRate = float64(successCount) / float64(len(result.ConditionResults)) * 100
 	}
 	event := Event{
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): NRQL queries and alert conditions
+		// written on v6 select this event type, service and source
 		EventType:   "GatusAlert",
 		Timestamp:   time.Now().Unix() * 1000, // New Relic expects milliseconds
 		Service:     "Gatus",

@@ -154,7 +154,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Alert:    alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved: false,
 			ExpectedBody: Body{
-				Title:            "Gatus",
+				Title:            "Go Uptime",
 				EndpointName:     "name",
 				EndpointURL:      "https://example.org",
 				AlertDescription: "description-1",
@@ -173,7 +173,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Alert:    alert.Alert{Description: &firstDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved: false,
 			ExpectedBody: Body{
-				Title:            "Gatus",
+				Title:            "Go Uptime",
 				EndpointName:     "name",
 				EndpointGroup:    "group",
 				EndpointURL:      "https://example.org",
@@ -193,7 +193,7 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Alert:    alert.Alert{Description: &secondDescription, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved: true,
 			ExpectedBody: Body{
-				Title:            "Gatus",
+				Title:            "Go Uptime",
 				EndpointName:     "name",
 				EndpointURL:      "https://example.org",
 				AlertDescription: "description-2",

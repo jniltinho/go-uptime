@@ -128,6 +128,8 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	if err != nil {
 		return err
 	}
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the issue is found again by the equality of
+	// this title, so another title would leave the issues opened by v6 unresolved
 	title := "alert(gatus): " + ep.DisplayName()
 	if !resolved {
 		_, _, err = cfg.giteaClient.CreateIssue(

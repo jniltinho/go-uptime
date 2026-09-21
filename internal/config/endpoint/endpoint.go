@@ -46,8 +46,10 @@ const (
 	// UserAgentHeader is the name of the header used to specify the request's user agent
 	UserAgentHeader = "User-Agent"
 
-	// GatusUserAgent is the default user agent that Gatus uses to send requests.
-	GatusUserAgent = "Gatus/1.0"
+	// DefaultUserAgent is the user agent of the requests of the checks, unless the endpoint sets its own User-Agent
+	// header. It has no version of the project on purpose: a rule of a firewall that allows it must not break on every
+	// release. It was "Gatus/1.0" up to v6.
+	DefaultUserAgent = "go-uptime/1.0"
 
 	// TypeDNS is the Type of an endpoint that has a DNS configuration, whatever its URL.
 	TypeDNS Type = "DNS"
@@ -245,7 +247,7 @@ func (e *Endpoint) ValidateAndSetDefaults() error {
 	}
 	// Automatically add user agent header if there isn't one specified in the endpoint configuration
 	if !hasHeader(e.Headers, UserAgentHeader) {
-		e.Headers[UserAgentHeader] = GatusUserAgent
+		e.Headers[UserAgentHeader] = DefaultUserAgent
 	}
 	// Automatically add "Content-Type: application/json" header if there's no Content-Type set
 	// and endpoint.GraphQL is set to true
@@ -515,7 +517,7 @@ func (e *Endpoint) call(result *Result) {
 			maps.Copy(wsHeaders, e.Headers)
 		}
 		if !hasHeader(wsHeaders, UserAgentHeader) {
-			wsHeaders[UserAgentHeader] = GatusUserAgent
+			wsHeaders[UserAgentHeader] = DefaultUserAgent
 		}
 		result.Connected, result.Body, err = client.QueryWebSocket(e.URL, e.getParsedBody(), wsHeaders, e.ClientConfig)
 		if err != nil {

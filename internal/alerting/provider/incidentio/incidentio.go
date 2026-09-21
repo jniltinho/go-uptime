@@ -201,7 +201,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 
 	body, _ := json.Marshal(Body{
 		AlertSourceConfigID: alertSourceID,
-		Title:               "Gatus: " + ep.DisplayName(),
+		Title:               "Go Uptime: " + ep.DisplayName(),
 		Status:              status,
 		DeduplicationKey:    alert.ResolveKey,
 		Description:         message,

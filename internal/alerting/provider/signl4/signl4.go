@@ -146,10 +146,12 @@ func (provider *AlertProvider) buildRequestBody(ep *endpoint.Endpoint, alert *al
 	}
 	message += conditionResults
 	body := Body{
-		Title:         title,
-		Message:       message,
-		XS4Service:    ep.DisplayName(),
-		XS4Status:     status,
+		Title:      title,
+		Message:    message,
+		XS4Service: ep.DisplayName(),
+		XS4Status:  status,
+		// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the resolution is matched to the alert
+		// by this identifier, so another prefix would leave the alerts opened by v6 unresolved
 		XS4ExternalID: fmt.Sprintf("gatus-%s", ep.Key()),
 	}
 	bodyAsJSON, err := json.Marshal(body)

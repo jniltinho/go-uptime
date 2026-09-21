@@ -154,7 +154,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	if alertDescription := alert.GetDescription(); len(alertDescription) > 0 {
 		description = ":\n> " + alertDescription
 	}
-	title := ":helmet_with_white_cross: Gatus"
+	title := ":helmet_with_white_cross: Go Uptime"
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

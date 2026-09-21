@@ -103,7 +103,7 @@ func (provider *AlertProvider) Send(ep *endpoint.Endpoint, alert *alert.Alert, r
 	return err
 }
 
-// Body is the JSON payload posted to the n8n webhook. Title is "Gatus" unless the configuration sets one.
+// Body is the JSON payload posted to the n8n webhook. Title is "Go Uptime" unless the configuration sets one.
 type Body struct {
 	Title            string            `json:"title"`
 	EndpointName     string            `json:"endpoint_name"`
@@ -129,7 +129,7 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	} else {
 		message = fmt.Sprintf("An alert for %s has been triggered due to having failed %d time(s) in a row", ep.DisplayName(), alert.FailureThreshold)
 	}
-	title := "Gatus"
+	title := "Go Uptime"
 	if cfg.Title != "" {
 		title = cfg.Title
 	}

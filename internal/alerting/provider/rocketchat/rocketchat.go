@@ -162,14 +162,14 @@ func (provider *AlertProvider) buildRequestBody(cfg *Config, ep *endpoint.Endpoi
 	}
 	body := Body{
 		Text:     "",
-		Username: "Gatus",
+		Username: "Go Uptime",
 		Attachments: []Attachment{
 			{
-				Title:      "🚨 Gatus Alert",
+				Title:      "🚨 Go Uptime Alert",
 				Text:       message + description,
 				Color:      color,
-				AuthorName: "Gatus",
-				AuthorIcon: "https://raw.githubusercontent.com/TwiN/gatus/master/.github/assets/logo.png",
+				AuthorName: "Go Uptime",
+				AuthorIcon: "https://raw.githubusercontent.com/jniltinho/go-uptime/master/.github/assets/logo.png",
 			},
 		},
 	}

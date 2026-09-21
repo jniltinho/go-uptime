@@ -740,8 +740,8 @@ endpoints:
 	if config.Endpoints[0].Interval != 60*time.Second {
 		t.Errorf("Interval should have been %s, because it is the default value", 60*time.Second)
 	}
-	if userAgent := config.Endpoints[0].Headers["User-Agent"]; userAgent != endpoint.GatusUserAgent {
-		t.Errorf("User-Agent should've been %s because it's the default value, got %s", endpoint.GatusUserAgent, userAgent)
+	if userAgent := config.Endpoints[0].Headers["User-Agent"]; userAgent != endpoint.DefaultUserAgent {
+		t.Errorf("User-Agent should've been %s because it's the default value, got %s", endpoint.DefaultUserAgent, userAgent)
 	}
 }
 

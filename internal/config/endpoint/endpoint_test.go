@@ -695,8 +695,8 @@ func TestEndpoint_buildHTTPRequest(t *testing.T) {
 	if request.Host != "twin.sh" {
 		t.Error("request.Host should've been twin.sh, but was", request.Host)
 	}
-	if userAgent := request.Header.Get("User-Agent"); userAgent != GatusUserAgent {
-		t.Errorf("request.Header.Get(User-Agent) should've been %s, but was %s", GatusUserAgent, userAgent)
+	if userAgent := request.Header.Get("User-Agent"); userAgent != DefaultUserAgent {
+		t.Errorf("request.Header.Get(User-Agent) should've been %s, but was %s", DefaultUserAgent, userAgent)
 	}
 }
 

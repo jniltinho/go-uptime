@@ -118,6 +118,9 @@ type Body struct {
 // buildRequestBody builds the request body for the provider
 func (provider *AlertProvider) buildRequestBody(ep *endpoint.Endpoint, alert *alert.Alert, result *endpoint.Result, resolved bool) ([]byte, error) {
 	var message, status string
+	// Kept from Gatus on purpose (see AGENTS.md, "Names kept from Gatus"): the resolve event is matched to the incident
+	// by this identifier, so another prefix would leave the incidents opened by v6 unresolved; the source tag below is
+	// kept for the routing rules
 	eventID := fmt.Sprintf("gatus-%s", ep.Key())
 	if resolved {
 		message = fmt.Sprintf("RESOLVED: %s", ep.DisplayName())

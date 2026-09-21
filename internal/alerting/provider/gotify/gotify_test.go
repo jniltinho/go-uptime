@@ -63,14 +63,14 @@ func TestAlertProvider_buildRequestBody(t *testing.T) {
 			Provider:     AlertProvider{DefaultConfig: Config{ServerURL: "https://gotify.example.com", Token: "faketoken"}},
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     false,
-			ExpectedBody: fmt.Sprintf("{\"message\":\"An alert for `%s` has been triggered due to having failed 3 time(s) in a row with the following description: %s\\n✕ - [CONNECTED] == true\\n✕ - [STATUS] == 200\",\"title\":\"Gatus: custom-endpoint\",\"priority\":0}", endpointName, description),
+			ExpectedBody: fmt.Sprintf("{\"message\":\"An alert for `%s` has been triggered due to having failed 3 time(s) in a row with the following description: %s\\n✕ - [CONNECTED] == true\\n✕ - [STATUS] == 200\",\"title\":\"Go Uptime: custom-endpoint\",\"priority\":0}", endpointName, description),
 		},
 		{
 			Name:         "resolved",
 			Provider:     AlertProvider{DefaultConfig: Config{ServerURL: "https://gotify.example.com", Token: "faketoken"}},
 			Alert:        alert.Alert{Description: &description, SuccessThreshold: 5, FailureThreshold: 3},
 			Resolved:     true,
-			ExpectedBody: fmt.Sprintf("{\"message\":\"An alert for `%s` has been resolved after passing successfully 5 time(s) in a row with the following description: %s\\n✓ - [CONNECTED] == true\\n✓ - [STATUS] == 200\",\"title\":\"Gatus: custom-endpoint\",\"priority\":0}", endpointName, description),
+			ExpectedBody: fmt.Sprintf("{\"message\":\"An alert for `%s` has been resolved after passing successfully 5 time(s) in a row with the following description: %s\\n✓ - [CONNECTED] == true\\n✓ - [STATUS] == 200\",\"title\":\"Go Uptime: custom-endpoint\",\"priority\":0}", endpointName, description),
 		},
 		{
 			Name:         "custom-title",
