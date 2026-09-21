@@ -7,7 +7,7 @@
 
 [Unit]
 Description=Go Uptime - health dashboard and status pages
-Documentation=https://github.com/jniltinho/go-uptime/tree/master/docs
+Documentation=https://github.com/jniltinho/go-uptime/tree/main/docs
 Wants=network-online.target
 After=network-online.target
 

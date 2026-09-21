@@ -123,6 +123,13 @@ keys that v6 reads; **v6 cannot read a backup made by v7** (keep the one you mad
 `metrics-namespace`, or a Home Assistant provider with `event-type`, has options that v6 does not know — `metrics-namespace`
 is ignored by v6, and `event-type` too.
 
+## The repository
+
+`github.com/jniltinho/gatus` is now `github.com/jniltinho/go-uptime`, and its default branch is `main` instead of
+`master`. GitHub redirects the old address and the old branch name, so clones, links and the raw URL of the scripts keep
+working; to update a clone: `git remote set-url origin https://github.com/jniltinho/go-uptime.git`, then
+`git branch -m master main && git fetch origin && git branch -u origin/main main`.
+
 ## How long the compatibility lasts
 
 The `GATUS_*` variables, the `/gatus` link of the image, the legacy backup formats, the migration of the browser

@@ -16,7 +16,7 @@ Esta skill guia o processo completo de criar a tag de versão, a GitHub Release 
 gh auth status                 # precisa do escopo repo
 docker info | grep Username    # precisa de login no Docker Hub para publicar a imagem
 git status                     # precisa estar limpo
-git fetch origin --tags && git checkout master && git pull --ff-only
+git fetch origin --tags && git checkout main && git pull --ff-only
 
 # Última release (a maior tag; até a v6.0.0 elas eram v5.36.0-fork.N)
 LAST_TAG=$(git tag --list 'v[0-9]*' --sort=-v:refname | head -n1)
@@ -81,7 +81,7 @@ O workflow não publica imagens. Com o checkout na tag:
 ```bash
 git checkout "$NEXT"
 make docker-release VERSION="${NEXT#v}"      # publica jniltinho/go-uptime:$NEXT (amd64 e arm64), nunca latest
-git checkout master
+git checkout main
 ```
 
 ### 5. Acompanhar o workflow e ajustar as notas

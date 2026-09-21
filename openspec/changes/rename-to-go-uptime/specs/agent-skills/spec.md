@@ -25,7 +25,7 @@ Skills voltadas a bibliotecas que o projeto não usa (`golang-spf13-viper`, `gol
 - **THEN** não existe o diretório `golang-spf13-viper`
 
 ### Requirement: Skill create-release
-O repositório MUST incluir `.claude/skills/create-release/SKILL.md` com a mesma estrutura da skill do `jniltinho/llama-model` (pré-checagens, esquema de versão, revisão e categorização de commits, criação e envio da tag, acompanhamento do workflow, ajuste das notas e verificação), adaptada ao Go Uptime: branch `master`, tags SemVer simples `vX.Y.Z`, o teste de atualização `test/e2e/upgrade.sh` da última release para a candidata antes da tag, pacotes `linux/amd64` e `linux/arm64` pelo workflow, imagem `jniltinho/go-uptime` publicada com `make docker-release` a partir de uma árvore limpa no commit da tag, notas em inglês a partir da tag anterior e link de changelog para `jniltinho/go-uptime`.
+O repositório MUST incluir `.claude/skills/create-release/SKILL.md` com a mesma estrutura da skill do `jniltinho/llama-model` (pré-checagens, esquema de versão, revisão e categorização de commits, criação e envio da tag, acompanhamento do workflow, ajuste das notas e verificação), adaptada ao Go Uptime: branch `main`, tags SemVer simples `vX.Y.Z`, o teste de atualização `test/e2e/upgrade.sh` da última release para a candidata antes da tag, pacotes `linux/amd64` e `linux/arm64` pelo workflow, imagem `jniltinho/go-uptime` publicada com `make docker-release` a partir de uma árvore limpa no commit da tag, notas em inglês a partir da tag anterior e link de changelog para `jniltinho/go-uptime`.
 
 #### Scenario: Próxima versão
 - **WHEN** a última tag é `v7.0.0`, o repositório também contém as tags antigas `v5.36.0-fork.27` e `v6.3.0`, e um agente segue a skill para uma release de correção
