@@ -1,2 +1,2 @@
-FROM jniltinho/gatus:v6.3.0
+FROM jniltinho/go-uptime:v7.0.0
 ADD config.yaml ./config/config.yaml

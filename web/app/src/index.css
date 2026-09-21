@@ -4,7 +4,7 @@
 
 /* Fork: Inter served by Go Uptime itself, so that the interface looks the same everywhere and no request goes to a font
    service. The files are subsets of the official Inter (rsms/inter, SIL OFL 1.1) and the licence is served next to
-   them at /fonts/OFL.txt. See AGENTS.fork.md for how to update them. */
+   them at /fonts/OFL.txt. See AGENTS.md for how to update them. */
 @font-face {
     font-family: 'Inter';
     font-style: normal;

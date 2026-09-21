@@ -1,40 +1,40 @@
 # Installing the binary on Linux with systemd
 
-Gatus is a single static binary: no runtime, no libraries, no container. This page installs the release tarball in
-`/opt/gatus` and runs it as a systemd service, under a user of its own and with the file system locked down.
+Go Uptime is a single static binary: no runtime, no libraries, no container. This page installs the release tarball in
+`/opt/go-uptime` and runs it as a systemd service, under a user of its own and with the file system locked down.
 
 ```text
-/opt/gatus/gatus                 the binary
-/opt/gatus/config/config.yaml    the configuration (several YAML files in this directory are merged)
-/opt/gatus/data/                 the SQLite database and nothing else: the only place the service writes
-/etc/systemd/system/gatus.service
+/opt/go-uptime/go-uptime                 the binary
+/opt/go-uptime/config/config.yaml    the configuration (several YAML files in this directory are merged)
+/opt/go-uptime/data/                 the SQLite database and nothing else: the only place the service writes
+/etc/systemd/system/go-uptime.service
 ```
 
 ## Install
 
 ```bash
-VERSION=6.3.0
+VERSION=7.0.0
 ARCH=amd64        # or arm64
 
-sudo useradd --system --home-dir /opt/gatus --shell /usr/sbin/nologin gatus
-sudo install -d -o root -g gatus -m 0750 /opt/gatus /opt/gatus/config
-sudo install -d -o gatus -g gatus -m 0750 /opt/gatus/data
+sudo useradd --system --home-dir /opt/go-uptime --shell /usr/sbin/nologin go-uptime
+sudo install -d -o root -g go-uptime -m 0750 /opt/go-uptime /opt/go-uptime/config
+sudo install -d -o go-uptime -g go-uptime -m 0750 /opt/go-uptime/data
 
-curl -fsSL -o /tmp/gatus.tar.gz \
-  "https://github.com/jniltinho/gatus/releases/download/v${VERSION}/gatus_${VERSION}_linux_${ARCH}.tar.gz"
-sudo tar xzf /tmp/gatus.tar.gz -C /opt/gatus gatus
-sudo chown root:gatus /opt/gatus/gatus && sudo chmod 0750 /opt/gatus/gatus
-sudo -u gatus /opt/gatus/gatus version
+curl -fsSL -o /tmp/go-uptime.tar.gz \
+  "https://github.com/jniltinho/go-uptime/releases/download/v${VERSION}/go-uptime_${VERSION}_linux_${ARCH}.tar.gz"
+sudo tar xzf /tmp/go-uptime.tar.gz -C /opt/go-uptime go-uptime
+sudo chown root:go-uptime /opt/go-uptime/go-uptime && sudo chmod 0750 /opt/go-uptime/go-uptime
+sudo -u go-uptime /opt/go-uptime/go-uptime version
 ```
 
-The binary and the configuration belong to `root` and are only readable by the `gatus` group: the service cannot
+The binary and the configuration belong to `root` and are only readable by the `go-uptime` group: the service cannot
 rewrite its own binary nor its configuration, which holds the password hash and the secrets of the alerts.
 
 ## Configure
 
 ```bash
-sudo -u gatus /opt/gatus/gatus password hash      # asks for the password, prints the hash
-sudoedit /opt/gatus/config/config.yaml
+sudo -u go-uptime /opt/go-uptime/go-uptime password hash      # asks for the password, prints the hash
+sudoedit /opt/go-uptime/config/config.yaml
 ```
 
 ```yaml
@@ -43,7 +43,7 @@ web:
   port: 8080
 storage:
   type: sqlite
-  path: /opt/gatus/data/data.db
+  path: /opt/go-uptime/data/data.db
 security:
   basic:
     username: admin
@@ -59,25 +59,25 @@ endpoints:
 ```
 
 ```bash
-sudo chown root:gatus /opt/gatus/config/config.yaml && sudo chmod 0640 /opt/gatus/config/config.yaml
-sudo -u gatus /opt/gatus/gatus config validate --config /opt/gatus/config/config.yaml
+sudo chown root:go-uptime /opt/go-uptime/config/config.yaml && sudo chmod 0640 /opt/go-uptime/config/config.yaml
+sudo -u go-uptime /opt/go-uptime/go-uptime config validate --config /opt/go-uptime/config/config.yaml
 ```
 
-With PostgreSQL, MySQL or MariaDB as the storage, `/opt/gatus/data` stays empty and `storage.path` is the DSN: see
+With PostgreSQL, MySQL or MariaDB as the storage, `/opt/go-uptime/data` stays empty and `storage.path` is the DSN: see
 [storage-mysql.md](storage-mysql.md).
 
 ## The service
 
-Copy [systemd/gatus.service](systemd/gatus.service) and start it:
+Copy [systemd/go-uptime.service](systemd/go-uptime.service) and start it:
 
 ```bash
-sudo curl -fsSL -o /etc/systemd/system/gatus.service \
-  https://raw.githubusercontent.com/jniltinho/gatus/v6.3.0/docs/systemd/gatus.service
+sudo curl -fsSL -o /etc/systemd/system/go-uptime.service \
+  https://raw.githubusercontent.com/jniltinho/go-uptime/v7.0.0/docs/systemd/go-uptime.service
 sudo systemctl daemon-reload
-sudo systemctl enable --now gatus
-systemctl status gatus
+sudo systemctl enable --now go-uptime
+systemctl status go-uptime
 curl -s http://127.0.0.1:8080/health          # {"status":"UP"}
-journalctl -u gatus -f                        # the log, see "Logs" below
+journalctl -u go-uptime -f                        # the log, see "Logs" below
 ```
 
 What the unit does, and why:
@@ -85,25 +85,25 @@ What the unit does, and why:
 | | |
 |---|---|
 | `ExecStartPre=... config validate` | A restart with an invalid configuration fails before the running process is replaced, with the error in `journalctl`. |
-| No `ExecReload` | Gatus reloads the configuration by itself, up to 30 seconds after the file changes. `systemctl restart gatus` is only needed after replacing the binary. Endpoints and status pages created at `/admin` live in the database and need neither. |
-| `User=gatus`, `NoNewPrivileges`, `ProtectSystem=strict`, `ReadWritePaths=/opt/gatus/data` | The service runs without root and sees the whole file system as read-only, except its data directory. |
+| No `ExecReload` | Go Uptime reloads the configuration by itself, up to 30 seconds after the file changes. `systemctl restart go-uptime` is only needed after replacing the binary. Endpoints and status pages created at `/admin` live in the database and need neither. |
+| `User=go-uptime`, `NoNewPrivileges`, `ProtectSystem=strict`, `ReadWritePaths=/opt/go-uptime/data` | The service runs without root and sees the whole file system as read-only, except its data directory. |
 | `AmbientCapabilities=CAP_NET_RAW` | ICMP endpoints (`icmp://host`) open a raw socket, which a user other than root only gets through this capability. Remove the two capability lines if you do not monitor by ping. |
-| `RestrictAddressFamilies`, `MemoryDenyWriteExecute`, `SystemCallArchitectures=native`, ... | System call filters. `systemd-analyze security gatus` rates the unit at 3.2 (OK); an unhardened service is around 9.6. |
+| `RestrictAddressFamilies`, `MemoryDenyWriteExecute`, `SystemCallArchitectures=native`, ... | System call filters. `systemd-analyze security go-uptime` rates the unit at 3.2 (OK); an unhardened service is around 9.6. |
 
 If an endpoint needs something the sandbox denies — a client certificate in `/home`, an SSH key, a Unix socket — the
 check fails with a permission error in the log: grant that path with another `ReadOnlyPaths=` or `ReadWritePaths=`
-line in a drop-in (`sudo systemctl edit gatus`) instead of removing the protection.
+line in a drop-in (`sudo systemctl edit go-uptime`) instead of removing the protection.
 
 ## Logs
 
-Gatus writes its log to the standard output — it has no log file of its own and no HTTP access log — and systemd sends
-it to the journal, under the identifier `gatus`:
+Go Uptime writes its log to the standard output — it has no log file of its own and no HTTP access log — and systemd sends
+it to the journal, under the identifier `go-uptime`:
 
 ```bash
-journalctl -u gatus -f                          # follow
-journalctl -u gatus --since "1 hour ago"
-journalctl -u gatus -b | grep -E "WARN|ERROR"   # since the last boot, only the problems
-journalctl -u gatus -o cat | grep "key=core_website"   # one endpoint
+journalctl -u go-uptime -f                          # follow
+journalctl -u go-uptime --since "1 hour ago"
+journalctl -u go-uptime -b | grep -E "WARN|ERROR"   # since the last boot, only the problems
+journalctl -u go-uptime -o cat | grep "key=core_website"   # one endpoint
 ```
 
 The level is part of the text of each line, not a priority of the journal, so `journalctl -p warning` does not filter
@@ -111,9 +111,9 @@ it: use `grep`. Every line starts with its origin, such as `[watchdog.executeEnd
 lines of the start and of the reload begin with `[cmd.` (before, `[main.`): adjust filters and alerts that match on the
 old prefix.
 
-- **Level:** `GATUS_LOG_LEVEL` (`DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`), in the unit or in a drop-in
-  (`sudo systemctl edit gatus`, then `[Service]` and `Environment=GATUS_LOG_LEVEL=DEBUG`), followed by
-  `sudo systemctl restart gatus`. `INFO` logs one line per check, which with many endpoints and short intervals is most
+- **Level:** `GO_UPTIME_LOG_LEVEL` (`DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`), in the unit or in a drop-in
+  (`sudo systemctl edit go-uptime`, then `[Service]` and `Environment=GO_UPTIME_LOG_LEVEL=DEBUG`), followed by
+  `sudo systemctl restart go-uptime`. `INFO` logs one line per check, which with many endpoints and short intervals is most
   of the volume; `WARN` keeps only the problems.
 - **Keeping the journal across reboots:** on a distribution where `/var/log/journal` does not exist the journal lives in
   memory. `sudo mkdir -p /var/log/journal && sudo systemctl restart systemd-journald` makes it persistent, and
@@ -122,17 +122,17 @@ old prefix.
 
   ```ini
   [Service]
-  LogsDirectory=gatus
-  StandardOutput=append:/var/log/gatus/gatus.log
+  LogsDirectory=go-uptime
+  StandardOutput=append:/var/log/go-uptime/go-uptime.log
   StandardError=inherit
   ```
 
-  systemd creates `/var/log/gatus` for the `gatus` user and opens the file itself, so the sandbox needs no other
+  systemd creates `/var/log/go-uptime` for the `go-uptime` user and opens the file itself, so the sandbox needs no other
   change. Rotate it with `copytruncate`, because the file stays open while the service runs:
 
   ```text
-  # /etc/logrotate.d/gatus
-  /var/log/gatus/gatus.log {
+  # /etc/logrotate.d/go-uptime
+  /var/log/go-uptime/go-uptime.log {
       daily
       rotate 14
       compress
@@ -144,17 +144,20 @@ old prefix.
 
 ## Upgrade
 
+> Coming from `jniltinho/gatus` v6, installed in `/opt/gatus`? See [migrating-from-gatus.md](migrating-from-gatus.md): you
+> can stay in `/opt/gatus` and only swap the binary, or move here, which needs `storage.path` and a few other paths edited.
+
 ```bash
 VERSION=x.y.z; ARCH=amd64     # the new version
-curl -fsSL -o /tmp/gatus.tar.gz \
-  "https://github.com/jniltinho/gatus/releases/download/v${VERSION}/gatus_${VERSION}_linux_${ARCH}.tar.gz"
-sudo cp -a /opt/gatus/gatus /opt/gatus/gatus.previous
-sudo tar xzf /tmp/gatus.tar.gz -C /opt/gatus gatus
-sudo chown root:gatus /opt/gatus/gatus && sudo chmod 0750 /opt/gatus/gatus
-sudo systemctl restart gatus && systemctl status gatus
+curl -fsSL -o /tmp/go-uptime.tar.gz \
+  "https://github.com/jniltinho/go-uptime/releases/download/v${VERSION}/go-uptime_${VERSION}_linux_${ARCH}.tar.gz"
+sudo cp -a /opt/go-uptime/go-uptime /opt/go-uptime/go-uptime.previous
+sudo tar xzf /tmp/go-uptime.tar.gz -C /opt/go-uptime go-uptime
+sudo chown root:go-uptime /opt/go-uptime/go-uptime && sudo chmod 0750 /opt/go-uptime/go-uptime
+sudo systemctl restart go-uptime && systemctl status go-uptime
 ```
 
-The database is migrated when the new version starts. To go back, restore `gatus.previous` and restart; before an
+The database is migrated when the new version starts. To go back, restore `go-uptime.previous` and restart; before an
 upgrade that skips several versions, download a backup at `/admin/backup` first
 (see [admin-endpoints.md](admin-endpoints.md#backup-and-restore)).
 
@@ -191,8 +194,8 @@ what marks the session cookie as `Secure`: see [admin-endpoints.md](admin-endpoi
 ## Remove
 
 ```bash
-sudo systemctl disable --now gatus
-sudo rm /etc/systemd/system/gatus.service && sudo systemctl daemon-reload
-sudo rm -rf /opt/gatus          # includes the database
-sudo userdel gatus
+sudo systemctl disable --now go-uptime
+sudo rm /etc/systemd/system/go-uptime.service && sudo systemctl daemon-reload
+sudo rm -rf /opt/go-uptime          # includes the database
+sudo userdel go-uptime
 ```

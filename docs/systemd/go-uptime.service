@@ -1,0 +1,62 @@
+# systemd unit of Go Uptime installed from the release tarball in /opt/go-uptime. See docs/install-linux.md.
+#
+#   /opt/go-uptime/go-uptime            the binary
+#   /opt/go-uptime/config/config.yaml   the configuration (a directory of YAML files also works)
+#   /opt/go-uptime/data/                the SQLite database, when storage.path points here
+
+[Unit]
+Description=Go Uptime - health dashboard and status pages
+Documentation=https://github.com/jniltinho/go-uptime/tree/master/docs
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=go-uptime
+Group=go-uptime
+WorkingDirectory=/opt/go-uptime
+Environment=GO_UPTIME_LOG_LEVEL=INFO
+
+# Go Uptime logs to the standard output, which goes to the journal: journalctl -u go-uptime. To also keep a file, see
+# "Logs" in docs/install-linux.md.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=go-uptime
+
+# An invalid configuration keeps the previous process from being replaced by one that would not start
+ExecStartPre=/opt/go-uptime/go-uptime config validate --config /opt/go-uptime/config/config.yaml
+ExecStart=/opt/go-uptime/go-uptime --config /opt/go-uptime/config/config.yaml
+
+# Go Uptime reloads the configuration by itself when the file changes: there is no ExecReload on purpose
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+# ICMP endpoints (ping) need a raw socket, which a user other than root only gets through this capability
+AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
+
+# The service only writes in /opt/go-uptime/data
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/go-uptime/data
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

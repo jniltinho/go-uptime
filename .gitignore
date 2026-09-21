@@ -21,3 +21,7 @@ config/config.yml
 config.yaml
 # Pacotes de release e capturas de tela dos testes E2E (dist/prints)
 dist/
+
+# Python bytecode of the scripts of docs/
+__pycache__/
+*.pyc

@@ -1,6 +1,6 @@
 services:
-  gatus:
-    image: jniltinho/gatus:v6.3.0
+  go-uptime:
+    image: jniltinho/go-uptime:v7.0.0
     ports:
       - 8080:8080
     volumes:

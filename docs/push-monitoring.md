@@ -1,11 +1,11 @@
 # Push monitoring
 
-> Feature exclusive to the [jniltinho/gatus](https://github.com/jniltinho/gatus) fork. The original Gatus only accepts
+> Not in Gatus, the project that Go Uptime derives from, which only accepts
 > results of external endpoints at `/api/v1/endpoints/{key}/external`, with its own parameters.
 
-Scripts, cron jobs, backups and external services report their status to Gatus by calling a URL, instead of Gatus
+Scripts, cron jobs, backups and external services report their status to Go Uptime by calling a URL, instead of Go Uptime
 checking them. The URL, the parameters and the responses are the same as the Push monitors of the
-[Uptime Kuma](https://github.com/louislam/uptime-kuma): a script that pushes to the Uptime Kuma works with Gatus by only
+[Uptime Kuma](https://github.com/louislam/uptime-kuma): a script that pushes to the Uptime Kuma works with Go Uptime by only
 changing the address of the server.
 
 ## Push URL
@@ -15,11 +15,11 @@ https://status.example.com/api/push/<token>?status=up&msg=OK&ping=
 https://status.example.com/api/push/<global-key>/<endpoint-key>?status=up&msg=OK&ping=
 ```
 
-Any HTTP method is accepted (`GET`, `POST`, ...), without the authentication of Gatus. Only the query is read:
+Any HTTP method is accepted (`GET`, `POST`, ...), without the authentication of Go Uptime. Only the query is read:
 
 | Parameter | Default | Meaning |
 |-----------|---------|---------|
-| `status` | `up` | `up` records a success; `pending` records a **Pending** result (yellow), an extension of Gatus; any other value (`down`, `warning`, ...) records a failure, or a Pending result while the endpoint has [retries](#pending-status-and-retries) left |
+| `status` | `up` | `up` records a success; `pending` records a **Pending** result (yellow), an extension of Go Uptime; any other value (`down`, `warning`, ...) records a failure, or a Pending result while the endpoint has [retries](#pending-status-and-retries) left |
 | `msg` | `OK` | Message of the result, shown in the dashboard (up to 1024 bytes). On a failure it is also the error used by the alerts |
 | `ping` | empty | Response time in milliseconds. Empty, non-numeric or `0` is ignored; below 0 or above 100000000000 is rejected |
 
@@ -38,7 +38,7 @@ Every response has `Cache-Control: no-store`. A push never creates an endpoint.
   `_`, is generated with 32 random letters and digits or typed, and cannot be used by two endpoints (409 in the
   administration).
 - **Global key:** `/api/push/<global-key>/<endpoint-key>` authorizes every enabled endpoint that receives push. The
-  endpoint key is `<group>_<name>`, as in the other URLs of Gatus (e.g. `jobs_backup`, or `_backup` without group).
+  endpoint key is `<group>_<name>`, as in the other URLs of Go Uptime (e.g. `jobs_backup`, or `_backup` without group).
   - Created through the web in the **Push keys** tab of the administration: the key is shown only once and stored as a
     SHA-256 hash, with its last 4 characters as a hint. Revoking it rejects the pushes immediately.
   - Or in the configuration file, read-only in the administration:
@@ -55,7 +55,7 @@ The global key does not depend on the name or the group of the endpoint: renamin
 
 ## Push endpoints
 
-A Push endpoint is passive: Gatus does not check anything, it records the pushes and a failure for every heartbeat
+A Push endpoint is passive: Go Uptime does not check anything, it records the pushes and a failure for every heartbeat
 interval without push.
 
 ### Through the web
@@ -131,7 +131,7 @@ calling the URL in the format of the Uptime Kuma. It is off by default:
 Results sent to the external endpoint API of the original Gatus (`POST /api/v1/endpoints/<key>/external`) are marked
 as Push too, and the text of their `error=` is never published on a status page.
 
-A push is recorded in the same history as the checks of Gatus, marked as Push, and counts for the uptime, the events,
+A push is recorded in the same history as the checks of Go Uptime, marked as Push, and counts for the uptime, the events,
 the metrics and the alerts. The status of the endpoint is the status of the last result, whether it came from a check or
 from a push: a `down` push is followed by the next successful check. Heartbeats do not apply to active endpoints.
 
@@ -156,7 +156,7 @@ To register many hosts at once, each with a token of its own, and to export the 
 
 ## Pending status and retries
 
-Besides up (green) and down (red), a result can be **Pending** (yellow). It is a feature of Gatus: the Uptime Kuma
+Besides up (green) and down (red), a result can be **Pending** (yellow). It is a feature of Go Uptime: the Uptime Kuma
 records `status=pending` as down and only has green and red.
 
 - `status=pending` records a Pending result with the `msg` of the push, on Push endpoints and on active endpoints that
@@ -171,7 +171,7 @@ records `status=pending` as down and only has green and red.
 - A Pending result neither triggers nor resolves alerts, does not change their counters and does not create events
   (became healthy, became unhealthy). It counts as an execution without success in the uptime and in the Prometheus
   metrics, and as a failure in the counters and filters of the dashboard.
-- The count of the retries is kept in memory, per endpoint, across configuration reloads. A restart of Gatus starts it
+- The count of the retries is kept in memory, per endpoint, across configuration reloads. A restart of Go Uptime starts it
   again, so up to `retries` more Pending results can be recorded before the next failure. Removing or renaming the
   endpoint, or removing it from the configuration file, forgets it.
 
@@ -205,8 +205,8 @@ the errors of the checks.
 ## Migrating scripts from the Uptime Kuma
 
 1. Copy the token of the Push monitor from its URL in the Uptime Kuma (`/api/push/<token>?...`).
-2. Create a Push endpoint in Gatus pasting that token, with a heartbeat interval equal to the one of the monitor.
-3. Replace the address of the Uptime Kuma server with the address of Gatus in the scripts. Nothing else changes.
+2. Create a Push endpoint in Go Uptime pasting that token, with a heartbeat interval equal to the one of the monitor.
+3. Replace the address of the Uptime Kuma server with the address of Go Uptime in the scripts. Nothing else changes.
 
 Differences:
 
@@ -242,8 +242,8 @@ curl -fsS -m 10 -G "$PUSH_URL" --data-urlencode "status=$status" --data-urlencod
 
 ## Security
 
-- The routes `/api/push` and `/api/push/*` never ask for the login of Gatus (no 401 nor `WWW-Authenticate`).
-- Global keys are compared by hash. Tokens and keys are not written to the logs of Gatus, which only show the key of the
+- The routes `/api/push` and `/api/push/*` never ask for the login of Go Uptime (no 401 nor `WWW-Authenticate`).
+- Global keys are compared by hash. Tokens and keys are not written to the logs of Go Uptime, which only show the key of the
   endpoint.
 - Valid pushes are always accepted. Rejected pushes are limited to 30 per minute per IP (IPv6 by /64); after that, the
   rejected pushes of that IP respond 429. The IP of the client comes from `X-Forwarded-For` only when the proxy is in
@@ -299,6 +299,6 @@ definitions are decoded strictly and would be rejected. In the configuration fil
 
 ## End-to-end tests
 
-`test/e2e/push.sh` starts a local Gatus with a temporary SQLite database, creates keys and endpoints through the screens
+`test/e2e/push.sh` starts a local Go Uptime with a temporary SQLite database, creates keys and endpoints through the screens
 with [agent-browser](https://github.com/vercel-labs/agent-browser), sends pushes with `curl` and saves screenshots in
 `dist/prints/push/` (outside of git).

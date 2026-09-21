@@ -42,7 +42,7 @@ func TestEmbed(t *testing.T) {
 			expectedContainString: "function",
 		},
 		{
-			// Fork: the Inter served by Go Uptime itself, see AGENTS.fork.md
+			// Fork: the Inter served by Go Uptime itself, see AGENTS.md
 			path:                  "fonts/inter-4-1-latin.woff2",
 			shouldExist:           true,
 			expectedContainString: "wOF2",

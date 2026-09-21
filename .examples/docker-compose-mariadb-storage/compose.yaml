@@ -1,4 +1,4 @@
-# Gatus with the MySQL/MariaDB storage of the jniltinho/gatus fork (see docs/storage-mysql.md).
+# Go Uptime with the MySQL/MariaDB storage of the jniltinho/go-uptime fork (see docs/storage-mysql.md).
 # The image of the original Gatus (twinproduction/gatus) does not include this storage.
 services:
   mariadb:
@@ -7,7 +7,7 @@ services:
     volumes:
       - ./data/db:/var/lib/mysql
     environment:
-      - MARIADB_DATABASE=gatus
+      - MARIADB_DATABASE=go_uptime
       - MARIADB_USER=username
       - MARIADB_PASSWORD=password
       - MARIADB_ROOT_PASSWORD=root-password
@@ -19,15 +19,15 @@ services:
     networks:
       - web
 
-  gatus:
-    image: jniltinho/gatus:v6.3.0
+  go-uptime:
+    image: jniltinho/go-uptime:v7.0.0
     restart: always
     ports:
       - "8080:8080"
     environment:
       - MARIADB_USER=username
       - MARIADB_PASSWORD=password
-      - MARIADB_DATABASE=gatus
+      - MARIADB_DATABASE=go_uptime
     volumes:
       - ./config:/config
     networks:

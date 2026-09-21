@@ -1,10 +1,10 @@
 # Endpoint administration through the web
 
-> Feature exclusive to the [jniltinho/gatus](https://github.com/jniltinho/gatus) fork. The original Gatus only accepts
+> Not in Gatus, the project that Go Uptime derives from, which only accepts
 > endpoints in the configuration file ([TwiN/gatus#1345](https://github.com/TwiN/gatus/issues/1345)).
 
 With the administration enabled, endpoints can be created, edited, disabled and removed at `/admin`, without access to
-the server and without restarting Gatus. The endpoints of the configuration file keep working as always and are shown
+the server and without restarting Go Uptime. The endpoints of the configuration file keep working as always and are shown
 in the administration for reference only.
 
 ## Requirements
@@ -33,7 +33,7 @@ admin:
   # Origins accepted for changes; needed behind a proxy that exposes another port
   # allowed-origins: ["https://status.example.com:8443"]
 
-# Without any endpoint in the file, Gatus starts normally when admin.enabled is true
+# Without any endpoint in the file, Go Uptime starts normally when admin.enabled is true
 endpoints: []
 ```
 
@@ -41,9 +41,9 @@ These three blocks — a SQL storage, a login and `admin.enabled` — are the mi
 [config.yaml](../config.yaml) carries them commented out, and
 [.examples/docker-compose-admin](../.examples/docker-compose-admin) is a Docker Compose setup with nothing else.
 
-To generate `password-bcrypt-base64`, run `gatus password hash` (see [cli.md](cli.md#gatus-password-hash)). The value
+To generate `password-bcrypt-base64`, run `go-uptime password hash` (see [cli.md](cli.md#go-uptime-password-hash)). The value
 must be the base64 of a bcrypt hash: anything else — a plain password, a placeholder left in the file — makes the
-configuration invalid, which `gatus config validate` reports before the server is restarted. Without the binary at hand,
+configuration invalid, which `go-uptime config validate` reports before the server is restarted. Without the binary at hand,
 [generate-admin-password.py](generate-admin-password.py) does the same and only needs Python 3:
 
 ```bash
@@ -59,7 +59,7 @@ with the default cost of 10). The result is the same as with `htpasswd`:
 htpasswd -bnBC 10 "" 'your-password' | tr -d ':\n' | sed 's/$2y/$2a/' | base64 -w0 | tr '+/' '-_'
 ```
 
-Gatus decodes this value with the URL base64 alphabet; `tr '+/' '-_'` prevents failures with hashes that produce `+`
+Go Uptime decodes this value with the URL base64 alphabet; `tr '+/' '-_'` prevents failures with hashes that produce `+`
 or `/` in standard base64.
 
 With `security.basic`, the only basic user is the administrator. With `security.oidc`, only the subjects of
@@ -133,7 +133,7 @@ empty) and `authenticated`.
 
 ## Behavior
 
-- Creating, changing, enabling, disabling or removing an endpoint takes effect immediately, without restarting Gatus
+- Creating, changing, enabling, disabling or removing an endpoint takes effect immediately, without restarting Go Uptime
   and without restarting the other endpoints. A check in progress finishes before the change and its result is
   discarded.
 - The history of the endpoints managed through the web is kept across restarts and reloads of the configuration file.
@@ -142,7 +142,7 @@ empty) and `authenticated`.
   in that case, does not affect the one from the file.
 - Turning `admin.enabled` off only hides the administration: the endpoints managed through the web keep being monitored.
 - During startup or a configuration reload, changes respond 503 and nothing is stored.
-- With `skip-invalid-config-update: true`, an invalid configuration file no longer brings Gatus down: the previous
+- With `skip-invalid-config-update: true`, an invalid configuration file no longer brings Go Uptime down: the previous
   configuration stays in use until the file is fixed.
 
 ## Renaming
@@ -186,7 +186,7 @@ your backups.
 ## API
 
 Every route requires administrator authentication. Changes require `Content-Type` `application/json` or
-`application/yaml` when there is a body, and the `Origin` of the browser must match the address of Gatus.
+`application/yaml` when there is a body, and the `Origin` of the browser must match the address of Go Uptime.
 
 | Method and route | Description |
 |------------------|-------------|
@@ -213,30 +213,30 @@ curl -u admin:your-password -H 'Content-Type: application/yaml' \
 
 ## Managing endpoints from the command line
 
-[docs/manager-gatus.py](manager-gatus.py) does, through this API, what would take many clicks in the administration:
+[docs/manager-go-uptime.py](manager-go-uptime.py) does, through this API, what would take many clicks in the administration:
 registers a list of hosts, renames a group in every endpoint that uses it and exports the push tokens. It only uses the
 standard library.
 
 ```bash
-export GATUS_URL=https://status.example.com
-export GATUS_PASSWORD='your-password'
+export GO_UPTIME_URL=https://status.example.com
+export GO_UPTIME_PASSWORD='your-password'
 
-python3 docs/manager-gatus.py csv --csv inventory.csv --out endpoints-prod.csv   # only rewrites the CSV
-python3 docs/manager-gatus.py import --csv endpoints-prod.csv --dry-run          # shows what it would register
-python3 docs/manager-gatus.py import --csv endpoints-prod.csv                    # registers
-python3 docs/manager-gatus.py endpoints                                          # lists the endpoints
-python3 docs/manager-gatus.py status-pages                                       # lists the status pages
-python3 docs/manager-gatus.py groups                                             # lists the groups
-python3 docs/manager-gatus.py rename-group --from analytics --to data            # renames the group of every endpoint
-python3 docs/manager-gatus.py export-tokens --out hosts-tokens.csv               # host,token
+python3 docs/manager-go-uptime.py csv --csv inventory.csv --out endpoints-prod.csv   # only rewrites the CSV
+python3 docs/manager-go-uptime.py import --csv endpoints-prod.csv --dry-run          # shows what it would register
+python3 docs/manager-go-uptime.py import --csv endpoints-prod.csv                    # registers
+python3 docs/manager-go-uptime.py endpoints                                          # lists the endpoints
+python3 docs/manager-go-uptime.py status-pages                                       # lists the status pages
+python3 docs/manager-go-uptime.py groups                                             # lists the groups
+python3 docs/manager-go-uptime.py rename-group --from analytics --to data            # renames the group of every endpoint
+python3 docs/manager-go-uptime.py export-tokens --out hosts-tokens.csv               # host,token
 ```
 
-`--gatus-url`, `--username` and `--password` also come from `GATUS_URL`, `GATUS_USERNAME` and `GATUS_PASSWORD`, which
+`--url`, `--username` and `--password` also come from `GO_UPTIME_URL`, `GO_UPTIME_USERNAME` and `GO_UPTIME_PASSWORD`, which
 keeps the password out of the shell history. Every subcommand that changes something accepts `--verbose`, and `import`
 and `rename-group` accept `--dry-run`. `--timeout` and `--insecure` change the timeout of each request and skip the
 verification of the TLS certificate.
 
-Gatus applies each change in a cycle of its own and answers `503` to the changes that arrive meanwhile, which a
+Go Uptime applies each change in a cycle of its own and answers `503` to the changes that arrive meanwhile, which a
 sequence of registrations runs into. The script repeats a request answered with `503` up to 8 times, waiting what
 `Retry-After` says or, without it, from 0.25 to 5 seconds. A `503` means that nothing was changed, so repeating is safe.
 
@@ -311,9 +311,9 @@ sessions nor the global configuration.
 
 ### Download
 
-- The file is JSON (`gatus-backup-<date>.json`) with the complete definitions, **including tokens, passwords, headers and
+- The file is JSON (`go-uptime-backup-<date>.json`) with the complete definitions, **including tokens, passwords, headers and
   webhooks of alerts in plain text**. Keep it safe.
-- **Encrypt with a password** (12 to 1024 bytes) writes `gatus-backup-<date>.enc.json` instead, encrypted with AES-256-GCM
+- **Encrypt with a password** (12 to 1024 bytes) writes `go-uptime-backup-<date>.enc.json` instead, encrypted with AES-256-GCM
   and a key derived from the password with Argon2id. Without the password the file cannot be read, and a wrong
   password and a changed file give the same error.
 - Push keys are backed up with the hash and the hint of their token only: after a restore, the scripts keep pushing with
@@ -348,10 +348,10 @@ After 10 wrong passwords in 15 minutes, a client must wait before trying again; 
 ```bash
 # Backup, optionally encrypted
 curl -u admin:password -H 'Content-Type: application/json' -d '{"password":"a long password"}' \
-  -o gatus-backup.enc.json https://status.example.com/api/v1/admin/backup
+  -o go-uptime-backup.enc.json https://status.example.com/api/v1/admin/backup
 
 # Preview, then restore with the fingerprint of the preview
-jq -n --slurpfile file gatus-backup.enc.json '{file: $file[0], password: "a long password", overwrite: false}' > restore.json
+jq -n --slurpfile file go-uptime-backup.enc.json '{file: $file[0], password: "a long password", overwrite: false}' > restore.json
 curl -u admin:password -H 'Content-Type: application/json' -d @restore.json https://status.example.com/api/v1/admin/restore/preview
 jq --arg fingerprint "<fingerprint>" '. + {fingerprint: $fingerprint}' restore.json > apply.json
 curl -u admin:password -H 'Content-Type: application/json' -d @apply.json https://status.example.com/api/v1/admin/restore
@@ -375,7 +375,7 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 If the public address uses a port different from the one forwarded in `Host`, list it in `admin.allowed-origins`.
 
 With the [login screen](#login-screen), list the proxy in `status-pages.trusted-proxies`, so that the limit of failed
-logins counts each client instead of the proxy. Gatus logs a warning when a private, loopback, link-local or CGNAT
+logins counts each client instead of the proxy. Go Uptime logs a warning when a private, loopback, link-local or CGNAT
 address sends `X-Forwarded-For` without being in that list:
 
 ```yaml
@@ -402,7 +402,7 @@ is deleted when that instance restarts or reloads.
 
 - Fork releases use `v<upstream-version>-fork.<N>` tags (e.g. `v5.36.0-fork.1`). Because of SemVer precedence, these
   tags sort below the upstream version with the same base in tools such as Renovate and `sort -V`.
-- Docker Hub image: `jniltinho/gatus:<tag>` (`linux/amd64` and `linux/arm64`), published with
+- Docker Hub image: `jniltinho/go-uptime:<tag>` (`linux/amd64` and `linux/arm64`), published with
   `make docker-release VERSION=<version without the v>`. The `latest` tag is not published.
 
 ## Going back to the original Gatus
@@ -416,7 +416,7 @@ which can stay in the configuration file, and ask for the credentials with the n
 
 ## End-to-end tests
 
-`test/e2e/admin.sh` starts a local Gatus with a temporary SQLite database and goes through the screens with
+`test/e2e/admin.sh` starts a local Go Uptime with a temporary SQLite database and goes through the screens with
 [agent-browser](https://github.com/vercel-labs/agent-browser), saving screenshots in `dist/prints/` (outside of git).
 `test/e2e/login.sh` covers the login screen: redirections, refused redirects, wrong password, limit of failed logins,
 logout, public status pages without login and `curl -u`.

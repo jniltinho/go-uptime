@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Monitoring dashboard for service uptime monitoring using Gatus metrics",
+  "description": "Monitoring dashboard for service uptime monitoring using Go Uptime metrics",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -87,7 +87,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "count(gatus_results_certificate_expiration_seconds < 2592000)",
+          "expr": "count(go_uptime_results_certificate_expiration_seconds < 2592000)",
           "hide": false,
           "legendFormat": "Expiring < 30 days",
           "refId": "A"
@@ -97,7 +97,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "count(gatus_results_certificate_expiration_seconds < 604800)",
+          "expr": "count(go_uptime_results_certificate_expiration_seconds < 604800)",
           "legendFormat": "Expiring < 7 days",
           "refId": "B"
         }
@@ -171,7 +171,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "(sum(gatus_results_endpoint_success) / count(gatus_results_endpoint_success)) * 100",
+          "expr": "(sum(go_uptime_results_endpoint_success) / count(go_uptime_results_endpoint_success)) * 100",
           "legendFormat": "Overall Availability",
           "refId": "A"
         }
@@ -235,7 +235,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "count(gatus_results_endpoint_success)",
+          "expr": "count(go_uptime_results_endpoint_success)",
           "legendFormat": "Total Services",
           "refId": "A"
         }
@@ -302,7 +302,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum(gatus_results_endpoint_success) by (group)",
+          "expr": "sum(go_uptime_results_endpoint_success) by (group)",
           "legendFormat": "{{group}} - UP",
           "refId": "A"
         },
@@ -311,7 +311,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum(1 - gatus_results_endpoint_success) by (group)",
+          "expr": "sum(1 - go_uptime_results_endpoint_success) by (group)",
           "legendFormat": "{{group}} - DOWN",
           "refId": "B"
         }
@@ -407,7 +407,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "gatus_results_domain_expiration_seconds",
+          "expr": "go_uptime_results_domain_expiration_seconds",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -536,7 +536,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "gatus_results_certificate_expiration_seconds",
+          "expr": "go_uptime_results_certificate_expiration_seconds",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -668,7 +668,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum(gatus_results_endpoint_success)",
+          "expr": "sum(go_uptime_results_endpoint_success)",
           "legendFormat": "Services UP",
           "refId": "A"
         },
@@ -677,7 +677,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum(1 - gatus_results_endpoint_success)",
+          "expr": "sum(1 - go_uptime_results_endpoint_success)",
           "legendFormat": "Services DOWN",
           "refId": "B"
         }
@@ -795,7 +795,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "gatus_results_endpoint_success",
+          "expr": "go_uptime_results_endpoint_success",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -806,7 +806,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "gatus_results_duration_seconds",
+          "expr": "go_uptime_results_duration_seconds",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -971,7 +971,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "gatus_results_duration_seconds",
+          "expr": "go_uptime_results_duration_seconds",
           "legendFormat": "{{name}} ({{group}})",
           "refId": "A"
         }
@@ -984,7 +984,7 @@
   "refresh": "30s",
   "schemaVersion": 41,
   "tags": [
-    "gatus",
+    "go-uptime",
     "monitoring",
     "uptime"
   ],
@@ -1013,7 +1013,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Gatus - Service Monitoring Dashboard",
+  "title": "Go Uptime - Service Monitoring Dashboard",
   "uid": "4ea25b6f-2edc-416c-8282-a1164f95537a",
   "version": 1
 }

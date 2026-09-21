@@ -1,6 +1,6 @@
-# Default configuration of jniltinho/gatus: example endpoints and two public status pages.
+# Default configuration of jniltinho/go-uptime: example endpoints and two public status pages.
 # In the Docker image it is at /config/config.yaml; mount your own file at that path to replace it.
-# Check a change before applying it:   gatus config validate --config config.yaml
+# Check a change before applying it:   go-uptime config validate --config config.yaml
 #
 # Documentation: docs/README.md (every option), docs/status-pages.md, docs/admin-endpoints.md, docs/push-monitoring.md
 
@@ -9,7 +9,7 @@
 # touching this file. It is off by default, because it needs a password of yours. The MINIMUM to turn it on is the
 # three blocks below: a SQL storage, a login and admin.enabled. With them, this file does not even need "endpoints".
 #
-#   1. gatus password hash            (or: docker run --rm -it jniltinho/gatus:<version> password hash)
+#   1. go-uptime password hash            (or: docker run --rm -it jniltinho/go-uptime:<version> password hash)
 #   2. paste the hash below, uncomment the three blocks and restart
 #
 # storage:
@@ -33,7 +33,7 @@
 #   path: /data/data.db
 
 # ui:
-#   logo: none                        # the logo of Gatus is shown by default; a URL replaces it, none hides it
+#   logo: none                        # the logo of Go Uptime is shown by default; a URL replaces it, none hides it
 #   default-theme: bio                # dark (default), light or bio; each visitor can pick another with the theme selector
 
 endpoints:
@@ -106,9 +106,9 @@ endpoints:
       - "[BODY] == pat(*.*.*.*)"
       - "[DNS_RCODE] == NOERROR"
 
-  # Group "gatus"
+  # Group "monitor": the monitoring checking itself
   - name: health
-    group: gatus
+    group: monitor
     url: "http://127.0.0.1:8080/health"
     interval: 30s
     conditions:
@@ -116,7 +116,7 @@ endpoints:
       - "[BODY].status == UP"
 
 # A Push endpoint is passive: a script reports at /api/push/<token>?status=up&msg=OK&ping=<ms>, like on the Uptime Kuma,
-# and Gatus records a failure when no push arrives within the heartbeat interval (docs/push-monitoring.md).
+# and Go Uptime records a failure when no push arrives within the heartbeat interval (docs/push-monitoring.md).
 # external-endpoints:
 #   - name: nightly-backup
 #     group: jobs
@@ -126,7 +126,7 @@ endpoints:
 
 # Public status pages, open without login at /status/<slug>
 status-pages:
-  # Behind a reverse proxy (nginx), set the IP address from which it connects to Gatus, for example the gateway of the
+  # Behind a reverse proxy (nginx), set the IP address from which it connects to Go Uptime, for example the gateway of the
   # Docker network, so that the rate limit is counted per visitor:
   # trusted-proxies: ["172.30.0.1/32"]
   # How many endpoints a page shows, from 1 to 1000. A page that selects more shows the first ones, and the others are
@@ -135,7 +135,7 @@ status-pages:
   pages:
     - slug: services
       title: "Services"
-      description: "External websites and APIs monitored by this Gatus"
+      description: "External websites and APIs monitored by this Go Uptime"
       groups: [sites, apis]
       # Shown at the top of the page, with more details. Every endpoint of a page also opens a public details page
       # (/status/<slug>/endpoints/<key>) with its response time chart.
@@ -150,8 +150,8 @@ status-pages:
 
     - slug: infrastructure
       title: "Infrastructure"
-      description: "DNS resolution and the health of Gatus itself"
-      groups: [dns, gatus]
+      description: "DNS resolution and the health of Go Uptime itself"
+      groups: [dns, monitor]
       # The groups start collapsed, showing their status and counts; a visitor expands the ones they want, and a group
       # with a problem always appears expanded
       groups-collapsed: true
