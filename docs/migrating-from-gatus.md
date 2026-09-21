@@ -58,7 +58,7 @@ tar xzf "go-uptime_${VERSION}_linux_${ARCH}.tar.gz" go-uptime
 sudo systemctl stop gatus
 sudo install -o root -g gatus -m 0750 go-uptime /opt/gatus/go-uptime   # same owner and mode as the binary of v6
 sudo ln -sfn go-uptime /opt/gatus/gatus          # the unit keeps calling /opt/gatus/gatus
-/opt/gatus/go-uptime config validate --config /opt/gatus/config/config.yaml
+sudo -u gatus /opt/gatus/go-uptime config validate --config /opt/gatus/config/config.yaml
 sudo systemctl start gatus && systemctl status gatus --no-pager
 ```
 

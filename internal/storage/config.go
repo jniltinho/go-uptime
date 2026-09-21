@@ -29,7 +29,7 @@ var (
 
 	// ErrMySQLStorageInvalidPath is returned when the path of a mysql storage is not a valid DSN. It never includes the
 	// path, which contains the password.
-	ErrMySQLStorageInvalidPath = errors.New("mysql storage requires storage.path to be a valid DSN, for example gatus:password@tcp(mariadb:3306)/gatus")
+	ErrMySQLStorageInvalidPath = errors.New("mysql storage requires storage.path to be a valid DSN, for example go_uptime:password@tcp(mariadb:3306)/go_uptime")
 )
 
 // Config is the configuration for storage

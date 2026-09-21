@@ -27,7 +27,7 @@ security:
 const adminTestSQLiteStorage = `
 storage:
   type: sqlite
-  path: /tmp/gatus-admin-test.db
+  path: /tmp/go-uptime-admin-test.db
 `
 
 const adminTestEndpoints = `

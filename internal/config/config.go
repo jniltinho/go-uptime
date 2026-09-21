@@ -44,7 +44,7 @@ import (
 
 const (
 	// DefaultConfigurationFilePath is the default path that will be used to search for the configuration file
-	// if a custom path isn't configured through the GATUS_CONFIG_PATH environment variable
+	// if a custom path isn't configured through the GO_UPTIME_CONFIG_PATH environment variable
 	DefaultConfigurationFilePath = "config/config.yaml"
 
 	// DefaultFallbackConfigurationFilePath is the default fallback path that will be used to search for the
@@ -75,7 +75,7 @@ var (
 // Config is the main configuration structure
 type Config struct {
 	// Debug Whether to enable debug logs
-	// Deprecated: Use the GATUS_LOG_LEVEL environment variable instead
+	// Deprecated: Use the GO_UPTIME_LOG_LEVEL environment variable instead
 	Debug bool `yaml:"debug,omitempty"`
 
 	// Metrics Whether to expose metrics at /metrics
@@ -332,7 +332,7 @@ func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
 		// XXX: Remove this in v6.0.0
 		if config.Debug {
 			logr.Warn("WARNING: The 'debug' configuration has been deprecated and will be removed in v6.0.0")
-			logr.Warn("WARNING: Please use the GATUS_LOG_LEVEL environment variable instead")
+			logr.Warn("WARNING: Please use the GO_UPTIME_LOG_LEVEL environment variable instead")
 		}
 		// XXX: End of v6.0.0 removals
 		ValidateAlertingConfig(config.Alerting, config.Endpoints, config.ExternalEndpoints)

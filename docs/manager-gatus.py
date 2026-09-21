@@ -16,21 +16,21 @@ Subcommands:
 Examples:
 
     # Rewrites the inventory keeping production, one row per hostname, the service as the group
-    python3 docs/manager-api.py csv --csv inventory.csv --out endpoints-prod.csv
+    python3 docs/manager-go-uptime.py csv --csv inventory.csv --out endpoints-prod.csv
 
     # Registers everything, with a token per endpoint (--dry-run shows without sending)
     export GO_UPTIME_URL=https://status.example.com GO_UPTIME_PASSWORD='the-password'
-    python3 docs/manager-api.py import --csv endpoints-prod.csv
+    python3 docs/manager-go-uptime.py import --csv endpoints-prod.csv
 
     # Lists what is registered
-    python3 docs/manager-api.py endpoints --group analytics
-    python3 docs/manager-api.py status-pages
+    python3 docs/manager-go-uptime.py endpoints --group analytics
+    python3 docs/manager-go-uptime.py status-pages
 
     # Renames a group in every endpoint that uses it
-    python3 docs/manager-api.py rename-group --from outros-institucional --to institucional
+    python3 docs/manager-go-uptime.py rename-group --from outros-institucional --to institucional
 
     # Exports the push tokens
-    python3 docs/manager-api.py export-tokens --out hosts-tokens.csv
+    python3 docs/manager-go-uptime.py export-tokens --out hosts-tokens.csv
 
 The address and the credentials come from --url, --username and --password, or from GO_UPTIME_URL, GO_UPTIME_USERNAME
 and GO_UPTIME_PASSWORD, which keeps the password out of the shell history. Only the standard library is used.

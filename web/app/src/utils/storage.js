@@ -38,6 +38,13 @@ export const readPreference = (name, storage) => {
       return null
     }
     try {
+      // Another tab may have stored the preference since the read above: what it chose is newer than the legacy value,
+      // so it is kept, and only the legacy key goes
+      const stored = store.getItem(preferenceKey(name))
+      if (stored !== null && stored !== undefined) {
+        store.removeItem(legacyPreferenceKey(name))
+        return stored
+      }
       store.setItem(preferenceKey(name), legacy)
       store.removeItem(legacyPreferenceKey(name))
     } catch {

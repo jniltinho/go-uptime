@@ -22,11 +22,11 @@ install:
 
 .PHONY: run
 run:
-	ENVIRONMENT=dev GATUS_CONFIG_PATH=./config.yaml go run .
+	ENVIRONMENT=dev GO_UPTIME_CONFIG_PATH=./config.yaml go run .
 
 .PHONY: run-binary
 run-binary:
-	ENVIRONMENT=dev GATUS_CONFIG_PATH=./config.yaml ./$(BINARY)
+	ENVIRONMENT=dev GO_UPTIME_CONFIG_PATH=./config.yaml ./$(BINARY)
 
 .PHONY: clean
 clean:

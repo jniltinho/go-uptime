@@ -82,3 +82,22 @@ test('the write succeeds even when the legacy key cannot be removed', () => {
   assert.equal(writePreference('sort-by', 'name', storage), true)
   assert.equal(items.get('go-uptime:sort-by'), 'name')
 })
+
+test('a preference stored by another tab during the migration is not overwritten by the legacy value', () => {
+  const items = new Map([['gatus:sort-by', 'health']])
+  let reads = 0
+  const storage = {
+    getItem: (key) => {
+      // Between the first read of the current key and the write, another tab stores its choice
+      if (key === 'go-uptime:sort-by' && ++reads === 2) {
+        items.set('go-uptime:sort-by', 'name')
+      }
+      return items.has(key) ? items.get(key) : null
+    },
+    setItem: (key, value) => { items.set(key, value) },
+    removeItem: (key) => { items.delete(key) }
+  }
+  assert.equal(readPreference('sort-by', storage), 'name')
+  assert.equal(items.get('go-uptime:sort-by'), 'name')
+  assert.equal(items.has('gatus:sort-by'), false)
+})

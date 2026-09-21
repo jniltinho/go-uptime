@@ -52,22 +52,29 @@ var allowedNameDirectories = []string{
 	"web/static/",  // generated from web/app
 }
 
-// allowedNameLines are the reasons a single line may mention the old name
-var allowedNameLines = []*regexp.Regexp{
+// allowedNameLine is a reason for a single line to mention the old name. With prefixes, the reason only holds for the
+// files under them: a compatibility that lives in one place must not excuse a leftover somewhere else.
+type allowedNameLine struct {
+	pattern  *regexp.Regexp
+	prefixes []string
+}
+
+var allowedNameLines = []allowedNameLine{
 	// Credit and history
-	regexp.MustCompile(`TwiN|twinproduction|twin\.sh|twin/gatus`),
-	regexp.MustCompile(`(?i)original Gatus|Gatus original|project, Gatus|Not in Gatus|called Gatus|from Gatus|names? .* had|up to v6|of v6\b|on v6\b|from v6\b|written for the original`),
-	regexp.MustCompile(`fork\.\d|v5\.36\.0`),
-	// Compatibility with v6
-	regexp.MustCompile(`GATUS_(CONFIG_PATH|CONFIG_FILE|LOG_LEVEL|DELAY_START_SECONDS|URL|USERNAME|PASSWORD|\*|\{)`),
-	regexp.MustCompile(`Legacy|legacy|LEGACY`),
-	regexp.MustCompile(`gatus-admin-backup|gatusVersion|metrics-namespace|MetricsNamespace|gatus_results_total|--gatus-url|manager-gatus\.py|migrating-from-gatus|/opt/gatus|/gatus\b`),
+	{pattern: regexp.MustCompile(`TwiN|twinproduction|twin\.sh|twin/gatus`)},
+	{pattern: regexp.MustCompile(`(?i)original Gatus|Gatus original|project, Gatus|Not in Gatus|called Gatus|from Gatus|up to v6|of v6\b|on v6\b|from v6\b|written for the original`)},
+	{pattern: regexp.MustCompile(`fork\.\d|v5\.36\.0`), prefixes: []string{"docs/"}},
+	// Compatibility with v6, each where it lives
+	{pattern: regexp.MustCompile(`GATUS_(CONFIG_PATH|CONFIG_FILE|LOG_LEVEL|DELAY_START_SECONDS|URL|USERNAME|PASSWORD|\*|\{)|--gatus-url|manager-gatus\.py|migrating-from-gatus|/opt/gatus|/gatus\b`), prefixes: []string{"docs/", ".gitignore", "cmd/root.go"}},
+	{pattern: regexp.MustCompile(`Legacy|legacy|LEGACY|gatus-admin-backup|gatusVersion`), prefixes: []string{"internal/adminbackup/", "web/app/src/utils/adminBackup.js", "docs/"}},
+	{pattern: regexp.MustCompile(`LegacyMetricsNamespace|metrics-namespace|gatus_results_total|"gatus" keeps`), prefixes: []string{"internal/config/config.go", "internal/metrics/", "docs/"}},
 	// Identifiers that live in other systems, and the tests and the documentation that pin them
-	regexp.MustCompile(`alert\(gatus\)|gatus_alert|GatusAlert|gatus-healthcheck|gatus:alert|source:gatus|/events/gatus/|gatus-%s|gatus-hc|domain=gatus`),
-	regexp.MustCompile(`(?i)(source|sourcetype|entity|alias|topic|service|monitoring.?tool|event.?type|eventid|externalid|external_id|event_id|X-S4-ExternalID|source_type_name)\W{0,12}"?\\?"?` + "`?" + `"?gatus`),
-	regexp.MustCompile("`gatus`|`gatus-`|`\"gatus\"`|`Gatus`|\\(gatus\\)|default: gatus|Defaults to gatus|defaults to \"Gatus\"|is always \"Gatus\"|\"gatus-|'gatus-|gatus-my-super-app|gatus-_|gatus-group_"),
+	{pattern: regexp.MustCompile(`alert\(gatus\)|gatus_alert|GatusAlert|gatus-healthcheck|gatus:alert|source:gatus|/events/gatus/|gatus-%s|gatus-hc|domain=gatus`), prefixes: []string{"internal/alerting/", "docs/"}},
+	{pattern: regexp.MustCompile(`(?i)(source|sourcetype|entity|alias|topic|service|monitoring.?tool|event.?type|eventid|externalid|external_id|event_id|X-S4-ExternalID|source_type_name)\W{0,12}"?\\?"?` + "`?" + `"?gatus`), prefixes: []string{"internal/alerting/", "docs/"}},
+	{pattern: regexp.MustCompile("`gatus`|`gatus-`|`\"gatus\"`|`Gatus`|\\(gatus\\)|default: gatus|Defaults to gatus|defaults to \"Gatus\"|is always \"Gatus\"|\"gatus-|'gatus-|gatus-my-super-app|gatus-_|gatus-group_"), prefixes: []string{"internal/alerting/", "docs/"}},
+	{pattern: regexp.MustCompile(`jniltinho/gatus:v6`), prefixes: []string{"test/e2e/", "docs/"}},
 	// Names of third parties
-	regexp.MustCompile(`gatus-cli|gatus-sdk|gatus\.io|n8n-nodes-gatus|terraform-kubernetes-gatus|charts/gatus|notify/gatus/`),
+	{pattern: regexp.MustCompile(`gatus-cli|gatus-sdk|gatus\.io|n8n-nodes-gatus|terraform-kubernetes-gatus|charts/gatus|notify/gatus/`)},
 }
 
 var oldProjectName = regexp.MustCompile(`(?i)gatus`)
@@ -94,7 +101,7 @@ func TestProjectName(t *testing.T) {
 		scanner.Buffer(make([]byte, 0, 1024*1024), 16*1024*1024)
 		for number := 1; scanner.Scan(); number++ {
 			line := scanner.Text()
-			if oldProjectName.MatchString(line) && !matchesAny(line, allowedNameLines) {
+			if oldProjectName.MatchString(line) && !matchesAny(name, line, allowedNameLines) {
 				leftovers = append(leftovers, name+":"+itoa(number)+": "+strings.TrimSpace(truncate(line, 140)))
 			}
 		}
@@ -113,9 +120,9 @@ func hasAnyPrefix(name string, prefixes []string) bool {
 	return false
 }
 
-func matchesAny(line string, patterns []*regexp.Regexp) bool {
-	for _, pattern := range patterns {
-		if pattern.MatchString(line) {
+func matchesAny(name, line string, allowed []allowedNameLine) bool {
+	for _, reason := range allowed {
+		if (len(reason.prefixes) == 0 || hasAnyPrefix(name, reason.prefixes)) && reason.pattern.MatchString(line) {
 			return true
 		}
 	}
