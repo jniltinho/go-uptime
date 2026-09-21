@@ -50,7 +50,7 @@ func TestPublicMessage_FailureReason(t *testing.T) {
 		},
 		{
 			name:      "name that does not resolve",
-			result:    common.ResultSummary{Errors: []string{`Get "https://sso.example.org": dial tcp: lookup sso.example.org on 127.0.0.11:53: no such host`}},
+			result:    common.ResultSummary{Errors: []string{`Get "https://sso.gatus.io": dial tcp: lookup sso.gatus.io on 127.0.0.11:53: no such host`}},
 			expected:  ReasonDNSError,
 			forbidden: []string{"127.0.0.11", "lookup", "no such host"},
 		},

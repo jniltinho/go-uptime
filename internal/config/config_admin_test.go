@@ -17,7 +17,7 @@ security:
   oidc:
     issuer-url: "https://sso.example.com"
     redirect-url: "https://status.example.com/authorization-code/callback"
-    client-id: "gatus"
+    client-id: "go-uptime"
     client-secret: "secret"
     scopes: ["openid"]
 `

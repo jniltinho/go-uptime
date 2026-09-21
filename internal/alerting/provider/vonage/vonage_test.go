@@ -21,7 +21,7 @@ func TestVonageAlertProvider_IsValid(t *testing.T) {
 		DefaultConfig: Config{
 			APIKey:    "test-key",
 			APISecret: "test-secret",
-			From:      "Gatus",
+			From:      "Go Uptime",
 			To:        []string{"+1234567890"},
 		},
 	}
@@ -35,7 +35,7 @@ func TestVonageAlertProvider_IsValidWithOverride(t *testing.T) {
 		DefaultConfig: Config{
 			APIKey:    "test-key",
 			APISecret: "test-secret",
-			From:      "Gatus",
+			From:      "Go Uptime",
 			To:        []string{"+1234567890"},
 		},
 		Overrides: []Override{
@@ -60,7 +60,7 @@ func TestVonageAlertProvider_IsNotValidWithInvalidOverrideGroup(t *testing.T) {
 		DefaultConfig: Config{
 			APIKey:    "test-key",
 			APISecret: "test-secret",
-			From:      "Gatus",
+			From:      "Go Uptime",
 			To:        []string{"+1234567890"},
 		},
 		Overrides: []Override{
@@ -85,7 +85,7 @@ func TestVonageAlertProvider_IsNotValidWithDuplicateOverrideGroup(t *testing.T) 
 		DefaultConfig: Config{
 			APIKey:    "test-key",
 			APISecret: "test-secret",
-			From:      "Gatus",
+			From:      "Go Uptime",
 			To:        []string{"+1234567890"},
 		},
 		Overrides: []Override{
@@ -133,7 +133,7 @@ func TestVonageAlertProvider_IsValidWithInvalidTo(t *testing.T) {
 		DefaultConfig: Config{
 			APIKey:    "test-key",
 			APISecret: "test-secret",
-			From:      "Gatus",
+			From:      "Go Uptime",
 			To:        []string{},
 		},
 	}
@@ -160,7 +160,7 @@ func TestAlertProvider_Send(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -180,7 +180,7 @@ func TestAlertProvider_Send(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -197,7 +197,7 @@ func TestAlertProvider_Send(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -217,7 +217,7 @@ func TestAlertProvider_Send(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -237,7 +237,7 @@ func TestAlertProvider_Send(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890", "+0987654321"},
 				},
 			},
@@ -292,7 +292,7 @@ func TestAlertProvider_buildMessage(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -306,7 +306,7 @@ func TestAlertProvider_buildMessage(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -359,7 +359,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -368,7 +368,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 			ExpectedOutput: Config{
 				APIKey:    "test-key",
 				APISecret: "test-secret",
-				From:      "Gatus",
+				From:      "Go Uptime",
 				To:        []string{"+1234567890"},
 			},
 		},
@@ -378,7 +378,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 				Overrides: []Override{
@@ -408,7 +408,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 				Overrides: []Override{
@@ -425,7 +425,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 			ExpectedOutput: Config{
 				APIKey:    "test-key",
 				APISecret: "test-secret",
-				From:      "Gatus",
+				From:      "Go Uptime",
 				To:        []string{"+9876543210"},
 			},
 		},
@@ -435,7 +435,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 			},
@@ -459,7 +459,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 				Overrides: []Override{
@@ -490,7 +490,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 				DefaultConfig: Config{
 					APIKey:    "test-key",
 					APISecret: "test-secret",
-					From:      "Gatus",
+					From:      "Go Uptime",
 					To:        []string{"+1234567890"},
 				},
 				Overrides: []Override{
@@ -507,7 +507,7 @@ func TestAlertProvider_GetConfig(t *testing.T) {
 			ExpectedOutput: Config{
 				APIKey:    "test-key",
 				APISecret: "test-secret",
-				From:      "Gatus",
+				From:      "Go Uptime",
 				To:        []string{"+1234567890"},
 			},
 		},

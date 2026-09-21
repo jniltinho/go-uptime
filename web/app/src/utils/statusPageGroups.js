@@ -8,7 +8,7 @@
 
 import { preferenceKey, readPreference, writePreference } from './storage.js'
 
-// The preference of the choices, and its key in the browser (see storage.js, which also migrates the key of Gatus)
+// The preference of the choices, and its key in the browser (see storage.js, which also migrates the key of v6)
 export const PREFERENCE = 'status-page-groups'
 export const STORAGE_KEY = preferenceKey(PREFERENCE)
 export const MAXIMUM_CHOICES = 500

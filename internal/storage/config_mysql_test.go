@@ -12,11 +12,11 @@ func TestConfig_ValidateAndSetDefaults_MySQL(t *testing.T) {
 		path        string
 		expectedErr error
 	}{
-		{name: "valid", path: "gatus:secret@tcp(mariadb:3306)/gatus"},
-		{name: "valid-with-parameters", path: "gatus:secret@tcp(127.0.0.1:3306)/gatus?tls=preferred&timeout=5s"},
+		{name: "valid", path: "go_uptime:secret@tcp(mariadb:3306)/go_uptime"},
+		{name: "valid-with-parameters", path: "go_uptime:secret@tcp(127.0.0.1:3306)/go_uptime?tls=preferred&timeout=5s"},
 		{name: "missing-path", path: "", expectedErr: ErrSQLStorageRequiresPath},
-		{name: "malformed", path: "gatus:secret@tcp(mariadb:3306", expectedErr: ErrMySQLStorageInvalidPath},
-		{name: "unknown-parameter-value", path: "gatus:secret@tcp(mariadb:3306)/gatus?parseTime=maybe", expectedErr: ErrMySQLStorageInvalidPath},
+		{name: "malformed", path: "go_uptime:secret@tcp(mariadb:3306", expectedErr: ErrMySQLStorageInvalidPath},
+		{name: "unknown-parameter-value", path: "go_uptime:secret@tcp(mariadb:3306)/go_uptime?parseTime=maybe", expectedErr: ErrMySQLStorageInvalidPath},
 	}
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {

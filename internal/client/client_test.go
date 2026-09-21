@@ -706,7 +706,7 @@ func TestCheckSSHBanner(t *testing.T) {
 	t.Parallel()
 	cfg := &Config{Timeout: 3}
 	t.Run("no-auth-ssh", func(t *testing.T) {
-		connected, status, err := CheckSSHBanner(startSSHBannerServer(t, "SSH-2.0-Gatus_Test\r\n"), cfg)
+		connected, status, err := CheckSSHBanner(startSSHBannerServer(t, "SSH-2.0-GoUptime_Test\r\n"), cfg)
 		if err != nil {
 			t.Errorf("Expected: error != nil, got: %v ", err)
 		}

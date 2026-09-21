@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	// ErrDNSWithNoQueryName is the error with which gatus will panic if a dns is configured without query name
+	// ErrDNSWithNoQueryName is the error with which Go Uptime will panic if a dns is configured without query name
 	ErrDNSWithNoQueryName = errors.New("you must specify a query name in the DNS configuration")
 
-	// ErrDNSWithInvalidQueryType is the error with which gatus will panic if a dns is configured with invalid query type
+	// ErrDNSWithInvalidQueryType is the error with which Go Uptime will panic if a dns is configured with invalid query type
 	ErrDNSWithInvalidQueryType = errors.New("invalid query type in the DNS configuration")
 )
 

@@ -420,7 +420,7 @@ func ShouldRunPingerAsPrivileged() bool {
 	if runtime.GOOS == "windows" {
 		return true
 	}
-	// To actually check for cap_net_raw capabilities, we would need to add "kernel.org/pub/linux/libs/security/libcap/cap" to gatus.
+	// To actually check for cap_net_raw capabilities, we would need to add "kernel.org/pub/linux/libs/security/libcap/cap" to Go Uptime.
 	// Or use a syscall and check for permission errors, but this requires platform specific compilation
 	// As a backstop we can simply check the effective user id and run as privileged when running as root
 	return os.Geteuid() == 0

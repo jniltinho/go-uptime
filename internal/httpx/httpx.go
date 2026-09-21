@@ -25,7 +25,7 @@ const (
 	MaximumBodySize = 4 << 20
 
 	// bodyKey is the key of the store holding the body read ahead by BufferBody
-	bodyKey = "gatus.httpx.body"
+	bodyKey = "go-uptime.httpx.body"
 
 	mimeTextPlain = "text/plain; charset=utf-8"
 	mimeJSON      = "application/json"

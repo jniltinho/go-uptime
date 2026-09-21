@@ -25,10 +25,10 @@ import (
 const (
 	// LocalsClientIP is the key of the locals of a request holding the IP address of its client (netip.Addr), computed
 	// by the api package with status-pages.trusted-proxies. Without it, the IP address of the connection is used.
-	LocalsClientIP = "gatus.client-ip"
+	LocalsClientIP = "go-uptime.client-ip"
 
 	// localsBasicAuthentication is the key of the locals of a request holding its basicAuthentication
-	localsBasicAuthentication = "gatus.basic-authentication"
+	localsBasicAuthentication = "go-uptime.basic-authentication"
 
 	// localsUsername is the key of the store of a request holding the username of its authenticated user
 	localsUsername = "username"

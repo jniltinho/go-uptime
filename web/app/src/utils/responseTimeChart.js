@@ -19,7 +19,7 @@ export const CHART_PERIOD_OPTIONS = Object.freeze([
   { value: '1w', label: '1w' }
 ])
 
-// The preference of the period, and its key in the browser (see storage.js, which also migrates the key of Gatus)
+// The preference of the period, and its key in the browser (see storage.js, which also migrates the key of v6)
 export const CHART_PERIOD_PREFERENCE = 'response-time-chart-period'
 export const CHART_PERIOD_STORAGE_KEY = preferenceKey(CHART_PERIOD_PREFERENCE)
 

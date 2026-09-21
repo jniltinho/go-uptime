@@ -40,7 +40,7 @@ func newMySQLTestDatabase(t testing.TB, dsn string) string {
 	if _, err := rand.Read(suffix); err != nil {
 		t.Fatal(err)
 	}
-	database := "gatus_test_" + hex.EncodeToString(suffix)
+	database := "go_uptime_test_" + hex.EncodeToString(suffix)
 	cfg.DBName = ""
 	admin, err := sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {

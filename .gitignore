@@ -17,6 +17,8 @@ node_modules
 *.db-shm
 *.db-wal
 go-uptime
+# The binary that `make install` built while the project was called Gatus, up to v6
+/gatus
 config/config.yml
 config.yaml
 # Pacotes de release e capturas de tela dos testes E2E (dist/prints)

@@ -34,13 +34,13 @@ type BasicConfig struct {
 
 // isValid returns whether the basic security configuration is valid or not. The password must be the base64 of a bcrypt
 // hash: a value that is not one can never match a password, and it used to be found only when the server started, as a
-// panic, after gatus config validate had called the configuration valid.
+// panic, after go-uptime config validate had called the configuration valid.
 func (c *BasicConfig) isValid() bool {
 	return len(c.Username) > 0 && isBcryptHashInBase64(c.PasswordBcryptHashBase64Encoded) &&
 		(c.SessionTTL == 0 || (c.SessionTTL >= MinimumBasicSessionTTL && c.SessionTTL <= MaximumBasicSessionTTL))
 }
 
-// isBcryptHashInBase64 returns whether the value is what gatus password hash prints: a bcrypt hash encoded in base64
+// isBcryptHashInBase64 returns whether the value is what go-uptime password hash prints: a bcrypt hash encoded in base64
 // with the URL alphabet
 func isBcryptHashInBase64(encoded string) bool {
 	hash, err := base64.URLEncoding.DecodeString(encoded)

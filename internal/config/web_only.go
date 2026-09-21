@@ -18,7 +18,7 @@ var ErrConfigPathNotFound = errors.New("configuration path not found")
 
 // LoadWebConfiguration reads only the web section of the configuration, with its default address and port, without
 // validating the rest of the configuration, without loading the TLS certificates and without opening anything. It is
-// what `gatus healthcheck` needs to know where the server listens.
+// what `go-uptime healthcheck` needs to know where the server listens.
 func LoadWebConfiguration(configPath string) (*web.Config, error) {
 	configBytes, err := readConfigurationBytes(configPath)
 	if err != nil {
@@ -48,7 +48,7 @@ func LoadWebConfiguration(configPath string) (*web.Config, error) {
 
 // RequireConfigPath returns ErrConfigPathNotFound when configPath does not exist. LoadConfiguration falls back on the
 // default paths when the given one is missing, which is right for the environment but wrong for a path typed by the
-// operator: `gatus config validate --config typo.yaml` would validate another file.
+// operator: `go-uptime config validate --config typo.yaml` would validate another file.
 func RequireConfigPath(configPath string) error {
 	if _, err := os.Stat(configPath); err != nil {
 		return fmt.Errorf("%w: %s", ErrConfigPathNotFound, configPath)

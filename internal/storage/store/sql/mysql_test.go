@@ -32,7 +32,7 @@ func TestIsSupportedMySQLVersion(t *testing.T) {
 }
 
 func TestNewMySQLConfig(t *testing.T) {
-	cfg, err := newMySQLConfig("gatus:secret@tcp(mariadb:3306)/gatus?loc=America%2FSao_Paulo&parseTime=false&clientFoundRows=false&interpolateParams=false&charset=latin1&time_zone=%27-03%3A00%27&SQL_MODE=%27%27&readTimeout=5s&tls=preferred")
+	cfg, err := newMySQLConfig("go_uptime:secret@tcp(mariadb:3306)/go_uptime?loc=America%2FSao_Paulo&parseTime=false&clientFoundRows=false&interpolateParams=false&charset=latin1&time_zone=%27-03%3A00%27&SQL_MODE=%27%27&readTimeout=5s&tls=preferred")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func TestNewMySQLConfig(t *testing.T) {
 	if cfg.Collation != "utf8mb4_bin" {
 		t.Errorf("expected the utf8mb4_bin collation, got %q", cfg.Collation)
 	}
-	if cfg.ReadTimeout != 5*time.Second || cfg.TLSConfig != "preferred" || cfg.DBName != "gatus" || cfg.Addr != "mariadb:3306" {
+	if cfg.ReadTimeout != 5*time.Second || cfg.TLSConfig != "preferred" || cfg.DBName != "go_uptime" || cfg.Addr != "mariadb:3306" {
 		t.Errorf("expected the other parameters of the DSN to be kept, got %+v", cfg)
 	}
 	expectedParams := map[string]string{"time_zone": "'+00:00'", "sql_mode": "'" + mysqlSQLMode + "'", "innodb_lock_wait_timeout": "10"}
@@ -57,7 +57,7 @@ func TestNewMySQLConfig(t *testing.T) {
 	if !strings.Contains(cfg.FormatDSN(), "charset=utf8mb4") {
 		t.Errorf("expected the utf8mb4 charset, got %s", cfg.FormatDSN())
 	}
-	if _, err := newMySQLConfig("gatus:secret@tcp(mariadb:3306"); !errors.Is(err, ErrInvalidMySQLPath) || strings.Contains(err.Error(), "secret") {
+	if _, err := newMySQLConfig("go_uptime:secret@tcp(mariadb:3306"); !errors.Is(err, ErrInvalidMySQLPath) || strings.Contains(err.Error(), "secret") {
 		t.Errorf("expected ErrInvalidMySQLPath without the password, got %v", err)
 	}
 }

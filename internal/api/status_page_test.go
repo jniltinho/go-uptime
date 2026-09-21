@@ -225,7 +225,7 @@ func TestStatusPage_OIDCWithoutSession(t *testing.T) {
 	securityConfig := &security.Config{OIDC: &security.OIDCConfig{
 		IssuerURL:    issuer.URL,
 		RedirectURL:  "http://localhost:8080/authorization-code/callback",
-		ClientID:     "gatus",
+		ClientID:     "go-uptime",
 		ClientSecret: "secret",
 		Scopes:       []string{"openid"},
 	}}
