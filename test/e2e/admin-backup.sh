@@ -17,7 +17,7 @@ PRINTS="$ROOT/dist/prints/admin-backup"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Gatus decodes it)
+# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Go Uptime decodes it)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 BACKUP_PASSWORD='correct horse battery'
 PUSH_TOKEN='keSDu7G855jvVat1xWiY2Gk4CkL1End5'
@@ -60,27 +60,27 @@ write_config target "status-pages:
       title: Jobs of the file
       groups: [jobs]"
 
-GATUS_PID=""
-start_gatus() {
-  GATUS_CONFIG_PATH="$WORK/$1.yaml" dist/gatus > "$WORK/$1.log" 2>&1 &
-  GATUS_PID=$!
+SERVER_PID=""
+start_server() {
+  GO_UPTIME_CONFIG_PATH="$WORK/$1.yaml" dist/go-uptime > "$WORK/$1.log" 2>&1 &
+  SERVER_PID=$!
   for _ in $(seq 1 60); do
     curl -sf "$BASE/health" >/dev/null && return 0
     sleep 1
   done
-  echo "Gatus did not start"; cat "$WORK/$1.log"; exit 1
+  echo "Go Uptime did not start"; cat "$WORK/$1.log"; exit 1
 }
-stop_gatus() {
-  if [ -n "$GATUS_PID" ]; then
-    kill "$GATUS_PID" >/dev/null 2>&1 || true
-    wait "$GATUS_PID" 2>/dev/null || true
-    GATUS_PID=""
+stop_server() {
+  if [ -n "$SERVER_PID" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
+    SERVER_PID=""
   fi
 }
 admin() { agent-browser --session e2e-admin-backup "$@"; }
 cleanup() {
   admin close >/dev/null 2>&1 || true
-  stop_gatus
+  stop_server
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -151,7 +151,7 @@ result_of() {
 }
 
 step "Source installation: an endpoint, a status page and a push key registered through the web"
-start_gatus source
+start_server source
 authenticated -H 'Content-Type: application/yaml' --data-binary "type: push
 name: backup
 group: jobs
@@ -180,7 +180,7 @@ grep -q "Backup downloaded" <<<"$(toast_text success)" || fail "unexpected toast
 python3 - "$WORK/plain.json" "$PUSH_TOKEN" <<'PY' || fail "the plain backup does not have the registered items"
 import json, sys
 backup = json.load(open(sys.argv[1]))
-assert backup["format"] == "gatus-admin-backup"
+assert backup["format"] == "go-uptime-admin-backup"
 assert [e["key"] for e in backup["endpoints"]] == ["jobs_backup"] and sys.argv[2] in backup["endpoints"][0]["definition"]
 assert [p["slug"] for p in backup["statusPages"]] == ["jobs"] and [k["name"] for k in backup["pushKeys"]] == ["akamai"]
 PY
@@ -196,13 +196,13 @@ for size in "1280 720" "1024 600"; do
 done
 admin set viewport 1280 900 >/dev/null
 admin download "$(testid backup-download)" "$WORK/encrypted.json" >/dev/null || fail "the encrypted backup was not downloaded"
-grep -q '"gatus-admin-backup-encrypted"' "$WORK/encrypted.json" || fail "the backup is not encrypted"
+grep -q '"go-uptime-admin-backup-encrypted"' "$WORK/encrypted.json" || fail "the backup is not encrypted"
 grep -q "$PUSH_TOKEN" "$WORK/encrypted.json" && fail "the encrypted backup has the token in plain text"
 admin close >/dev/null 2>&1 || true
-stop_gatus
+stop_server
 
 step "Target installation: preview with the status page of the file skipped"
-start_gatus target
+start_server target
 login_screen
 set_theme admin light
 admin open "$BASE/admin/backup" >/dev/null

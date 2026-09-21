@@ -3,7 +3,7 @@
 #
 #   test/e2e/status-pages.sh
 #
-# Starts the locally built Gatus (temporary SQLite, basic auth, administration enabled, local endpoints), opens the
+# Starts the locally built Go Uptime (temporary SQLite, basic auth, administration enabled, local endpoints), opens the
 # public page in a session without credentials and the administration screens in a session with credentials, and saves
 # screenshots in dist/prints/status-pages/ (dist/ is in .gitignore). Requires agent-browser with Chrome installed.
 set -euo pipefail
@@ -16,16 +16,16 @@ PRINTS="$ROOT/dist/prints/status-pages"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Gatus decodes it)
+# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Go Uptime decodes it)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 
 command -v agent-browser >/dev/null || { echo "agent-browser not found"; exit 1; }
 mkdir -p "$PRINTS"
 
 # Storage: temporary SQLite by default. E2E_STORAGE_TYPE and E2E_STORAGE_PATH run the script with another database,
-# which must be empty (e.g. E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:password@tcp(127.0.0.1:53307)/gatus_e2e')
+# which must be empty (e.g. E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:password@tcp(127.0.0.1:53307)/go_uptime_e2e')
 STORAGE_TYPE=${E2E_STORAGE_TYPE:-sqlite}
-STORAGE_PATH=${E2E_STORAGE_PATH:-$WORK/gatus.db}
+STORAGE_PATH=${E2E_STORAGE_PATH:-$WORK/go-uptime.db}
 
 echo "==> Building"
 make -s build
@@ -102,15 +102,15 @@ status-pages:
       show-messages: true
 CONFIG
 
-GATUS_CONFIG_PATH="$WORK/config.yaml" dist/gatus > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+GO_UPTIME_CONFIG_PATH="$WORK/config.yaml" dist/go-uptime > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 public() { agent-browser --session e2e-status-public "$@"; }
 admin() { agent-browser --session e2e-status-admin "$@"; }
 cleanup() {
   public close >/dev/null 2>&1 || true
   admin close >/dev/null 2>&1 || true
-  kill "$GATUS_PID" >/dev/null 2>&1 || true
-  wait "$GATUS_PID" 2>/dev/null || true
+  kill "$SERVER_PID" >/dev/null 2>&1 || true
+  wait "$SERVER_PID" 2>/dev/null || true
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -119,7 +119,7 @@ for _ in $(seq 1 60); do
   curl -sf "$BASE/health" >/dev/null && break
   sleep 1
 done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus did not start"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime did not start"; cat "$WORK/go-uptime.log"; exit 1; }
 
 # Fork: the theme is chosen by the theme cookie, like the theme selector, because the operating system preference is not
 # followed (dark by default, see ui.dark-mode). It also applies the theme to the page that is already open.
@@ -138,7 +138,7 @@ fail() {
   echo "FAILED: $*"
   public screenshot --full "$PRINTS/error-public.png" >/dev/null 2>&1 || true
   admin screenshot --full "$PRINTS/error-admin.png" >/dev/null 2>&1 || true
-  tail -20 "$WORK/gatus.log"
+  tail -20 "$WORK/go-uptime.log"
   exit 1
 }
 testid() {
@@ -206,12 +206,12 @@ grep -q "Other services" <<<"$(body_text public)" || fail "the endpoint without 
 requests=$(public network requests 2>/dev/null)
 grep -q "/api/v1/config" <<<"$requests" && fail "the public page called /api/v1/config"
 grep -qE '\b401\b' <<<"$requests" && fail "a request of the public page received 401"
-# Fork: the Inter comes from Gatus itself. The FontFace has to be loaded: document.fonts.check() answers true even
+# Fork: the Inter comes from Go Uptime itself. The FontFace has to be loaded: document.fonts.check() answers true even
 # without any @font-face, because the family then resolves to a font of the system
 font_loaded=$(public eval "(async () => { await document.fonts.ready; return Array.from(document.fonts).some((face) => face.family === 'Inter' && face.status === 'loaded') })()" 2>/dev/null | tr -d '"')
 [ "$font_loaded" = "true" ] || fail "the Inter of the interface was not loaded: $font_loaded"
 font_request=$(public eval "(() => { const entries = performance.getEntriesByType('resource'); const inter = entries.find((entry) => entry.name.includes('/fonts/inter-4-1-latin.woff2')); const external = entries.some((entry) => entry.name.includes('fonts.googleapis.com') || entry.name.includes('fonts.gstatic.com')); return JSON.stringify({ downloaded: Boolean(inter && inter.decodedBodySize > 0), external }) })()" 2>/dev/null | tr -d '\\"')
-grep -q 'downloaded:true' <<<"$font_request" || fail "the font was not downloaded from Gatus: $font_request"
+grep -q 'downloaded:true' <<<"$font_request" || fail "the font was not downloaded from Go Uptime: $font_request"
 grep -q 'external:false' <<<"$font_request" || fail "the page asked a font service for a font: $font_request"
 # Tabular figures: the pair of control shows that the feature applies, and not only that the font has fixed digits
 tabular=$(public eval "(async () => { await document.fonts.ready; const make = (variant, digits) => { const span = document.createElement('span'); span.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-variant-numeric:' + variant; span.textContent = digits; document.body.appendChild(span); return span }; const normalOne = make('normal', '1111111111'); const normalNine = make('normal', '9999999999'); const tabularOne = make('tabular-nums', '1111111111'); const tabularNine = make('tabular-nums', '9999999999'); const result = { tabularEqual: tabularOne.offsetWidth === tabularNine.offsetWidth, proportionalDiffers: normalOne.offsetWidth !== normalNine.offsetWidth }; [normalOne, normalNine, tabularOne, tabularNine].forEach((span) => span.remove()); return JSON.stringify(result) })()" 2>/dev/null | tr -d '\\"')

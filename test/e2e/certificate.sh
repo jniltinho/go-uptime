@@ -3,7 +3,7 @@
 #
 #   test/e2e/certificate.sh
 #
-# Starts a local HTTPS server with a self-signed certificate valid for 73 days and the locally built Gatus (temporary
+# Starts a local HTTPS server with a self-signed certificate valid for 73 days and the locally built Go Uptime (temporary
 # SQLite, basic auth, administration enabled), checks the discreet line on the endpoint details page of the dashboard,
 # a status page of the configuration file without the option, and a status page created through the form with
 # "Show certificate expiration", and saves screenshots in dist/prints/certificate/ (dist/ is in .gitignore). Requires
@@ -19,7 +19,7 @@ PRINTS="$ROOT/dist/prints/certificate"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Gatus decodes it)
+# bcrypt (cost 10) of PASSWORD, in base64 with the URL alphabet (as Go Uptime decodes it)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 
 for command in agent-browser openssl python3; do
@@ -56,7 +56,7 @@ web:
   port: $PORT
 storage:
   type: sqlite
-  path: "$WORK/gatus.db"
+  path: "$WORK/go-uptime.db"
 security:
   basic:
     username: $USERNAME
@@ -86,15 +86,15 @@ status-pages:
       groups: [web]
 CONFIG
 
-GATUS_CONFIG_PATH="$WORK/config.yaml" dist/gatus > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+GO_UPTIME_CONFIG_PATH="$WORK/config.yaml" dist/go-uptime > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 admin() { agent-browser --session e2e-certificate-admin "$@"; }
 public() { agent-browser --session e2e-certificate-public "$@"; }
 cleanup() {
   admin close >/dev/null 2>&1 || true
   public close >/dev/null 2>&1 || true
-  kill "$GATUS_PID" "$HTTPS_PID" >/dev/null 2>&1 || true
-  wait "$GATUS_PID" "$HTTPS_PID" 2>/dev/null || true
+  kill "$SERVER_PID" "$HTTPS_PID" >/dev/null 2>&1 || true
+  wait "$SERVER_PID" "$HTTPS_PID" 2>/dev/null || true
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -103,7 +103,7 @@ for _ in $(seq 1 60); do
   curl -sf "$BASE/health" >/dev/null && break
   sleep 1
 done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus did not start"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime did not start"; cat "$WORK/go-uptime.log"; exit 1; }
 
 # Fork: the theme is chosen by the theme cookie, like the theme selector, because the operating system preference is not
 # followed (dark by default, see ui.dark-mode). It also applies the theme to the page that is already open.
@@ -122,7 +122,7 @@ fail() {
   echo "FAILED: $*"
   admin screenshot --full "$PRINTS/error-admin.png" >/dev/null 2>&1 || true
   public screenshot --full "$PRINTS/error-public.png" >/dev/null 2>&1 || true
-  tail -20 "$WORK/gatus.log"
+  tail -20 "$WORK/go-uptime.log"
   exit 1
 }
 testid() {

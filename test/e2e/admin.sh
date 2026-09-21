@@ -3,7 +3,7 @@
 #
 #   test/e2e/admin.sh
 #
-# Sobe o Gatus compilado localmente (SQLite temporário, basic auth, admin habilitado), percorre as telas e salva
+# Sobe o Go Uptime compilado localmente (SQLite temporário, basic auth, admin habilitado), percorre as telas e salva
 # capturas de tela em dist/prints/e2e/ (dist/ está no .gitignore). Exige agent-browser com Chrome instalado.
 set -euo pipefail
 
@@ -15,16 +15,16 @@ PRINTS="$ROOT/dist/prints/e2e"
 WORK=$(mktemp -d)
 USERNAME=admin
 PASSWORD='e2e-senha'
-# bcrypt (custo 10) de PASSWORD, em base64 com alfabeto de URL (como o Gatus decodifica)
+# bcrypt (custo 10) de PASSWORD, em base64 com alfabeto de URL (como o Go Uptime decodifica)
 PASSWORD_HASH='JDJhJDEwJHo1LnE5empYYkN5Vm1Vd1RmNXZPMS5SeWRCdlc3UlMxMXBHdmpwcDBUUTZiMXlIQ1R3RVRT'
 
 command -v agent-browser >/dev/null || { echo "agent-browser não encontrado"; exit 1; }
 mkdir -p "$PRINTS"
 
 # Storage: SQLite temporário por padrão. E2E_STORAGE_TYPE e E2E_STORAGE_PATH rodam o roteiro com outro banco, que
-# precisa estar vazio (ex.: E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:senha@tcp(127.0.0.1:53307)/gatus_e2e')
+# precisa estar vazio (ex.: E2E_STORAGE_TYPE=mysql E2E_STORAGE_PATH='root:senha@tcp(127.0.0.1:53307)/go_uptime_e2e')
 STORAGE_TYPE=${E2E_STORAGE_TYPE:-sqlite}
-STORAGE_PATH=${E2E_STORAGE_PATH:-$WORK/gatus.db}
+STORAGE_PATH=${E2E_STORAGE_PATH:-$WORK/go-uptime.db}
 
 echo "==> Compilando"
 make -s build
@@ -51,12 +51,12 @@ endpoints:
       - "[STATUS] == 200"
 CONFIG
 
-GATUS_CONFIG_PATH="$WORK/config.yaml" dist/gatus > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+GO_UPTIME_CONFIG_PATH="$WORK/config.yaml" dist/go-uptime > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 cleanup() {
   agent-browser close >/dev/null 2>&1 || true
-  kill "$GATUS_PID" >/dev/null 2>&1 || true
-  wait "$GATUS_PID" 2>/dev/null || true
+  kill "$SERVER_PID" >/dev/null 2>&1 || true
+  wait "$SERVER_PID" 2>/dev/null || true
   rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -65,7 +65,7 @@ for _ in $(seq 1 60); do
   curl -sf "$BASE/health" >/dev/null && break
   sleep 1
 done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus não subiu"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime não subiu"; cat "$WORK/go-uptime.log"; exit 1; }
 
 STEP=0
 step() {
@@ -75,7 +75,7 @@ step() {
 fail() {
   echo "FALHOU: $*"
   agent-browser screenshot --full "$PRINTS/erro.png" >/dev/null 2>&1 || true
-  tail -20 "$WORK/gatus.log"
+  tail -20 "$WORK/go-uptime.log"
   exit 1
 }
 shot() {

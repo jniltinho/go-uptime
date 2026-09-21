@@ -90,11 +90,11 @@ PORT=${PORT:-18096}
 BASE="http://127.0.0.1:$PORT"
 USERNAME=admin
 PASSWORD='e2e-colors-password'
-GATUS_PID=""
+SERVER_PID=""
 mkdir -p "$OUT"
 
-[ -x dist/gatus ] || { echo "dist/gatus not found: run make build"; exit 1; }
-HASH=$(printf '%s\n' "$PASSWORD" | dist/gatus password hash)
+[ -x dist/go-uptime ] || { echo "dist/go-uptime not found: run make build"; exit 1; }
+HASH=$(printf '%s\n' "$PASSWORD" | dist/go-uptime password hash)
 token_of() { printf 'e2e-color-token-%s-0123456789' "$1"; }
 {
   cat <<CONFIG
@@ -160,18 +160,18 @@ CONFIG
 browser() { agent-browser --session e2e-theme-colors "$@"; }
 cleanup() {
   browser close >/dev/null 2>&1 || true
-  if [ -n "$GATUS_PID" ]; then
-    kill "$GATUS_PID" >/dev/null 2>&1 || true
-    wait "$GATUS_PID" 2>/dev/null || true
+  if [ -n "$SERVER_PID" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
   rm -rf "$WORK"
 }
 trap cleanup EXIT
 
-dist/gatus --config "$WORK/config.yaml" > "$WORK/gatus.log" 2>&1 &
-GATUS_PID=$!
+dist/go-uptime --config "$WORK/config.yaml" > "$WORK/go-uptime.log" 2>&1 &
+SERVER_PID=$!
 for _ in $(seq 1 60); do curl -sf "$BASE/health" >/dev/null && break; sleep 1; done
-curl -sf "$BASE/health" >/dev/null || { echo "Gatus did not start"; cat "$WORK/gatus.log"; exit 1; }
+curl -sf "$BASE/health" >/dev/null || { echo "Go Uptime did not start"; cat "$WORK/go-uptime.log"; exit 1; }
 # Seeded results: three pushes up, two up and one down, and none for "silent" (no data)
 for _ in $(seq 1 20); do
   [ "$(curl -s -o /dev/null -w '%{http_code}' "$BASE/api/push/$(token_of up)?status=up&ping=100")" = 200 ] && break
