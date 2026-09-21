@@ -43,7 +43,8 @@ What keeps working without a change:
 
 ## Linux, installed with `docs/install-linux.md`
 
-There are two ways. The first one changes the least.
+There are two ways. The first one changes the least. Both were run for real before the release, under systemd, starting
+from the published `v6.3.0` installed by its own guide: the history is kept in both.
 
 ### A. Stay in `/opt/gatus`
 
@@ -54,7 +55,7 @@ VERSION=7.0.0; ARCH=amd64
 curl -sLO "https://github.com/jniltinho/go-uptime/releases/download/v${VERSION}/go-uptime_${VERSION}_linux_${ARCH}.tar.gz"
 tar xzf "go-uptime_${VERSION}_linux_${ARCH}.tar.gz" go-uptime
 sudo systemctl stop gatus
-sudo install -o root -g root -m 0755 go-uptime /opt/gatus/go-uptime
+sudo install -o root -g gatus -m 0750 go-uptime /opt/gatus/go-uptime   # same owner and mode as the binary of v6
 sudo ln -sfn go-uptime /opt/gatus/gatus          # the unit keeps calling /opt/gatus/gatus
 /opt/gatus/go-uptime config validate --config /opt/gatus/config/config.yaml
 sudo systemctl start gatus && systemctl status gatus --no-pager
@@ -70,8 +71,8 @@ holds a path**:
 1. `sudo systemctl stop gatus`
 2. Copy `/opt/gatus/config/` and `/opt/gatus/data/` to `/opt/go-uptime/`, owned by the `go-uptime` user.
 3. In `/opt/go-uptime/config/config.yaml`, change `storage.path` (`/opt/gatus/data/data.db` →
-   `/opt/go-uptime/data/data.db`) and any other path under `/opt/gatus`. **Without this the database is not found**: the
-   new unit only lets the service write in `/opt/go-uptime/data`.
+   `/opt/go-uptime/data/data.db`) and any other path under `/opt/gatus`. **Without this the service does not start**
+   (`unable to open database file` in the journal): the new unit only lets it write in `/opt/go-uptime/data`.
 4. Move your drop-ins from `/etc/systemd/system/gatus.service.d/` to `go-uptime.service.d/`, renaming `GATUS_*`
    variables if you want to get rid of the warnings.
 5. `sudo systemctl disable --now gatus && sudo systemctl enable --now go-uptime`
