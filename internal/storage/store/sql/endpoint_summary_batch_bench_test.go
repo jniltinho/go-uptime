@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // BenchmarkStore_GetEndpointSummaries assembles a status page of 200 endpoints with 100 results each in SQLite, while

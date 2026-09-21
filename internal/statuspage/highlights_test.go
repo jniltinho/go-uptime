@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 func TestSelect_Featured(t *testing.T) {

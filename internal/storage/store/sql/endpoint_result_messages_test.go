@@ -7,8 +7,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 // The messages and origins of the results must be read back, cut without breaking UTF-8 characters, and deleted in

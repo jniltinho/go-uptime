@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
 
 	"github.com/labstack/echo/v5"
 )

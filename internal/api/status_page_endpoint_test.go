@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/statuspage"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 )
 
 func TestStatusPage_EndpointDetails(t *testing.T) {

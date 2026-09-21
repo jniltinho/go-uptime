@@ -7,14 +7,14 @@ import (
 	"context"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store/common/paging"
-	"gatus/v5/internal/storage/store/memory"
-	"gatus/v5/internal/storage/store/sql"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/memory"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/sql"
 )
 
 // Store is the interface that each store should implement

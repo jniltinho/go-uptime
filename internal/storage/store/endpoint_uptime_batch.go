@@ -3,9 +3,9 @@ package store
 import (
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/memory"
-	"gatus/v5/internal/storage/store/sql"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/memory"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/sql"
 )
 
 var (

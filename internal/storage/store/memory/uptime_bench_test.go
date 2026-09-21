@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 func BenchmarkProcessUptimeAfterResult(b *testing.B) {

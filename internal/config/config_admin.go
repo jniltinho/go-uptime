@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/storage"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 var (

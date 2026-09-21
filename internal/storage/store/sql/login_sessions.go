@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // createLoginSessionsSchema creates the table of the sessions of the login screen of security.basic (fork). Only the

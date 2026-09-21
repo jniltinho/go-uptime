@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/liveupdates"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 // eventStreamTestWriteTimeout is the write timeout of the server of the event stream tests

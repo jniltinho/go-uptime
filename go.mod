@@ -1,4 +1,4 @@
-module gatus/v5
+module github.com/jniltinho/go-uptime/v7
 
 go 1.26.3
 

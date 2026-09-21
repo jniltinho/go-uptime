@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/push"
 )
 
 func TestParseAndValidateConfigBytes_Push(t *testing.T) {

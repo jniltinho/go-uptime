@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"gatus/v5/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/config/push"
 )
 
 var (

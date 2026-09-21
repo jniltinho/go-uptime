@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 )
 
 func TestNew(t *testing.T) {

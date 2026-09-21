@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 func TestResponseTimeChart(t *testing.T) {

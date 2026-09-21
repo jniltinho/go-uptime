@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 func newAlertStateTestEndpoint(alertEnabled bool) *endpoint.Endpoint {

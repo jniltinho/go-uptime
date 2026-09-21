@@ -6,9 +6,9 @@ import (
 	"slices"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // createResponseTimeBucketsSchema creates the table of the minute and hour aggregates of the results of the endpoints,

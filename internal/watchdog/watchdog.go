@@ -8,9 +8,9 @@ import (
 	"context"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/metrics"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/metrics"
 	"golang.org/x/sync/semaphore"
 )
 

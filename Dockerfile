@@ -9,7 +9,7 @@ ARG VERSION=dev
 ARG GIT_COMMIT=unknown
 ARG BUILD_DATE=unknown
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo \
-    -ldflags "-s -w -X 'gatus/v5/cmd.Version=${VERSION}' -X 'gatus/v5/cmd.GitCommit=${GIT_COMMIT}' -X 'gatus/v5/cmd.BuildDate=${BUILD_DATE}'" \
+    -ldflags "-s -w -X 'github.com/jniltinho/go-uptime/v7/cmd.Version=${VERSION}' -X 'github.com/jniltinho/go-uptime/v7/cmd.GitCommit=${GIT_COMMIT}' -X 'github.com/jniltinho/go-uptime/v7/cmd.BuildDate=${BUILD_DATE}'" \
     -o gatus .
 
 # Run Tests inside docker image if you don't have a configured go environment

@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/security"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 
 	"github.com/TwiN/logr"
 	"github.com/labstack/echo/v5"

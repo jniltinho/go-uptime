@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"sort"
 
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const (

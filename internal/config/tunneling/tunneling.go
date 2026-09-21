@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"gatus/v5/internal/config/tunneling/sshtunnel"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling/sshtunnel"
 )
 
 // Config represents the tunneling configuration

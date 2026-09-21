@@ -11,9 +11,9 @@ import (
 	"net/http"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 

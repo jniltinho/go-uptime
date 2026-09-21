@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gatus/v5/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 
 	"github.com/labstack/echo/v5"
 )

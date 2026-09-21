@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 	"github.com/aws/aws-sdk-go-v2/service/ses/types"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"gopkg.in/yaml.v3"
 )
 

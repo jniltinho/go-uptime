@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"sync"
 
-	"gatus/v5/internal/httpx"
 	g8 "github.com/TwiN/g8/v2"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
 	"github.com/labstack/echo/v5"
 )
 

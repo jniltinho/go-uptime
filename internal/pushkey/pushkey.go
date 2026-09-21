@@ -14,12 +14,12 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gatus/v5/internal/config"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/storage/store/common"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const (

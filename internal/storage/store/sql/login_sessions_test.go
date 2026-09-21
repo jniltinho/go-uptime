@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 func TestStore_LoginSessions(t *testing.T) {

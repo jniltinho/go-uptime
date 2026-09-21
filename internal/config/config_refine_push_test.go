@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // The configuration file accepts heartbeat retries on external endpoints and show-messages on status pages (fork)

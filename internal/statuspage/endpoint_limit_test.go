@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 // endpointLimitTestConfig has four endpoints in one group, in the display order alpha, bravo, charlie, delta, and a

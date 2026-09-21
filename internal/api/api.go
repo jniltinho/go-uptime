@@ -20,12 +20,12 @@ import (
 	"slices"
 	"strings"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/config/web"
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/liveupdates"
-	static "gatus/v5/web"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
+	static "github.com/jniltinho/go-uptime/v7/web"
 
 	"github.com/TwiN/health"
 	"github.com/TwiN/logr"

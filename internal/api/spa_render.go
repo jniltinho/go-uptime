@@ -5,9 +5,9 @@ import (
 	"html/template"
 	"net/http"
 
-	"gatus/v5/internal/config/ui"
-	"gatus/v5/internal/httpx"
-	static "gatus/v5/web"
+	"github.com/jniltinho/go-uptime/v7/internal/config/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	static "github.com/jniltinho/go-uptime/v7/web"
 
 	"github.com/TwiN/logr"
 	"github.com/labstack/echo/v5"

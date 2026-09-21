@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"gatus/v5/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
 )
 
 var (

@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/endpoint/heartbeat"
-	"gatus/v5/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/heartbeat"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
 )
 
 func processRetriesTestResult(t *testing.T, ee *endpoint.ExternalEndpoint, result *endpoint.Result) *endpoint.Result {

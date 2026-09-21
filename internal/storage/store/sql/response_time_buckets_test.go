@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // bucketsFingerprint describes the minute and hour buckets and the recent results of an endpoint

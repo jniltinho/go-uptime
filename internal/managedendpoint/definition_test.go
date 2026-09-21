@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/endpoint/heartbeat"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/heartbeat"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 func TestParseDefinition_Types(t *testing.T) {

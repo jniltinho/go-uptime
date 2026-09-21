@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
 )
 
 var (

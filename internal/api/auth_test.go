@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/security"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 
 	"github.com/labstack/echo/v5"
 	"golang.org/x/crypto/bcrypt"

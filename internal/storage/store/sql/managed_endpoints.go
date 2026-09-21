@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const managedEndpointColumns = "endpoint_key, definition, version, created_at, updated_at, updated_by"

@@ -8,14 +8,14 @@ import (
 	"sync"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage/store/common"
-	"gatus/v5/internal/storage/store/common/paging"
 	"github.com/TwiN/gocache/v2"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 // Store that leverages gocache

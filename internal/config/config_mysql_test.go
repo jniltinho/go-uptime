@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 func TestValidateStorageKeysConfig(t *testing.T) {

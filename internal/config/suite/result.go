@@ -3,7 +3,7 @@ package suite
 import (
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // Result represents the result of a suite execution: one run of all the endpoints of a suite, as serialized in the

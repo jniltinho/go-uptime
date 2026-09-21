@@ -7,10 +7,10 @@ import (
 	"io"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 	"gopkg.in/yaml.v3"
 )
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 const managedStatusPageColumns = "slug, definition, version, created_at, updated_at, updated_by"

@@ -1,6 +1,6 @@
 package endpoint
 
-import "gatus/v5/internal/config/key"
+import "github.com/jniltinho/go-uptime/v7/internal/config/key"
 
 // Status contains the evaluation Results of an Endpoint
 // This is essentially a DTO: it is the object returned by the endpoint status API, holding the identity of an

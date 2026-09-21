@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/httpx"
-	"gatus/v5/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 
 	"github.com/labstack/echo/v5"
 )

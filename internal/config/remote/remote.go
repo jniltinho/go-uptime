@@ -3,8 +3,8 @@
 package remote
 
 import (
-	"gatus/v5/internal/client"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
 )
 
 // NOTICE: This is an experimental alpha feature and may be updated/removed in future versions.

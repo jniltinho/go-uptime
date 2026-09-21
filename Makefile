@@ -9,7 +9,7 @@ GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 # Cada -X entre aspas simples, senão uma versão com espaço partiria o -ldflags; e só o alfabeto de uma versão é aceito,
 # porque o valor é interpolado num comando do shell
-LDFLAGS := -s -w -X 'gatus/v5/cmd.Version=$(VERSION)' -X 'gatus/v5/cmd.GitCommit=$(GIT_COMMIT)' -X 'gatus/v5/cmd.BuildDate=$(BUILD_DATE)'
+LDFLAGS := -s -w -X 'github.com/jniltinho/go-uptime/v7/cmd.Version=$(VERSION)' -X 'github.com/jniltinho/go-uptime/v7/cmd.GitCommit=$(GIT_COMMIT)' -X 'github.com/jniltinho/go-uptime/v7/cmd.BuildDate=$(BUILD_DATE)'
 
 .PHONY: check-version
 check-version:

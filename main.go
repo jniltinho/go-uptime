@@ -2,7 +2,7 @@
 // public status pages. The command line lives in the cmd package.
 package main
 
-import "gatus/v5/cmd"
+import "github.com/jniltinho/go-uptime/v7/cmd"
 
 // main is the entry point of the binary: it delegates everything to the cmd package
 func main() {

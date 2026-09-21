@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // querier is implemented by *sql.DB and *sql.Tx

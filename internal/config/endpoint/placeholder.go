@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/jsonpath"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/jsonpath"
 )
 
 // Placeholders

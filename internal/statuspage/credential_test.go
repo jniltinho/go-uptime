@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/security"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 	"golang.org/x/crypto/bcrypt"
 )
 

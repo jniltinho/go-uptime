@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"gatus/v5/internal/liveupdates"
 	"github.com/TwiN/gocache/v2"
+	"github.com/jniltinho/go-uptime/v7/internal/liveupdates"
 	"golang.org/x/sync/singleflight"
 )
 

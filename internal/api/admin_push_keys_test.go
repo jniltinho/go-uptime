@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/push"
-	"gatus/v5/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
 )
 
 func TestAdminPushKeysAPI(t *testing.T) {

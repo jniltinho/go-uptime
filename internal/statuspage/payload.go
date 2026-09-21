@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Fork: the reasons of a failed check published by a page that shows messages. They are a closed set: the text of the

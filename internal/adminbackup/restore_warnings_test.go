@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gatus/v5/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
 )
 
 func TestDescribeWarnings(t *testing.T) {

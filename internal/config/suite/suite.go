@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
 )
 
 var (

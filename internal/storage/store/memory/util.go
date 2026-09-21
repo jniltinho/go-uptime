@@ -1,9 +1,9 @@
 package memory
 
 import (
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 // ShallowCopyEndpointStatus returns a shallow copy of a Status with only the results

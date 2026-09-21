@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/google/go-github/v48/github"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
 )

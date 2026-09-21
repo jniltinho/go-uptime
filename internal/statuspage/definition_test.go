@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
 )
 
 func TestParse(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
 )
 
 func TestParseWithDefaultAlert(t *testing.T) {

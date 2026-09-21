@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint/dns"
-	"gatus/v5/internal/pattern"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	"github.com/jniltinho/go-uptime/v7/internal/pattern"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 
 	ping "github.com/prometheus-community/pro-bing"
 	"golang.org/x/net/icmp"

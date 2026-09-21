@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gatus/v5/internal/config"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 func setupPushKeyTest(t *testing.T) *config.Config {

@@ -5,12 +5,12 @@ import (
 	"sort"
 	"time"
 
-	"gatus/v5/internal/lifecycle"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/statuspage"
-	"gatus/v5/internal/storage/store"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 var (

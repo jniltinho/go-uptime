@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
-	"gatus/v5/internal/config/admin"
-	"gatus/v5/internal/httpx"
+	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
+	"github.com/jniltinho/go-uptime/v7/internal/httpx"
 
 	"github.com/labstack/echo/v5"
 )

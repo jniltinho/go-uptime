@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strconv"
 
-	"gatus/v5/internal/config/endpoint"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // createEndpointResultMessagesSchema creates the table of the messages, origins and pending marks of the endpoint

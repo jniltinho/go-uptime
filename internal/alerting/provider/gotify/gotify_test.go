@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 func TestAlertProvider_Validate(t *testing.T) {

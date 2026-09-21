@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store/common/paging"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common/paging"
 )
 
 func TestStore_GetEndpointSummaries(t *testing.T) {

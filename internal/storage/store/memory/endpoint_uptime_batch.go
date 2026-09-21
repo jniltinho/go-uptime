@@ -3,8 +3,8 @@ package memory
 import (
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // GetUptimesByKeys returns the uptimes over the last 24 hours, 7 days and 30 days before now of the endpoints with the

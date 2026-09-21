@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/pattern"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/pattern"
 )
 
 const (

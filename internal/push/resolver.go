@@ -7,12 +7,12 @@ import (
 	"crypto/subtle"
 	"strings"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
 )
 
 // Target is an endpoint that receives a push

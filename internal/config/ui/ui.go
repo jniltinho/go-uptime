@@ -9,9 +9,9 @@ import (
 	"html/template"
 	"strings"
 
-	"gatus/v5/internal/storage"
-	static "gatus/v5/web"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	static "github.com/jniltinho/go-uptime/v7/web"
 )
 
 const (

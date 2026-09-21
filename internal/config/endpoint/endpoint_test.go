@@ -13,14 +13,14 @@ import (
 
 	ping "github.com/prometheus-community/pro-bing"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint/dns"
-	"gatus/v5/internal/config/endpoint/ssh"
-	"gatus/v5/internal/config/endpoint/ui"
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/config/maintenance"
-	"gatus/v5/internal/test"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ssh"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/test"
 
 	"golang.org/x/net/icmp"
 )

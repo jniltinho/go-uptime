@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/security"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/security"
 )
 
 // Fork: login of a status page. A page with auth answers 401 on every route of the page without the credential of that

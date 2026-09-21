@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 func TestStore_PushKeys(t *testing.T) {

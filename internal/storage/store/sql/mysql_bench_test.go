@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // BenchmarkMySQLInsertEndpointResult compares InsertEndpointResult with the arguments interpolated by the driver (the

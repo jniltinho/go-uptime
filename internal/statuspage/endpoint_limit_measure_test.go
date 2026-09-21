@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
 )
 
 // TestMeasureEndpointLimit is the reproducible measurement behind the ceiling of maximum-endpoints-per-page and the

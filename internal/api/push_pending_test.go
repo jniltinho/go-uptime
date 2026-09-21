@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 
 	"github.com/labstack/echo/v5"
 )

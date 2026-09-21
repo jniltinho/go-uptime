@@ -3,7 +3,7 @@ package memory
 import (
 	"time"
 
-	"gatus/v5/internal/storage/store/common"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // CreateLoginSession persists a new login session. With the memory storage, sessions are lost when Gatus restarts.

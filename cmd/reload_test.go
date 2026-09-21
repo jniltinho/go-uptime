@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
 )
 
 const validReloadTestConfig = `

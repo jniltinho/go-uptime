@@ -28,7 +28,7 @@ const (
 )
 
 var (
-	// Version is injected at build time with -ldflags "-X gatus/v5/cmd.Version=x.y.z"
+	// Version is injected at build time with -ldflags "-X github.com/jniltinho/go-uptime/v7/cmd.Version=x.y.z"
 	Version = "dev"
 
 	// GitCommit is injected at build time

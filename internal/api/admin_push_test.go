@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/managedendpoint"
-	"gatus/v5/internal/pushkey"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 func TestAdminAPI_PushEndpoints(t *testing.T) {

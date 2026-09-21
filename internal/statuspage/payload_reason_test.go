@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	pageconfig "gatus/v5/internal/config/statuspage"
-	"gatus/v5/internal/storage/store/common"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 )
 
 // Fork: the reason of a failed check on a page that shows messages

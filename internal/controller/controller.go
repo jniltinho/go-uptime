@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"gatus/v5/internal/api"
-	"gatus/v5/internal/config"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/api"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
 )
 
 // shutdownTimeout is how long Shutdown waits for the open connections, e.g. an event stream blocked by a slow client.

@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"gatus/v5/internal/config/web"
 	"github.com/TwiN/deepmerge"
+	"github.com/jniltinho/go-uptime/v7/internal/config/web"
 	"gopkg.in/yaml.v3"
 )
 

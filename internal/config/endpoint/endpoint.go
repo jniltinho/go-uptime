@@ -21,14 +21,14 @@ import (
 	"strings"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/client"
-	"gatus/v5/internal/config/endpoint/dns"
-	sshconfig "gatus/v5/internal/config/endpoint/ssh"
-	"gatus/v5/internal/config/endpoint/ui"
-	"gatus/v5/internal/config/gontext"
-	"gatus/v5/internal/config/key"
-	"gatus/v5/internal/config/maintenance"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/client"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/dns"
+	sshconfig "github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ssh"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint/ui"
+	"github.com/jniltinho/go-uptime/v7/internal/config/gontext"
+	"github.com/jniltinho/go-uptime/v7/internal/config/key"
+	"github.com/jniltinho/go-uptime/v7/internal/config/maintenance"
 	"golang.org/x/crypto/ssh"
 )
 

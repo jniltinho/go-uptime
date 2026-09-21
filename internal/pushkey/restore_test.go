@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	pushconfig "gatus/v5/internal/config/push"
-	"gatus/v5/internal/lifecycle"
+	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
+	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
 )
 
 func noEndpointTokens(fn func(isEndpointTokenHash func([sha256.Size]byte) bool) error) error {

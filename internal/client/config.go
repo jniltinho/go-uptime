@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"time"
 
-	"gatus/v5/internal/config/tunneling/sshtunnel"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config/tunneling/sshtunnel"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 	"google.golang.org/api/idtoken"

@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
 )
 
 func TestProcessUptimeAfterResult(t *testing.T) {

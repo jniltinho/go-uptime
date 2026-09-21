@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"gatus/v5/internal/alerting/alert"
-	"gatus/v5/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // generateDeduplicationKey generates a unique deduplication_key for incident.io

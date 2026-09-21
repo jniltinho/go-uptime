@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
-	"gatus/v5/internal/config/suite"
-	"gatus/v5/internal/storage"
-	"gatus/v5/internal/storage/store"
-	"gatus/v5/internal/watchdog"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
+	"github.com/jniltinho/go-uptime/v7/internal/config/suite"
+	"github.com/jniltinho/go-uptime/v7/internal/storage"
+	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
+	"github.com/jniltinho/go-uptime/v7/internal/watchdog"
 )
 
 var (

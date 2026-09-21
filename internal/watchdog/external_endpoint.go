@@ -5,9 +5,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"gatus/v5/internal/config"
-	"gatus/v5/internal/config/endpoint"
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/config"
+	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 )
 
 // monitorExternalEndpointHeartbeat records a failure for every full heartbeat interval without an accepted push, until
