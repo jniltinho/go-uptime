@@ -156,6 +156,9 @@ func (a *API) createRouter(cfg *config.Config) *echo.Echo {
 		httpx.GetAndHead(app, "/admin/status-pages/new", SinglePageApplication(cfg.UI))
 		httpx.GetAndHead(app, "/admin/status-pages/:slug/edit", SinglePageApplication(cfg.UI))
 		httpx.GetAndHead(app, "/admin/push-keys", SinglePageApplication(cfg.UI))
+		httpx.GetAndHead(app, "/admin/alert-providers", SinglePageApplication(cfg.UI))
+		httpx.GetAndHead(app, "/admin/alert-providers/new", SinglePageApplication(cfg.UI))
+		httpx.GetAndHead(app, "/admin/alert-providers/:type/edit", SinglePageApplication(cfg.UI))
 		httpx.GetAndHead(app, "/admin/backup", SinglePageApplication(cfg.UI))
 	}
 	// Health endpoint

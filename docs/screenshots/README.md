@@ -2,7 +2,7 @@
 # Screenshots
 
 The screens of [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime), captured at 1280×900 by
-[capture.sh](capture.sh), which starts a local instance, registers endpoints, a status page and push keys through the
+[capture.sh](capture.sh), which starts a local instance, registers endpoints, a status page, push keys and notifications through the
 administration and lets the history fill before taking the pictures: run it again whenever a screen changes. Dark mode
 is the default; the public pages are shown in light mode, which every visitor can switch with the button in the header.
 The logo in the header is optional (`ui.logo`).
@@ -64,6 +64,16 @@ Global keys for push monitoring, created and revoked through the web, next to th
 file.
 
 ![Push keys](admin-push-keys.png)
+
+## Notifications
+
+The alerting providers configured through the web, next to the ones of the configuration file, which are read-only.
+**Add notification** picks one of the 41 types by category; the form has the fields of the type, the default alert its
+alerts inherit, and **Send test**, which by default also sends the resolution so that no incident is left open.
+
+![Notifications](admin-notifications.png)
+
+![Form of a notification](admin-notification-form.png)
 
 ## Backup and restore
 

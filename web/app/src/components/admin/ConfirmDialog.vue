@@ -11,6 +11,8 @@
     @close="$emit('cancel')"
   >
     <p :id="messageId" class="whitespace-pre-line text-sm text-muted-foreground dark:text-gray-400">{{ message }}</p>
+    <!-- Fork: content after the message, e.g. the list of what a removal affects, with links -->
+    <slot />
     <template #footer>
       <Button ref="cancelButton" variant="outline" data-testid="confirm-cancel" @click="$emit('cancel')">Cancel</Button>
       <Button variant="destructive" data-testid="confirm-accept" @click="$emit('confirm')">{{ confirmLabel }}</Button>

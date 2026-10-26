@@ -148,6 +148,10 @@ func (s *Store) createSchema() error {
 	if err = s.createEndpointResultMessagesSchema(); err != nil {
 		return err
 	}
+	// Alerting providers managed through the administration API (see managed_alert_providers.go)
+	if err = s.createManagedAlertProvidersSchema(); err != nil {
+		return err
+	}
 	// Global push keys created through the administration API (see push_keys.go)
 	if err = s.createPushKeysSchema(); err != nil {
 		return err

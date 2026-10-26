@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
 	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
@@ -79,9 +80,11 @@ func newAdminTestEnvironment(t *testing.T) *adminTestEnvironment {
 		store.Get().Close()
 		// Other tests of the package use the default memory store
 		_ = store.Initialize(nil)
+		alertprovider.Load(&config.Config{})
 		_, _ = managedendpoint.Load(&config.Config{})
 		pushkey.Load(&config.Config{})
 	})
+	alertprovider.Load(cfg)
 	if _, err := managedendpoint.Load(cfg); err != nil {
 		t.Fatalf("failed to load managed endpoints: %v", err)
 	}

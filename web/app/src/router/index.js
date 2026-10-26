@@ -9,6 +9,8 @@ import AdminStatusPages from '@/views/admin/AdminStatusPages';
 import AdminStatusPageForm from '@/views/admin/AdminStatusPageForm';
 import AdminPushKeys from '@/views/admin/AdminPushKeys';
 import AdminBackup from '@/views/admin/AdminBackup';
+import AdminAlertProviders from '@/views/admin/AdminAlertProviders';
+import AdminAlertProviderForm from '@/views/admin/AdminAlertProviderForm';
 import StatusPage from '@/views/public/StatusPage';
 import StatusPageEndpoint from '@/views/public/StatusPageEndpoint';
 import LoginPage from '@/views/LoginPage';
@@ -83,6 +85,27 @@ const routes = [
         name: 'AdminPushKeys',
         component: AdminPushKeys,
         meta: { admin: true, adminList: true }
+    },
+    // Alerting providers managed through the web (fork): the list, and the form of a type, new or configured
+    {
+        path: '/admin/alert-providers',
+        name: 'AdminAlertProviders',
+        component: AdminAlertProviders,
+        meta: { admin: true, adminList: true }
+    },
+    {
+        path: '/admin/alert-providers/new',
+        name: 'AdminAlertProviderNew',
+        component: AdminAlertProviderForm,
+        props: (route) => ({ providerType: String(route.query.type || ''), isNew: true }),
+        meta: { admin: true }
+    },
+    {
+        path: '/admin/alert-providers/:providerType/edit',
+        name: 'AdminAlertProviderEdit',
+        component: AdminAlertProviderForm,
+        props: true,
+        meta: { admin: true }
     },
     // Backup and restore of the administration (fork): a form page, it does not fill the window like the lists
     {

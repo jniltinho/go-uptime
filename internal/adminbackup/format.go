@@ -12,6 +12,8 @@ import (
 	"io"
 	"runtime/debug"
 	"time"
+
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 )
 
 const (
@@ -83,6 +85,23 @@ type File struct {
 	// are not part of a backup. The list is required, may be empty but not null, holds at most MaximumPushKeys (500)
 	// items and no two items with the same name or the same token hash.
 	PushKeys []PushKey `json:"pushKeys"`
+
+	// AlertProviders are the alerting providers managed through the administration, shadowed ones included, ordered by
+	// type (fork); those of the configuration file are not part of a backup. The list is optional when reading, so that
+	// a backup written before it stays valid, and always written; it holds at most one item per alert type.
+	AlertProviders []AlertProvider `json:"alertProviders"`
+}
+
+// AlertProvider is an alerting provider managed through the administration, with its complete stored definition. It is
+// an element of File.AlertProviders.
+type AlertProvider struct {
+	// Type is the alert type of the provider, e.g. "telegram". It is required and unique in the file.
+	Type string `json:"type"`
+
+	// Definition is the definition of the provider as stored, a YAML document without the type key and without default
+	// values. Its secrets (tokens, webhooks, passwords) are in clear, not masked: a restore skips a definition that
+	// carries the "********" mask of the administration API.
+	Definition string `json:"definition"`
 }
 
 // Endpoint is a managed endpoint of a backup, with its complete stored definition. It is an element of File.Endpoints.
@@ -174,6 +193,13 @@ func Decode(data []byte) (*File, error) {
 	if file.Endpoints == nil || file.StatusPages == nil || file.PushKeys == nil {
 		return nil, invalidFile("the lists endpoints, statusPages and pushKeys are required")
 	}
+	// Fork: a backup written before the alerting providers has no list of them
+	if file.AlertProviders == nil {
+		file.AlertProviders = []AlertProvider{}
+	}
+	if len(file.AlertProviders) > len(alertprovider.Types()) {
+		return nil, invalidFile("the file has more alerting providers than alert types")
+	}
 	if len(file.Endpoints) > MaximumEndpoints || len(file.StatusPages) > MaximumStatusPages || len(file.PushKeys) > MaximumPushKeys {
 		return nil, invalidFile("the file exceeds the limits of %d endpoints, %d status pages and %d push keys", MaximumEndpoints, MaximumStatusPages, MaximumPushKeys)
 	}
@@ -202,6 +228,11 @@ func checkDuplicates(file *File) error {
 	}
 	for _, item := range file.StatusPages {
 		if err := check("status page", item.Slug); err != nil {
+			return err
+		}
+	}
+	for _, item := range file.AlertProviders {
+		if err := check("alerting provider", item.Type); err != nil {
 			return err
 		}
 	}

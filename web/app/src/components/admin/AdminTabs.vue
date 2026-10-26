@@ -22,7 +22,7 @@
 
 <script setup>
 defineProps({
-  // endpoints, status-pages, push-keys or backup (fork)
+  // endpoints, status-pages, push-keys, notifications or backup (fork)
   active: { type: String, required: true },
   // Without the bottom margin, for the layout of the lists of the administration
   compact: { type: Boolean, default: false }
@@ -32,6 +32,8 @@ const tabs = [
   { id: 'endpoints', label: 'Endpoints', route: 'AdminEndpoints' },
   { id: 'status-pages', label: 'Status pages', route: 'AdminStatusPages' },
   { id: 'push-keys', label: 'Push keys', route: 'AdminPushKeys' },
+  // Fork: alerting providers managed through the web
+  { id: 'notifications', label: 'Notifications', route: 'AdminAlertProviders' },
   // Fork: backup and restore of the items managed through the web
   { id: 'backup', label: 'Backup', route: 'AdminBackup' }
 ]

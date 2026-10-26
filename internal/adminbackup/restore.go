@@ -9,8 +9,10 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
 	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
@@ -20,9 +22,10 @@ import (
 
 const (
 	// Types of the items of a restore, in the order in which they are planned and applied
-	TypePushKey    = "pushKey"
-	TypeEndpoint   = "endpoint"
-	TypeStatusPage = "statusPage"
+	TypePushKey       = "pushKey"
+	TypeAlertProvider = "alertProvider"
+	TypeEndpoint      = "endpoint"
+	TypeStatusPage    = "statusPage"
 
 	// Actions of the items of a plan
 	ActionCreate    = "create"
@@ -71,8 +74,8 @@ type Plan struct {
 	// nothing is applied and the route answers 409.
 	Fingerprint string `json:"fingerprint"`
 
-	// Items are the items of the backup in the order in which they are applied: push keys by name, endpoints by key,
-	// then status pages by slug. It is an empty list, never null, for an empty backup.
+	// Items are the items of the backup in the order in which they are applied: push keys by name, alerting providers by
+	// type, endpoints by key, then status pages by slug. It is an empty list, never null, for an empty backup.
 	Items []*Item `json:"items"`
 }
 
@@ -106,11 +109,11 @@ type Notices struct {
 // Item is an item of a plan: what the restore would do with one push key, endpoint or status page of the backup. It is
 // an element of Plan.Items and is output-only.
 type Item struct {
-	// Type is the kind of item: "pushKey", "endpoint" or "statusPage".
+	// Type is the kind of item: "pushKey", "alertProvider", "endpoint" or "statusPage".
 	Type string `json:"type"`
 
-	// ID identifies the item within its type: the name of a push key, the key of an endpoint in the group_name form or
-	// the slug of a status page.
+	// ID identifies the item within its type: the name of a push key, the alert type of an alerting provider, the key of
+	// an endpoint in the group_name form or the slug of a status page.
 	ID string `json:"id"`
 
 	// Action is what the restore would do: "create" when the item does not exist, "update" when it exists with another
@@ -172,11 +175,11 @@ type ResultSummary struct {
 
 // ItemResult is the result of an item of an applied restore. It is an element of Result.Results and is output-only.
 type ItemResult struct {
-	// Type is the kind of item: "pushKey", "endpoint" or "statusPage".
+	// Type is the kind of item: "pushKey", "alertProvider", "endpoint" or "statusPage".
 	Type string `json:"type"`
 
-	// ID identifies the item within its type: the name of a push key, the key of an endpoint in the group_name form or
-	// the slug of a status page.
+	// ID identifies the item within its type: the name of a push key, the alert type of an alerting provider, the key of
+	// an endpoint in the group_name form or the slug of a status page.
 	ID string `json:"id"`
 
 	// Result is what happened to the item: "created", "updated", "unchanged", "skipped" or "failed".
@@ -215,11 +218,15 @@ type fingerprintInput struct {
 
 	// Items are the items of the plan, in the order of Plan.Items.
 	Items []fingerprintEntry `json:"items"`
+
+	// AlertProviders are the type, version and definition hash of every managed alerting provider, sorted: the
+	// endpoints of the plan are validated against them even when they are not in the backup.
+	AlertProviders []string `json:"alertProviders"`
 }
 
 // fingerprintEntry is what an item of a plan contributes to the fingerprint
 type fingerprintEntry struct {
-	// Type is the kind of item: "pushKey", "endpoint" or "statusPage".
+	// Type is the kind of item: "pushKey", "alertProvider", "endpoint" or "statusPage".
 	Type string `json:"type"`
 
 	// ID is the name of the push key, the key of the endpoint or the slug of the status page.
@@ -249,7 +256,7 @@ func (item *Item) skip(reason string) *Item {
 
 // Plan returns what restoring the backup would do, without effects. plaintext is the backup file as decoded, whose
 // hash is part of the fingerprint. The plan simulates the items in the order in which they are applied: push keys,
-// endpoints and status pages.
+// alerting providers, endpoints and status pages.
 func (r *Restorer) Plan(plaintext []byte, options Options) (*Plan, error) {
 	file, err := Decode(plaintext)
 	if err != nil {
@@ -275,6 +282,15 @@ func (r *Restorer) Plan(plaintext []byte, options Options) (*Plan, error) {
 	for _, pushKey := range file.PushKeys {
 		plan.Items = append(plan.Items, planPushKey(pushKey, endpointTokenHashes, ctx))
 	}
+	// Fork: the alerting providers come before the endpoints, which are validated against what the restore leaves
+	sort.Slice(file.AlertProviders, func(i, j int) bool { return file.AlertProviders[i].Type < file.AlertProviders[j].Type })
+	plannedProviders := make([]*alertprovider.RestoreItem, 0, len(file.AlertProviders))
+	for _, backupProvider := range file.AlertProviders {
+		planned := alertprovider.PlanRestore(backupProvider.Type, backupProvider.Definition, options.Overwrite)
+		plannedProviders = append(plannedProviders, planned)
+		plan.Items = append(plan.Items, planAlertProvider(backupProvider, planned))
+	}
+	ctx.Alerting = alertprovider.RestoredEffective(plannedProviders)
 	sort.Slice(file.Endpoints, func(i, j int) bool { return file.Endpoints[i].Key < file.Endpoints[j].Key })
 	var plannedRefs []statuspage.EndpointRef
 	for _, backupEndpoint := range file.Endpoints {
@@ -293,7 +309,7 @@ func (r *Restorer) Plan(plaintext []byte, options Options) (*Plan, error) {
 	for _, backupStatusPage := range file.StatusPages {
 		plan.Items = append(plan.Items, r.planStatusPage(backupStatusPage, options, refs))
 	}
-	fingerprint := fingerprintInput{PlaintextSHA256: sha256Hex(plaintext), Overwrite: options.Overwrite, DisableEndpoints: options.DisableEndpoints, Generation: statuspage.Generation(), Items: []fingerprintEntry{}}
+	fingerprint := fingerprintInput{PlaintextSHA256: sha256Hex(plaintext), Overwrite: options.Overwrite, DisableEndpoints: options.DisableEndpoints, Generation: statuspage.Generation(), Items: []fingerprintEntry{}, AlertProviders: alertprovider.ManagedFingerprint()}
 	for _, item := range plan.Items {
 		switch item.Action {
 		case ActionCreate:
@@ -338,6 +354,16 @@ func planPushKey(backupKey PushKey, endpointTokenHashes map[[sha256.Size]byte]bo
 	}
 	ctx.PlannedKeyHashes[hash] = true
 	item.Action = ActionCreate
+	return item
+}
+
+// planAlertProvider turns what restoring a provider would do into an item of the plan. An update warns about the managed
+// endpoints it restarts, which may be outside the backup.
+func planAlertProvider(backupProvider AlertProvider, planned *alertprovider.RestoreItem) *Item {
+	item := &Item{Type: TypeAlertProvider, ID: backupProvider.Type, Action: planned.Action, Reason: planned.Reason, Warnings: []string{}, definition: planned.Definition, version: planned.Version, currentSHA256: planned.CurrentSHA256}
+	if planned.Action == ActionUpdate && len(planned.Users) > 0 {
+		item.Warnings = append(item.Warnings, fmt.Sprintf("restarts the managed endpoints that use it: %s", strings.Join(planned.Users, ", ")))
+	}
 	return item
 }
 
@@ -465,7 +491,7 @@ func (r *Restorer) Apply(plaintext []byte, options Options, fingerprint, author 
 			case isCycleInProgress(err):
 				reloading = true
 				itemResult.Result, itemResult.Message = ResultSkipped, reasonReloadProgress
-			case errors.Is(err, common.ErrManagedEndpointVersionMismatch) || errors.Is(err, common.ErrManagedStatusPageVersionMismatch):
+			case errors.Is(err, common.ErrManagedEndpointVersionMismatch) || errors.Is(err, common.ErrManagedStatusPageVersionMismatch) || errors.Is(err, alertprovider.ErrVersionMismatch):
 				itemResult.Result, itemResult.Message = ResultFailed, reasonChanged
 			default:
 				itemResult.Result, itemResult.Message = ResultFailed, err.Error()
@@ -480,6 +506,18 @@ func (r *Restorer) Apply(plaintext []byte, options Options, fingerprint, author 
 
 func (r *Restorer) applyItem(item *Item, author string, itemResult *ItemResult) error {
 	switch item.Type {
+	case TypeAlertProvider:
+		var err error
+		if item.Action == ActionCreate {
+			_, err = alertprovider.Create(item.definition, author)
+			itemResult.Result = ResultCreated
+		} else {
+			_, err = alertprovider.Update(item.ID, item.definition, item.version, author)
+			itemResult.Result = ResultUpdated
+		}
+		if err != nil {
+			return err
+		}
 	case TypePushKey:
 		if _, err := pushkey.Restore(item.ID, item.tokenHash, item.hint, author, r.Endpoints.EndpointTokenGuard()); err != nil {
 			return err
@@ -518,7 +556,7 @@ func (r *Restorer) applyItem(item *Item, author string, itemResult *ItemResult) 
 }
 
 func isCycleInProgress(err error) bool {
-	return errors.Is(err, managedendpoint.ErrCycleInProgress) || errors.Is(err, statuspage.ErrCycleInProgress) || errors.Is(err, pushkey.ErrCycleInProgress)
+	return errors.Is(err, managedendpoint.ErrCycleInProgress) || errors.Is(err, statuspage.ErrCycleInProgress) || errors.Is(err, pushkey.ErrCycleInProgress) || errors.Is(err, alertprovider.ErrCycleInProgress)
 }
 
 func (result *Result) count(itemResult string) {

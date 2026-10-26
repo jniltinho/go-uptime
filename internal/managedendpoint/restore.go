@@ -9,6 +9,7 @@ import (
 	"sync/atomic"
 
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
 	pushconfig "github.com/jniltinho/go-uptime/v7/internal/config/push"
 	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
 	"github.com/jniltinho/go-uptime/v7/internal/metrics"
@@ -47,6 +48,10 @@ type RestoreContext struct {
 
 	// PlannedKeyHashes are the hashes of the tokens of the push keys planned to be created
 	PlannedKeyHashes map[[sha256.Size]byte]bool
+
+	// Alerting is the alerting configuration the restore will leave: the current providers with those it creates or
+	// updates (fork). When nil, the current effective configuration is used.
+	Alerting *alerting.Config
 }
 
 // AlertCount returns the number of alerts of the endpoint
@@ -179,6 +184,7 @@ func (s *Service) ValidateRestore(raw []byte, ctx *RestoreContext) (*Prepared, e
 		IsPushKeyToken: func(token string) bool {
 			return isPushKeyToken(token) || ctx.PlannedKeyHashes[pushconfig.HashToken(token)]
 		},
+		Alerting: ctx.Alerting,
 	})
 }
 

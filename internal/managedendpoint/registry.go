@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/storage/store"
@@ -66,6 +67,9 @@ var (
 	// statesMutex serializes the changes of the snapshot
 	statesMutex sync.Mutex
 
+	// loadedConfig is the configuration of the last Load, which the managed endpoints are validated against (fork)
+	loadedConfig atomic.Pointer[config.Config]
+
 	// configDefinitions holds the effective YAML definitions of the endpoints of the configuration file, generated
 	// before they started being monitored (see State.Effective)
 	configDefinitions atomic.Pointer[map[string][]byte]
@@ -79,6 +83,7 @@ var (
 func Load(cfg *config.Config) ([]string, error) {
 	statesMutex.Lock()
 	defer statesMutex.Unlock()
+	loadedConfig.Store(cfg)
 	definitions := make(map[string][]byte, len(cfg.Endpoints))
 	for _, ep := range cfg.Endpoints {
 		if effective, err := Effective(ep); err == nil {
@@ -116,13 +121,25 @@ func Load(cfg *config.Config) ([]string, error) {
 }
 
 func newState(stored *common.ManagedEndpoint, cfg *config.Config, managedKeys, allowedExtraLabels []string) *State {
+	state := prepareState(stored, cfg, managedKeys, allowedExtraLabels, nil)
+	if state.Err != nil {
+		logr.Errorf("[managedendpoint.Load] Managed endpoint with key=%s is not monitored because it is invalid: %s", stored.Key, state.Err.Error())
+	} else if !state.InConflict() {
+		restoreTriggeredAlerts(state.Parsed())
+	}
+	return state
+}
+
+// prepareState validates a stored managed endpoint against cfg, and its alerts against alertingConfig (see
+// Context.Alerting), without restoring its triggered alerts
+func prepareState(stored *common.ManagedEndpoint, cfg *config.Config, managedKeys, allowedExtraLabels []string, alertingConfig *alerting.Config) *State {
 	state := &State{Stored: stored}
 	if origin, used := ConfigKeyOrigin(cfg, stored.Key); used {
 		state.ConflictOrigin = origin
 		logr.Warnf("[managedendpoint.Load] Managed endpoint with key=%s is not monitored because its key is used by %s", stored.Key, origin)
 		return state
 	}
-	prepared, err := Prepare([]byte(stored.Definition), Context{Config: cfg, ManagedKeys: managedKeys, AllowedExtraLabels: allowedExtraLabels})
+	prepared, err := Prepare([]byte(stored.Definition), Context{Config: cfg, ManagedKeys: managedKeys, AllowedExtraLabels: allowedExtraLabels, Alerting: alertingConfig})
 	if err == nil && prepared.Key() != stored.Key {
 		err = fmt.Errorf("%w: the key of the definition (%s) does not match the stored key", ErrInvalidDefinition, prepared.Key())
 	}
@@ -132,12 +149,9 @@ func newState(stored *common.ManagedEndpoint, cfg *config.Config, managedKeys, a
 	}
 	if err != nil {
 		state.Err = err
-		logr.Errorf("[managedendpoint.Load] Managed endpoint with key=%s is not monitored because it is invalid: %s", stored.Key, err.Error())
 		return state
 	}
-	state = newStateFromPrepared(stored, prepared, effective)
-	restoreTriggeredAlerts(&prepared.Parsed)
-	return state
+	return newStateFromPrepared(stored, prepared, effective)
 }
 
 // StartMonitoring starts monitoring every valid and enabled managed endpoint. It must be called after watchdog.Monitor,

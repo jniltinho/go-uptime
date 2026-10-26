@@ -1,0 +1,1035 @@
+{
+  "aws-ses": {
+    "category": "Email",
+    "deprecated": false,
+    "fields": {
+      "access-key-id": {
+        "default": "",
+        "help": "AWS access key ID; leave empty to use the default AWS credential chain.",
+        "required": false
+      },
+      "from": {
+        "default": "",
+        "help": "Sender email address, which must be verified in SES.",
+        "required": true
+      },
+      "region": {
+        "default": "",
+        "help": "AWS region of the SES service, e.g. us-east-1.",
+        "required": true
+      },
+      "secret-access-key": {
+        "default": "",
+        "help": "AWS secret access key; leave empty to use the default AWS credential chain.",
+        "required": false
+      },
+      "to": {
+        "default": "",
+        "help": "Comma-separated recipients, e.g. ops@example.com,dev@example.com.",
+        "required": true
+      }
+    },
+    "name": "AWS SES",
+    "untested": false
+  },
+  "clickup": {
+    "category": "Issues",
+    "deprecated": false,
+    "fields": {
+      "api-url": {
+        "default": "https://api.clickup.com/api/v2",
+        "help": "Custom ClickUp API URL.",
+        "required": false
+      },
+      "assignees": {
+        "default": "",
+        "help": "List of ClickUp user IDs assigned to the task.",
+        "required": false
+      },
+      "content": {
+        "default": "Triggered: [ENDPOINT_GROUP] - [ENDPOINT_NAME] - [ALERT_DESCRIPTION] - [RESULT_ERRORS]",
+        "help": "Template of the task content.",
+        "required": false
+      },
+      "list-id": {
+        "default": "",
+        "help": "ID of the ClickUp list where tasks are created.",
+        "required": true
+      },
+      "name": {
+        "default": "Health Check: [ENDPOINT_GROUP]:[ENDPOINT_NAME]",
+        "help": "Template of the task name.",
+        "required": false
+      },
+      "notify-all": {
+        "default": "true",
+        "help": "Notify all assignees when the task is created.",
+        "required": false
+      },
+      "priority": {
+        "default": "normal",
+        "help": "Task priority: urgent, high, normal, low or none.",
+        "required": false
+      },
+      "status": {
+        "default": "",
+        "help": "Initial status of the task.",
+        "required": false
+      },
+      "token": {
+        "default": "",
+        "help": "ClickUp API token.",
+        "required": true
+      }
+    },
+    "name": "ClickUp",
+    "untested": false
+  },
+  "custom": {
+    "category": "Automation",
+    "deprecated": false,
+    "fields": {
+      "body": {
+        "default": "",
+        "help": "Body of the request; supports placeholders such as [ENDPOINT_NAME] and [ALERT_TRIGGERED_OR_RESOLVED].",
+        "required": false
+      },
+      "headers": {
+        "default": "",
+        "help": "Headers of the request, as a map of name to value.",
+        "required": false
+      },
+      "method": {
+        "default": "GET",
+        "help": "HTTP method of the request.",
+        "required": false
+      },
+      "placeholders": {
+        "default": "",
+        "help": "Custom values for placeholders, e.g. a different value of [ALERT_TRIGGERED_OR_RESOLVED] per state.",
+        "required": false
+      },
+      "url": {
+        "default": "",
+        "help": "URL of the request; supports placeholders such as [ENDPOINT_NAME] and [ALERT_DESCRIPTION].",
+        "required": true
+      }
+    },
+    "name": "Custom webhook",
+    "untested": false
+  },
+  "datadog": {
+    "category": "Observability",
+    "deprecated": false,
+    "fields": {
+      "api-key": {
+        "default": "",
+        "help": "Datadog API key.",
+        "required": true
+      },
+      "site": {
+        "default": "datadoghq.com",
+        "help": "Datadog site, e.g. datadoghq.com or datadoghq.eu.",
+        "required": false
+      },
+      "tags": {
+        "default": "",
+        "help": "Additional tags added to the event.",
+        "required": false
+      }
+    },
+    "name": "Datadog",
+    "untested": true
+  },
+  "discord": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "message-content": {
+        "default": "",
+        "help": "Text sent before the embed, useful to mention users or roles, e.g. <@123>.",
+        "required": false
+      },
+      "title": {
+        "default": ":helmet_with_white_cross: Go Uptime",
+        "help": "Title of the notification.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Discord webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Discord",
+    "untested": false
+  },
+  "email": {
+    "category": "Email",
+    "deprecated": false,
+    "fields": {
+      "from": {
+        "default": "",
+        "help": "Sender email address.",
+        "required": true
+      },
+      "host": {
+        "default": "",
+        "help": "SMTP server host, e.g. smtp.gmail.com.",
+        "required": true
+      },
+      "password": {
+        "default": "",
+        "help": "SMTP password; when empty, no authentication is attempted.",
+        "required": false
+      },
+      "port": {
+        "default": "",
+        "help": "SMTP server port, e.g. 587.",
+        "required": true
+      },
+      "to": {
+        "default": "",
+        "help": "Comma-separated recipients, e.g. ops@example.com.",
+        "required": true
+      },
+      "username": {
+        "default": "",
+        "help": "SMTP username; when empty, from is used.",
+        "required": false
+      }
+    },
+    "name": "Email (SMTP)",
+    "untested": false
+  },
+  "gitea": {
+    "category": "Issues",
+    "deprecated": false,
+    "fields": {
+      "assignees": {
+        "default": "",
+        "help": "Users assigned to the created issue.",
+        "required": false
+      },
+      "repository-url": {
+        "default": "",
+        "help": "URL of the repository, e.g. https://gitea.com/TwiN/example.",
+        "required": true
+      },
+      "token": {
+        "default": "",
+        "help": "Personal access token with at least read-write on issues and read-only on metadata.",
+        "required": true
+      }
+    },
+    "name": "Gitea",
+    "untested": false
+  },
+  "github": {
+    "category": "Issues",
+    "deprecated": false,
+    "fields": {
+      "repository-url": {
+        "default": "",
+        "help": "URL of the repository, e.g. https://github.com/TwiN/example.",
+        "required": true
+      },
+      "token": {
+        "default": "",
+        "help": "Personal access token with at least read-write on issues and read-only on metadata.",
+        "required": true
+      }
+    },
+    "name": "GitHub",
+    "untested": false
+  },
+  "gitlab": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "authorization-key": {
+        "default": "",
+        "help": "Authorization key of the GitLab alert integration.",
+        "required": true
+      },
+      "environment-name": {
+        "default": "",
+        "help": "Name of the GitLab environment; required for the alert to appear on the dashboard.",
+        "required": false
+      },
+      "monitoring-tool": {
+        "default": "gatus",
+        "help": "Name of the monitoring tool sent to GitLab.",
+        "required": false
+      },
+      "service": {
+        "default": "",
+        "help": "Overrides the displayed name of the endpoint.",
+        "required": false
+      },
+      "severity": {
+        "default": "",
+        "help": "Alert severity: critical, high, medium, low, info or unknown; critical when empty.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "GitLab alerts webhook URL, e.g. https://gitlab.com/user/project/alerts/notify/gatus/xxxx.json.",
+        "required": true
+      }
+    },
+    "name": "GitLab",
+    "untested": false
+  },
+  "googlechat": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "webhook-url": {
+        "default": "",
+        "help": "Google Chat webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Google Chat",
+    "untested": false
+  },
+  "gotify": {
+    "category": "Push",
+    "deprecated": false,
+    "fields": {
+      "priority": {
+        "default": "5",
+        "help": "Priority of the message.",
+        "required": false
+      },
+      "server-url": {
+        "default": "",
+        "help": "URL of the Gotify server.",
+        "required": true
+      },
+      "title": {
+        "default": "Go Uptime: <endpoint>",
+        "help": "Title of the notification.",
+        "required": false
+      },
+      "token": {
+        "default": "",
+        "help": "Application token used to authenticate.",
+        "required": true
+      }
+    },
+    "name": "Gotify",
+    "untested": false
+  },
+  "homeassistant": {
+    "category": "Automation",
+    "deprecated": false,
+    "fields": {
+      "event-type": {
+        "default": "gatus_alert",
+        "help": "Type of the event fired in Home Assistant.",
+        "required": false
+      },
+      "token": {
+        "default": "",
+        "help": "Home Assistant long-lived access token.",
+        "required": true
+      },
+      "url": {
+        "default": "",
+        "help": "URL of the Home Assistant instance, e.g. http://homeassistant.local:8123.",
+        "required": true
+      }
+    },
+    "name": "Home Assistant",
+    "untested": false
+  },
+  "ifttt": {
+    "category": "Automation",
+    "deprecated": false,
+    "fields": {
+      "event-name": {
+        "default": "",
+        "help": "Name of the IFTTT event.",
+        "required": true
+      },
+      "webhook-key": {
+        "default": "",
+        "help": "IFTTT Webhooks key.",
+        "required": true
+      }
+    },
+    "name": "IFTTT",
+    "untested": true
+  },
+  "ilert": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "integration-key": {
+        "default": "",
+        "help": "Integration key of the ilert alert source.",
+        "required": true
+      }
+    },
+    "name": "ilert",
+    "untested": false
+  },
+  "incident-io": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "auth-token": {
+        "default": "",
+        "help": "Authentication token of the alert source.",
+        "required": true
+      },
+      "metadata": {
+        "default": "",
+        "help": "Key-value pairs added to the metadata of the alert event.",
+        "required": false
+      },
+      "source-url": {
+        "default": "",
+        "help": "Source URL included in the alert event.",
+        "required": false
+      },
+      "url": {
+        "default": "",
+        "help": "URL of the alert source that receives the alert events.",
+        "required": true
+      }
+    },
+    "name": "Incident.io",
+    "untested": false
+  },
+  "line": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "channel-access-token": {
+        "default": "",
+        "help": "Channel access token of the LINE Messaging API.",
+        "required": true
+      },
+      "user-ids": {
+        "default": "",
+        "help": "List of target IDs: users, rooms or groups.",
+        "required": true
+      }
+    },
+    "name": "LINE",
+    "untested": false
+  },
+  "matrix": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "access-token": {
+        "default": "",
+        "help": "Access token of the bot user.",
+        "required": true
+      },
+      "internal-room-id": {
+        "default": "",
+        "help": "Internal ID of the room, found in Room settings > Advanced.",
+        "required": true
+      },
+      "server-url": {
+        "default": "https://matrix-client.matrix.org",
+        "help": "URL of the Matrix homeserver.",
+        "required": false
+      }
+    },
+    "name": "Matrix",
+    "untested": false
+  },
+  "mattermost": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "channel": {
+        "default": "",
+        "help": "Overrides the name of the channel.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Mattermost incoming webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Mattermost",
+    "untested": false
+  },
+  "messagebird": {
+    "category": "SMS",
+    "deprecated": false,
+    "fields": {
+      "access-key": {
+        "default": "",
+        "help": "MessageBird access key.",
+        "required": true
+      },
+      "originator": {
+        "default": "",
+        "help": "Sender of the message.",
+        "required": true
+      },
+      "recipients": {
+        "default": "",
+        "help": "Comma-separated recipient phone numbers.",
+        "required": true
+      }
+    },
+    "name": "MessageBird",
+    "untested": false
+  },
+  "n8n": {
+    "category": "Automation",
+    "deprecated": false,
+    "fields": {
+      "title": {
+        "default": "Go Uptime",
+        "help": "Title of the alert sent to the webhook.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "n8n webhook URL.",
+        "required": true
+      }
+    },
+    "name": "n8n",
+    "untested": false
+  },
+  "newrelic": {
+    "category": "Observability",
+    "deprecated": false,
+    "fields": {
+      "account-id": {
+        "default": "",
+        "help": "New Relic account ID.",
+        "required": true
+      },
+      "insert-key": {
+        "default": "",
+        "help": "New Relic insert key used to send events.",
+        "required": true
+      },
+      "region": {
+        "default": "US",
+        "help": "New Relic region: US or EU.",
+        "required": false
+      }
+    },
+    "name": "New Relic",
+    "untested": true
+  },
+  "ntfy": {
+    "category": "Push",
+    "deprecated": false,
+    "fields": {
+      "click": {
+        "default": "",
+        "help": "Website opened when the notification is clicked.",
+        "required": false
+      },
+      "disable-cache": {
+        "default": "false",
+        "help": "Disable caching of messages on the server.",
+        "required": false
+      },
+      "disable-firebase": {
+        "default": "false",
+        "help": "Disable push delivery through Firebase.",
+        "required": false
+      },
+      "email": {
+        "default": "",
+        "help": "Email address for an additional email notification.",
+        "required": false
+      },
+      "priority": {
+        "default": "3",
+        "help": "Priority of the alert, from 1 to 5.",
+        "required": false
+      },
+      "token": {
+        "default": "",
+        "help": "Access token for restricted topics.",
+        "required": false
+      },
+      "topic": {
+        "default": "",
+        "help": "Topic the alert is published to.",
+        "required": true
+      },
+      "url": {
+        "default": "https://ntfy.sh",
+        "help": "URL of the ntfy server.",
+        "required": false
+      }
+    },
+    "name": "ntfy",
+    "untested": false
+  },
+  "opsgenie": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "alias-prefix": {
+        "default": "gatus-healthcheck-",
+        "help": "Prefix of the alias field of the alert.",
+        "required": false
+      },
+      "api-key": {
+        "default": "",
+        "help": "Opsgenie API key.",
+        "required": true
+      },
+      "entity-prefix": {
+        "default": "gatus-",
+        "help": "Prefix of the entity field of the alert.",
+        "required": false
+      },
+      "priority": {
+        "default": "P1",
+        "help": "Priority of the alert, from P1 to P5.",
+        "required": false
+      },
+      "source": {
+        "default": "gatus",
+        "help": "Source field of the alert.",
+        "required": false
+      },
+      "tags": {
+        "default": "",
+        "help": "Tags of the alert.",
+        "required": false
+      }
+    },
+    "name": "Opsgenie",
+    "untested": false
+  },
+  "pagerduty": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "integration-key": {
+        "default": "",
+        "help": "PagerDuty Events API v2 integration key (32 characters).",
+        "required": true
+      }
+    },
+    "name": "PagerDuty",
+    "untested": false
+  },
+  "plivo": {
+    "category": "SMS",
+    "deprecated": false,
+    "fields": {
+      "auth-id": {
+        "default": "",
+        "help": "Plivo Auth ID.",
+        "required": true
+      },
+      "auth-token": {
+        "default": "",
+        "help": "Plivo Auth Token.",
+        "required": true
+      },
+      "from": {
+        "default": "",
+        "help": "Phone number that sends the SMS.",
+        "required": true
+      },
+      "to": {
+        "default": "",
+        "help": "List of recipient phone numbers.",
+        "required": true
+      }
+    },
+    "name": "Plivo",
+    "untested": true
+  },
+  "pushover": {
+    "category": "Push",
+    "deprecated": false,
+    "fields": {
+      "application-token": {
+        "default": "",
+        "help": "Pushover application token (30 characters).",
+        "required": true
+      },
+      "device": {
+        "default": "",
+        "help": "Specific device to send to; all devices when empty.",
+        "required": false
+      },
+      "priority": {
+        "default": "0",
+        "help": "Priority of the messages, from -2 (lowest) to 2 (emergency).",
+        "required": false
+      },
+      "resolved-priority": {
+        "default": "0",
+        "help": "Priority of the resolution messages, from -2 to 2.",
+        "required": false
+      },
+      "sound": {
+        "default": "",
+        "help": "Sound of the messages, one of the Pushover sound names.",
+        "required": false
+      },
+      "title": {
+        "default": "Go Uptime: <endpoint>",
+        "help": "Fixed title of the messages.",
+        "required": false
+      },
+      "ttl": {
+        "default": "0",
+        "help": "Time to live of the message in seconds before it is deleted.",
+        "required": false
+      },
+      "user-key": {
+        "default": "",
+        "help": "Pushover user or group key (30 characters).",
+        "required": true
+      }
+    },
+    "name": "Pushover",
+    "untested": false
+  },
+  "rocketchat": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "channel": {
+        "default": "",
+        "help": "Overrides the channel.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Rocket.Chat incoming webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Rocket.Chat",
+    "untested": true
+  },
+  "sendgrid": {
+    "category": "Email",
+    "deprecated": false,
+    "fields": {
+      "api-key": {
+        "default": "",
+        "help": "SendGrid API key.",
+        "required": true
+      },
+      "from": {
+        "default": "",
+        "help": "Sender email address.",
+        "required": true
+      },
+      "to": {
+        "default": "",
+        "help": "Comma-separated recipients, e.g. ops@example.com.",
+        "required": true
+      }
+    },
+    "name": "SendGrid",
+    "untested": true
+  },
+  "signal": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "api-url": {
+        "default": "",
+        "help": "URL of the Signal API, e.g. a signal-cli-rest-api instance.",
+        "required": true
+      },
+      "number": {
+        "default": "",
+        "help": "Sender phone number.",
+        "required": true
+      },
+      "recipients": {
+        "default": "",
+        "help": "List of recipient phone numbers.",
+        "required": true
+      }
+    },
+    "name": "Signal",
+    "untested": true
+  },
+  "signl4": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "team-secret": {
+        "default": "",
+        "help": "SIGNL4 team secret, the last part of the webhook URL.",
+        "required": true
+      }
+    },
+    "name": "SIGNL4",
+    "untested": false
+  },
+  "slack": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "title": {
+        "default": ":helmet_with_white_cross: Go Uptime",
+        "help": "Title of the notification.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Slack incoming webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Slack",
+    "untested": false
+  },
+  "splunk": {
+    "category": "Observability",
+    "deprecated": false,
+    "fields": {
+      "hec-token": {
+        "default": "",
+        "help": "HEC token.",
+        "required": true
+      },
+      "hec-url": {
+        "default": "",
+        "help": "URL of the Splunk HTTP Event Collector (HEC).",
+        "required": true
+      },
+      "index": {
+        "default": "",
+        "help": "Splunk index of the event.",
+        "required": false
+      },
+      "source": {
+        "default": "gatus",
+        "help": "Source of the event.",
+        "required": false
+      },
+      "sourcetype": {
+        "default": "gatus:alert",
+        "help": "Source type of the event.",
+        "required": false
+      }
+    },
+    "name": "Splunk",
+    "untested": false
+  },
+  "squadcast": {
+    "category": "Incidents",
+    "deprecated": false,
+    "fields": {
+      "webhook-url": {
+        "default": "",
+        "help": "Squadcast webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Squadcast",
+    "untested": true
+  },
+  "teams": {
+    "category": "Chat",
+    "deprecated": true,
+    "fields": {
+      "title": {
+        "default": "&#x1F6A8; Go Uptime",
+        "help": "Title of the notification.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Microsoft Teams webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Microsoft Teams",
+    "untested": false
+  },
+  "teams-workflows": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "title": {
+        "default": "⛑️ Go Uptime",
+        "help": "Title of the notification.",
+        "required": false
+      },
+      "webhook-url": {
+        "default": "",
+        "help": "Webhook URL of the Teams workflow.",
+        "required": true
+      }
+    },
+    "name": "Microsoft Teams Workflows",
+    "untested": false
+  },
+  "telegram": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "api-url": {
+        "default": "https://api.telegram.org",
+        "help": "URL of the Telegram API.",
+        "required": false
+      },
+      "id": {
+        "default": "",
+        "help": "Target chat ID.",
+        "required": true
+      },
+      "token": {
+        "default": "",
+        "help": "Telegram bot token.",
+        "required": true
+      },
+      "topic-id": {
+        "default": "",
+        "help": "ID of the topic in a group, the message_thread_id of the API.",
+        "required": false
+      }
+    },
+    "name": "Telegram",
+    "untested": false
+  },
+  "twilio": {
+    "category": "SMS",
+    "deprecated": false,
+    "fields": {
+      "from": {
+        "default": "",
+        "help": "Sender phone number.",
+        "required": true
+      },
+      "sid": {
+        "default": "",
+        "help": "Twilio account SID.",
+        "required": true
+      },
+      "text-twilio-resolved": {
+        "default": "",
+        "help": "Message template when resolved; supports [ENDPOINT] and [ALERT_DESCRIPTION].",
+        "required": false
+      },
+      "text-twilio-triggered": {
+        "default": "",
+        "help": "Message template when triggered; supports [ENDPOINT] and [ALERT_DESCRIPTION].",
+        "required": false
+      },
+      "to": {
+        "default": "",
+        "help": "Recipient phone number.",
+        "required": true
+      },
+      "token": {
+        "default": "",
+        "help": "Twilio auth token.",
+        "required": true
+      }
+    },
+    "name": "Twilio",
+    "untested": false
+  },
+  "vonage": {
+    "category": "SMS",
+    "deprecated": false,
+    "fields": {
+      "api-key": {
+        "default": "",
+        "help": "Vonage API key.",
+        "required": true
+      },
+      "api-secret": {
+        "default": "",
+        "help": "Vonage API secret.",
+        "required": true
+      },
+      "from": {
+        "default": "",
+        "help": "Sender name or phone number.",
+        "required": true
+      },
+      "to": {
+        "default": "",
+        "help": "Recipient phone number.",
+        "required": true
+      }
+    },
+    "name": "Vonage",
+    "untested": true
+  },
+  "webex": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "webhook-url": {
+        "default": "",
+        "help": "Webex Teams incoming webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Webex",
+    "untested": true
+  },
+  "zapier": {
+    "category": "Automation",
+    "deprecated": false,
+    "fields": {
+      "webhook-url": {
+        "default": "",
+        "help": "Zapier Catch Hook webhook URL.",
+        "required": true
+      }
+    },
+    "name": "Zapier",
+    "untested": true
+  },
+  "zulip": {
+    "category": "Chat",
+    "deprecated": false,
+    "fields": {
+      "bot-api-key": {
+        "default": "",
+        "help": "API key of the bot.",
+        "required": true
+      },
+      "bot-email": {
+        "default": "",
+        "help": "Email address of the bot.",
+        "required": true
+      },
+      "channel-id": {
+        "default": "",
+        "help": "ID of the channel the alerts are sent to.",
+        "required": true
+      },
+      "domain": {
+        "default": "",
+        "help": "Full domain of the organization, e.g. yourdomain.zulipchat.com.",
+        "required": true
+      },
+      "topic": {
+        "default": "Gatus",
+        "help": "Topic of the messages; supports [ENDPOINT_NAME], [ENDPOINT_GROUP] and [ALERT_DESCRIPTION].",
+        "required": false
+      }
+    },
+    "name": "Zulip",
+    "untested": false
+  }
+}

@@ -152,6 +152,10 @@ type Config struct {
 
 	configPath      string    // path to the file or directory from which config was loaded
 	lastFileModTime time.Time // last modification time
+
+	// declaredAlertTypes are the alert types whose provider the file declares, valid or not (fork): the validation
+	// discards an invalid provider, and the administration still has to know the file declared it
+	declaredAlertTypes []alert.Type
 }
 
 // GetUniqueExtraMetricLabels returns a slice of unique metric labels from all enabled endpoints
@@ -335,6 +339,7 @@ func parseAndValidateConfigBytes(yamlBytes []byte) (config *Config, err error) {
 			logr.Warn("WARNING: Please use the GO_UPTIME_LOG_LEVEL environment variable instead")
 		}
 		// XXX: End of v6.0.0 removals
+		config.declaredAlertTypes = declaredAlertTypes(config.Alerting)
 		ValidateAlertingConfig(config.Alerting, config.Endpoints, config.ExternalEndpoints)
 		if err := ValidateSecurityConfig(config); err != nil {
 			return nil, err

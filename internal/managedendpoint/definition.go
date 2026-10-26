@@ -233,7 +233,7 @@ func decodeStrict(definition []byte, target any) error {
 
 // validatePush validates a push endpoint, setting its default heartbeat interval
 func validatePush(pushEndpoint *endpoint.ExternalEndpoint, ctx Context) error {
-	if err := validateAlerts(pushEndpoint.Alerts, pushEndpoint.Group, ctx.Config); err != nil {
+	if err := validateAlerts(pushEndpoint.Alerts, pushEndpoint.Group, ctx.alertingConfig()); err != nil {
 		return err
 	}
 	if pushEndpoint.Heartbeat.Interval == 0 {

@@ -5,6 +5,7 @@ go 1.26.3
 
 require (
 	code.gitea.io/sdk/gitea v0.25.1
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/TwiN/deepmerge v0.2.2
 	github.com/TwiN/g8/v2 v2.0.0
 	github.com/TwiN/gocache/v2 v2.4.0

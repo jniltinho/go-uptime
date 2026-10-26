@@ -166,7 +166,7 @@ func processExternalEndpointResult(ee *endpoint.ExternalEndpoint, result *endpoi
 	if result.Pending {
 		return nil
 	}
-	HandleAlerting(convertedEndpoint, result, cfg.Alerting)
+	HandleAlerting(convertedEndpoint, result, alertingConfigFor(convertedEndpoint.Key(), cfg))
 	ee.NumberOfSuccessesInARow = convertedEndpoint.NumberOfSuccessesInARow
 	ee.NumberOfFailuresInARow = convertedEndpoint.NumberOfFailuresInARow
 	return nil
@@ -210,7 +210,7 @@ func SubmitEndpointResult(key string, result *endpoint.Result) error {
 	if result.Pending {
 		return nil
 	}
-	HandleAlerting(ep, result, cfg.Alerting)
+	HandleAlerting(ep, result, alertingConfigFor(ep.Key(), cfg))
 	return nil
 }
 

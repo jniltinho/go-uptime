@@ -4,7 +4,7 @@
 #
 #   make build && docs/screenshots/capture.sh
 #
-# Starts dist/go-uptime with a temporary SQLite, registers endpoints, a status page and push keys through the administration
+# Starts dist/go-uptime with a temporary SQLite, registers endpoints, a status page, push keys and notifications through the administration
 # API (9 endpoints in all, so that the dashboard is exactly three rows), lets the history fill for HISTORY_SECONDS
 # (default 210) and captures every screen at 1280x900 with agent-browser. The endpoints check real hosts every 5 seconds
 # while it runs. Requires agent-browser with Chrome and curl.
@@ -113,6 +113,9 @@ api POST /api/v1/admin/endpoints application/yaml "$(printf 'type: push\nname: n
 api POST /api/v1/admin/endpoints application/yaml "$(printf 'name: checkout\ngroup: shop\nurl: "https://www.iana.org"\ninterval: 5s\nconditions:\n  - "[STATUS] == 200"\n  - "[CERTIFICATE_EXPIRATION] > 48h"\n')"
 api POST /api/v1/admin/push-keys application/json '{"name":"deploy-scripts"}'
 api POST /api/v1/admin/push-keys application/json '{"name":"cron-jobs"}'
+# Notifications: only stored, no message is sent while capturing
+api POST /api/v1/admin/alert-providers application/json '{"type":"telegram","token":"123456:screenshots-token","id":"-1001234567890","default-alert":{"failure-threshold":3,"send-on-resolved":true}}'
+api POST /api/v1/admin/alert-providers application/json '{"type":"pagerduty","integration-key":"0123456789abcdef0123456789abcdef","default-alert":{"send-on-resolved":true}}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"services","title":"Services","description":"Availability of the services we run for our customers.","enabled":true,"groups":["sites","apis","shop"],"featured":["sites_website","shop_checkout"],"show-certificate-expiration":true}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"internal","title":"Internal tools","enabled":false,"groups":["infra","jobs"]}'
 
@@ -156,6 +159,8 @@ capture admin-endpoints /admin
 capture admin-status-pages /admin/status-pages
 capture admin-status-page-form /admin/status-pages/services/edit
 capture admin-push-keys /admin/push-keys
+capture admin-notifications /admin/alert-providers
+capture admin-notification-form /admin/alert-providers/telegram/edit
 capture admin-backup /admin/backup
 capture status-page-dark /status/services
 set_theme light
@@ -165,4 +170,4 @@ set_theme bio
 capture status-page-bio /status/services
 capture dashboard-bio /
 
-echo "OK: 13 screenshots of $VERSION in $OUT"
+echo "OK: 15 screenshots of $VERSION in $OUT"

@@ -76,7 +76,7 @@ func executeEndpoint(ctx context.Context, ep *endpoint.Endpoint, cfg *config.Con
 		}
 	}
 	if !cfg.Maintenance.IsUnderMaintenance() && !inEndpointMaintenanceWindow {
-		HandleAlerting(ep, result, cfg.Alerting)
+		HandleAlerting(ep, result, alertingConfigFor(ep.Key(), cfg))
 	} else {
 		logr.Debug("[watchdog.executeEndpoint] Not handling alerting because currently in the maintenance window")
 	}
