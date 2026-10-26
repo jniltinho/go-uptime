@@ -5,6 +5,7 @@ package alertprovider
 import (
 	"errors"
 	"reflect"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -92,5 +93,20 @@ overrides:
 	err := RestoreSecrets("slack", decodeYAML(t, "overrides:\n  - group: new\n    webhook-url: \"********\"\n"), stored)
 	if !errors.Is(err, ErrMaskedSecretWithoutValue) {
 		t.Errorf("expected ErrMaskedSecretWithoutValue for a new group, got %v", err)
+	}
+}
+
+func TestResendAPIKeyIsMaskedAndRedacted(t *testing.T) {
+	t.Parallel()
+	prepared, err := Prepare([]byte(`{"type": "resend", "api-key": "re_secret_key_123", "from": "Go Uptime <alerts@example.com>", "to": "ops@example.com"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	masked := MaskSecrets(prepared.Type, prepared.Document)
+	if masked["api-key"] != MaskedValue || masked["from"] != "Go Uptime <alerts@example.com>" || masked["to"] != "ops@example.com" {
+		t.Errorf("expected only the API key to be masked, got %v", masked)
+	}
+	if redacted := redact(prepared.Type, prepared.Document, "Authorization: Bearer re_secret_key_123 refused"); strings.Contains(redacted, "re_secret_key_123") {
+		t.Errorf("expected the API key to be redacted, got %q", redacted)
 	}
 }

@@ -2024,8 +2024,14 @@ endpoints:
 | `alerting.resend.overrides[].*`     | See `alerting.resend.*` parameters                                                                 | `{}`          |
 
 Alerts are sent through the [Resend API](https://resend.com/docs/api-reference/emails/send-email), with a plain text and
-an HTML version of the message. The domain of `from` must be verified in your Resend account, or every email is refused
-with a 403: the **Send test** button of the Notifications tab shows it before the first alert.
+an HTML version of the message. `from` and every address of `to` are checked when the configuration is loaded, group
+overrides included, as `user@example.com` or `Name <user@example.com>`.
+
+The domain of `from` must be verified in your Resend account: otherwise Resend refuses the email (403), except for its
+test sender `onboarding@resend.dev`, which only delivers to the address of your own account. The **Send test** button of
+the Notifications tab shows the answer of Resend before the first alert. An email refused because of the
+[rate limit](https://resend.com/docs/api-reference/rate-limit) of your account (429), or for any other reason, is
+logged: a triggered alert is sent again at the next failed check of the endpoint, while a resolution is not sent again.
 
 ```yaml
 alerting:

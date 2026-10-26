@@ -125,3 +125,98 @@ func TestAlertProvider_Send(t *testing.T) {
 		t.Errorf("expected the status and the message of Resend, got %v", err)
 	}
 }
+
+func TestConfig_ValidateAddresses(t *testing.T) {
+	scenarios := []struct {
+		name     string
+		mutate   func(*Config)
+		expected error
+	}{
+		{name: "api-key-only-spaces", mutate: func(cfg *Config) { cfg.APIKey = "   " }, expected: ErrAPIKeyNotSet},
+		{name: "from-only-spaces", mutate: func(cfg *Config) { cfg.From = "  " }, expected: ErrFromNotSet},
+		{name: "from-with-name", mutate: func(cfg *Config) { cfg.From = "Go Uptime <alerts@example.com>" }},
+		{name: "from-plain", mutate: func(cfg *Config) { cfg.From = "alerts@example.com" }},
+		{name: "from-invalid", mutate: func(cfg *Config) { cfg.From = "alerts" }, expected: ErrInvalidAddress},
+		{name: "to-with-names", mutate: func(cfg *Config) { cfg.To = "Ops <ops@example.com>, dev@example.com" }},
+		{name: "to-invalid", mutate: func(cfg *Config) { cfg.To = "ops@example.com, invalid" }, expected: ErrInvalidAddress},
+	}
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(t *testing.T) {
+			cfg := validConfig()
+			scenario.mutate(&cfg)
+			if err := cfg.Validate(); !errors.Is(err, scenario.expected) {
+				t.Errorf("expected %v, got %v", scenario.expected, err)
+			}
+		})
+	}
+}
+
+func TestAlertProvider_ValidateMergedOverrides(t *testing.T) {
+	provider := AlertProvider{DefaultConfig: validConfig(), Overrides: []Override{{Group: "core", Config: Config{To: strings.Repeat("a@example.com,", 51)}}}}
+	if err := provider.Validate(); !errors.Is(err, ErrTooManyRecipients) || !strings.Contains(err.Error(), "core") {
+		t.Errorf("expected the override of core to be refused for too many recipients, got %v", err)
+	}
+	provider.Overrides = []Override{{Group: "core", Config: Config{From: "not-an-address"}}}
+	if err := provider.Validate(); !errors.Is(err, ErrInvalidAddress) {
+		t.Errorf("expected the override of core to be refused for an invalid sender, got %v", err)
+	}
+}
+
+func TestAlertProvider_GetConfigPrecedence(t *testing.T) {
+	provider := AlertProvider{
+		DefaultConfig: Config{APIKey: "re_default", From: "default@example.com", To: "default@example.com"},
+		Overrides:     []Override{{Group: "core", Config: Config{APIKey: "re_core", To: "core@example.com", ClientConfig: &client.Config{Insecure: true}}}},
+	}
+	// default, then the override of the group, then the provider-override of the alert
+	cfg, err := provider.GetConfig("core", &alert.Alert{ProviderOverride: map[string]any{"to": "alert@example.com"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg.APIKey != "re_core" || cfg.From != "default@example.com" || cfg.To != "alert@example.com" || cfg.ClientConfig == nil || !cfg.ClientConfig.Insecure {
+		t.Errorf("unexpected precedence: %+v", cfg)
+	}
+	if provider.DefaultConfig.To != "default@example.com" || provider.DefaultConfig.APIKey != "re_default" || provider.DefaultConfig.ClientConfig != nil {
+		t.Errorf("GetConfig changed the default configuration: %+v", provider.DefaultConfig)
+	}
+}
+
+func TestAlertProvider_SendEscapesHTMLAndLabels(t *testing.T) {
+	defer client.InjectHTTPClient(nil)
+	var payload Payload
+	client.InjectHTTPClient(&http.Client{Transport: test.MockRoundTripper(func(r *http.Request) *http.Response {
+		body, _ := io.ReadAll(r.Body)
+		_ = json.Unmarshal(body, &payload)
+		return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(strings.NewReader(`{}`))}
+	})})
+	description := "latency <500ms> & errors"
+	ep := &endpoint.Endpoint{Name: "api", Group: "core", ExtraLabels: map[string]string{"team": "<ops>"}}
+	result := &endpoint.Result{ConditionResults: []*endpoint.ConditionResult{{Condition: "[RESPONSE_TIME] < 500", Success: true}}}
+	provider := AlertProvider{DefaultConfig: validConfig()}
+	if err := provider.Send(ep, &alert.Alert{Description: &description, FailureThreshold: 3}, result, false); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(payload.Text, "latency <500ms> & errors") || !strings.Contains(payload.Text, "team: <ops>") || !strings.Contains(payload.Text, "✅ [RESPONSE_TIME] < 500") {
+		t.Errorf("expected the text as it is, got %q", payload.Text)
+	}
+	for _, expected := range []string{"latency &lt;500ms&gt; &amp; errors", "team: &lt;ops&gt;", "[RESPONSE_TIME] &lt; 500"} {
+		if !strings.Contains(payload.HTML, expected) {
+			t.Errorf("expected the HTML to contain %q, got %q", expected, payload.HTML)
+		}
+	}
+	if strings.Contains(payload.HTML, "<ops>") || strings.Contains(payload.HTML, "<500ms>") {
+		t.Errorf("expected no raw markup from the content in the HTML, got %q", payload.HTML)
+	}
+}
+
+func TestAlertProvider_SendTransportError(t *testing.T) {
+	defer client.InjectHTTPClient(nil)
+	client.InjectHTTPClient(&http.Client{Transport: test.MockRoundTripper(func(r *http.Request) *http.Response { return nil })})
+	provider := AlertProvider{DefaultConfig: validConfig()}
+	if err := provider.Send(&endpoint.Endpoint{Name: "api"}, &alert.Alert{}, &endpoint.Result{}, false); err == nil {
+		t.Error("expected the error of the transport to be returned")
+	}
+	invalid := AlertProvider{DefaultConfig: Config{APIKey: "re_123"}}
+	if err := invalid.Send(&endpoint.Endpoint{Name: "api"}, &alert.Alert{}, &endpoint.Result{}, false); !errors.Is(err, ErrFromNotSet) {
+		t.Errorf("expected an invalid configuration to fail before any request, got %v", err)
+	}
+}

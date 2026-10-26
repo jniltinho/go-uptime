@@ -9,8 +9,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
+	"net/mail"
 	"strings"
 
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
@@ -29,6 +31,8 @@ var APIURL = "https://api.resend.com/emails"
 // ErrFromNotSet is returned by Config.Validate when the sender address, from, is empty.
 // ErrToNotSet is returned by Config.Validate when the recipients, to, are empty.
 // ErrTooManyRecipients is returned by Config.Validate when to has more than MaximumRecipients addresses.
+// ErrInvalidAddress is returned by Config.Validate when from or an address of to is not an email address, either
+// "user@example.com" or "Name <user@example.com>".
 // ErrDuplicateGroupOverride is returned by AlertProvider.Validate when two overrides share the same group or an
 // override has no group.
 var (
@@ -36,6 +40,7 @@ var (
 	ErrFromNotSet             = errors.New("from not set")
 	ErrToNotSet               = errors.New("to not set")
 	ErrTooManyRecipients      = fmt.Errorf("to has more than %d recipients, the maximum of Resend", MaximumRecipients)
+	ErrInvalidAddress         = errors.New("invalid email address")
 	ErrDuplicateGroupOverride = errors.New("duplicate group override")
 )
 
@@ -50,14 +55,18 @@ type Config struct {
 	ClientConfig *client.Config `yaml:"client,omitempty"`
 }
 
-// Validate returns ErrAPIKeyNotSet, ErrFromNotSet or ErrToNotSet for the first of these fields that is empty, and
-// ErrTooManyRecipients when to has more addresses than Resend accepts.
+// Validate returns ErrAPIKeyNotSet, ErrFromNotSet or ErrToNotSet for the first of these fields that is empty or only
+// spaces, ErrTooManyRecipients when to has more addresses than Resend accepts, and ErrInvalidAddress when from or an
+// address of to cannot be parsed, so that a mistake is found when the configuration is loaded, not at the first alert.
 func (cfg *Config) Validate() error {
-	if len(cfg.APIKey) == 0 {
+	if len(strings.TrimSpace(cfg.APIKey)) == 0 {
 		return ErrAPIKeyNotSet
 	}
-	if len(cfg.From) == 0 {
+	if len(strings.TrimSpace(cfg.From)) == 0 {
 		return ErrFromNotSet
+	}
+	if _, err := mail.ParseAddress(cfg.From); err != nil {
+		return fmt.Errorf("%w in from: %s", ErrInvalidAddress, cfg.From)
 	}
 	recipients := cfg.recipients()
 	if len(recipients) == 0 {
@@ -65,6 +74,11 @@ func (cfg *Config) Validate() error {
 	}
 	if len(recipients) > MaximumRecipients {
 		return ErrTooManyRecipients
+	}
+	for _, recipient := range recipients {
+		if _, err := mail.ParseAddress(recipient); err != nil {
+			return fmt.Errorf("%w in to: %s", ErrInvalidAddress, recipient)
+		}
 	}
 	return nil
 }
@@ -115,7 +129,8 @@ type Override struct {
 	Config `yaml:",inline"`
 }
 
-// Validate the provider's configuration
+// Validate the provider's configuration: the default configuration and each group override merged over it, so that an
+// override with too many recipients or an invalid address is refused when the configuration is loaded
 func (provider *AlertProvider) Validate() error {
 	registeredGroups := make(map[string]bool)
 	for _, override := range provider.Overrides {
@@ -124,7 +139,17 @@ func (provider *AlertProvider) Validate() error {
 		}
 		registeredGroups[override.Group] = true
 	}
-	return provider.DefaultConfig.Validate()
+	if err := provider.DefaultConfig.Validate(); err != nil {
+		return err
+	}
+	for _, override := range provider.Overrides {
+		merged := provider.DefaultConfig
+		merged.Merge(&override.Config)
+		if err := merged.Validate(); err != nil {
+			return fmt.Errorf("override of group %s: %w", override.Group, err)
+		}
+	}
+	return nil
 }
 
 // Send an alert using the provider
@@ -166,14 +191,15 @@ type Payload struct {
 	HTML    string   `json:"html"`
 }
 
-// buildPayload builds the body of the request to the Resend API
+// buildPayload builds the body of the request to the Resend API. The HTML is the text escaped, so that a name, a
+// description or a condition with < > or & is shown as it is, with its line breaks as <br>.
 func buildPayload(cfg *Config, subject, body string) Payload {
 	return Payload{
 		From:    cfg.From,
 		To:      cfg.recipients(),
 		Subject: subject,
 		Text:    body,
-		HTML:    strings.ReplaceAll(body, "\n", "<br>"),
+		HTML:    strings.ReplaceAll(html.EscapeString(body), "\n", "<br>"),
 	}
 }
 

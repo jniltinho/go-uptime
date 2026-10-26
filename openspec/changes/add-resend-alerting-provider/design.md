@@ -14,11 +14,11 @@ Every alerting provider follows the same shape (`internal/alerting/provider/slac
 ## Decisions
 
 ### 1. Copy the SendGrid shape, with the payload of Resend
-`Config{APIKey, From, To, ClientConfig}`, the same `Validate`/`Merge`/`GetConfig` and the same subject and body as SendGrid, so that an email reads the same whatever the API. The request is `POST https://api.resend.com/emails` with `Authorization: Bearer <api-key>` and `{"from", "to": [...], "subject", "text", "html"}`; the HTML is the text with `<br>` for line breaks, as SendGrid does. The URL is a package variable, so the tests can check it, and the HTTP client goes through `client.GetHTTPClient(cfg.ClientConfig)`, which the tests replace with `client.InjectHTTPClient`.
+`Config{APIKey, From, To, ClientConfig}`, the same `Validate`/`Merge`/`GetConfig` and the same subject and body as SendGrid, so that an email reads the same whatever the API. The request is `POST https://api.resend.com/emails` with `Authorization: Bearer <api-key>` and `{"from", "to": [...], "subject", "text", "html"}`; the HTML is the text **escaped** with `html.EscapeString`, then with `<br>` for line breaks. SendGrid only replaces the line breaks, so an alert whose name, description or condition has `<`, `>` or `&` loses part of its text or gains markup; Resend does not copy that defect (fixing SendGrid is outside this change). The URL is a package variable, so the tests can check it, and the HTTP client goes through `client.GetHTTPClient(cfg.ClientConfig)`, which the tests replace with `client.InjectHTTPClient`.
 *Alternative:* one generic "email API" provider with per-service payloads — rejected: it would change the configuration of SendGrid.
 
-### 2. At most 50 recipients, checked by `Validate`
-The Resend API refuses more than 50 addresses in `to`. Checking it in `Validate` turns a delivery failure at the first alert into a configuration error at startup, in `config validate` and in the form of the administration.
+### 2. Everything that can be checked locally is checked by `Validate`
+The Resend API refuses more than 50 addresses in `to`, an invalid address, and empty fields. `Validate` checks all of them (a value of only spaces counts as empty; addresses go through `net/mail.ParseAddress`, which accepts `Name <user@example.com>`), and `AlertProvider.Validate` also validates **each group override merged over the default configuration** — the administration already did, the configuration file did not. That turns a delivery failure at the first alert into a configuration error at startup, in `config validate` and in the form of the administration.
 
 ### 3. Classification and catalog
 `api-key` is secret; `from` and `to` are public, as for SendGrid; the `client` section gets the shared classification of `typesWithClient`. The catalog places Resend in the Email category with the help of the guide, in English.
