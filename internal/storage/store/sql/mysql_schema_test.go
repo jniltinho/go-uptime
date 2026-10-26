@@ -27,7 +27,7 @@ func TestNewStore_MySQLSchema(t *testing.T) {
 		}
 		_ = rows.Close()
 		slices.Sort(tables)
-		expectedTables := []string{"endpoint_alerts_triggered", "endpoint_events", "endpoint_response_time_buckets", "endpoint_result_conditions", "endpoint_result_messages", "endpoint_results", "endpoint_uptimes", "endpoints", "login_sessions", "managed_endpoints", "managed_status_pages", "push_keys", "suite_results", "suites"}
+		expectedTables := []string{"endpoint_alerts_triggered", "endpoint_events", "endpoint_response_time_buckets", "endpoint_result_conditions", "endpoint_result_messages", "endpoint_results", "endpoint_uptimes", "endpoints", "login_sessions", "managed_alert_providers", "managed_endpoints", "managed_status_pages", "push_keys", "suite_results", "suites"}
 		if !slices.Equal(tables, expectedTables) {
 			t.Errorf("expected the InnoDB tables %v, got %v", expectedTables, tables)
 		}

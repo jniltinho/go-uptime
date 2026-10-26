@@ -19,7 +19,9 @@ type fakeStore struct {
 	err  error
 }
 
-func (f *fakeStore) ListManagedAlertProviders() ([]*common.ManagedAlertProvider, error) { return f.rows, f.err }
+func (f *fakeStore) ListManagedAlertProviders() ([]*common.ManagedAlertProvider, error) {
+	return f.rows, f.err
+}
 func (f *fakeStore) GetManagedAlertProvider(string) (*common.ManagedAlertProvider, error) {
 	return nil, common.ErrManagedAlertProviderNotFound
 }
