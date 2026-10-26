@@ -61,6 +61,8 @@ func registerAdminRoutes(router httpx.Router, cfg *config.Config) {
 	registerAdminStatusPageRoutes(router, cfg.Security)
 	// Global push keys (see api/admin_push_keys.go)
 	registerAdminPushKeyRoutes(router, cfg.Security)
+	// Alerting providers (fork, see api/admin_alert_providers.go)
+	registerAdminAlertProviderRoutes(router, cfg.Security)
 	// Backup and restore (fork, see api/admin_backup.go)
 	registerAdminBackupRoutes(router, cfg)
 }

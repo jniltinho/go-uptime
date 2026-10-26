@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/controller"
 	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
@@ -140,6 +141,8 @@ func initializeStorage(cfg *config.Config) {
 			keys = append(keys, ep.Key())
 		}
 	}
+	// Alerting providers managed through the administration API: the managed endpoints validate their alerts against them
+	alertprovider.Load(cfg)
 	// Endpoints managed through the administration API, valid or not, so that their history is preserved
 	managedKeys, loadErr := managedendpoint.Load(cfg)
 	keys = append(keys, managedKeys...)

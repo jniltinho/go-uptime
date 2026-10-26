@@ -14,7 +14,7 @@ Go Uptime is a single static binary: no runtime, no libraries, no container. Thi
 ## Install
 
 ```bash
-VERSION=7.0.0
+VERSION=7.1.0
 ARCH=amd64        # or arm64
 
 sudo useradd --system --home-dir /opt/go-uptime --shell /usr/sbin/nologin go-uptime
@@ -73,7 +73,7 @@ Copy [systemd/go-uptime.service](systemd/go-uptime.service) and start it:
 
 ```bash
 sudo curl -fsSL -o /etc/systemd/system/go-uptime.service \
-  https://raw.githubusercontent.com/jniltinho/go-uptime/v7.0.0/docs/systemd/go-uptime.service
+  https://raw.githubusercontent.com/jniltinho/go-uptime/v7.1.0/docs/systemd/go-uptime.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now go-uptime
 systemctl status go-uptime

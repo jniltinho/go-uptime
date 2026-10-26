@@ -230,7 +230,7 @@
         "Accept-Encoding"
       ]
     },
-    "body": "{\"alertTypes\":[],\"tunnels\":[],\"extraLabels\":[]}"
+    "body": "{\"alertTypes\":[],\"alertProviders\":[],\"tunnels\":[],\"extraLabels\":[]}"
   },
   "admin parse": {
     "status": 200,

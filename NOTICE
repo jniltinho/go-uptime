@@ -17,6 +17,7 @@ format. They also derive from Gatus and were modified where they existed there:
 
   .examples/docker-compose-grafana-prometheus/grafana/provisioning/dashboards/go-uptime.json
   go.sum
+  internal/alertprovider/docs.json
   web/app/.nvmrc
   web/app/package-lock.json
   web/app/package.json

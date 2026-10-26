@@ -212,6 +212,54 @@ curl -u admin:your-password -H 'Content-Type: application/yaml' \
   http://127.0.0.1:8080/api/v1/admin/endpoints
 ```
 
+## Notifications
+
+The **Notifications** tab (`/admin/alert-providers`) configures the alerting providers — Slack, Telegram, email, ntfy,
+PagerDuty and the other types of the [alerting section](README.md) — without touching the configuration file. They are
+stored in the database (table `managed_alert_providers`), never written to the YAML, loaded at startup and on every
+reload, and kept when `admin.enabled` is turned off.
+
+- **Add notification** lists the 41 types by category. The form has the fields of the type, with a short help and the
+  default value, and the **default alert** that every alert of that type inherits (failure and success thresholds,
+  send on resolved, description, reminder). Group overrides and the `client` options are edited in YAML mode, and the
+  form keeps them as they are.
+- **Send test** sends a notification through the definition being edited, without saving it. With **Trigger and
+  resolve** (on by default), the resolution follows, so that a test leaves no incident open in PagerDuty, Opsgenie,
+  GitLab or incident.io, and both messages are checked. The answer comes within 15 seconds; at most two tests of the
+  administration run at once.
+- **One provider per type.** The configuration file takes precedence: a type it declares is shown read-only, with its
+  secrets masked, and cannot be created through the web. When a reload adds to the file a type already configured
+  through the web, the web one is kept but **shadowed** — not used — until the type leaves the file.
+- **Who uses what.** Endpoints managed through the web use the providers of the file and of the web; endpoints of the
+  file only use those of the file, so that `go-uptime config validate` stays the judge of the file. An endpoint can have
+  several alerts, of the same type or not, in the **Alerts** section of its form, which shows what each alert inherits.
+- **Changing a provider** restarts only the managed endpoints with an alert of its type, so that a new default alert
+  applies, and an open incident keeps its resolve key: no second "triggered" is sent. A change that would make one of
+  those endpoints invalid answers 409 with their keys. A provider used by a managed endpoint, even a disabled one,
+  cannot be removed.
+- **Secrets** (tokens, passwords, webhooks, keys, the URL and the headers of a Custom webhook) are masked with
+  `********` in every answer, shown as "Configured — leave unchanged" in the form, and removed from the errors of a test
+  and from the delivery errors of the log. Sending the mask back keeps the stored value. Environment variables such as
+  `${TOKEN}` are not expanded, and `aws-ses` requires explicit keys: the credentials of the server are never used. In
+  `client`, `identity-aware-proxy`, the TLS certificate files and `tunnel` are refused.
+
+| Method and route | Description |
+|------------------|-------------|
+| `GET /api/v1/admin/alert-providers` | Every type, with source (`yaml`, `web`, `none`), state, usage and the fields of its form |
+| `GET /api/v1/admin/alert-providers/{type}` | Masked definition (with `ETag`) |
+| `POST /api/v1/admin/alert-providers` | Creates (201); the body has the `type` key and the keys of the block of the type |
+| `PUT /api/v1/admin/alert-providers/{type}` | Changes (requires `If-Match`); the answer lists the restarted endpoints |
+| `DELETE /api/v1/admin/alert-providers/{type}` | Removes (requires `If-Match`); 409 with `endpoints` when in use |
+| `POST /api/v1/admin/alert-providers/validate[?type=]` | Validates without saving |
+| `POST /api/v1/admin/alert-providers/test[?type=&group=&resolve=true]` | Tests a definition that is not saved |
+| `POST /api/v1/admin/alert-providers/{type}/test[?group=&resolve=true]` | Tests the provider in use, of the file or of the web |
+
+```bash
+curl -u admin:your-password -H 'Content-Type: application/json' \
+  -d '{"type": "telegram", "token": "123456:ABC", "id": "-100123", "default-alert": {"send-on-resolved": true}}' \
+  http://127.0.0.1:8080/api/v1/admin/alert-providers
+```
+
 ## Managing endpoints from the command line
 
 [docs/manager-go-uptime.py](manager-go-uptime.py) does, through this API, what would take many clicks in the administration:
@@ -307,7 +355,7 @@ update — the script says `keys unchanged`.
 
 The **Backup** tab (`/admin/backup`) downloads and restores what was registered through the web: the managed endpoints
 (with their groups, which are part of their definitions), the managed status pages and the push keys created through
-the web. It never includes the history (results, events, uptimes), the items of the configuration file, the login
+the web, and the notifications configured through the web. It never includes the history (results, events, uptimes), the items of the configuration file, the login
 sessions nor the global configuration.
 
 ### Download
@@ -420,4 +468,6 @@ which can stay in the configuration file, and ask for the credentials with the n
 `test/e2e/admin.sh` starts a local Go Uptime with a temporary SQLite database and goes through the screens with
 [agent-browser](https://github.com/vercel-labs/agent-browser), saving screenshots in `dist/prints/` (outside of git).
 `test/e2e/login.sh` covers the login screen: redirections, refused redirects, wrong password, limit of failed logins,
-logout, public status pages without login and `curl -u`.
+logout, public status pages without login and `curl -u`. `test/e2e/alert-providers.sh` configures a Custom webhook
+through the Notifications tab, against a local receiver: the test that triggers and resolves, the notifications of a
+Push endpoint that fails and recovers, and the secret that never leaves Go Uptime.

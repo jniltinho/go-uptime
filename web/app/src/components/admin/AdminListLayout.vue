@@ -44,7 +44,7 @@ import AdminTabs from '@/components/admin/AdminTabs.vue'
 defineProps({
   title: { type: String, required: true },
   description: { type: String, default: '' },
-  // Tab of AdminTabs: endpoints, status-pages, push-keys or backup
+  // Tab of AdminTabs: endpoints, status-pages, push-keys, notifications or backup
   active: { type: String, required: true },
   // Whether the content is inside the bordered panel with its own scroll, as in the lists
   panel: { type: Boolean, default: true }

@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/config/admin"
 	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
@@ -72,6 +73,7 @@ func newBackupTestEnvironment(t *testing.T, configPages []*pageconfig.Page) *bac
 	if err := store.Initialize(cfg.Storage); err != nil {
 		t.Fatal(err)
 	}
+	alertprovider.Load(cfg)
 	if _, err := managedendpoint.Load(cfg); err != nil {
 		t.Fatal(err)
 	}
@@ -87,6 +89,7 @@ func newBackupTestEnvironment(t *testing.T, configPages []*pageconfig.Page) *bac
 		watchdog.Shutdown(cfg)
 		store.Get().Close()
 		_ = store.Initialize(nil)
+		alertprovider.Load(&config.Config{})
 		_, _ = managedendpoint.Load(&config.Config{})
 		pushkey.Load(&config.Config{})
 		statuspage.Load(&config.Config{})
@@ -377,5 +380,52 @@ func TestAdminBackupAndRestore_GroupsCollapsed(t *testing.T) {
 	public := target.expect(t, http.MethodGet, "/api/v1/status-pages/web", "", "", http.StatusOK)
 	if !strings.Contains(string(public), `"groupsCollapsed":true`) {
 		t.Errorf("expected the restored page to publish groupsCollapsed, got %s", public)
+	}
+}
+
+func TestAdminBackupAndRestore_AlertProviders(t *testing.T) {
+	source := newBackupTestEnvironment(t, nil)
+	const webhook = "https://hooks.example.com/services/T0/B0/backup-secret"
+	source.expect(t, http.MethodPost, "/api/v1/admin/alert-providers", "application/json", `{"type": "slack", "webhook-url": "`+webhook+`", "default-alert": {"failure-threshold": 4}}`, http.StatusCreated)
+	source.expect(t, http.MethodPost, "/api/v1/admin/endpoints", "application/yaml", "name: site\ngroup: web\ninterval: 1h\nurl: "+source.serverURL+"\nconditions: [\"[STATUS] == 200\"]\nalerts:\n  - type: slack\n", http.StatusCreated)
+	_, file := source.request(t, http.MethodPost, "/api/v1/admin/backup", "application/json", "{}", nil)
+	var backup struct {
+		AlertProviders []struct {
+			Type       string `json:"type"`
+			Definition string `json:"definition"`
+		} `json:"alertProviders"`
+	}
+	if err := json.Unmarshal(file, &backup); err != nil {
+		t.Fatal(err)
+	}
+	if len(backup.AlertProviders) != 1 || backup.AlertProviders[0].Type != "slack" || !strings.Contains(backup.AlertProviders[0].Definition, webhook) {
+		t.Fatalf("expected the slack provider with its webhook in clear, got %+v", backup.AlertProviders)
+	}
+	source.close()
+
+	// A new installation: the endpoint needs the provider, which the plan creates first
+	target := newBackupTestEnvironment(t, nil)
+	plan := target.preview(t, file, "", false, false)
+	if len(plan.Items) < 2 || plan.Items[0].Type != "alertProvider" || plan.action("alertProvider", "slack").Action != "create" || plan.action("endpoint", "web_site").Action != "create" {
+		t.Fatalf("expected the provider then the endpoint to be created, got %+v", plan.Items)
+	}
+	target.expect(t, http.MethodPost, "/api/v1/admin/restore", "application/json", restoreBody(file, "", false, false, plan.Fingerprint), http.StatusOK)
+	detail := target.expect(t, http.MethodGet, "/api/v1/admin/alert-providers/slack", "", "", http.StatusOK)
+	if !strings.Contains(string(detail), `"source":"web"`) || strings.Contains(string(detail), "backup-secret") {
+		t.Fatalf("expected the restored provider, masked, got %s", detail)
+	}
+	if again := target.preview(t, file, "", false, false); again.action("alertProvider", "slack").Action != "unchanged" || again.action("endpoint", "web_site").Action != "unchanged" {
+		t.Errorf("expected a second restore to change nothing, got %+v", again.Items)
+	}
+
+	// A backup without the list of alerting providers, written before them, is still accepted
+	var legacy map[string]any
+	if err := json.Unmarshal(file, &legacy); err != nil {
+		t.Fatal(err)
+	}
+	delete(legacy, "alertProviders")
+	legacyFile, _ := json.Marshal(legacy)
+	if legacyPlan := target.preview(t, legacyFile, "", false, false); legacyPlan.action("alertProvider", "slack").Type != "" {
+		t.Errorf("expected no provider item for a backup without the list, got %+v", legacyPlan.Items)
 	}
 }

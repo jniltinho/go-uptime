@@ -252,36 +252,62 @@
           <header class="mb-3 flex items-start justify-between gap-4">
             <div>
               <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Alerts</h2>
-              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Notifications sent by the alerting providers of the configuration file.</p>
+              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+                Notifications sent by the providers of the
+                <a href="/admin/alert-providers" target="_blank" rel="noopener" class="underline underline-offset-2" data-testid="admin-alerts-notifications-link">Notifications</a>
+                tab or of the configuration file. An endpoint can have several alerts, even of the same type.
+              </p>
             </div>
             <Button v-if="alertTypeOptions.length > 0" variant="outline" size="sm" class="shrink-0" data-testid="admin-add-alert" @click="addAlert">Add alert</Button>
           </header>
-          <p v-if="alertTypeOptions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No alerting provider configured.</p>
+          <div v-if="alertTypeOptions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400" data-testid="admin-alerts-none">
+            No notification is configured yet.
+            <a href="/admin/alert-providers/new" target="_blank" rel="noopener" class="font-medium text-foreground underline underline-offset-2 dark:text-gray-100">Configure a notification</a>
+            in a new tab, then add the alert here.
+          </div>
           <p v-else-if="form.alerts.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No alerts.</p>
-          <div v-for="(alert, index) in form.alerts" :key="`alert-${index}`" class="mb-3 border p-4 last:mb-0 dark:border-gray-700">
+          <div v-for="(alert, index) in form.alerts" :key="`alert-${index}`" class="mb-3 border p-4 last:mb-0 dark:border-gray-700" :data-testid="`admin-alert-${index}`">
+            <p v-if="alert.type && !alertProviderOf(alert.type)" role="alert" class="mb-3 border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+              No valid {{ alert.type }} notification is configured: this alert cannot be saved until one is
+              <a href="/admin/alert-providers" target="_blank" rel="noopener" class="underline underline-offset-2">configured</a>.
+            </p>
             <div class="grid gap-3 sm:grid-cols-2">
               <div>
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Type</span>
-                <Select v-model="alert.type" :options="alertTypeOptions" placeholder="Select" class="mt-1.5" />
+                <Select v-model="alert.type" :options="alertTypeOptionsFor(alert.type)" placeholder="Select" class="mt-1.5" />
               </div>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Description</span>
-                <Input v-model="alert.description" class="mt-1.5 dark:border-gray-700" />
+                <Input v-model="alert.description" :placeholder="inherited(alert.type, 'description') || ''" class="mt-1.5 dark:border-gray-700" />
               </label>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Failure threshold</span>
-                <Input v-model="alert.failureThreshold" type="number" min="1" placeholder="provider default" class="mt-1.5 dark:border-gray-700" />
+                <Input v-model="alert.failureThreshold" type="number" min="1" :placeholder="inheritedPlaceholder(alert.type, 'failureThreshold')" class="mt-1.5 dark:border-gray-700" />
               </label>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Success threshold</span>
-                <Input v-model="alert.successThreshold" type="number" min="1" placeholder="provider default" class="mt-1.5 dark:border-gray-700" />
+                <Input v-model="alert.successThreshold" type="number" min="1" :placeholder="inheritedPlaceholder(alert.type, 'successThreshold')" class="mt-1.5 dark:border-gray-700" />
               </label>
+              <div>
+                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Send on resolved</span>
+                <Select v-model="alert.sendOnResolved" :options="sendOnResolvedOptionsFor(alert.type)" class="mt-1.5" :data-testid="`admin-alert-send-on-resolved-${index}`" />
+              </div>
             </div>
-            <div class="mt-3 flex items-center justify-between gap-4">
-              <label class="flex items-center gap-2 text-sm text-foreground dark:text-gray-200">
-                <input v-model="alert.sendOnResolved" type="checkbox" class="h-4 w-4 accent-gray-900 dark:accent-gray-100" />
-                Send on resolved
-              </label>
+            <details class="mt-3 border-t pt-3 dark:border-gray-700" :open="alert.enabled === 'no' || Boolean(alert.reminder)">
+              <summary class="cursor-pointer text-sm font-medium text-foreground dark:text-gray-200">Advanced</summary>
+              <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Enabled</span>
+                  <Select v-model="alert.enabled" :options="alertEnabledOptions" class="mt-1.5" :data-testid="`admin-alert-enabled-${index}`" />
+                </div>
+                <label class="block">
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Minimum reminder interval</span>
+                  <Input v-model="alert.reminder" placeholder="e.g. 30m; empty sends no reminder" class="mt-1.5 dark:border-gray-700" :data-testid="`admin-alert-reminder-${index}`" />
+                  <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400">Repeats a triggered alert at most this often, at least 5m.</span>
+                </label>
+              </div>
+            </details>
+            <div class="mt-3 flex items-center justify-end gap-4">
               <Button variant="ghost" size="sm" class="text-red-600 dark:text-red-400" @click="form.alerts.splice(index, 1)">Remove alert</Button>
             </div>
           </div>
@@ -376,6 +402,8 @@ const yamlText = ref('')
 const version = ref(0)
 const source = ref('admin')
 const alertTypes = ref([])
+// Fork: the configured providers, with what an alert inherits from their default alert
+const alertProviders = ref([])
 // Groups of the existing endpoints, offered when creating an endpoint (fork)
 const groupNames = ref([])
 const newGroup = ref(false)
@@ -418,7 +446,31 @@ const title = computed(() => {
   }
   return readOnly.value ? 'Endpoint from the configuration file' : 'Edit endpoint'
 })
-const alertTypeOptions = computed(() => alertTypes.value.map((type) => ({ label: type, value: type })))
+const alertTypeOptions = computed(() => alertProviders.value.length
+  ? alertProviders.value.map((provider) => ({ label: `${provider.name}${provider.source === 'yaml' ? ' (YAML)' : ''}`, value: provider.type }))
+  : alertTypes.value.map((type) => ({ label: type, value: type })))
+const alertProviderOf = (type) => alertProviders.value.find((provider) => provider.type === type) || (alertTypes.value.includes(type) ? { type } : null)
+// An alert of a type that is not configured anymore keeps its type among the options, so that it is not changed silently
+const alertTypeOptionsFor = (type) => (!type || alertTypeOptions.value.some((option) => option.value === type)
+  ? alertTypeOptions.value
+  : [...alertTypeOptions.value, { label: `${type} (not configured)`, value: type }])
+const inherited = (type, key) => {
+  const provider = alertProviderOf(type)
+  return provider ? provider[key] : undefined
+}
+const inheritedPlaceholder = (type, key) => {
+  const value = inherited(type, key)
+  return value ? `${value} (provider default)` : 'provider default'
+}
+const alertEnabledOptions = [
+  { label: 'Yes', value: 'yes' },
+  { label: 'No, keep it without sending', value: 'no' },
+]
+const sendOnResolvedOptionsFor = (type) => [
+  { label: `Provider default (${inherited(type, 'sendOnResolved') ? 'yes' : 'no'})`, value: 'default' },
+  { label: 'Yes', value: 'yes' },
+  { label: 'No', value: 'no' },
+]
 const monitorTypeOptions = computed(() => {
   // Push endpoints and active endpoints cannot be converted into each other
   const available = isEdit.value ? monitorTypes.filter((type) => (type.value === 'push') === isPush.value) : monitorTypes
@@ -564,7 +616,9 @@ const formFromDocument = (document) => {
         description: alert.description || '',
         failureThreshold: alert['failure-threshold'] ? String(alert['failure-threshold']) : '',
         successThreshold: alert['success-threshold'] ? String(alert['success-threshold']) : '',
-        sendOnResolved: alert['send-on-resolved'] === true,
+        sendOnResolved: alert['send-on-resolved'] === true ? 'yes' : alert['send-on-resolved'] === false ? 'no' : 'default',
+        enabled: alert.enabled === false ? 'no' : 'yes',
+        reminder: alert['minimum-reminder-interval'] ? String(alert['minimum-reminder-interval']) : '',
         original: alert,
       }))
       : [],
@@ -636,7 +690,11 @@ const documentFromForm = () => {
     setOrDelete(result, 'description', alert.description.trim())
     setOrDelete(result, 'failure-threshold', Number(alert.failureThreshold) > 0 ? Number(alert.failureThreshold) : null)
     setOrDelete(result, 'success-threshold', Number(alert.successThreshold) > 0 ? Number(alert.successThreshold) : null)
-    setOrDelete(result, 'send-on-resolved', alert.sendOnResolved ? true : null)
+    // Fork: no is kept as false, so that it can override a provider whose default alert sends on resolved
+    setOrDelete(result, 'send-on-resolved', alert.sendOnResolved === 'yes' ? true : alert.sendOnResolved === 'no' ? false : null)
+    // Fork: an alert is enabled unless it says otherwise, so only false is written
+    setOrDelete(result, 'enabled', alert.enabled === 'no' ? false : null)
+    setOrDelete(result, 'minimum-reminder-interval', alert.reminder.trim())
     return result
   })
   setOrDelete(document, 'alerts', alerts.length ? alerts : null)
@@ -646,7 +704,7 @@ const documentFromForm = () => {
 const currentPayload = () => (mode.value === 'form' ? jsonPayload(documentFromForm()) : yamlPayload(yamlText.value))
 
 const addAlert = () => {
-  form.alerts.push({ type: alertTypes.value[0] || '', description: '', failureThreshold: '', successThreshold: '', sendOnResolved: false, original: null })
+  form.alerts.push({ type: alertTypes.value[0] || '', description: '', failureThreshold: '', successThreshold: '', sendOnResolved: 'default', enabled: 'yes', reminder: '', original: null })
 }
 
 const copyText = async (text, target) => {
@@ -809,8 +867,10 @@ onMounted(async () => {
   try {
     const { data } = await adminApi.metadata()
     alertTypes.value = (data && data.alertTypes) || []
+    alertProviders.value = (data && data.alertProviders) || []
   } catch (e) {
     alertTypes.value = []
+    alertProviders.value = []
   }
   await groups
   try {

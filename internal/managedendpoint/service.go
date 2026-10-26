@@ -5,13 +5,12 @@ package managedendpoint
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/TwiN/logr"
-	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/admintest"
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
@@ -32,7 +31,6 @@ const (
 	SourceAdmin = "admin"
 
 	testTimeout                    = 10 * time.Second
-	maximumConcurrentTests         = 2
 	maximumResolvedConditionLength = 512
 )
 
@@ -46,16 +44,15 @@ var (
 	// ErrCycleInProgress is returned when a start or configuration reload is in progress
 	ErrCycleInProgress = errors.New("a start or configuration reload is in progress, try again later")
 
-	// ErrTooManyTests is returned when too many endpoint tests are in progress
-	ErrTooManyTests = errors.New("too many endpoint tests in progress, try again later")
+	// ErrTooManyTests is returned when too many tests of the administration are in progress; endpoint tests and
+	// alerting provider tests share the same slots (see admintest)
+	ErrTooManyTests = admintest.ErrTooManyTests
 
 	// ErrStorageNotSupported is returned when the storage does not support managed endpoints
 	ErrStorageNotSupported = errors.New("the storage does not support managed endpoints")
 
 	// ErrApplyFailed is returned when a change could not be applied to the monitoring
 	ErrApplyFailed = errors.New("failed to apply the change to the monitoring")
-
-	testSlots = make(chan struct{}, maximumConcurrentTests)
 )
 
 // Item summarizes an endpoint for the administration list: an endpoint or external endpoint of the configuration file,
@@ -221,9 +218,14 @@ type TestConditionResult struct {
 // GET /api/v1/admin/metadata to fill the choices of the endpoint form. It is output-only and every list is empty, never
 // null, when there is nothing to offer.
 type Metadata struct {
-	// AlertTypes are the types of the alerting providers configured in the configuration file, e.g. "slack", in
-	// alphabetical order. They are the accepted values of alerts[].type; any other type is refused.
+	// AlertTypes are the types of the valid alerting providers, of the configuration file or managed through the
+	// administration, e.g. "slack", in alphabetical order. They are the accepted values of alerts[].type; any other
+	// type is refused.
 	AlertTypes []string `json:"alertTypes"`
+
+	// AlertProviders describe the same types as AlertTypes, in the same order, with their readable name, where they are
+	// configured and what an alert inherits from their default alert (fork)
+	AlertProviders []*alertprovider.Option `json:"alertProviders"`
 
 	// Tunnels are the names of the tunnels of the tunneling section of the configuration file, in alphabetical order,
 	// accepted by client.tunnel.
@@ -555,12 +557,11 @@ func (s *Service) Delete(key string, expectedVersion int64, author string) (int,
 // Test validates a definition and evaluates it once, without persisting results, sending alerts or publishing
 // metrics. See Validate for the meaning of key. Push endpoints cannot be tested.
 func (s *Service) Test(raw []byte, key string) (*TestResult, error) {
-	select {
-	case testSlots <- struct{}{}:
-	default:
+	release, ok := admintest.TryAcquire()
+	if !ok {
 		return nil, ErrTooManyTests
 	}
-	defer func() { <-testSlots }()
+	defer release()
 	prepared, err := s.prepare(raw, key)
 	if err != nil {
 		return nil, err
@@ -593,22 +594,9 @@ func (s *Service) Test(raw []byte, key string) (*TestResult, error) {
 
 // Metadata returns the configured alert types, the tunnels and the extra labels a managed endpoint can use
 func (s *Service) Metadata() *Metadata {
-	metadata := &Metadata{AlertTypes: []string{}, Tunnels: []string{}, ExtraLabels: []string{}}
-	if s.cfg.Alerting != nil {
-		value := reflect.ValueOf(s.cfg.Alerting).Elem()
-		for i := 0; i < value.NumField(); i++ {
-			field, fieldType := value.Field(i), value.Type().Field(i)
-			if !fieldType.IsExported() || field.Kind() != reflect.Ptr || field.IsNil() {
-				continue
-			}
-			if _, isProvider := field.Interface().(provider.AlertProvider); !isProvider {
-				continue
-			}
-			if tag := strings.Split(fieldType.Tag.Get("yaml"), ",")[0]; len(tag) > 0 && tag != "-" {
-				metadata.AlertTypes = append(metadata.AlertTypes, tag)
-			}
-		}
-		sort.Strings(metadata.AlertTypes)
+	metadata := &Metadata{AlertTypes: []string{}, AlertProviders: alertprovider.Options(), Tunnels: []string{}, ExtraLabels: []string{}}
+	for _, option := range metadata.AlertProviders {
+		metadata.AlertTypes = append(metadata.AlertTypes, option.Type)
 	}
 	if s.cfg.Tunneling != nil {
 		for name := range s.cfg.Tunneling.Tunnels {

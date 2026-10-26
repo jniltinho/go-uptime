@@ -21,7 +21,7 @@
         </header>
 
         <div class="min-h-0 flex-1 space-y-4 overflow-auto overscroll-contain px-5 py-4">
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-2 gap-2">
             <div v-for="counter in counters" :key="counter.id" class="border px-3 py-2 dark:border-gray-700">
               <span class="block truncate text-xs text-muted-foreground dark:text-gray-400" :title="counter.label">{{ counter.label }}</span>
               <span class="block text-lg font-semibold text-foreground dark:text-gray-100" :data-testid="`backup-count-${counter.id}`">{{ counter.value === null ? '—' : counter.value }}</span>
@@ -278,7 +278,7 @@ import { Input } from '@/components/ui/input'
 import AdminDialog from '@/components/admin/AdminDialog.vue'
 import AdminListLayout from '@/components/admin/AdminListLayout.vue'
 import ConfirmDialog from '@/components/admin/ConfirmDialog.vue'
-import { adminApi, backupApi, pushKeysApi, statusPagesApi } from '@/utils/adminApi'
+import { adminApi, alertProvidersApi, backupApi, pushKeysApi, statusPagesApi } from '@/utils/adminApi'
 import {
   MAX_PASSWORD_BYTES,
   MIN_PASSWORD_BYTES,
@@ -309,16 +309,18 @@ const errorToastOptions = (error, title) => ({
 const WRONG_PASSWORD_MESSAGE = 'Invalid password or corrupted file.'
 
 // Quantities of the items managed through the web
-const counts = ref({ endpoints: null, statusPages: null, pushKeys: null })
+const counts = ref({ endpoints: null, statusPages: null, pushKeys: null, alertProviders: null })
 
 const counters = computed(() => [
   { id: 'endpoints', label: 'Managed endpoints', value: counts.value.endpoints },
   { id: 'status-pages', label: 'Managed status pages', value: counts.value.statusPages },
-  { id: 'push-keys', label: 'Web push keys', value: counts.value.pushKeys }
+  { id: 'push-keys', label: 'Web push keys', value: counts.value.pushKeys },
+  // Fork: alerting providers configured through the web, shadowed ones included
+  { id: 'alert-providers', label: 'Web notifications', value: counts.value.alertProviders }
 ])
 
 const loadCounts = async () => {
-  const [endpoints, statusPages, pushKeys] = await Promise.allSettled([adminApi.list(), statusPagesApi.list(), pushKeysApi.list()])
+  const [endpoints, statusPages, pushKeys, alertProviders] = await Promise.allSettled([adminApi.list(), statusPagesApi.list(), pushKeysApi.list(), alertProvidersApi.list()])
   const failures = []
   const value = (outcome, pick) => {
     if (outcome.status === 'fulfilled') {
@@ -330,7 +332,8 @@ const loadCounts = async () => {
   counts.value = {
     endpoints: value(endpoints, (data) => (Array.isArray(data) ? data : []).filter((item) => item.source === 'admin').length),
     statusPages: value(statusPages, (data) => ((data && data.statusPages) || []).filter((item) => item.origin === 'admin').length),
-    pushKeys: value(pushKeys, (data) => ((data && data.keys) || []).filter((item) => item.origin === 'admin').length)
+    pushKeys: value(pushKeys, (data) => ((data && data.keys) || []).filter((item) => item.origin === 'admin').length),
+    alertProviders: value(alertProviders, (data) => ((data && data.providers) || []).filter((item) => item.source === 'web' || item.shadowed).length)
   }
   if (failures.length) {
     toast.error(`The quantities could not be loaded: ${describeBackupError(failures[0])}`)
@@ -573,7 +576,7 @@ const resultsSummaryText = computed(() => {
   return `${summary.created} created · ${summary.updated} updated · ${summary.unchanged} unchanged · ${summary.skipped} skipped · ${summary.failed} failed`
 })
 
-const TYPE_LABELS = { pushKey: 'Push key', endpoint: 'Endpoint', statusPage: 'Status page' }
+const TYPE_LABELS = { pushKey: 'Push key', alertProvider: 'Notification', endpoint: 'Endpoint', statusPage: 'Status page' }
 const typeLabel = (type) => TYPE_LABELS[type] || type
 
 const BADGES = {

@@ -32,6 +32,7 @@ var allowedNameFiles = map[string]string{
 	"Dockerfile.release":                                   "the /gatus symbolic link",
 	"web/app/public/manifest.json":                         "the id of an installed PWA",
 	"web/app/src/utils/storage.js":                         "the prefix that the preferences are migrated from",
+	"internal/alertprovider/docs.json":                     "the default values of the identifiers kept in other systems (Opsgenie, GitLab, Splunk, Home Assistant, Zulip)",
 	"internal/adminbackup/legacy_format_test.go":           "the backups of v6",
 	"internal/metrics/metrics_test.go":                     "the names of the metrics of v6, which metrics-namespace: gatus reproduces",
 	"internal/metrics/namespace_test.go":                   "the prefix of the metrics of v6",

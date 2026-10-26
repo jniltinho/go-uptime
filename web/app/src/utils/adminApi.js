@@ -114,6 +114,49 @@ export const pushKeysApi = {
   remove: (id) => request('DELETE', `/push-keys/${encodeURIComponent(id)}`),
 }
 
+// Client of the administration API of the alerting providers (/api/v1/admin/alert-providers, fork). type is the alert
+// type being edited: masked secrets of a definition then stand for its stored values
+const withQuery = (path, params) => {
+  const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value))
+  return query.toString() ? `${path}?${query}` : path
+}
+
+export const alertProvidersApi = {
+  list: () => request('GET', '/alert-providers'),
+  get: (type) => request('GET', `/alert-providers/${encodeURIComponent(type)}`),
+  parse: (payload) => request('POST', '/alert-providers/parse', payload),
+  validate: (payload, type) => request('POST', withQuery('/alert-providers/validate', { type }), payload),
+  // resolve sends the resolution right after an accepted notification, closing the incident it may open
+  test: (payload, type, group, resolve) => request('POST', withQuery('/alert-providers/test', { type, group, resolve: resolve ? 'true' : '' }), payload),
+  testConfigured: (type, group, resolve) => request('POST', withQuery(`/alert-providers/${encodeURIComponent(type)}/test`, { group, resolve: resolve ? 'true' : '' })),
+  create: (payload) => request('POST', '/alert-providers', payload),
+  update: (type, payload, version) => request('PUT', `/alert-providers/${encodeURIComponent(type)}`, { ...payload, version }),
+  remove: (type, version) => request('DELETE', `/alert-providers/${encodeURIComponent(type)}`, { version }),
+}
+
+export function describeAlertProviderError(error) {
+  switch (error && error.status) {
+    case 404:
+      return 'This alerting provider no longer exists.'
+    case 409:
+      if (error.data && error.data.endpoints && !Array.isArray(error.data.endpoints)) {
+        return 'The change would make managed endpoints invalid:\n' + Object.entries(error.data.endpoints).map(([key, message]) => `${key}: ${message}`).join('\n')
+      }
+      if (error.data && Array.isArray(error.data.endpoints)) {
+        return `This provider is used by ${error.data.endpoints.length === 1 ? 'an endpoint' : `${error.data.endpoints.length} endpoints`}: remove their alerts first.`
+      }
+      return error.message || 'Conflict.'
+    case 412:
+      return 'The provider was changed by someone else since you opened it.'
+    case 429:
+      return 'Too many tests in progress. Try again in a moment.'
+    case 501:
+      return 'The configured storage does not support alerting providers managed through the web.'
+    default:
+      return describeAdminError(error)
+  }
+}
+
 // Backup and restore of the administration (/api/v1/admin/backup and /api/v1/admin/restore, fork)
 export const backupApi = {
   // Without a password the body is {}, and the file is in plain text

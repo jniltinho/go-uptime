@@ -9,8 +9,10 @@ import (
 	"slices"
 	"sort"
 
+	"github.com/jniltinho/go-uptime/v7/internal/alerting"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/alert"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider"
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/config"
 	"github.com/jniltinho/go-uptime/v7/internal/config/endpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/config/key"
@@ -57,6 +59,19 @@ type Context struct {
 
 	// IsPushKeyToken returns whether a token is the token of a global push key (fork)
 	IsPushKeyToken func(token string) bool
+
+	// Alerting is the alerting configuration the alerts are validated against (fork). When nil, the effective
+	// configuration of the managed endpoints loaded for Config is used: the providers of the configuration file and the
+	// ones managed through the administration (see alertprovider.EffectiveFor).
+	Alerting *alerting.Config
+}
+
+// alertingConfig returns the alerting configuration the alerts of the endpoint are validated against
+func (ctx Context) alertingConfig() *alerting.Config {
+	if ctx.Alerting != nil {
+		return ctx.Alerting
+	}
+	return alertprovider.EffectiveFor(ctx.Config)
 }
 
 // Prepared is a validated managed endpoint
@@ -163,7 +178,7 @@ func validate(ep *endpoint.Endpoint, ctx Context) error {
 		return err
 	}
 	// Provider default alerts must be merged before the endpoint defaults are set, like for the configuration file
-	if err := validateAlerts(ep.Alerts, ep.Group, ctx.Config); err != nil {
+	if err := validateAlerts(ep.Alerts, ep.Group, ctx.alertingConfig()); err != nil {
 		return err
 	}
 	if err := ep.ValidateAndSetDefaults(); err != nil {
@@ -219,14 +234,18 @@ func fieldNotAllowed(field string) error {
 	return fmt.Errorf("%w: %s", ErrFieldNotAllowed, field)
 }
 
-func validateAlerts(alerts []*alert.Alert, group string, cfg *config.Config) error {
+func validateAlerts(alerts []*alert.Alert, group string, alertingConfig *alerting.Config) error {
 	for _, endpointAlert := range alerts {
 		if endpointAlert == nil {
 			return fmt.Errorf("%w: empty alert", ErrInvalidDefinition)
 		}
+		// Fork: a provider-override cannot use the files or credentials of the server, at any depth
+		if path, forbidden := alertprovider.ForbiddenFieldPath(endpointAlert.ProviderOverride); forbidden {
+			return fieldNotAllowed("alerts[].provider-override." + path)
+		}
 		var alertProvider provider.AlertProvider
-		if cfg.Alerting != nil {
-			alertProvider = cfg.Alerting.GetAlertingProviderByAlertType(endpointAlert.Type)
+		if alertingConfig != nil {
+			alertProvider = alertingConfig.GetAlertingProviderByAlertType(endpointAlert.Type)
 		}
 		if alertProvider == nil {
 			return fmt.Errorf("%w: %s", ErrAlertProviderNotConfigured, endpointAlert.Type)

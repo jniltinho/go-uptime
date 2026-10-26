@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/TwiN/logr"
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 	"github.com/jniltinho/go-uptime/v7/internal/lifecycle"
 	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/pushkey"
@@ -20,7 +21,7 @@ var (
 	ErrCycleInProgress = errors.New("a start or configuration reload is in progress, try again later")
 
 	// ErrUnavailable is returned when what was registered through the administration could not be loaded
-	ErrUnavailable = errors.New("the managed endpoints, status pages or push keys could not be loaded from the storage")
+	ErrUnavailable = errors.New("the managed endpoints, status pages, push keys or alerting providers could not be loaded from the storage")
 
 	// ErrStorageNotSupported is returned when the storage does not support the administration
 	ErrStorageNotSupported = errors.New("the storage does not support the administration")
@@ -39,15 +40,16 @@ type Backup struct {
 	// Encrypted is whether Body was encrypted with a password.
 	Encrypted bool
 
-	// Endpoints, StatusPages and PushKeys are the numbers of items of each type in the backup.
-	Endpoints   int
-	StatusPages int
-	PushKeys    int
+	// Endpoints, StatusPages, PushKeys and AlertProviders are the numbers of items of each type in the backup.
+	Endpoints      int
+	StatusPages    int
+	PushKeys       int
+	AlertProviders int
 }
 
 // isAnyRegistryUnavailable returns whether one of the registries of the administration could not be loaded
 func isAnyRegistryUnavailable() bool {
-	return managedendpoint.IsManagedUnavailable() || statuspage.IsManagedUnavailable() || pushkey.IsManagedUnavailable()
+	return managedendpoint.IsManagedUnavailable() || statuspage.IsManagedUnavailable() || pushkey.IsManagedUnavailable() || alertprovider.IsManagedUnavailable()
 }
 
 // Build reads what was registered through the administration and returns the backup file, encrypted with password
@@ -71,7 +73,7 @@ func Build(author, password string) (*Backup, error) {
 	if len(body) > MaximumPlaintextBytes {
 		return nil, ErrTooLarge
 	}
-	backup := &Backup{Body: body, Filename: "go-uptime-backup-" + now.Format("20060102-150405") + ".json", Endpoints: len(file.Endpoints), StatusPages: len(file.StatusPages), PushKeys: len(file.PushKeys)}
+	backup := &Backup{Body: body, Filename: "go-uptime-backup-" + now.Format("20060102-150405") + ".json", Endpoints: len(file.Endpoints), StatusPages: len(file.StatusPages), PushKeys: len(file.PushKeys), AlertProviders: len(file.AlertProviders)}
 	if len(password) > 0 {
 		if backup.Body, err = Encrypt(body, password); err != nil {
 			return nil, err
@@ -79,7 +81,7 @@ func Build(author, password string) (*Backup, error) {
 		backup.Encrypted = true
 		backup.Filename = "go-uptime-backup-" + now.Format("20060102-150405") + ".enc.json"
 	}
-	logr.Infof("[adminbackup.Build] Backup with %d endpoints, %d status pages and %d push keys (encrypted=%v) downloaded by %s", backup.Endpoints, backup.StatusPages, backup.PushKeys, backup.Encrypted, auditAuthor(author))
+	logr.Infof("[adminbackup.Build] Backup with %d endpoints, %d status pages, %d push keys and %d alerting providers (encrypted=%v) downloaded by %s", backup.Endpoints, backup.StatusPages, backup.PushKeys, backup.AlertProviders, backup.Encrypted, auditAuthor(author))
 	return backup, nil
 }
 
@@ -95,10 +97,11 @@ func readRegistered(author string, now time.Time) (*File, error) {
 	managedEndpointStore, endpointsOK := store.GetManagedEndpointStore()
 	managedStatusPageStore, statusPagesOK := store.GetManagedStatusPageStore()
 	pushKeyStore, pushKeysOK := store.GetPushKeyStore()
-	if !endpointsOK || !statusPagesOK || !pushKeysOK {
+	alertProviderStore, alertProvidersOK := store.GetManagedAlertProviderStore()
+	if !endpointsOK || !statusPagesOK || !pushKeysOK || !alertProvidersOK {
 		return nil, ErrStorageNotSupported
 	}
-	file := &File{Format: Format, Version: Version, CreatedAt: now, CreatedBy: author, AppVersion: appVersion(), Endpoints: []Endpoint{}, StatusPages: []StatusPage{}, PushKeys: []PushKey{}}
+	file := &File{Format: Format, Version: Version, CreatedAt: now, CreatedBy: author, AppVersion: appVersion(), Endpoints: []Endpoint{}, StatusPages: []StatusPage{}, PushKeys: []PushKey{}, AlertProviders: []AlertProvider{}}
 	storedEndpoints, err := managedEndpointStore.ListManagedEndpoints()
 	if err != nil {
 		return nil, err
@@ -110,6 +113,13 @@ func readRegistered(author string, now time.Time) (*File, error) {
 	storedPushKeys, err := pushKeyStore.ListPushKeys()
 	if err != nil {
 		return nil, err
+	}
+	storedAlertProviders, err := alertProviderStore.ListManagedAlertProviders()
+	if err != nil {
+		return nil, err
+	}
+	for _, stored := range storedAlertProviders {
+		file.AlertProviders = append(file.AlertProviders, AlertProvider{Type: stored.Type, Definition: stored.Definition})
 	}
 	if len(storedEndpoints) > MaximumEndpoints || len(storedStatusPages) > MaximumStatusPages || len(storedPushKeys) > MaximumPushKeys {
 		return nil, ErrTooLarge
@@ -126,6 +136,7 @@ func readRegistered(author string, now time.Time) (*File, error) {
 	sort.Slice(file.Endpoints, func(i, j int) bool { return file.Endpoints[i].Key < file.Endpoints[j].Key })
 	sort.Slice(file.StatusPages, func(i, j int) bool { return file.StatusPages[i].Slug < file.StatusPages[j].Slug })
 	sort.Slice(file.PushKeys, func(i, j int) bool { return file.PushKeys[i].Name < file.PushKeys[j].Name })
+	sort.Slice(file.AlertProviders, func(i, j int) bool { return file.AlertProviders[i].Type < file.AlertProviders[j].Type })
 	return file, nil
 }
 
