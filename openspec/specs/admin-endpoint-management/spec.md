@@ -28,25 +28,29 @@ Com storage `sqlite` ou `postgres`, o sistema MUST carregar os endpoints gerenci
 - **AND** as rotas de administração ficam indisponíveis
 
 ### Requirement: Formato e validação estrita
-O sistema MUST aceitar a definição de um endpoint gerenciado em YAML ou JSON, com as mesmas chaves de um item de `endpoints` do arquivo de configuração, e MUST aplicar no mínimo as mesmas validações e valores padrão aplicados aos endpoints do YAML. Adicionalmente, MUST rejeitar com 400 chaves desconhecidas, alertas de tipo inexistente, alertas cujo provedor não esteja configurado e overrides de provedor inválidos.
+The system MUST accept the definition of a managed endpoint in YAML or JSON, with the same keys as an item of `endpoints` in the configuration file, and MUST apply at least the same validations and default values applied to the endpoints of the YAML. In addition, it MUST reject with 400 unknown keys, alerts of a nonexistent type, alerts whose provider is configured neither in the file nor among the valid managed providers, and invalid provider overrides.
 
 #### Scenario: Definição mínima em JSON
-- **WHEN** um administrador valida `{"name": "site", "url": "https://exemplo.com", "conditions": ["[STATUS] == 200"]}`
-- **THEN** a definição efetiva devolvida tem intervalo de 1 minuto e método `GET`
-- **AND** a definição armazenável não contém esses valores padrão
+- **WHEN** an administrator validates `{"name": "site", "url": "https://exemplo.com", "conditions": ["[STATUS] == 200"]}`
+- **THEN** the returned effective definition has an interval of 1 minute and the `GET` method
+- **AND** the storable definition does not contain those default values
 
 #### Scenario: Definição sem condições
-- **WHEN** um administrador envia uma definição sem `conditions`
-- **THEN** a API responde 400 com a mensagem do erro de validação
-- **AND** nada é persistido nem monitorado
+- **WHEN** an administrator submits a definition without `conditions`
+- **THEN** the API answers 400 with the message of the validation error
+- **AND** nothing is stored nor monitored
 
 #### Scenario: Chave desconhecida
-- **WHEN** um administrador envia uma definição com a chave `intervall`
-- **THEN** a API responde 400 indicando a chave desconhecida
+- **WHEN** an administrator submits a definition with the key `intervall`
+- **THEN** the API answers 400 naming the unknown key
 
 #### Scenario: Alerta sem provedor configurado
-- **WHEN** a configuração não tem o provedor `slack` e um administrador cria um endpoint com um alerta do tipo `slack`
-- **THEN** a API responde 400 informando que o provedor `slack` não está configurado
+- **WHEN** neither the configuration nor the web configure the `slack` provider and an administrator creates an endpoint with a `slack` alert
+- **THEN** the API answers 400 saying the `slack` provider is not configured
+
+#### Scenario: Alert with a managed provider
+- **WHEN** the file has no `telegram` provider, the web has a valid managed `telegram` and an administrator creates an endpoint with a `telegram` alert
+- **THEN** the endpoint is created and the alert uses the `default-alert` of the managed `telegram`
 
 ### Requirement: Restrições próprias de endpoints gerenciados
 O sistema MUST rejeitar definições de endpoints gerenciados que:

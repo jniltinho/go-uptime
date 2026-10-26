@@ -4,40 +4,49 @@
 TBD - created by archiving change add-admin-backup-restore. Update Purpose after archive.
 ## Requirements
 ### Requirement: Conteúdo e formato do backup
-O backup MUST conter as definições completas, sem máscara, do que foi cadastrado pela web:
-- os endpoints gerenciados: ativos e Push, habilitados ou não, inclusive em conflito com o arquivo de configuração;
-- as status pages gerenciadas;
-- as chaves globais de push criadas pela web, com nome, hash hexadecimal minúsculo, dica e, só como informação, data de criação e autor.
+The backup MUST contain the complete, unmasked definitions of what was registered from the web:
+- the managed endpoints: active and Push, enabled or not, including those in conflict with the configuration file;
+- the managed status pages;
+- the global push keys created from the web, with name, lowercase hexadecimal hash, hint and, as information only, creation time and author;
+- the managed alerting providers, including those shadowed by the file, with the complete, unmasked definition.
 
-**O que fica de fora:** o backup MUST NOT conter histórico, alertas disparados, sessões de login nem cadastros do arquivo de configuração.
+**What is left out:** the backup MUST NOT contain history, triggered alerts, login sessions nor anything registered in the configuration file.
 
-**Formato:** JSON com `format: "go-uptime-admin-backup"`, `version: 1`, `createdAt`, `createdBy`, `appVersion` opcional e as listas `endpoints`, `statusPages` e `pushKeys`, ordenadas.
+**Format:** JSON with `format: "go-uptime-admin-backup"`, `version: 1`, `createdAt`, `createdBy`, an optional `appVersion` and the lists `endpoints`, `statusPages`, `pushKeys` and `alertProviders`, sorted. The `alertProviders` list MUST be optional when reading, so that a backup made before it stays valid, and MUST always be written.
 
-**Leitura:** o sistema MUST recusar com 400 um arquivo com:
-- `format` desconhecido ou versão maior que a suportada;
-- chaves desconhecidas;
-- listas ausentes;
-- itens duplicados (chave, slug, nome ou hash).
+**Reading:** the system MUST refuse with 400 a file with:
+- an unknown `format` or a version greater than the supported one;
+- unknown keys;
+- missing lists (except `alertProviders`);
+- duplicated items (key, slug, name, hash or provider type).
 
-**Limites:** o texto claro MUST ter no máximo 2 MiB, 1.000 endpoints, 200 status pages e 500 chaves. O backup MUST responder 422 quando os cadastros passam desses limites.
+**Limits:** the plaintext MUST have at most 2 MiB, 1,000 endpoints, 200 status pages, 500 keys and one provider per alert type. The backup MUST answer 422 when the registered items exceed these limits.
 
-**Arquivos da v6:** a leitura MUST aceitar também `format: "gatus-admin-backup"` e o envelope `format: "gatus-admin-backup-encrypted"`, e o campo `gatusVersion` como sinônimo de `appVersion`, de modo que um backup feito antes da troca de nome seja restaurado. O cabeçalho de um arquivo cifrado MUST ser autenticado como foi lido, com o `format` do próprio arquivo. A escrita MUST usar sempre o formato novo.
+**Files of v6:** reading MUST also accept `format: "gatus-admin-backup"` and the envelope `format: "gatus-admin-backup-encrypted"`, and the `gatusVersion` field as a synonym of `appVersion`, so that a backup made before the rename is restored. The header of an encrypted file MUST be authenticated as it was read, with the file's own `format`. Writing MUST always use the new format.
 
 #### Scenario: Backup com os três tipos
-- **WHEN** a web tem os endpoints `jobs_backup` (Push) e `web_site` (desabilitado), a status page `jobs` e a chave `akamai`
-- **THEN** o arquivo contém os dois endpoints com as definições completas (inclusive o token e `enabled: false`), a página `jobs` e a chave `akamai` só com hash e dica
+- **WHEN** the web has the endpoints `jobs_backup` (Push) and `web_site` (disabled), the status page `jobs` and the key `akamai`
+- **THEN** the file contains both endpoints with their complete definitions (including the token and `enabled: false`), the page `jobs` and the key `akamai` with only its hash and hint
 
 #### Scenario: Cadastros do YAML ficam de fora
-- **WHEN** o arquivo de configuração tem o endpoint `core_api` e a página `services`
-- **THEN** o backup não contém `core_api` nem `services`
+- **WHEN** the configuration file has the endpoint `core_api` and the page `services`
+- **THEN** the backup contains neither `core_api` nor `services`
 
 #### Scenario: Arquivo de outro formato
-- **WHEN** o administrador envia um arquivo com `format: "other"`, `version: 2` ou uma chave desconhecida
-- **THEN** a API responde 400 sem alterar nada
+- **WHEN** the administrator submits a file with `format: "other"`, `version: 2` or an unknown key
+- **THEN** the API answers 400 without changing anything
 
 #### Scenario: Cadastros acima do limite
-- **WHEN** a web tem 1.001 endpoints gerenciados
-- **THEN** o backup responde 422
+- **WHEN** the web has 1,001 managed endpoints
+- **THEN** the backup answers 422
+
+#### Scenario: Backup with an alerting provider
+- **WHEN** the web has the `telegram` provider
+- **THEN** the file contains `telegram` with its token in plaintext, and the encrypted file protects it like the tokens of the endpoints
+
+#### Scenario: Backup made before the providers
+- **WHEN** the administrator restores a backup without the `alertProviders` list
+- **THEN** the file is accepted and no provider changes
 
 ### Requirement: Cifragem opcional do backup
 Ao gerar o backup, o administrador MUST poder escolher cifrá-lo com uma senha de 12 a 1.024 bytes UTF-8.
@@ -175,47 +184,53 @@ A operação MUST ser registrada no log com o autor, as quantidades e se houve c
 - **THEN** a prévia mostra `skip` com o motivo do segredo mascarado
 
 ### Requirement: Aplicação do restore
-`POST /api/v1/admin/restore` MUST receber o corpo da prévia mais o `fingerprint`.
+`POST /api/v1/admin/restore` MUST receive the body of the preview plus the `fingerprint`.
 
-**Validação:**
-- MUST recalcular o plano e responder 409 sem aplicar nada quando o fingerprint for diferente;
-- o fingerprint MUST depender do conteúdo do arquivo, das opções, da geração da configuração e das versões e definições atuais dos itens.
+**Validation:**
+- it MUST compute the plan again and answer 409 without applying anything when the fingerprint differs;
+- the fingerprint MUST depend on the content of the file, the options, the configuration generation and the current versions and definitions of the items, **and of every managed alerting provider**, even those absent from the backup, because the endpoints of the plan are validated against them;
+- the plan MUST validate the endpoints against a simulated alerting configuration: the file's providers, the current managed ones, and the providers the plan will create or update, respecting the overwrite option and the precedence of the file. The preview MUST list, for each provider it updates, the managed endpoints outside the backup that will be restarted.
 
-**Aplicação:**
-- MUST aplicar os itens `create` e `update` na ordem do plano, usando a mesma definição normalizada mostrada na prévia (inclusive com `disableEndpoints`), com as regras e os efeitos da criação e da alteração pela web (monitoramento, publicação depois do commit, auditoria) e o autor do restore, sem gerar tokens;
-- MUST NOT apagar itens nem trocar chaves ou slugs;
-- a verificação de hash de uma chave restaurada MUST ser serializada com as escritas de endpoints gerenciados.
+**Applying:**
+- alerting providers MUST be applied after the push keys and before the endpoints, so that a restored endpoint finds the provider it uses; a provider whose type is configured in the destination's file MUST be `skipped` with the reason;
+- it MUST apply the `create` and `update` items in the order of the plan, using the same normalized definition shown in the preview (including with `disableEndpoints`), with the rules and effects of creating and updating from the web (monitoring, publishing after the commit, audit) and the author of the restore, without generating tokens;
+- it MUST NOT delete items nor change keys or slugs;
+- the hash check of a restored key MUST be serialized with the writes of managed endpoints.
 
-**Resultado:**
-- a resposta MUST trazer o resultado de cada item (`created`, `updated`, `unchanged`, `skipped` ou `failed`, com a mensagem) e os avisos de seleção das páginas aplicadas;
-- a falha de um item MUST NOT interromper os demais;
-- um item alterado entre a verificação e a aplicação MUST ser `failed`;
-- quando uma recarga da configuração começar durante a aplicação, os itens restantes MUST ser `skipped` com "configuration reload in progress".
+**Result:**
+- the response MUST carry the result of each item (`created`, `updated`, `unchanged`, `skipped` or `failed`, with the message) and the selection warnings of the applied pages;
+- the failure of one item MUST NOT interrupt the others;
+- an item changed between the check and the application MUST be `failed`;
+- when a configuration reload starts during the application, the remaining items MUST be `skipped` with "configuration reload in progress".
 
-**Depois de aplicar:**
-- o cache de status dos endpoints MUST ser limpo;
-- o log MUST registrar o resumo com o autor;
-- uma chave de push restaurada MUST aceitar pushes com o token original.
+**After applying:**
+- the status cache of the endpoints MUST be cleared;
+- the log MUST record the summary with the author;
+- a restored push key MUST accept pushes with the original token.
 
 #### Scenario: Restore em outra instalação
-- **WHEN** o backup de uma instalação com SQLite é restaurado numa instalação nova com MariaDB
-- **THEN** os endpoints passam a ser monitorados, a página é publicada e os scripts continuam enviando pushes com a chave global original
+- **WHEN** the backup of an installation with SQLite is restored on a new installation with MariaDB
+- **THEN** the endpoints are monitored, the page is published and the scripts keep sending pushes with the original global key
 
 #### Scenario: Mudança depois da prévia
-- **WHEN** outro administrador altera `web_site` entre a prévia e a aplicação
-- **THEN** a aplicação responde 409 e nada é aplicado
+- **WHEN** another administrator changes `web_site` between the preview and the application
+- **THEN** the application answers 409 and nothing is applied
 
 #### Scenario: Outro arquivo com os mesmos itens
-- **WHEN** a aplicação envia um arquivo com os mesmos ids da prévia e definições diferentes
-- **THEN** a aplicação responde 409
+- **WHEN** the application sends a file with the same ids as the preview and different definitions
+- **THEN** the application answers 409
 
 #### Scenario: Restore repetido
-- **WHEN** o mesmo arquivo é restaurado duas vezes
-- **THEN** na segunda vez todos os itens aplicados antes aparecem como `unchanged`
+- **WHEN** the same file is restored twice
+- **THEN** the second time every item applied before shows as `unchanged`
 
 #### Scenario: Recarga no meio
-- **WHEN** uma recarga da configuração começa depois do terceiro item
-- **THEN** os itens seguintes são `skipped` com "configuration reload in progress" e um novo restore depois da recarga aplica o que faltou
+- **WHEN** a configuration reload starts after the third item
+- **THEN** the following items are `skipped` with "configuration reload in progress" and a new restore after the reload applies what was left
+
+#### Scenario: Endpoint and provider in the same restore
+- **WHEN** the backup has the `ntfy` provider and the endpoint `core_api` with an `ntfy` alert, and the destination has no `ntfy`
+- **THEN** the provider is created first and `core_api` is created with its alert
 
 ### Requirement: Aba Backup da administração
 A administração MUST ter a aba **Backup** em `/admin/backup`, depois de "Push keys", servida também ao abrir a URL diretamente.

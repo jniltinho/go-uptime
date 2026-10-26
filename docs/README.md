@@ -23,7 +23,7 @@ checks can be paired with alerting via Slack, Teams, PagerDuty, Discord, Twilio 
   <summary><b>Quick start</b></summary>
 
 ```console
-docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.1.0
 ```
 
 Images are published on [Docker Hub](https://hub.docker.com/r/jniltinho/go-uptime) with fixed tags only: there is no
@@ -190,7 +190,7 @@ The main features of Go Uptime are:
 ## Usage
 
 ```console
-docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.1.0
 ```
 
 If you want to create your own configuration, see [Docker](#docker) for information on how to mount a configuration file.
@@ -2955,19 +2955,19 @@ Many examples can be found in the [.examples](../.examples) folder, but this sec
 ### Docker
 To run Go Uptime locally with Docker:
 ```console
-docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.0.0
+docker run -p 8080:8080 --name go-uptime jniltinho/go-uptime:v7.1.0
 ```
 
 Other than using one of the examples provided in the [.examples](../.examples) folder, you can also try it out locally by
 creating a configuration file, we'll call it `config.yaml` for this example, and running the following
 command:
 ```console
-docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.0.0
+docker run -p 8080:8080 --mount type=bind,source="$(pwd)"/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.1.0
 ```
 
 If you're on Windows, replace `"$(pwd)"` by the absolute path to your current directory, e.g.:
 ```console
-docker run -p 8080:8080 --mount type=bind,source=C:/Users/Chris/Desktop/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.0.0
+docker run -p 8080:8080 --mount type=bind,source=C:/Users/Chris/Desktop/config.yaml,target=/config/config.yaml --name go-uptime jniltinho/go-uptime:v7.1.0
 ```
 
 To build the image locally:
@@ -2985,7 +2985,7 @@ Once Helm is set up properly, add the repository as follows:
 ```console
 helm repo add twin https://twin.github.io/helm-charts
 helm repo update
-helm install go-uptime twin/gatus --set image.repository=jniltinho/go-uptime --set image.tag=v7.0.0
+helm install go-uptime twin/gatus --set image.repository=jniltinho/go-uptime --set image.tag=v7.1.0
 ```
 
 The chart (`twin/gatus`) is the one of the original project, Gatus, and deploys its image by default: the two `--set`

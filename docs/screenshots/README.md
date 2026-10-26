@@ -75,6 +75,17 @@ alerts inherit, and **Send test**, which by default also sends the resolution so
 
 ![Form of a notification](admin-notification-form.png)
 
+**Add notification** groups the types by category, with a search; a type already configured is shown but cannot be
+picked again, and the providers that the original Gatus has not validated with its community say so.
+
+![Picker of a new notification](admin-notification-picker.png)
+
+In the form of an endpoint, the **Alerts** section takes several alerts, of the same type or not. An empty field shows
+what the alert inherits from the default alert of its provider, **Send on resolved** can say *No* over a provider that
+sends it, and *Advanced* has **Enabled** and the reminder interval.
+
+![Alerts of an endpoint](admin-endpoint-alerts.png)
+
 ## Backup and restore
 
 A JSON file with the endpoints, status pages and push keys, optionally encrypted with a password, that can be
