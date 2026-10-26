@@ -108,14 +108,14 @@ api() { # method path content-type body
   case "$code" in 200 | 201) ;; *) echo "$1 $2 answered $code: $(cat "$WORK/response.json")"; exit 1 ;; esac
 }
 
-echo "==> Registering through the administration: endpoints, push key and status page"
-api POST /api/v1/admin/endpoints application/yaml "$(printf 'type: push\nname: nightly-backup\ngroup: jobs\ntoken: %s\nheartbeat:\n  interval: 1m\n' "$PUSH_TOKEN")"
-api POST /api/v1/admin/endpoints application/yaml "$(printf 'name: checkout\ngroup: shop\nurl: "https://www.iana.org"\ninterval: 5s\nconditions:\n  - "[STATUS] == 200"\n  - "[CERTIFICATE_EXPIRATION] > 48h"\n')"
-api POST /api/v1/admin/push-keys application/json '{"name":"deploy-scripts"}'
-api POST /api/v1/admin/push-keys application/json '{"name":"cron-jobs"}'
+echo "==> Registering through the administration: notifications, endpoints, push key and status page"
 # Notifications: only stored, no message is sent while capturing
 api POST /api/v1/admin/alert-providers application/json '{"type":"telegram","token":"123456:screenshots-token","id":"-1001234567890","default-alert":{"failure-threshold":3,"send-on-resolved":true}}'
 api POST /api/v1/admin/alert-providers application/json '{"type":"pagerduty","integration-key":"0123456789abcdef0123456789abcdef","default-alert":{"send-on-resolved":true}}'
+api POST /api/v1/admin/endpoints application/yaml "$(printf 'type: push\nname: nightly-backup\ngroup: jobs\ntoken: %s\nheartbeat:\n  interval: 1m\n' "$PUSH_TOKEN")"
+api POST /api/v1/admin/endpoints application/yaml "$(printf 'name: checkout\ngroup: shop\nurl: "https://www.iana.org"\ninterval: 5s\nconditions:\n  - "[STATUS] == 200"\n  - "[CERTIFICATE_EXPIRATION] > 48h"\nalerts:\n  - type: pagerduty\n    description: checkout is down\n  - type: telegram\n    failure-threshold: 10\n    send-on-resolved: false\n    minimum-reminder-interval: 30m\n')"
+api POST /api/v1/admin/push-keys application/json '{"name":"deploy-scripts"}'
+api POST /api/v1/admin/push-keys application/json '{"name":"cron-jobs"}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"services","title":"Services","description":"Availability of the services we run for our customers.","enabled":true,"groups":["sites","apis","shop"],"featured":["sites_website","shop_checkout"],"show-certificate-expiration":true}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"internal","title":"Internal tools","enabled":false,"groups":["infra","jobs"]}'
 
@@ -161,6 +161,21 @@ capture admin-status-page-form /admin/status-pages/services/edit
 capture admin-push-keys /admin/push-keys
 capture admin-notifications /admin/alert-providers
 capture admin-notification-form /admin/alert-providers/telegram/edit
+# The picker of a new notification, open over the list
+browser open "$BASE/admin/alert-providers" >/dev/null
+browser wait '[data-testid="alert-provider-add"]' >/dev/null
+browser click '[data-testid="alert-provider-add"]' >/dev/null
+browser wait '[data-testid="alert-provider-picker"]' >/dev/null
+browser wait 800 >/dev/null
+browser screenshot "$OUT/admin-notification-picker.png" >/dev/null
+echo "    admin-notification-picker.png"
+# The Alerts section of an endpoint, with what each alert inherits and the Advanced options of the second one
+browser open "$BASE/admin/endpoints/shop_checkout/edit" >/dev/null
+browser wait '[data-testid="admin-alert-1"]' >/dev/null
+browser eval "(() => { document.querySelector('[data-testid=\"admin-alert-1\"] details').open = true; document.querySelector('[data-testid=\"admin-alert-0\"]').closest('section').scrollIntoView() })()" >/dev/null
+browser wait 800 >/dev/null
+browser screenshot "$OUT/admin-endpoint-alerts.png" >/dev/null
+echo "    admin-endpoint-alerts.png"
 capture admin-backup /admin/backup
 capture status-page-dark /status/services
 set_theme light
@@ -170,4 +185,4 @@ set_theme bio
 capture status-page-bio /status/services
 capture dashboard-bio /
 
-echo "OK: 15 screenshots of $VERSION in $OUT"
+echo "OK: 17 screenshots of $VERSION in $OUT"

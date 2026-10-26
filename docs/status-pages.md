@@ -431,7 +431,7 @@ not from `127.0.0.1`. Pin the subnet of the compose network so that the gateway 
 ```yaml
 services:
   go-uptime:
-    image: jniltinho/go-uptime:v7.0.0
+    image: jniltinho/go-uptime:v7.1.0
     ports:
       - "127.0.0.1:8080:8080"
     volumes:

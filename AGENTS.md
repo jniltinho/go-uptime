@@ -324,7 +324,7 @@ Change (archived): `openspec/changes/archive/2026-09-15-add-basic-login-page/` (
 
 ## Alerting providers through the web
 
-Change: `openspec/changes/add-admin-alerting-providers/` (read `design.md` before touching these areas; documentation in `docs/admin-endpoints.md#notifications`).
+Change (archived): `openspec/changes/archive/2026-10-26-add-admin-alerting-providers/` (read `design.md` before touching these areas; documentation in `docs/admin-endpoints.md#notifications`); specs in `openspec/specs/admin-alert-providers` and `admin-alert-providers-web-ui`.
 
 - `internal/alertprovider` keeps one provider per alert type in `managed_alert_providers`; the YAML is never written. `Load` runs in `cmd/serve.go` **before** `managedendpoint.Load`, and publishes an effective `*alerting.Config` (the file's providers plus the valid managed ones of the types the file does not declare). `cfg.Alerting` is never changed.
 - A type the file **declares** wins even when its block is invalid: `config.Config.DeclaredAlertTypes` is filled before `ValidateAlertingConfig` sets invalid providers to nil. The managed row of that type is `shadowed`, viewable and deletable.

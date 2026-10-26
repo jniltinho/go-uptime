@@ -3,7 +3,7 @@
 # browser and kept in SQLite. It starts as it is, with the user "admin" and the password "go-uptime": see config/config.yaml to change it.
 services:
   go-uptime:
-    image: jniltinho/go-uptime:v7.0.0
+    image: jniltinho/go-uptime:v7.1.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"   # publish it through a reverse proxy, not directly (docs/install-linux.md has an nginx example)

@@ -48,7 +48,7 @@ With Docker, using a fixed version (`latest` is never published):
 
 ```bash
 mkdir -p config && curl -sL -o config/config.yaml https://raw.githubusercontent.com/jniltinho/go-uptime/main/config.yaml
-docker run -d --name go-uptime -p 127.0.0.1:8080:8080 -v "$PWD/config:/config" jniltinho/go-uptime:v7.0.0
+docker run -d --name go-uptime -p 127.0.0.1:8080:8080 -v "$PWD/config:/config" jniltinho/go-uptime:v7.1.0
 ```
 
 Open http://127.0.0.1:8080. `docker ps` shows the container as `healthy` once `/health` answers.
@@ -58,7 +58,7 @@ That keeps nothing across restarts. With Docker Compose, the history in SQLite a
 ```yaml
 services:
   go-uptime:
-    image: jniltinho/go-uptime:v7.0.0
+    image: jniltinho/go-uptime:v7.1.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"   # publish it through a reverse proxy, not directly
@@ -70,8 +70,8 @@ volumes:
 ```
 
 ```bash
-docker run --rm -it jniltinho/go-uptime:v7.0.0 password hash             # asks for the password, prints the hash
-docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.0.0 config validate   # before every deploy
+docker run --rm -it jniltinho/go-uptime:v7.1.0 password hash             # asks for the password, prints the hash
+docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.1.0 config validate   # before every deploy
 docker compose up -d
 ```
 
@@ -87,7 +87,7 @@ Without Docker, download `go-uptime_<version>_linux_<amd64|arm64>.tar.gz` from t
 [releases](https://github.com/jniltinho/go-uptime/releases) and run:
 
 ```bash
-tar xzf go-uptime_7.0.0_linux_amd64.tar.gz
+tar xzf go-uptime_7.1.0_linux_amd64.tar.gz
 ./go-uptime config validate --config config.yaml
 ./go-uptime --config config.yaml
 ```
