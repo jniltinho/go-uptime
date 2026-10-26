@@ -36,7 +36,7 @@ var (
 
 // typesWithClient are the providers whose configuration has a client section
 var typesWithClient = []alert.Type{
-	alert.TypeCustom, alert.TypeEmail, alert.TypeGitea, alert.TypeGoogleChat, alert.TypeMattermost, alert.TypeSendGrid,
+	alert.TypeCustom, alert.TypeEmail, alert.TypeGitea, alert.TypeGoogleChat, alert.TypeMattermost, alert.TypeResend, alert.TypeSendGrid,
 	alert.TypeTeams, alert.TypeTelegram,
 }
 
@@ -69,6 +69,7 @@ var secretPaths = map[alert.Type][]string{
 	alert.TypePagerDuty:      {"integration-key"},
 	alert.TypePlivo:          {"auth-token"},
 	alert.TypePushover:       {"application-token", "user-key"},
+	alert.TypeResend:         {"api-key"},
 	alert.TypeRocketChat:     {"webhook-url"},
 	alert.TypeSendGrid:       {"api-key"},
 	alert.TypeSignal:         {},
@@ -114,6 +115,7 @@ var publicPaths = map[alert.Type][]string{
 	alert.TypePagerDuty:      {},
 	alert.TypePlivo:          {"auth-id", "from", "to"},
 	alert.TypePushover:       {"device", "priority", "resolved-priority", "sound", "title", "ttl"},
+	alert.TypeResend:         {"from", "to"},
 	alert.TypeRocketChat:     {"channel"},
 	alert.TypeSendGrid:       {"from", "to"},
 	alert.TypeSignal:         {"api-url", "number", "recipients"},

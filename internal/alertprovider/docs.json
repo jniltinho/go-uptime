@@ -702,6 +702,29 @@
     "name": "Pushover",
     "untested": false
   },
+  "resend": {
+    "category": "Email",
+    "deprecated": false,
+    "fields": {
+      "api-key": {
+        "default": "",
+        "help": "Resend API key, e.g. re_xxxxxxxx.",
+        "required": true
+      },
+      "from": {
+        "default": "",
+        "help": "Sender, e.g. alerts@example.com or Go Uptime <alerts@example.com>; its domain must be verified in Resend.",
+        "required": true
+      },
+      "to": {
+        "default": "",
+        "help": "Recipients separated by commas, at most 50.",
+        "required": true
+      }
+    },
+    "name": "Resend",
+    "untested": true
+  },
   "rocketchat": {
     "category": "Chat",
     "deprecated": false,

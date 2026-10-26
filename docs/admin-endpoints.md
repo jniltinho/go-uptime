@@ -219,7 +219,7 @@ PagerDuty and the other types of the [alerting section](README.md) — without t
 stored in the database (table `managed_alert_providers`), never written to the YAML, loaded at startup and on every
 reload, and kept when `admin.enabled` is turned off.
 
-- **Add notification** lists the 41 types by category. The form has the fields of the type, with a short help and the
+- **Add notification** lists every type by category. The form has the fields of the type, with a short help and the
   default value, and the **default alert** that every alert of that type inherits (failure and success thresholds,
   send on resolved, description, reminder). Group overrides and the `client` options are edited in YAML mode, and the
   form keeps them as they are.

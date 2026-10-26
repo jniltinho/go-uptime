@@ -37,6 +37,7 @@ import (
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pagerduty"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/plivo"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pushover"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/resend"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/rocketchat"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/sendgrid"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/signal"
@@ -133,6 +134,9 @@ type Config struct {
 
 	// Pushover is the configuration for the pushover alerting provider
 	Pushover *pushover.AlertProvider `yaml:"pushover,omitempty"`
+
+	// Resend is the configuration for the resend alerting provider
+	Resend *resend.AlertProvider `yaml:"resend,omitempty"`
 
 	// RocketChat is the configuration for the rocketchat alerting provider
 	RocketChat *rocketchat.AlertProvider `yaml:"rocketchat,omitempty"`

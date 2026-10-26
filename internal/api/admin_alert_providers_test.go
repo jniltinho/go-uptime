@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync/atomic"
 	"testing"
+
+	"github.com/jniltinho/go-uptime/v7/internal/alertprovider"
 )
 
 func TestAdminAlertProvidersAPI(t *testing.T) {
@@ -24,8 +26,8 @@ func TestAdminAlertProvidersAPI(t *testing.T) {
 	definition := `{"type": "custom", "url": "` + secretURL + `", "default-alert": {"failure-threshold": 2}}`
 
 	_, listing := env.expectStatus(t, http.MethodGet, "/api/v1/admin/alert-providers", "", nil, http.StatusOK)
-	if providers, _ := listing["providers"].([]any); len(providers) != 41 || listing["storageSupported"] != true {
-		t.Fatalf("expected the 41 types and a supported storage, got %d providers", len(providers))
+	if providers, _ := listing["providers"].([]any); len(providers) != len(alertprovider.Types()) || listing["storageSupported"] != true {
+		t.Fatalf("expected every alert type and a supported storage, got %d providers", len(providers))
 	}
 	env.expectStatus(t, http.MethodPost, "/api/v1/admin/alert-providers/validate", `{"type": "slack"}`, jsonHeaders, http.StatusBadRequest)
 	env.expectStatus(t, http.MethodPost, "/api/v1/admin/alert-providers", `{"type": "carrier-pigeon"}`, jsonHeaders, http.StatusBadRequest)
