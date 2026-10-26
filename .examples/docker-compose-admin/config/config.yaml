@@ -4,9 +4,9 @@
 #
 # It starts as it is:  docker compose up -d   then sign in with the user "admin" and the password "go-uptime".
 # CHANGE THE PASSWORD before this is reachable by anyone else. It asks for the new password and prints its hash:
-#   docker run --rm -it jniltinho/go-uptime:v7.1.0 password hash
+#   docker run --rm -it jniltinho/go-uptime:v7.2.0 password hash
 # Check the file after every change:
-#   docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.1.0 config validate
+#   docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.2.0 config validate
 
 storage:
   type: sqlite

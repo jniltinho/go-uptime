@@ -93,7 +93,7 @@ Every read of the administration (detail, YAML, list, validation and write respo
 
 ### Requirement: Administration API of the providers
 Under `/api/v1/admin`, with the same authorization, CSRF, body limit and audit rules as managed endpoints, the system MUST offer:
-- `GET /alert-providers`: every alert type, each with its origin (`yaml`, `web`, `shadowed`, `none`), validity, version and the number of endpoints (of the file and managed) with an alert of that type;
+- `GET /alert-providers`: every alert type of `alerting.Config`, whatever their number, each with its origin (`yaml`, `web`, `shadowed`, `none`), validity, version and the number of endpoints (of the file and managed) with an alert of that type;
 - `GET /alert-providers/{type}`: the masked definition, in JSON and in YAML, with an `ETag` carrying the version;
 - `POST /alert-providers` and `PUT /alert-providers/{type}`;
 - `DELETE /alert-providers/{type}`;
@@ -109,7 +109,7 @@ An unknown type MUST answer 404; updating or deleting a type of the file MUST an
 
 #### Scenario: Complete list
 - **WHEN** the file configures `slack` and the web configures `ntfy`
-- **THEN** the list has the 41 types, `slack` as `yaml`, `ntfy` as `web` and the others as `none`
+- **THEN** the list has every alert type (42 with `resend`), `slack` as `yaml`, `ntfy` as `web` and the others as `none`
 
 ### Requirement: Test notification
 `POST /api/v1/admin/alert-providers/test` MUST send a test notification through the received definition, saved or not (with `********` resolved from the stored value), without changing any alert state. The response MUST wait at most 15 seconds and then answer that the provider did not answer in time and that the notification may still be delivered; the test MUST keep its slot until the send really ends. Endpoint tests and provider tests MUST share the same two concurrent slots (429 beyond them). The response MUST be structured (success, duration, HTTP status when known, error) and MUST NOT carry secrets, raw or encoded. The notification MUST identify itself as a Go Uptime test, and the optional group of the request MUST select the matching override. With the `resolve` option, the resolution MUST be sent right after an accepted notification, with the resolve key the provider returned, so that a test leaves no incident open; the result MUST say whether the resolution was accepted.

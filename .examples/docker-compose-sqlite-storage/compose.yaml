@@ -1,7 +1,7 @@
 # Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 services:
   go-uptime:
-    image: jniltinho/go-uptime:v7.1.0
+    image: jniltinho/go-uptime:v7.2.0
     ports:
       - "127.0.0.1:8080:8080"   # only on this machine: the example password is public
     volumes:

@@ -44,7 +44,7 @@ endpoints:
 
 # The administration, ready to use: http://127.0.0.1:8080/admin, user "admin", password "go-uptime".
 # CHANGE THE PASSWORD before this is reachable by anyone else. It asks for the new password and prints its hash:
-#   docker run --rm -it jniltinho/go-uptime:v7.1.0 password hash
+#   docker run --rm -it jniltinho/go-uptime:v7.2.0 password hash
 security:
   basic:
     username: admin
