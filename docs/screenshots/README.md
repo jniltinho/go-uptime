@@ -68,7 +68,7 @@ file.
 ## Notifications
 
 The alerting providers configured through the web, next to the ones of the configuration file, which are read-only.
-**Add notification** picks one of the 41 types by category; the form has the fields of the type, the default alert its
+**Add notification** picks one of the types by category; the form has the fields of the type, the default alert its
 alerts inherit, and **Send test**, which by default also sends the resolution so that no incident is left open.
 
 ![Notifications](admin-notifications.png)
@@ -76,7 +76,7 @@ alerts inherit, and **Send test**, which by default also sends the resolution so
 ![Form of a notification](admin-notification-form.png)
 
 **Add notification** groups the types by category, with a search; a type already configured is shown but cannot be
-picked again, and the providers that the original Gatus has not validated with its community say so.
+picked again, and the providers not validated against the real service yet say so.
 
 ![Picker of a new notification](admin-notification-picker.png)
 

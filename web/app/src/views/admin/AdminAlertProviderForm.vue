@@ -26,7 +26,7 @@
         {{ info.name }} is deprecated: prefer Microsoft Teams Workflows.
       </div>
       <div v-else-if="info.untested" class="mb-4 border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
-        The original Gatus warns that this provider has not been validated by its community yet: send a test before relying on it.
+        This provider has not been validated against the real service yet: send a test before relying on it.
       </div>
       <div v-if="itemError && !readOnly" role="alert" class="mb-4 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200">
         The stored definition is invalid and sends nothing: {{ itemError }}

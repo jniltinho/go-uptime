@@ -40,7 +40,8 @@ type TypeInfo struct {
 	// "Issues" or "Automation"
 	Category string `json:"category"`
 
-	// Untested is whether the original Gatus warns that the provider has not been validated by its community
+	// Untested is whether the provider has not been validated against the real service yet, by the community of the
+	// original Gatus or by Go Uptime
 	Untested bool `json:"untested,omitempty"`
 
 	// Deprecated is whether the provider is deprecated in favour of another one

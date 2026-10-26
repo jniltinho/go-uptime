@@ -33,6 +33,7 @@ import (
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pagerduty"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/plivo"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/pushover"
+	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/resend"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/rocketchat"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/sendgrid"
 	"github.com/jniltinho/go-uptime/v7/internal/alerting/provider/signal"
@@ -127,6 +128,7 @@ var (
 	_ AlertProvider = (*pagerduty.AlertProvider)(nil)
 	_ AlertProvider = (*plivo.AlertProvider)(nil)
 	_ AlertProvider = (*pushover.AlertProvider)(nil)
+	_ AlertProvider = (*resend.AlertProvider)(nil)
 	_ AlertProvider = (*rocketchat.AlertProvider)(nil)
 	_ AlertProvider = (*sendgrid.AlertProvider)(nil)
 	_ AlertProvider = (*signal.AlertProvider)(nil)
@@ -169,6 +171,7 @@ var (
 	_ Config[pagerduty.Config]      = (*pagerduty.Config)(nil)
 	_ Config[plivo.Config]          = (*plivo.Config)(nil)
 	_ Config[pushover.Config]       = (*pushover.Config)(nil)
+	_ Config[resend.Config]         = (*resend.Config)(nil)
 	_ Config[rocketchat.Config]     = (*rocketchat.Config)(nil)
 	_ Config[sendgrid.Config]       = (*sendgrid.Config)(nil)
 	_ Config[signal.Config]         = (*signal.Config)(nil)

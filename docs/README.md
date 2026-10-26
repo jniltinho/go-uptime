@@ -79,6 +79,7 @@ Have any feedback or questions? [Open an issue](https://github.com/jniltinho/go-
     - [Configuring PagerDuty alerts](#configuring-pagerduty-alerts)
     - [Configuring Plivo alerts](#configuring-plivo-alerts)
     - [Configuring Pushover alerts](#configuring-pushover-alerts)
+    - [Configuring Resend alerts](#configuring-resend-alerts)
     - [Configuring Rocket.Chat alerts](#configuring-rocketchat-alerts)
     - [Configuring SendGrid alerts](#configuring-sendgrid-alerts)
     - [Configuring Signal alerts](#configuring-signal-alerts)
@@ -877,6 +878,7 @@ endpoints:
 | `alerting.pagerduty`       | Configuration for alerts of type `pagerduty`. <br />See [Configuring PagerDuty alerts](#configuring-pagerduty-alerts).                  | `{}`    |
 | `alerting.plivo`           | Configuration for alerts of type `plivo`. <br />See [Configuring Plivo alerts](#configuring-plivo-alerts).                              | `{}`    |
 | `alerting.pushover`        | Configuration for alerts of type `pushover`. <br />See [Configuring Pushover alerts](#configuring-pushover-alerts).                     | `{}`    |
+| `alerting.resend`          | Configuration for alerts of type `resend`. <br />See [Configuring Resend alerts](#configuring-resend-alerts).                           | `{}`    |
 | `alerting.rocketchat`      | Configuration for alerts of type `rocketchat`. <br />See [Configuring Rocket.Chat alerts](#configuring-rocketchat-alerts).              | `{}`    |
 | `alerting.sendgrid`        | Configuration for alerts of type `sendgrid`. <br />See [Configuring SendGrid alerts](#configuring-sendgrid-alerts).                     | `{}`    |
 | `alerting.signal`          | Configuration for alerts of type `signal`. <br />See [Configuring Signal alerts](#configuring-signal-alerts).                           | `{}`    |
@@ -2000,6 +2002,49 @@ endpoints:
       - type: pushover
         failure-threshold: 3
         success-threshold: 5
+        send-on-resolved: true
+        description: "healthcheck failed"
+```
+
+
+#### Configuring Resend alerts
+
+> ⚠️ **WARNING**: This alerting provider has not been tested yet. If you've tested it and confirmed that it works, please open an issue or a pull request in [jniltinho/go-uptime](https://github.com/jniltinho/go-uptime/issues) saying whether the provider works as intended.
+
+| Parameter                           | Description                                                                                        | Default       |
+|:------------------------------------|:---------------------------------------------------------------------------------------------------|:--------------|
+| `alerting.resend`                   | Configuration for alerts of type `resend`                                                          | `{}`          |
+| `alerting.resend.api-key`           | Resend API key                                                                                     | Required `""` |
+| `alerting.resend.from`              | Sender, e.g. `alerts@example.com` or `Go Uptime <alerts@example.com>`, of a domain verified in Resend | Required `""` |
+| `alerting.resend.to`                | Recipients, separated by commas (at most 50)                                                       | Required `""` |
+| `alerting.resend.client`            | Client configuration. <br />See [Client configuration](#client-configuration)                      | `{}`          |
+| `alerting.resend.default-alert`     | Default alert configuration. <br />See [Setting a default alert](#setting-a-default-alert)         | N/A           |
+| `alerting.resend.overrides`         | List of overrides that may be prioritized over the default configuration                           | `[]`          |
+| `alerting.resend.overrides[].group` | Endpoint group for which the configuration will be overridden by this configuration                | `""`          |
+| `alerting.resend.overrides[].*`     | See `alerting.resend.*` parameters                                                                 | `{}`          |
+
+Alerts are sent through the [Resend API](https://resend.com/docs/api-reference/emails/send-email), with a plain text and
+an HTML version of the message. The domain of `from` must be verified in your Resend account, or every email is refused
+with a 403: the **Send test** button of the Notifications tab shows it before the first alert.
+
+```yaml
+alerting:
+  resend:
+    api-key: "re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    from: "Go Uptime <alerts@example.com>"
+    to: "admin@example.com,ops@example.com"
+    overrides:
+      - group: "core"
+        to: "core-team@example.com"
+
+endpoints:
+  - name: website
+    url: "https://twin.sh/health"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: resend
         send-on-resolved: true
         description: "healthcheck failed"
 ```

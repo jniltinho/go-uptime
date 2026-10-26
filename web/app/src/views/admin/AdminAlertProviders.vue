@@ -125,7 +125,7 @@
               <span class="min-w-0">
                 <span class="block truncate font-medium text-foreground dark:text-gray-100">{{ type.name }}</span>
                 <span v-if="type.deprecated" class="text-xs text-amber-700 dark:text-amber-300">Deprecated</span>
-                <span v-else-if="type.untested" class="text-xs text-muted-foreground dark:text-gray-400">Not validated by the community</span>
+                <span v-else-if="type.untested" class="text-xs text-muted-foreground dark:text-gray-400">Not validated yet</span>
               </span>
               <span v-if="isConfigured(type.type)" class="shrink-0 text-xs text-muted-foreground dark:text-gray-400">Configured</span>
             </button>
