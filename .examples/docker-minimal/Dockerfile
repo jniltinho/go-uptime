@@ -1,3 +1,3 @@
 # Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-FROM jniltinho/go-uptime:v7.1.0
+FROM jniltinho/go-uptime:v7.2.0
 ADD config.yaml ./config/config.yaml
