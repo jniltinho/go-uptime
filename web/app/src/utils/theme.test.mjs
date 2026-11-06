@@ -60,10 +60,10 @@ test('theme.js follows every case of theme.cases.json', () => {
 })
 
 test('the inline script of index.html follows every case of theme.cases.json', () => {
-  const html = readFileSync(join(here, '..', '..', 'public', 'index.html'), 'utf8')
+  const html = readFileSync(join(here, '..', '..', 'index.html'), 'utf8')
   const start = html.indexOf('(function() {', html.indexOf('Initialize theme immediately'))
   const end = html.indexOf('})();', start) + '})();'.length
-  assert.ok(start > 0 && end > start, 'the inline theme script was not found in public/index.html')
+  assert.ok(start > 0 && end > start, 'the inline theme script was not found in index.html')
   const script = new vm.Script(html.slice(start, end))
   for (const item of cases) {
     const fake = fakeDocument({ defaultTheme: item.default, cookie: cookieOf(item.cookie), classes: ['dark', 'theme-bio', 'unrelated'] })

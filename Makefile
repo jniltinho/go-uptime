@@ -109,4 +109,4 @@ frontend-build:
 
 .PHONY: frontend-dev
 frontend-dev:
-	npm --prefix web/app run serve
+	npm --prefix web/app run dev

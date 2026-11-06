@@ -4,6 +4,9 @@ package static
 
 import (
 	"io/fs"
+	"os"
+	"regexp"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -88,5 +91,32 @@ func TestEmbed(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestIndexKeepsTheGoTemplatePlaceholders makes sure the build of the frontend copies every placeholder of the Go
+// template of web/app/index.html into the embedded index.html: Vite parses the HTML, and a placeholder it rewrote or
+// dropped (a favicon link resolved as an asset, for example) would only show up as a broken page at runtime.
+func TestIndexKeepsTheGoTemplatePlaceholders(t *testing.T) {
+	placeholder := regexp.MustCompile(`\{\{[^}]*\}\}`)
+	source, err := os.ReadFile("app/index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	embedded, err := fs.ReadFile(FileSystem, IndexPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := placeholder.FindAllString(string(source), -1)
+	got := placeholder.FindAllString(string(embedded), -1)
+	slices.Sort(expected)
+	slices.Sort(got)
+	if len(expected) == 0 || !slices.Equal(expected, got) {
+		t.Errorf("expected the placeholders of app/index.html in the embedded index.html:\nexpected %v\ngot      %v", expected, got)
+	}
+	for _, link := range []string{`href="/css/custom.css"`, `href="/fonts/inter-4-1-latin.woff2"`} {
+		if !strings.Contains(string(embedded), link) {
+			t.Errorf("expected the embedded index.html to keep the runtime link %s", link)
+		}
 	}
 }

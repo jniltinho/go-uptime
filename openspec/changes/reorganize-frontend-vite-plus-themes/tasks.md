@@ -1,12 +1,12 @@
 ## 1. Vue CLI → Vite
 
-- [ ] 1.1 Collect the references: `test/e2e/theme-colors.sh` output and screenshots of `docs/screenshots/capture.sh`
-- [ ] 1.2 Add `vite` and `@vitejs/plugin-vue`; write `vite.config.js` (alias `@`, `.vue` extension, outDir `../static`, stable names, `cssCodeSplit: false`, dev port 8081 and proxy)
-- [ ] 1.3 Move `public/index.html` to `web/app/index.html` with the entry `<script type="module" src="/src/main.js">`; `pre`/`post` plugin that protects the placeholder links and `/css/custom.css`
-- [ ] 1.4 Replace `process.env.BASE_URL` by `import.meta.env.BASE_URL`
-- [ ] 1.5 Remove Vue CLI, Babel, `core-js`, `vue.config.js`, `babel.config.js`
-- [ ] 1.6 Placeholder test in `web/static_test.go`; update the required files (no `chunk-vendors.js`)
-- [ ] 1.7 `make frontend-build`, `make test`, unit tests, every `test/e2e/*.sh`, `theme-colors.sh --compare`
+- [x] 1.1 Collect the references: `test/e2e/theme-colors.sh` output and screenshots of `docs/screenshots/capture.sh`
+- [x] 1.2 Add `vite` and `@vitejs/plugin-vue`; write `vite.config.js` (alias `@`, `.vue` extension, outDir `../static`, stable names, `cssCodeSplit: false`, dev port 8081 and proxy)
+- [x] 1.3 Move `public/index.html` to `web/app/index.html` with the entry `<script type="module" src="/src/main.js">`; `pre`/`post` plugin that protects the placeholder links and `/css/custom.css`
+- [x] 1.4 Replace `process.env.BASE_URL` by `import.meta.env.BASE_URL`
+- [x] 1.5 Remove Vue CLI, Babel, `core-js`, `vue.config.js`, `babel.config.js`
+- [x] 1.6 Placeholder test in `web/static_test.go`; update the required files (no `chunk-vendors.js`)
+- [x] 1.7 `make frontend-build`, `make test`, unit tests, every `test/e2e/*.sh`, `theme-colors.sh --compare`
 
 ## 2. Vite → Vite+
 
