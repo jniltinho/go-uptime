@@ -4,56 +4,49 @@
 TBD - created by archiving change refine-admin-backup-layout. Update Purpose after archive.
 ## Requirements
 ### Requirement: Tema escuro por padrão
-A interface web MUST oferecer três temas: escuro (`dark`), claro (`light`) e Bio (`bio`), este de base clara. Sem uma escolha de tema válida salva pelo visitante, ela MUST usar o tema padrão configurado: o de `ui.default-theme` (`dark`, `light` ou `bio`) e, só quando `ui.default-theme` não está definido, o de `ui.dark-mode`, que é escuro por padrão, sem seguir a preferência de tema do sistema operacional. Isso vale para o dashboard, as páginas de detalhes, a administração, as páginas públicas e a tela de login.
+The web interface MUST offer the themes of the theme registry (`web/app/src/themes/index.js`), which ships with dark
+(`dark`), light (`light`) and Bio (`bio`, a light-based theme). Without a valid theme choice saved by the visitor, it
+MUST use the configured default theme: the one of `ui.default-theme` (any id of the registry) and, only when
+`ui.default-theme` is not set, the one of `ui.dark-mode`, which is dark by default, without following the theme
+preference of the operating system. This applies to the dashboard, the details pages, the administration, the public
+pages and the login screen.
 
-**Entrega pelo servidor:**
-- o HTML entregue MUST já ter o tema inicial, para a página não trocar de tema ao carregar;
-- MUST informar o tema padrão configurado;
-- MUST ter a cor de tema do navegador (`theme-color`) coerente com o tema.
+**Delivery by the server:**
+- the delivered HTML MUST already carry the initial theme (`data-theme`, `data-scheme` and, for the 7.x series, the
+  legacy class `dark` or `theme-bio`), so that the page does not change theme while loading;
+- MUST state the configured default theme;
+- MUST carry the browser theme colour (`theme-color`) of the theme, from the registry.
 
-**Escolha do visitante:**
-- a escolha feita pelo seletor de tema MUST continuar salva e MUST prevalecer sobre o tema padrão configurado nas visitas seguintes;
-- um valor salvo diferente de `dark`, `light` e `bio` MUST ser ignorado;
-- sem `ui.default-theme`, com `ui.dark-mode: false` e sem escolha salva, a interface MUST usar o tema claro;
-- com `ui.default-theme` e `ui.dark-mode` presentes, `ui.default-theme` MUST valer e o log MUST avisar; um valor de `ui.default-theme` fora dos três MUST invalidar a configuração;
-- as classes de tema no HTML MUST ser mutuamente exclusivas: trocar de tema MUST remover a do tema anterior.
+**Visitor choice:**
+- the choice made with the theme selector MUST stay saved and MUST win over the configured default on later visits;
+- a saved value that is not an id of the registry MUST be ignored;
+- without `ui.default-theme`, with `ui.dark-mode: false` and without a saved choice, the interface MUST use the light
+  theme;
+- with both `ui.default-theme` and `ui.dark-mode` present, `ui.default-theme` MUST win and the log MUST warn; a value of
+  `ui.default-theme` that is not an id of the registry MUST invalidate the configuration;
+- the theme attributes and legacy classes MUST be mutually exclusive: changing theme MUST replace those of the previous
+  theme.
 
 #### Scenario: Primeira visita com o sistema em modo claro
-- **WHEN** um visitante sem escolha de tema salva, com o sistema operacional em modo claro, abre o dashboard ou a tela de login com a configuração padrão
-- **THEN** o HTML entregue já tem o tema escuro e a interface continua escura depois de carregar
+- **WHEN** a visitor without a saved theme, with the operating system in light mode, opens the dashboard or the login screen with the default configuration
+- **THEN** the delivered HTML already has the dark theme and the interface stays dark after loading
 
 #### Scenario: Tema claro escolhido
-- **WHEN** o visitante escolhe o tema claro e recarrega a página
-- **THEN** a interface continua no tema claro
+- **WHEN** the visitor chooses the light theme and reloads the page
+- **THEN** the interface stays in the light theme
 
 #### Scenario: Escolha salva inválida
-- **WHEN** o cookie de tema do visitante tem um valor diferente de `dark`, `light` e `bio`
-- **THEN** a interface usa o tema padrão configurado, seja ele `dark`, `light` ou `bio`
+- **WHEN** the theme cookie of the visitor has a value that is not an id of the registry
+- **THEN** the interface uses the configured default theme
 
 #### Scenario: Claro por configuração
-- **WHEN** a configuração tem `ui.dark-mode: false`, não tem `ui.default-theme`, e o visitante não tem escolha salva
-- **THEN** a interface é exibida no tema claro
+- **WHEN** the configuration has `ui.dark-mode: false`, has no `ui.default-theme`, and the visitor has no saved choice
+- **THEN** the interface is shown in the light theme
 
 #### Scenario: Tema Bio escolhido
-- **WHEN** o visitante escolhe o tema Bio e recarrega a página
-- **THEN** o HTML entregue pelo servidor já tem a classe do tema Bio e não tem a do tema escuro
-- **AND** a cor de tema do navegador é a do tema Bio
-
-#### Scenario: Tema padrão Bio
-- **WHEN** a configuração tem `ui.default-theme: bio` e o visitante não tem escolha salva
-- **THEN** a interface é exibida no tema Bio, no dashboard, na administração, nas páginas públicas e na tela de login
-
-#### Scenario: default-theme e dark-mode juntos
-- **WHEN** a configuração tem `ui.default-theme: light` e `ui.dark-mode: true`
-- **THEN** a interface sem escolha salva é exibida no tema claro, e o log avisa que `ui.default-theme` prevaleceu
-
-#### Scenario: Tema padrão inválido
-- **WHEN** a configuração tem `ui.default-theme: azul`
-- **THEN** a configuração é inválida, no início e em `go-uptime config validate`
-
-#### Scenario: Do escuro para o Bio e de volta
-- **WHEN** o visitante troca do tema escuro para o Bio e depois para o claro
-- **THEN** em cada passo o HTML tem só a classe do tema em uso, e a cor de tema do navegador acompanha
+- **WHEN** the visitor chooses the Bio theme and reloads the page
+- **THEN** the HTML delivered by the server already has `data-theme="bio"` and the class `theme-bio`, and not the dark class
+- **AND** the browser theme colour is the one of the Bio theme
 
 ### Requirement: Cores da barra de rolagem pelo tema
 As cores da barra de rolagem MUST vir das variáveis do tema, com um tom de repouso e, onde o navegador permite estilizar o realce da barra, um tom mais forte ao passar o mouse. As cores MUST mudar junto com o tema, entre quaisquer dois dos três temas, inclusive quando o visitante troca pelo seletor de tema.
@@ -109,19 +102,30 @@ Os números da interface MUST usar algarismos tabulares, inclusive dentro de cam
 - **THEN** a resposta é `200` com `Content-Type: font/woff2`
 
 ### Requirement: Seletor de tema
-A troca de tema MUST ser feita por um seletor que mostra o tema em uso e oferece os três temas, no lugar de um botão que alterna: nas configurações do dashboard, no cabeçalho das páginas públicas e na tela de login. O seletor MUST ser um botão que abre um menu com uma opção por tema, operável por teclado (Enter ou Espaço abrem, as setas percorrem as opções, Esc fecha e devolve o foco ao botão), com a opção em uso marcada para leitores de tela. Escolher um tema MUST aplicá-lo sem recarregar a página e MUST salvar a escolha. No cabeçalho das páginas públicas, o seletor fechado e o menu aberto MUST caber sem rolagem horizontal a partir de 360 px de largura, com logo e um título longo.
+The theme MUST be changed through a selector that shows the theme in use and offers one option per theme of the
+registry (`web/app/src/themes/index.js`, in its order, with its labels), instead of a toggle button: in the settings
+of the dashboard, in the header of the public pages and on the login screen. The selector MUST be a button that opens a
+menu with one option per theme, operable by keyboard (Enter or Space open it, the arrows move through the options, Home
+and End go to the ends, Esc closes it and gives the focus back to the button), with the option in use marked for screen
+readers. Choosing a theme MUST apply it without reloading the page and MUST save the choice. In the header of the public
+pages, the closed selector and the open menu MUST fit without horizontal scrolling from 360 px of width, with a logo and
+a long title; with many themes the menu MUST scroll inside itself instead of leaving the window.
 
 #### Scenario: Escolher pelo teclado
-- **WHEN** o visitante foca o seletor, abre o menu com Enter, vai até "Bio" com as setas e confirma
-- **THEN** a interface passa ao tema Bio sem recarregar, o menu fecha e o foco volta ao seletor
+- **WHEN** the visitor focuses the selector, opens the menu with Enter, moves to "Bio" with the arrows and confirms
+- **THEN** the interface switches to the Bio theme without reloading, the menu closes and the focus returns to the selector
 
 #### Scenario: Tema em uso
-- **WHEN** o visitante abre o seletor no tema escuro
-- **THEN** a opção do tema escuro aparece marcada como a escolhida
+- **WHEN** the visitor opens the selector in the dark theme
+- **THEN** the option of the dark theme is marked as the chosen one
 
 #### Scenario: Página pública a 360 px
-- **WHEN** uma página pública com logo e título longo é aberta a 360 px de largura e o visitante abre o seletor
-- **THEN** o menu aparece inteiro dentro da janela e a página não ganha rolagem horizontal
+- **WHEN** a public page with a logo and a long title is opened at 360 px of width and the visitor opens the selector
+- **THEN** the menu appears whole inside the window and the page gets no horizontal scrolling
+
+#### Scenario: Um tema novo no registro
+- **WHEN** a theme is added to the registry
+- **THEN** the selector offers it in the order of the registry, without any change to the component
 
 ### Requirement: Cores do tema Bio
 O tema Bio MUST definir o texto, as superfícies, as bordas, os links, o anel de foco e os botões primários, e o texto MUST ter pelo menos 4,5:1 de contraste com a superfície do tema em que aparece, e as bordas de controles e o anel de foco pelo menos 3:1. O verde-água do tema MUST NOT ser cor de texto nem a única indicação de foco sobre superfícies claras. As cores de estado (no ar, fora, pendente, sem dados, e o passo pulado de uma suíte), inclusive as que hoje são tons de cinza, e as demais cores que não são cinza nem variável do tema MUST ser, no tema Bio, as mesmas do tema claro, e MUST continuar, nos temas claro e escuro, as que cada um tem hoje: para cada par de cor de estado e superfície, o contraste no tema Bio MUST ser maior ou igual ao do mesmo par no tema claro.
