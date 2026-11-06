@@ -12,7 +12,9 @@
       <ChevronRight v-else class="h-4 w-4" />
       Checks table
       <span class="font-normal text-muted-foreground dark:text-gray-400">({{ rows.length }})</span>
-      <span class="ml-auto text-xs font-normal text-muted-foreground dark:text-gray-400">{{ showMessage ? 'Status, date and time, message and origin' : 'Status, date and time and response time' }}</span>
+      <span class="ml-auto text-xs font-normal text-muted-foreground dark:text-gray-400">{{
+        showMessage ? 'Status, date and time, message and origin' : 'Status, date and time and response time'
+      }}</span>
     </button>
     <div v-if="expanded" class="overflow-x-auto border border-t-0 dark:border-gray-700" data-testid="recent-checks-table">
       <table class="w-full text-sm">
@@ -31,15 +33,25 @@
           <tr v-if="rows.length === 0">
             <td :colspan="showMessage ? 4 : 3" class="px-3 py-6 text-center text-muted-foreground dark:text-gray-400">No checks yet.</td>
           </tr>
-          <tr v-for="(row, index) in rows" :key="`${row.timestamp}-${index}`" class="border-t dark:border-gray-700" :data-testid="`recent-check-${index}`">
+          <tr
+            v-for="(row, index) in rows"
+            :key="`${row.timestamp}-${index}`"
+            class="border-t dark:border-gray-700"
+            :data-testid="`recent-check-${index}`"
+          >
             <td class="px-3 py-2">
               <span :class="['border px-1.5 py-0.5 text-xs font-medium', STATUS_CLASSES[row.status]]">{{ STATUS_TEXTS[row.status] }}</span>
             </td>
             <td class="px-3 py-2 whitespace-nowrap text-muted-foreground dark:text-gray-400">{{ row.dateTime }}</td>
             <template v-if="showMessage">
-              <td class="px-3 py-2 break-words text-foreground dark:text-gray-200" data-testid="recent-check-message">{{ row.message }}</td>
+              <td class="px-3 py-2 wrap-break-word text-foreground dark:text-gray-200" data-testid="recent-check-message">
+                {{ row.message }}
+              </td>
               <td class="px-3 py-2 whitespace-nowrap">
-                <span :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-muted-foreground dark:text-gray-400']">{{ row.push ? 'Push' : 'Check' }}</span>
+                <span
+                  :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-muted-foreground dark:text-gray-400']"
+                  >{{ row.push ? 'Push' : 'Check' }}</span
+                >
               </td>
             </template>
             <td v-else class="px-3 py-2 whitespace-nowrap text-muted-foreground dark:text-gray-400">{{ row.responseTime }}</td>
@@ -116,12 +128,14 @@ const responseTimeOf = (result) => {
   return milliseconds > 0 ? `${milliseconds}ms` : '—'
 }
 
-const rows = computed(() => [...props.results].reverse().map((result) => ({
-  timestamp: result.timestamp,
-  status: result.success ? 'up' : (result.pending ? 'pending' : 'down'),
-  dateTime: new Date(result.timestamp).toLocaleString(),
-  push: result.origin === 'push',
-  message: props.showMessage ? messageOf(result) : '',
-  responseTime: responseTimeOf(result),
-})))
+const rows = computed(() =>
+  [...props.results].reverse().map((result) => ({
+    timestamp: result.timestamp,
+    status: result.success ? 'up' : result.pending ? 'pending' : 'down',
+    dateTime: new Date(result.timestamp).toLocaleString(),
+    push: result.origin === 'push',
+    message: props.showMessage ? messageOf(result) : '',
+    responseTime: responseTimeOf(result),
+  })),
+)
 </script>

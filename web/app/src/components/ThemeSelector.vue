@@ -25,7 +25,10 @@
       :id="menuId"
       role="menu"
       aria-label="Theme"
-      :class="['absolute z-50 min-w-[9rem] border border-input bg-popover py-1 text-sm text-popover-foreground shadow-md dark:border-gray-700', placementClass]"
+      :class="[
+        'absolute z-50 min-w-36 border border-input bg-popover py-1 text-sm text-popover-foreground shadow-md dark:border-gray-700',
+        placementClass,
+      ]"
       :data-testid="`${testid}-menu`"
       @keydown.down.prevent="move(1)"
       @keydown.up.prevent="move(-1)"
@@ -36,12 +39,16 @@
     >
       <li v-for="(name, index) in themeNames" :key="name" role="none">
         <button
-          :ref="(element) => { items[index] = element }"
+          :ref="
+            (element) => {
+              items[index] = element
+            }
+          "
           type="button"
           role="menuitemradio"
           :aria-checked="name === theme"
           tabindex="-1"
-          class="flex w-full items-center gap-2 px-3 py-1.5 text-left hover:bg-accent focus:bg-accent focus:outline-none"
+          class="flex w-full items-center gap-2 px-3 py-1.5 text-left hover:bg-accent focus:bg-accent focus:outline-hidden"
           :data-testid="`${testid}-option-${name}`"
           @click="choose(name)"
         >
@@ -65,7 +72,7 @@ const props = defineProps({
   // compact shows only the icon, for the settings bar of the dashboard
   compact: { type: Boolean, default: false },
   // Where the menu opens: below the button aligned to its right edge, or above it aligned to its left edge
-  placement: { type: String, default: 'bottom-end' }
+  placement: { type: String, default: 'bottom-end' },
 })
 
 const emit = defineEmits(['change'])
@@ -80,9 +87,11 @@ const root = ref(null)
 const button = ref(null)
 const items = ref([])
 
-const buttonClass = computed(() => (props.compact
-  ? 'p-1.5 rounded-none hover:bg-accent transition-colors'
-  : 'inline-flex h-9 items-center gap-2 border border-input bg-background px-3 text-sm hover:bg-accent motion-safe:transition-colors dark:border-gray-700 dark:hover:bg-gray-800'))
+const buttonClass = computed(() =>
+  props.compact
+    ? 'p-1.5 rounded-none hover:bg-accent transition-colors'
+    : 'inline-flex h-9 items-center gap-2 border border-input bg-background px-3 text-sm hover:bg-accent motion-safe:transition-colors dark:border-gray-700 dark:hover:bg-gray-800',
+)
 const placementClass = computed(() => (props.placement === 'top-start' ? 'bottom-full left-0 mb-2' : 'right-0 top-full mt-1'))
 
 const focusItem = (index) => {

@@ -12,7 +12,9 @@
     <section v-else-if="state === 'unauthorized'" class="py-16 text-center" data-testid="status-page-unauthorized">
       <h1 class="text-2xl font-bold tracking-tight">Login required</h1>
       <p class="mt-2 text-muted-foreground">This status page asks for a username and a password.</p>
-      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">Reload the page</button>
+      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">
+        Reload the page
+      </button>
     </section>
 
     <template v-else>
@@ -20,7 +22,12 @@
         v-if="errorMessage"
         role="alert"
         data-testid="status-page-error"
-        :class="['mb-4 border px-4 py-3 text-sm', page ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100' : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200']"
+        :class="[
+          'mb-4 border px-4 py-3 text-sm',
+          page
+            ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100'
+            : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
+        ]"
       >
         {{ errorMessage }}
       </div>
@@ -29,82 +36,132 @@
         <header class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div class="min-w-0">
             <h1 class="text-xl font-semibold tracking-tight sm:text-2xl" data-testid="status-page-title">{{ page.title }}</h1>
-            <p v-if="page.description" class="mt-0.5 text-sm text-muted-foreground whitespace-pre-line" data-testid="status-page-description">{{ page.description }}</p>
+            <p
+              v-if="page.description"
+              class="mt-0.5 text-sm text-muted-foreground whitespace-pre-line"
+              data-testid="status-page-description"
+            >
+              {{ page.description }}
+            </p>
           </div>
           <!-- Fork: the views of the page, when it enables more than one -->
-          <ViewSwitcher v-if="pageViews.enabled.length > 1" :views="pageViews.enabled" :model-value="activeView" :group-label="pageViews.groupLabel" @update:model-value="selectView" />
+          <ViewSwitcher
+            v-if="pageViews.enabled.length > 1"
+            :views="pageViews.enabled"
+            :model-value="activeView"
+            :group-label="pageViews.groupLabel"
+            @update:model-value="selectView"
+          />
         </header>
 
         <StatusSummary :status="page.status" :updated-at="page.updatedAt" :now="now" :summary="page.summary" />
 
         <!-- Fork: the grouped and matrix views, computed in the browser from the payload (utils/statusPageViews.js) -->
         <template v-if="activeView !== VIEW_LIST">
-          <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">Showing the first {{ page.summary?.total ?? 0 }} services.</p>
+          <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">
+            Showing the first {{ page.summary?.total ?? 0 }} services.
+          </p>
           <ViewCounters class="mt-4" :counts="viewCounters" :group-label="pageViews.groupLabel" :primary-name="primaryEnvironmentName" />
-          <ViewFilters v-model="filters" :environments="viewFilterOptions.environments" :applications="viewFilterOptions.applications" :group-label="pageViews.groupLabel" />
-          <GroupedView v-if="activeView === VIEW_GROUPED" :groups="groupedGroups" :collapsed="groupedCollapsed" :slug="slug" :has-environments="pageViews.environments.length > 0" @toggle="toggleGroupByName" />
+          <ViewFilters
+            v-model="filters"
+            :environments="viewFilterOptions.environments"
+            :applications="viewFilterOptions.applications"
+            :group-label="pageViews.groupLabel"
+          />
+          <GroupedView
+            v-if="activeView === VIEW_GROUPED"
+            :groups="groupedGroups"
+            :collapsed="groupedCollapsed"
+            :slug="slug"
+            :has-environments="pageViews.environments.length > 0"
+            @toggle="toggleGroupByName"
+          />
           <MatrixView v-else :model="matrix" :slug="slug" :group-label="pageViews.groupLabel" :primary-name="primaryEnvironmentName" />
         </template>
 
         <template v-else>
+          <!-- The number is the one of the payload: the limit is status-pages.maximum-endpoints-per-page, not a constant -->
+          <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">
+            Showing the first {{ page.summary?.total ?? 0 }} services.
+          </p>
+          <p v-if="page.groups.length === 0 && featuredEndpoints.length === 0" class="mt-6 text-center text-muted-foreground">
+            No services on this page.
+          </p>
 
-        <!-- The number is the one of the payload: the limit is status-pages.maximum-endpoints-per-page, not a constant -->
-        <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">Showing the first {{ page.summary?.total ?? 0 }} services.</p>
-        <p v-if="page.groups.length === 0 && featuredEndpoints.length === 0" class="mt-6 text-center text-muted-foreground">No services on this page.</p>
+          <section v-if="featuredEndpoints.length" class="mt-6" aria-labelledby="status-featured-title" data-testid="status-featured">
+            <h2 id="status-featured-title" class="mb-2 text-lg font-semibold">Featured</h2>
+            <ul :class="['grid gap-3', featuredEndpoints.length > 1 ? 'md:grid-cols-2' : '']">
+              <EndpointRow
+                v-for="endpoint in featuredEndpoints"
+                :key="`${endpoint.group}-${endpoint.name}`"
+                :endpoint="endpoint"
+                :group="endpoint.group"
+                :bars="bars"
+                :slug="slug"
+                featured
+              />
+            </ul>
+          </section>
 
-        <section v-if="featuredEndpoints.length" class="mt-6" aria-labelledby="status-featured-title" data-testid="status-featured">
-          <h2 id="status-featured-title" class="mb-2 text-lg font-semibold">Featured</h2>
-          <ul :class="['grid gap-3', featuredEndpoints.length > 1 ? 'md:grid-cols-2' : '']">
-            <EndpointRow
-              v-for="endpoint in featuredEndpoints"
-              :key="`${endpoint.group}-${endpoint.name}`"
-              :endpoint="endpoint"
-              :group="endpoint.group"
-              :bars="bars"
-              :slug="slug"
-              featured
-            />
-          </ul>
-        </section>
-
-        <section
-          v-for="(group, groupIndex) in page.groups"
-          :key="`group:${group.name || ''}`"
-          class="mt-6"
-          :aria-labelledby="`status-group-${groupIndex}`"
-          :data-testid="`status-group-${group.name || 'outros'}`"
-        >
-          <div class="flex items-baseline justify-between gap-4 border-b pb-1.5 dark:border-gray-800">
-            <!-- The header is a real button, so that it works with a keyboard and a screen reader: its text carries the
+          <section
+            v-for="(group, groupIndex) in page.groups"
+            :key="`group:${group.name || ''}`"
+            class="mt-6"
+            :aria-labelledby="`status-group-${groupIndex}`"
+            :data-testid="`status-group-${group.name || 'outros'}`"
+          >
+            <div class="flex items-baseline justify-between gap-4 border-b pb-1.5 dark:border-gray-800">
+              <!-- The header is a real button, so that it works with a keyboard and a screen reader: its text carries the
                  name, the status and the counts of the group, which is what is announced instead of the rows of a
                  collapsed group -->
-            <h2 :id="`status-group-${groupIndex}`" class="min-w-0 flex-1">
-              <button
-                type="button"
-                class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
-                :aria-expanded="!collapsedGroups.has(group.name || '')"
-                :aria-controls="`status-group-panel-${groupIndex}`"
-                :data-testid="`status-group-toggle-${group.name || 'outros'}`"
-                @click="toggleGroup(group)"
+              <h2 :id="`status-group-${groupIndex}`" class="min-w-0 flex-1">
+                <button
+                  type="button"
+                  class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                  :aria-expanded="!collapsedGroups.has(group.name || '')"
+                  :aria-controls="`status-group-panel-${groupIndex}`"
+                  :data-testid="`status-group-toggle-${group.name || 'outros'}`"
+                  @click="toggleGroup(group)"
+                >
+                  <component
+                    :is="collapsedGroups.has(group.name || '') ? ChevronRight : ChevronDown"
+                    class="h-4 w-4 shrink-0 self-center text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <span class="truncate text-lg font-semibold">{{ group.name || 'Other services' }}</span>
+                  <span :class="['shrink-0 text-sm font-normal', groupStatusClass(group.status)]">{{
+                    groupStatusLabel(group.status)
+                  }}</span>
+                  <span
+                    class="shrink-0 text-xs font-normal text-muted-foreground"
+                    :data-testid="`status-group-counts-${group.name || 'outros'}`"
+                    >{{ groupCounts(group.summary) }}</span
+                  >
+                </button>
+              </h2>
+              <!-- Fork: the labels of the periods appear once per group, aligned with the columns of each row -->
+              <dl
+                v-if="!collapsedGroups.has(group.name || '')"
+                class="hidden shrink-0 grid-cols-3 text-xs text-muted-foreground sm:grid"
+                aria-hidden="true"
               >
-                <component :is="collapsedGroups.has(group.name || '') ? ChevronRight : ChevronDown" class="h-4 w-4 shrink-0 self-center text-muted-foreground" aria-hidden="true" />
-                <span class="truncate text-lg font-semibold">{{ group.name || 'Other services' }}</span>
-                <span :class="['shrink-0 text-sm font-normal', groupStatusClass(group.status)]">{{ groupStatusLabel(group.status) }}</span>
-                <span class="shrink-0 text-xs font-normal text-muted-foreground" :data-testid="`status-group-counts-${group.name || 'outros'}`">{{ groupCounts(group.summary) }}</span>
-              </button>
-            </h2>
-            <!-- Fork: the labels of the periods appear once per group, aligned with the columns of each row -->
-            <dl v-if="!collapsedGroups.has(group.name || '')" class="hidden shrink-0 grid-cols-3 text-xs text-muted-foreground sm:grid" aria-hidden="true">
-              <dt v-for="period in UPTIME_PERIODS" :key="period" class="w-16 text-right">{{ period }}</dt>
-            </dl>
-          </div>
-          <!-- The panel always exists, so that aria-controls points to something; the rows of a collapsed group do not -->
-          <div :id="`status-group-panel-${groupIndex}`">
-            <ul v-if="!collapsedGroups.has(group.name || '')" class="divide-y dark:divide-gray-800">
-              <EndpointRow v-for="endpoint in group.endpoints" :key="endpoint.name" :endpoint="endpoint" :group="group.name" :bars="bars" :slug="slug" />
-            </ul>
-          </div>
-        </section>
+                <dt v-for="period in UPTIME_PERIODS" :key="period" class="w-16 text-right">{{ period }}</dt>
+              </dl>
+            </div>
+            <!-- The panel always exists, so that aria-controls points to something; the rows of a collapsed group do not -->
+            <div :id="`status-group-panel-${groupIndex}`">
+              <ul v-if="!collapsedGroups.has(group.name || '')" class="divide-y dark:divide-gray-800">
+                <EndpointRow
+                  v-for="endpoint in group.endpoints"
+                  :key="endpoint.name"
+                  :endpoint="endpoint"
+                  :group="group.name"
+                  :bars="bars"
+                  :slug="slug"
+                />
+              </ul>
+            </div>
+          </section>
         </template>
       </template>
     </template>
@@ -125,7 +182,20 @@ import ViewCounters from '@/components/public/ViewCounters.vue'
 import ViewFilters from '@/components/public/ViewFilters.vue'
 import GroupedView from '@/components/public/GroupedView.vue'
 import MatrixView from '@/components/public/MatrixView.vue'
-import { ALL, VIEW_GROUPED, VIEW_LIST, collectGroups, counters, filterOptions, groupedModel, groupStatuses, matrixModel, normalizeViews, resolveView, sanitizeFilters } from '@/utils/statusPageViews'
+import {
+  ALL,
+  VIEW_GROUPED,
+  VIEW_LIST,
+  collectGroups,
+  counters,
+  filterOptions,
+  groupedModel,
+  groupStatuses,
+  matrixModel,
+  normalizeViews,
+  resolveView,
+  sanitizeFilters,
+} from '@/utils/statusPageViews'
 
 const UPTIME_PERIODS = ['24h', '7d', '30d']
 
@@ -161,13 +231,15 @@ const collapsedGroups = computed(() => {
   const collapsed = new Set()
   for (const group of page.value?.groups || []) {
     const name = group.name || ''
-    if (isCollapsed({
-      status: group.status,
-      visitChoice: visitChoices.value.get(name),
-      rememberedChoice: rememberedGroupChoices.value.get(name),
-      pageDefault: page.value.groupsCollapsed === true,
-      incidentCollapsed: incidentCollapsed.value.has(name)
-    })) {
+    if (
+      isCollapsed({
+        status: group.status,
+        visitChoice: visitChoices.value.get(name),
+        rememberedChoice: rememberedGroupChoices.value.get(name),
+        pageDefault: page.value.groupsCollapsed === true,
+        incidentCollapsed: incidentCollapsed.value.has(name),
+      })
+    ) {
       collapsed.add(name)
     }
   }
@@ -202,7 +274,9 @@ const viewCounters = computed(() => counters(page.value))
 const viewFilterOptions = computed(() => filterOptions(page.value))
 const primaryEnvironmentName = computed(() => pageViews.value.environments[0]?.name || '')
 const groupedGroups = computed(() => (activeView.value === VIEW_GROUPED ? groupedModel(page.value, filters.value) : []))
-const matrix = computed(() => (activeView.value !== VIEW_LIST && activeView.value !== VIEW_GROUPED ? matrixModel(page.value, filters.value) : { columns: [], rows: [] }))
+const matrix = computed(() =>
+  activeView.value !== VIEW_LIST && activeView.value !== VIEW_GROUPED ? matrixModel(page.value, filters.value) : { columns: [], rows: [] },
+)
 
 const selectView = (view) => {
   const query = { ...route.query }
@@ -221,13 +295,15 @@ const viewGroupStatuses = computed(() => groupStatuses(page.value))
 const groupedCollapsed = computed(() => {
   const collapsed = new Set()
   for (const [name, status] of viewGroupStatuses.value) {
-    if (isCollapsed({
-      status,
-      visitChoice: visitChoices.value.get(name),
-      rememberedChoice: rememberedGroupChoices.value.get(name),
-      pageDefault: page.value?.groupsCollapsed === true,
-      incidentCollapsed: incidentCollapsed.value.has(name)
-    })) {
+    if (
+      isCollapsed({
+        status,
+        visitChoice: visitChoices.value.get(name),
+        rememberedChoice: rememberedGroupChoices.value.get(name),
+        pageDefault: page.value?.groupsCollapsed === true,
+        incidentCollapsed: incidentCollapsed.value.has(name),
+      })
+    ) {
       collapsed.add(name)
     }
   }
@@ -255,11 +331,12 @@ const slug = computed(() => (route.name === 'PublicStatusPage' ? String(route.pa
 
 const groupStatusLabel = (status) => STATUS_LABELS[status]?.group || STATUS_LABELS.unknown.group
 
-const groupStatusClass = (status) => ({
-  operational: 'text-green-700 dark:text-green-400',
-  degraded: 'text-amber-700 dark:text-amber-400',
-  down: 'text-red-700 dark:text-red-400'
-}[status] || 'text-muted-foreground')
+const groupStatusClass = (status) =>
+  ({
+    operational: 'text-green-700 dark:text-green-400',
+    degraded: 'text-amber-700 dark:text-amber-400',
+    down: 'text-red-700 dark:text-red-400',
+  })[status] || 'text-muted-foreground'
 
 const stopRefreshing = () => {
   clearTimeout(refreshTimer)
@@ -305,7 +382,10 @@ const load = async () => {
   let retryDelayMs = REFRESH_INTERVAL_MS
   try {
     // Fork: the credential of a page with a login goes with every request of the page
-    const response = await fetch(`/api/v1/status-pages/${encodeURIComponent(currentSlug)}`, { credentials: 'same-origin', signal: abortController.signal })
+    const response = await fetch(`/api/v1/status-pages/${encodeURIComponent(currentSlug)}`, {
+      credentials: 'same-origin',
+      signal: abortController.signal,
+    })
     if (generation !== requestGeneration) {
       return
     }
@@ -322,9 +402,10 @@ const load = async () => {
       if (retryAfterSeconds > REFRESH_INTERVAL_MS / 1000) {
         retryDelayMs = retryAfterSeconds * 1000
       }
-      errorMessage.value = response.status === 429
-        ? 'Too many requests right now. This page will refresh automatically.'
-        : 'This status page is temporarily unavailable. It will refresh automatically.'
+      errorMessage.value =
+        response.status === 429
+          ? 'Too many requests right now. This page will refresh automatically.'
+          : 'This status page is temporarily unavailable. It will refresh automatically.'
     } else if (!response.ok || !(response.headers.get('Content-Type') || '').includes('application/json')) {
       errorMessage.value = 'Could not load the status page. It will refresh automatically.'
     } else {
@@ -387,7 +468,9 @@ watch(slug, () => {
 
 onMounted(() => {
   load()
-  clockTimer = setInterval(() => { now.value = Date.now() }, CLOCK_INTERVAL_MS)
+  clockTimer = setInterval(() => {
+    now.value = Date.now()
+  }, CLOCK_INTERVAL_MS)
   document.addEventListener('visibilitychange', handleVisibilityChange)
   narrowScreen.addEventListener('change', handleScreenChange)
 })

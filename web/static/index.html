@@ -1,10 +1,18 @@
-<!doctype html><html lang="en" class="{{ .Theme }}" data-default-theme="{{ .DefaultTheme }}"><head><meta charset="utf-8"/><meta name="theme-color" content="{{ .ThemeColor }}"/><script>window.config = {logo: "{{ .UI.Logo }}", header: "{{ .UI.Header }}", dashboardHeading: "{{ .UI.DashboardHeading }}", dashboardSubheading: "{{ .UI.DashboardSubheading }}", link: "{{ .UI.Link }}", buttons: [], maximumNumberOfResults: "{{ .UI.MaximumNumberOfResults }}", defaultSortBy: "{{ .UI.DefaultSortBy }}", defaultFilterBy: "{{ .UI.DefaultFilterBy }}", loginSubtitle: "{{ .UI.LoginSubtitle }}"};{{- range .UI.Buttons}}window.config.buttons.push({name:"{{ .Name }}",link:"{{ .Link }}"});{{end}}
+<!DOCTYPE html>
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
+<html lang="en" class="{{ .Theme }}" data-theme="{{ .ThemeID }}" data-scheme="{{ .ThemeScheme }}" data-default-theme="{{ .DefaultTheme }}">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Fork: color of the browser by theme, from the server, before the inline script that corrects it -->
+    <meta name="theme-color" content="{{ .ThemeColor }}" />
+    <script type="text/javascript">
+      window.config = {logo: "{{ .UI.Logo }}", header: "{{ .UI.Header }}", dashboardHeading: "{{ .UI.DashboardHeading }}", dashboardSubheading: "{{ .UI.DashboardSubheading }}", link: "{{ .UI.Link }}", buttons: [], maximumNumberOfResults: "{{ .UI.MaximumNumberOfResults }}", defaultSortBy: "{{ .UI.DefaultSortBy }}", defaultFilterBy: "{{ .UI.DefaultFilterBy }}", loginSubtitle: "{{ .UI.LoginSubtitle }}"};{{- range .UI.Buttons}}window.config.buttons.push({name:"{{ .Name }}",link:"{{ .Link }}"});{{end}}
       // Initialize theme immediately to prevent flash. Fork: same rule as utils/theme.js and as the server, tested with
-      // utils/theme.cases.json: a valid theme cookie (dark, light or bio) or the default theme of the server
-      // (data-default-theme), dark when the template is not rendered (development server) and light for a value that
-      // is not a theme, such as the empty one of the HTML of a previous version
+      // utils/theme.cases.json: a valid theme cookie or the default theme of the server (data-default-theme), dark when
+      // the template is not rendered (development server) and light for a value that is not a theme. The registry of the
+      // themes (src/themes/themes.json) is injected by the build: { id: [legacy class, theme-color, scheme] }
       (function() {
-        var THEMES = {dark: ['dark', '#030712'], light: ['', '#f7f9fb'], bio: ['theme-bio', '#f2f8fa']};
+        var THEMES = {"light":["","#f7f9fb","light"],"dark":["dark","#030712","dark"],"bio":["theme-bio","#f2f8fa","light"]};
         var root = document.documentElement;
         var cookie = /(?:^|;\s*)theme=([^;]*)/.exec(document.cookie || '');
         var theme = cookie ? cookie[1].trim() : '';
@@ -17,8 +25,35 @@
             root.classList.toggle(THEMES[name][0], name === theme);
           }
         }
+        root.setAttribute('data-theme', theme);
+        root.setAttribute('data-scheme', THEMES[theme][2]);
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta) {
           meta.setAttribute('content', THEMES[theme][1]);
         }
-      })();</script><title>{{ .UI.Title }}</title><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="{{ .UI.Favicon.Size32x32 }}"/><link rel="icon" type="image/png" sizes="16x16" href="{{ .UI.Favicon.Size16x16 }}"/><link rel="manifest" href="/manifest.json" crossorigin="use-credentials"/><link rel="shortcut icon" href="{{ .UI.Favicon.Default }}"/><link rel="preload" href="/fonts/inter-4-1-latin.woff2" as="font" type="font/woff2" crossorigin/><link rel="stylesheet" href="/css/custom.css"/><meta name="description" content="{{ .UI.Description }}"/><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/><meta name="apple-mobile-web-app-title" content="{{ .UI.Title }}"/><meta name="application-name" content="{{ .UI.Title }}"/><script defer="defer" src="/js/chunk-vendors.js"></script><script defer="defer" src="/js/app.js"></script><link href="/css/app.css" rel="stylesheet"></head><body><noscript><strong>Enable JavaScript to view this page.</strong></noscript><div id="app"></div></body></html>
+      })();
+    </script>
+    <title>{{ .UI.Title }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ .UI.Favicon.Size32x32 }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ .UI.Favicon.Size16x16 }}" />
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
+    <link rel="shortcut icon" href="{{ .UI.Favicon.Default }}" />
+    <!-- Fork: the Inter of the interface, served by Go Uptime itself; crossorigin is required even on the same origin -->
+    <link rel="preload" href="/fonts/inter-4-1-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <meta name="description" content="{{ .UI.Description }}" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="{{ .UI.Title }}" />
+    <meta name="application-name" content="{{ .UI.Title }}" />
+    <script type="module" crossorigin src="/js/app.js"></script>
+    <link rel="modulepreload" crossorigin href="/js/chunk-vendors.js">
+    <link rel="stylesheet" crossorigin href="/css/app.css">
+  </head>
+  <body>
+    <noscript><strong>Enable JavaScript to view this page.</strong></noscript>
+    <div id="app"></div>
+  </body>
+</html>

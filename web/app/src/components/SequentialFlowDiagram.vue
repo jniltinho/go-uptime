@@ -5,20 +5,20 @@
     <div class="flex items-center gap-4">
       <div class="text-sm font-medium text-muted-foreground">Start</div>
       <div class="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-none overflow-hidden">
-        <div 
+        <div
           class="h-full bg-green-500 dark:bg-green-600 rounded-none transition-all duration-300 ease-out"
           :style="{ width: progressPercentage + '%' }"
         ></div>
       </div>
       <div class="text-sm font-medium text-muted-foreground">End</div>
     </div>
-    
+
     <!-- Progress stats -->
     <div class="flex items-center justify-between text-xs text-muted-foreground">
       <span>{{ completedSteps }}/{{ totalSteps }} steps successful</span>
       <span v-if="totalDuration > 0">{{ formatDuration(totalDuration) }} total</span>
     </div>
-    
+
     <!-- Flow steps -->
     <div class="space-y-2">
       <FlowStep
@@ -31,7 +31,7 @@
         @step-click="$emit('step-selected', step, index)"
       />
     </div>
-    
+
     <!-- Legend -->
     <div class="mt-6 pt-4 border-t">
       <div class="text-sm font-medium text-muted-foreground mb-2">Status Legend</div>
@@ -42,21 +42,21 @@
           </div>
           <span class="text-muted-foreground">Success</span>
         </div>
-        
+
         <div v-if="hasFailedSteps" class="flex items-center gap-2">
           <div class="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
             <XCircle class="w-3 h-3 text-white" />
           </div>
           <span class="text-muted-foreground">Failed</span>
         </div>
-        
+
         <div v-if="hasSkippedSteps" class="flex items-center gap-2">
           <div class="w-4 h-4 rounded-full bg-gray-400 flex items-center justify-center">
             <SkipForward class="w-3 h-3 text-white" />
           </div>
           <span class="text-muted-foreground">Skipped</span>
         </div>
-        
+
         <div v-if="hasAlwaysRunSteps" class="flex items-center gap-2">
           <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-blue-200 dark:border-blue-800 flex items-center justify-center">
             <RotateCcw class="w-3 h-3 text-white" />
@@ -77,20 +77,20 @@ import { formatDuration } from '@/utils/format'
 const props = defineProps({
   flowSteps: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   progressPercentage: {
     type: Number,
-    default: 0
+    default: 0,
   },
   completedSteps: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalSteps: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 defineEmits(['step-selected'])
@@ -107,19 +107,18 @@ const totalDuration = computed(() => {
 
 // Legend visibility computed properties
 const hasSuccessSteps = computed(() => {
-  return props.flowSteps.some(step => step.status === 'success')
+  return props.flowSteps.some((step) => step.status === 'success')
 })
 
 const hasFailedSteps = computed(() => {
-  return props.flowSteps.some(step => step.status === 'failed')
+  return props.flowSteps.some((step) => step.status === 'failed')
 })
 
 const hasSkippedSteps = computed(() => {
-  return props.flowSteps.some(step => step.status === 'skipped')
+  return props.flowSteps.some((step) => step.status === 'skipped')
 })
 
 const hasAlwaysRunSteps = computed(() => {
-  return props.flowSteps.some(step => step.isAlwaysRun === true)
+  return props.flowSteps.some((step) => step.isAlwaysRun === true)
 })
-
 </script>

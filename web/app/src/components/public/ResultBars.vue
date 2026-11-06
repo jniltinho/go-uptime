@@ -3,7 +3,12 @@
      row carries the status and the uptimes in text, and the full history is on the details page. -->
 <template>
   <div class="flex h-4 gap-px" aria-hidden="true">
-    <span v-for="(result, index) in displayed" :key="index" :class="['flex-1', barClass(result)]" :title="result ? title(result) : undefined"></span>
+    <span
+      v-for="(result, index) in displayed"
+      :key="index"
+      :class="['flex-1', barClass(result)]"
+      :title="result ? title(result) : undefined"
+    ></span>
   </div>
 </template>
 
@@ -13,7 +18,7 @@ import { formatDateTime } from '@/utils/statusPage'
 
 const props = defineProps({
   results: { type: Array, default: () => [] },
-  bars: { type: Number, default: 30 }
+  bars: { type: Number, default: 30 },
 })
 
 const displayed = computed(() => {
@@ -28,5 +33,6 @@ const barClass = (result) => {
   return 'bg-red-500'
 }
 
-const title = (result) => `${formatDateTime(result.timestamp)} · ${result.success ? 'Success' : (result.pending ? 'Pending' : 'Failure')} · ${result.durationMs} ms`
+const title = (result) =>
+  `${formatDateTime(result.timestamp)} · ${result.success ? 'Success' : result.pending ? 'Pending' : 'Failure'} · ${result.durationMs} ms`
 </script>

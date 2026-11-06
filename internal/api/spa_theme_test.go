@@ -21,6 +21,7 @@ type themeCases struct {
 	Themes map[string]struct {
 		Class      string `json:"class"`
 		ThemeColor string `json:"themeColor"`
+		Scheme     string `json:"scheme"`
 	} `json:"themes"`
 	Cases []struct {
 		Cookie      string  `json:"cookie"`
@@ -50,12 +51,13 @@ func loadThemeCases(t *testing.T) themeCases {
 
 func TestThemeTable(t *testing.T) {
 	cases := loadThemeCases(t)
-	if len(cases.Themes) != 3 {
-		t.Fatalf("expected three themes, got %d", len(cases.Themes))
+	// Fork: the themes of the server come from the registry embedded by the build (static/themes.json)
+	if len(cases.Themes) != len(ui.Themes()) {
+		t.Fatalf("expected the %d themes of the registry, got %d", len(ui.Themes()), len(cases.Themes))
 	}
 	for theme, expected := range cases.Themes {
-		if !ui.IsTheme(theme) || ui.ThemeClass(theme) != expected.Class || ui.ThemeColor(theme) != expected.ThemeColor {
-			t.Errorf("%s: expected class %q and theme-color %q, got %q and %q", theme, expected.Class, expected.ThemeColor, ui.ThemeClass(theme), ui.ThemeColor(theme))
+		if !ui.IsTheme(theme) || ui.ThemeClass(theme) != expected.Class || ui.ThemeColor(theme) != expected.ThemeColor || ui.ThemeScheme(theme) != expected.Scheme {
+			t.Errorf("%s: expected class %q, theme-color %q and scheme %q, got %q, %q and %q", theme, expected.Class, expected.ThemeColor, expected.Scheme, ui.ThemeClass(theme), ui.ThemeColor(theme), ui.ThemeScheme(theme))
 		}
 	}
 }
@@ -64,7 +66,8 @@ func TestThemeTable(t *testing.T) {
 // class and the theme-color of the theme, only one theme class at a time, and the headers say that it varies with the
 // cookie.
 func TestSPATheme(t *testing.T) {
-	for _, item := range loadThemeCases(t).Cases {
+	cases := loadThemeCases(t)
+	for _, item := range cases.Cases {
 		if item.BrowserOnly || item.Default == nil {
 			continue
 		}
@@ -95,7 +98,8 @@ func TestSPATheme(t *testing.T) {
 				continue
 			}
 			body := recorder.Body.String()
-			if !strings.Contains(body, `<html lang="en" class="`+item.Class+`" data-default-theme="`+*item.Default+`">`) {
+			htmlElement := `<html lang="en" class="` + item.Class + `" data-theme="` + item.Theme + `" data-scheme="` + cases.Themes[item.Theme].Scheme + `" data-default-theme="` + *item.Default + `">`
+			if !strings.Contains(body, htmlElement) {
 				t.Errorf("cookie=%q default=%q: expected the class %q and the default theme in <html>, got %s", item.Cookie, *item.Default, item.Class, body[:min(len(body), 160)])
 			}
 			if !strings.Contains(body, `<meta name="theme-color" content="`+item.ThemeColor+`"`) {

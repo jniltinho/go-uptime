@@ -2,7 +2,7 @@
 <template>
   <div id="global" class="bg-background text-foreground">
     <!-- Waiting for the router: the layout depends on the route -->
-    <div v-if="!routerReady" class="flex items-center justify-center min-h-screen">
+    <div v-if="!routerReady" class="flex items-center justify-center min-h-[var(--view-h)]">
       <Loading size="lg" />
     </div>
 
@@ -12,7 +12,7 @@
     </PublicLayout>
 
     <!-- Loading State, and redirection from or to the login screen of security.basic (fork) -->
-    <div v-else-if="!retrievedConfig || pendingLoginRedirect" class="flex items-center justify-center min-h-screen">
+    <div v-else-if="!retrievedConfig || pendingLoginRedirect" class="flex items-center justify-center min-h-[var(--view-h)]">
       <Loading size="lg" />
     </div>
 
@@ -21,11 +21,14 @@
 
     <!-- Main App Container (fork: compact header, same height on the dashboard and on the administration) -->
     <!-- Fork: the lists of the administration fill the window on larger screens and scroll inside their tables -->
-    <!-- Fork: the administration uses the width of large screens like the public pages, with the same zoom for QHD and
-         4K; the height of the lists divides the window by the zoom (--screen-zoom), or it would overflow it -->
-    <div v-else-if="!config || !config.oidc || config.authenticated" :class="['relative', isAdmin && 'screen-scale', isAdminList && 'md:flex md:h-[calc(100dvh/var(--screen-zoom,1))] md:flex-col md:overflow-hidden']">
+    <!-- Fork: the lists of the administration fill the window: --view-h is its height after the zoom of QHD and 4K
+         (style.css), measured by main.js -->
+    <div
+      v-else-if="!config || !config.oidc || config.authenticated"
+      :class="['relative', isAdminList && 'md:flex md:h-[var(--view-h)] md:flex-col md:overflow-hidden']"
+    >
       <!-- Header -->
-      <header :class="['app-header border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60', isAdminList && 'md:shrink-0']">
+      <header :class="['app-header border-b bg-card/50 backdrop-blur-sm', isAdminList && 'md:shrink-0']">
         <!-- Fork: a slim bar of 40 px, like the header of the public pages -->
         <div :class="['mx-auto w-full px-4', isAdmin ? 'max-w-[1760px] sm:px-12' : 'container max-w-7xl']">
           <div class="flex h-10 items-center justify-between">
@@ -38,11 +41,7 @@
                 :class="['flex min-w-0 items-center gap-2', link && 'hover:opacity-80 transition-opacity']"
               >
                 <div v-if="logo" class="flex h-5 w-5 shrink-0 items-center justify-center">
-                  <img
-                    :src="logo"
-                    :alt="header"
-                    class="w-full h-full object-contain"
-                  />
+                  <img :src="logo" :alt="header" class="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 class="truncate text-sm font-semibold tracking-tight">{{ header }}</h1>
@@ -101,10 +100,7 @@
           </div>
 
           <!-- Mobile Navigation -->
-          <nav
-            v-if="buttons && buttons.length && mobileMenuOpen"
-            class="md:hidden pb-2 pt-2 border-t space-y-1"
-          >
+          <nav v-if="buttons && buttons.length && mobileMenuOpen" class="md:hidden pb-2 pt-2 border-t space-y-1">
             <a
               v-for="button in buttons"
               :key="button.name"
@@ -123,11 +119,10 @@
       <main :class="['relative', isAdminList && 'md:flex md:min-h-0 md:flex-1 md:flex-col']">
         <router-view @showTooltip="showTooltip" :announcements="announcements" />
       </main>
-
     </div>
 
     <!-- OIDC Login Screen -->
-    <div v-else id="login-container" class="flex items-center justify-center min-h-screen p-4">
+    <div v-else id="login-container" class="flex items-center justify-center min-h-[var(--view-h)] p-4">
       <Card class="w-full max-w-md">
         <CardHeader class="text-center">
           <img v-if="logo" :src="logo" alt="" class="w-20 h-20 object-contain mx-auto mb-4" />
@@ -138,9 +133,7 @@
           <div v-if="route && route.query.error" class="mb-6">
             <div class="p-3 rounded-md bg-destructive/10 border border-destructive/20">
               <p class="text-sm text-destructive text-center">
-                <span v-if="route.query.error === 'access_denied'">
-                  You do not have access to this status page
-                </span>
+                <span v-if="route.query.error === 'access_denied'"> You do not have access to this status page </span>
                 <span v-else>{{ route.query.error }}</span>
               </p>
             </div>
@@ -148,7 +141,7 @@
 
           <a
             :href="`/oidc/login`"
-            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full"
             @click="isOidcLoading = true"
           >
             <Loading v-if="isOidcLoading" size="xs" />
@@ -162,7 +155,12 @@
     </div>
 
     <!-- Tooltip -->
-    <Tooltip v-if="routerReady && !isPublic && !isLogin" :result="tooltip.result" :event="tooltip.event" :isPersistent="tooltipIsPersistent" />
+    <Tooltip
+      v-if="routerReady && !isPublic && !isLogin"
+      :result="tooltip.result"
+      :event="tooltip.event"
+      :isPersistent="tooltipIsPersistent"
+    />
 
     <!-- Fork: toast messages, only with the authenticated app visible (never on public pages or login screens) -->
     <AdminToasts v-if="showsToasts" />
@@ -213,11 +211,11 @@ let loggedOut = false
 
 // Computed properties
 const logo = computed(() => {
-  return window.config && window.config.logo && window.config.logo !== '{{ .UI.Logo }}' ? window.config.logo : ""
+  return window.config && window.config.logo && window.config.logo !== '{{ .UI.Logo }}' ? window.config.logo : ''
 })
 
 const header = computed(() => {
-  return window.config && window.config.header && window.config.header !== '{{ .UI.Header }}' ? window.config.header : "Status"
+  return window.config && window.config.header && window.config.header !== '{{ .UI.Header }}' ? window.config.header : 'Status'
 })
 
 const link = computed(() => {
@@ -246,11 +244,20 @@ const pendingLoginRedirect = computed(() => {
 })
 
 // Fork: the toasts only exist with the main app container visible, see the v-else-if chain of the template
-const showsToasts = computed(() => routerReady.value && !isPublic.value && retrievedConfig.value && !pendingLoginRedirect.value
-  && !isLogin.value && (!config.value || !config.value.oidc || config.value.authenticated))
+const showsToasts = computed(
+  () =>
+    routerReady.value &&
+    !isPublic.value &&
+    retrievedConfig.value &&
+    !pendingLoginRedirect.value &&
+    !isLogin.value &&
+    (!config.value || !config.value.oidc || config.value.authenticated),
+)
 
 const loginSubtitle = computed(() => {
-  return window.config && window.config.loginSubtitle && window.config.loginSubtitle !== '{{ .UI.LoginSubtitle }}' ? window.config.loginSubtitle : "System Monitoring Dashboard"
+  return window.config && window.config.loginSubtitle && window.config.loginSubtitle !== '{{ .UI.LoginSubtitle }}'
+    ? window.config.loginSubtitle
+    : 'System Monitoring Dashboard'
 })
 
 // Methods

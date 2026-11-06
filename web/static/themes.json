@@ -1,0 +1,23 @@
+[
+  {
+    "id": "light",
+    "label": "Light",
+    "scheme": "light",
+    "className": "",
+    "themeColor": "#f7f9fb"
+  },
+  {
+    "id": "dark",
+    "label": "Dark",
+    "scheme": "dark",
+    "className": "dark",
+    "themeColor": "#030712"
+  },
+  {
+    "id": "bio",
+    "label": "Bio",
+    "scheme": "light",
+    "className": "theme-bio",
+    "themeColor": "#f2f8fa"
+  }
+]

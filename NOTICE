@@ -23,6 +23,7 @@ format. They also derive from Gatus and were modified where they existed there:
   web/app/package.json
   web/app/public/manifest.json
   web/app/src/utils/theme.cases.json
+  web/app/src/themes/themes.json
 
 Not covered by the notice, because they are not files of the project or must
 keep their bytes: third_party/ (modules of the author of Gatus, under their own

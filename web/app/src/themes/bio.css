@@ -1,0 +1,76 @@
+/* Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. */
+@layer base {
+  /* Fork: the bio theme, a light theme without the dark class, so that every dark: variant stays off. Navy (#1d3c55) for
+     the text and the primary buttons, blue (#285783) for the focus ring, teal (#34cdd7, #2cb7c0) only for highlight
+     surfaces: on white the teal has a contrast of 1.9 to 2.4, which is not enough for text nor for a focus ring. The
+     status colours are not here on purpose: they are the ones of the light theme (statusgray in tailwind.config.js). */
+  :root[data-theme='bio'] {
+    --background: 195 44% 96.5%;
+    --foreground: 207 49% 22.4%;
+    --card: 0 0% 100%;
+    --card-foreground: 207 49% 22.4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 207 49% 22.4%;
+    --primary: 207 49% 22.4%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 186 55% 92%;
+    --secondary-foreground: 207 49% 22.4%;
+    --muted: 195 35% 93%;
+    --muted-foreground: 207 25% 38%;
+    --accent: 186 60% 90%;
+    --accent-foreground: 207 49% 22.4%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 200 30% 84%;
+    --input: 207 30% 50%;
+    --ring: 209 53% 33.5%;
+    --scrollbar-thumb: 207 30% 45%;
+    --scrollbar-thumb-hover: 207 49% 30%;
+    --chart-grid: rgba(29, 60, 85, 0.12);
+    --chart-text: rgba(29, 60, 85, 1);
+    --chart-tick: #59748a;
+    --chart-tooltip: rgba(214, 243, 245, 1);
+    /* The gray scale, tinted with the navy: gray-800 is the navy itself */
+    --gray-50: 242 248 250;
+    --gray-100: 232 241 245;
+    --gray-200: 214 227 234;
+    --gray-300: 187 205 216;
+    --gray-400: 133 158 176;
+    --gray-500: 89 116 138;
+    --gray-600: 62 90 114;
+    --gray-700: 44 72 97;
+    --gray-800: 29 60 85;
+    --gray-900: 20 43 62;
+  }
+}
+
+/* Outside of the layers on purpose: with the native cascade layers of Tailwind 4, the utilities (bg-card/50 on the
+   header) win over anything in @layer base whatever its specificity, and the header of bio must stay opaque navy. */
+/* Fork: the header of the bio theme is navy. The variables of the theme are redefined inside it, so that what lives
+   there — the title, the links, the theme selector and its menu — follows without a rule per component. On the navy
+   the teal has a contrast of 5.9, so here, and only here, it is the focus ring. */
+:root[data-theme='bio'] .app-header {
+  --background: 207 49% 22.4%;
+  --foreground: 0 0% 100%;
+  --card: 207 49% 22.4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 207 52% 17%;
+  --popover-foreground: 0 0% 100%;
+  --muted: 207 45% 28%;
+  --muted-foreground: 200 40% 85%;
+  --accent: 207 45% 32%;
+  --accent-foreground: 0 0% 100%;
+  --border: 207 40% 34%;
+  --input: 200 45% 70%;
+  --ring: 184 67% 60%;
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--card));
+}
+
+@media (prefers-contrast: more) {
+  :root[data-theme='bio'] {
+    --scrollbar-thumb: 207 49% 22%;
+    --scrollbar-thumb-hover: 207 60% 12%;
+  }
+}

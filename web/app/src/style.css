@@ -1,0 +1,364 @@
+/* Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. */
+@import 'tailwindcss';
+
+/* Fork: the configuration of Tailwind lives here, in CSS (Tailwind 4), like in ad-manager. The dark: variant follows the
+   scheme of the theme (data-scheme on <html>, from the registry of src/themes/themes.json): every dark theme turns the
+   dark: classes on, every light theme leaves them off. */
+@custom-variant dark (&:where([data-scheme='dark'], [data-scheme='dark'] *));
+
+/* The palette is the one of Tailwind 3.1.8, in hex, instead of the OKLCH palette of Tailwind 4: the colours of every
+   theme stay exactly as they were (test/e2e/theme-colors.sh --compare). Only the families the interface uses exist. */
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-yellow-900: #713f12;
+  --color-sky-50: #f0f9ff;
+  --color-sky-100: #e0f2fe;
+  --color-sky-200: #bae6fd;
+  --color-sky-300: #7dd3fc;
+  --color-sky-400: #38bdf8;
+  --color-sky-500: #0ea5e9;
+  --color-sky-600: #0284c7;
+  --color-sky-700: #0369a1;
+  --color-sky-800: #075985;
+  --color-sky-900: #0c4a6e;
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
+  --color-violet-900: #4c1d95;
+  --color-statusgray-50: #f9fafb;
+  --color-statusgray-100: #f3f4f6;
+  --color-statusgray-200: #e5e7eb;
+  --color-statusgray-300: #d1d5db;
+  --color-statusgray-400: #9ca3af;
+  --color-statusgray-500: #6b7280;
+  --color-statusgray-600: #4b5563;
+  --color-statusgray-700: #374151;
+  --color-statusgray-800: #1f2937;
+  --color-statusgray-900: #111827;
+
+  /* The Inter is served by Go Uptime itself (see the @font-face below); the system stack is the fallback */
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: Consolas, Monaco, 'Courier New', monospace;
+
+  /* Square look of the fork: every rounded-* is 0, except rounded-full (circular indicators) */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
+}
+
+/* The roles of the themes, inline: a utility such as bg-popover compiles to hsl(var(--popover)) and resolves the variable
+   on the element itself, like Tailwind 3 did. Without inline, the alias would be resolved once on :root, and a theme that
+   redefines its roles in an inner scope (the navy header of bio, src/themes/bio.css) would not reach the utilities. */
+@theme inline {
+  /* The gray scale goes through CSS variables (below), so that a theme without the dark class can have grays of its
+     own; statusgray, above, is the literal copy for the greys that mean a status, the same in every theme. */
+  --color-gray-50: rgb(var(--gray-50));
+  --color-gray-100: rgb(var(--gray-100));
+  --color-gray-200: rgb(var(--gray-200));
+  --color-gray-300: rgb(var(--gray-300));
+  --color-gray-400: rgb(var(--gray-400));
+  --color-gray-500: rgb(var(--gray-500));
+  --color-gray-600: rgb(var(--gray-600));
+  --color-gray-700: rgb(var(--gray-700));
+  --color-gray-800: rgb(var(--gray-800));
+  --color-gray-900: rgb(var(--gray-900));
+
+  /* Roles of the shadcn components, from the variables of each theme */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+}
+
+/* Defaults of Tailwind 3 that Tailwind 4 changed and the interface relies on: buttons show the pointer, and a
+   placeholder is gray-400 */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+}
+
+/* Fork: Inter served by Go Uptime itself, so that the interface looks the same everywhere and no request goes to a font
+   service. The files are subsets of the official Inter (rsms/inter, SIL OFL 1.1) and the licence is served next to
+   them at /fonts/OFL.txt. See AGENTS.md for how to update them. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('./assets/fonts/inter-4-1-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('./assets/fonts/inter-4-1-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@layer base {
+  /* Fork: the gray scale of Tailwind 3.1.8 as RGB channels, used by colors.gray of tailwind.config.js. The same values
+     for the light and the dark themes, which pick their grays with the dark: variants; a theme of its own overrides
+     them. */
+  :root {
+    --gray-50: 249 250 251;
+    --gray-100: 243 244 246;
+    --gray-200: 229 231 235;
+    --gray-300: 209 213 219;
+    --gray-400: 156 163 175;
+    --gray-500: 107 114 128;
+    --gray-600: 75 85 99;
+    --gray-700: 55 65 81;
+    --gray-800: 31 41 55;
+    --gray-900: 17 24 39;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0;
+    /* Fork: thin scrollbar in the colors of the theme, see the rules below */
+    --scrollbar-size: 10px;
+    --scrollbar-thumb: 215.4 16.3% 46.9%;
+    --scrollbar-thumb-hover: 215.4 16.3% 32%;
+    /* Fork: colours of the response time chart, which is a canvas and cannot use classes (ResponseTimeChart.vue) */
+    --chart-grid: rgba(0, 0, 0, 0.1);
+    --chart-text: rgba(12, 12, 18, 1);
+    --chart-tick: #6b7280;
+    --chart-tooltip: rgba(212, 232, 222, 1);
+  }
+}
+
+/* Fork: the themes, one file each, like in ad-manager (src/themes): each redefines the roles above under
+   :root[data-theme='<id>'], and is registered in src/themes/themes.json. The light theme is the defaults of the roles. */
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './themes/bio.css';
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Fork: monitoring is made of numbers that change on their own, and tabular figures keep them from changing the
+       width of what is around them. Turn it off with body { font-variant-numeric: normal !important } in ui.custom-css */
+    font-variant-numeric: tabular-nums;
+  }
+  /* The user agent resets font-variant-numeric on form controls through the font shorthand */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-variant-numeric: inherit;
+  }
+}
+
+.bg-success {
+  background-color: #28a745;
+}
+
+/* Fork: thin scrollbar in the colors of the theme, outside of @layer base so that the unlayered custom.css of
+   ui.custom-css does not win over it. Everywhere except on a coarse pointer: on touch screens the scrollbar of the
+   system is kept, since the ::-webkit-scrollbar rules turn an overlay scrollbar into a classic one. A browser without
+   any pointing device (headless Chromium, where the end-to-end tests measure the scrollbar) reports pointer: none and
+   is styled like a desktop. */
+@media not all and (pointer: coarse) {
+  /* Chrome, Edge and Safari: full control of the size, the shape and the hover */
+  *::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Some Chromium builds on Windows keep the space of the arrows with display: none alone */
+  *::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--scrollbar-thumb));
+    border-radius: 0;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--scrollbar-thumb-hover));
+  }
+
+  /* Firefox, which has no ::-webkit-scrollbar: the standard properties are inherited from the root. Setting them
+       outside of this @supports would make Chromium ignore the rules above. */
+  @supports not selector(::-webkit-scrollbar) {
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--scrollbar-thumb)) transparent;
+    }
+  }
+
+  @media (forced-colors: active) {
+    *::-webkit-scrollbar-thumb {
+      background-color: ButtonBorder;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  html {
+    scrollbar-color: auto;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --scrollbar-thumb: 222.2 47.4% 20%;
+    --scrollbar-thumb-hover: 222.2 47.4% 11%;
+  }
+}
+
+/* Fork: large screens, like ad-manager. On QHD and 4K without OS scaling (CSS width of 2400 and 3200 pixels or more) the
+   whole interface grows proportionally; with OS scaling (125%, 150%, 200%) the CSS width stays at Full HD and nothing
+   changes. --view-h is the usable window height in CSS pixels after the zoom: use it instead of 100dvh, because
+   engines disagree on whether dvh follows the zoom. main.js measures it; this is only the value until then. */
+:root {
+  --z: 1;
+  --view-h: calc(100dvh / var(--z));
+}
+@media (min-width: 2400px) {
+  :root {
+    zoom: 1.25;
+    --z: 1.25;
+  }
+}
+@media (min-width: 3200px) {
+  :root {
+    zoom: 1.6;
+    --z: 1.6;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: var(--view-h);
+}
+
+@media screen and (max-width: 1279px) {
+  body {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

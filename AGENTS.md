@@ -9,7 +9,9 @@ Guidance for AI coding agents working in this repository.
 - `make run` — Run in dev mode (uses `./config.yaml`)
 - `make test` — Run all Go tests with coverage
 - `make clean` — Remove built binary
-- `make frontend-install` — Install frontend npm dependencies
+- `make frontend-install` — Install frontend npm dependencies (`npm ci`)
+- `make frontend-check` — `vp check` (Oxlint, Oxfmt, types) and ESLint with `eslint-plugin-vue` on the templates
+- `make frontend-test` — Unit tests of the frontend (`vp test`, Vitest)
 - `make frontend-build` — Build the Vue.js frontend (**must run after any `web/` changes**)
 - `make frontend-dev` — Start the Vue dev server
 
@@ -71,6 +73,18 @@ Use `internal/alerting/provider/slack/` as the reference implementation. Every n
 - Props-based data flow — **do not use provide/inject**
 - All components must include `dark:` prefixed Tailwind classes for dark mode
 - `window.config` contains server-injected UI settings (Go template placeholders)
+
+## Frontend toolchain
+
+Change: `openspec/changes/reorganize-frontend-vite-plus-themes/`, the layout of the frontend of ad-manager.
+
+- **Vite+** (`vite-plus`, pinned, with `vite` overridden by `@voidzero-dev/vite-plus-core`): `vp dev`, `vp build`, `vp check` (Oxlint, Oxfmt, types) and `vp test` (Vitest). Node comes from `web/app/.nvmrc`. Never install the toolchain with a remote script: `npm ci`.
+- **Tailwind 4** through `@tailwindcss/vite`; its configuration lives in CSS (`@theme` in `web/app/src/style.css`): the palette of Tailwind 3.1.8 in hex (the OKLCH palette of Tailwind 4 would change every colour), the gray scale through `--gray-N`, `rounded-*` at 0. Colours with an opacity modifier are computed as `oklab(...)`: the same colour as the `rgba(...)` of before.
+- `web/app/index.html` is a Go template: the build must keep every `{{ ... }}`. The plugin of `vite.config.js` hides the links with placeholders, `/css/custom.css` and the preload of the font from Vite and puts them back (`TestIndexKeepsTheGoTemplatePlaceholders`). Oxfmt does not format it.
+- The output contract with `web/static.go` does not change: `js/app.js`, `js/chunk-vendors.js`, `css/app.css`, `fonts/<versioned name>`, without hashes. The CI checks that `web/static` is the build of the sources.
+- Formatting is Oxfmt (single quotes, no semicolons, 140 columns): run `npx vp fmt` in `web/app` before committing.
+- `src/pages/` holds the routed screens (it was `views/`), `src/themes/` the themes, `src/style.css` the contract.
+- **Large screens**: `:root` gets `zoom: 1.25` from 2400 CSS pixels and `1.6` from 3200 (QHD and 4K without OS scaling). Heights that fill the window use `var(--view-h)` (measured by `main.js`), never `100vh`/`h-screen`, which the zoom would enlarge.
 
 ## API Routes (`internal/api/api.go`)
 
@@ -201,7 +215,7 @@ Change (archived): `openspec/changes/archive/2026-09-15-add-public-status-pages/
 - The assembly is synchronous in the goroutine of the request and resolves the store reader on every assembly (a reload closes and replaces the store).
 - The limiter is our own and has no goroutine (a limiter with a goroutine of its own would leak one per reload) and only counts 404 responses.
 - The endpoint details page (`/status/<slug>/endpoints/<key>`, API `GET /api/v1/status-pages/<slug>/endpoints/<key>`) checks that the key is among the endpoints shown by the published page **before** reading the store; its chart reuses the upstream `ResponseTimeChart` with the public routes by key. `charts` is deprecated and ignored, but must stay accepted by the strict decoding (definitions saved by `v5.36.0-fork.2`).
-- In the frontend, routes with `meta.public` do not show the login screen nor fetch `/api/v1/config`. The Tailwind version of the project (3.1.8) has no 950 shade: use `dark:bg-*-900/30`.
+- In the frontend, routes with `meta.public` do not show the login screen nor fetch `/api/v1/config`. The palette is the one of Tailwind 3.1.8, pinned in `@theme` (`web/app/src/style.css`), and has no 950 shade: use `dark:bg-*-900/30`.
 - The interface texts are in English, like the rest of the Go Uptime UI.
 
 ## Collapsible groups of a status page
@@ -272,12 +286,14 @@ Change (archived): `openspec/changes/archive/2026-09-16-kuma-response-time-chart
 
 ## Themes
 
-- Three themes: `dark` (class `dark`), `light` (no class) and `bio` (class `theme-bio`). The classes are mutually exclusive, and **`bio` is a light theme without the `dark` class**, so every `dark:` variant stays off in it. A fourth theme follows the same pattern: a class of its own and a `:root.<class>` block of variables in `web/app/src/index.css`.
-- The rule that picks the theme lives in **three places that must agree**: the server (`internal/config/ui`: `ThemeClass`, `ThemeColor`, `Config.Theme`; `internal/api/spa_render.go`: `themeFromRequest`), the inline script of `web/app/public/index.html` (before the first paint) and `web/app/src/utils/theme.js`. The three are tested with one table, `web/app/src/utils/theme.cases.json`: add the case there, never in one test only. The test of the inline script extracts it from `index.html` and runs it.
+- Change (`openspec/changes/reorganize-frontend-vite-plus-themes/`): the themes are organized like the frontend of ad-manager. **The registry** `web/app/src/themes/themes.json` lists every theme (`id`, `label`, `scheme` light or dark, legacy `className`, `themeColor`); `utils/theme.js` reads it, the build injects it into the inline script of `web/app/index.html` (`src/themes/build.js`) and copies it to `web/static/themes.json`, which the server reads (`internal/config/ui/themes.go`): `ui.default-theme` and the cookie accept any id of the registry.
+- **One file per theme**: `web/app/src/themes/<id>.css` redefines the roles of the contract of `web/app/src/style.css` (`--background`, `--card`, `--border`, `--gray-N`, `--chart-*`, ...) under `:root[data-theme='<id>']`, and may redefine them in an inner scope of its own (the navy `.app-header` of `bio`). The defaults of the roles in `style.css` are the light theme. **Adding a theme** = one CSS file, its `@import` in `style.css` and one entry in `themes.json`, then `make frontend-build`.
+- `<html>` carries `data-theme="<id>"` and `data-scheme="light|dark"`; the `dark:` variant follows `data-scheme`, so every dark theme turns the `dark:` classes on. The classes `dark` and `theme-bio` are still set for the 7.x series (custom CSS written against them); **`bio` is a light theme**, so every `dark:` variant stays off in it.
+- The rule that picks the theme lives in **three places that must agree**: the server (`internal/config/ui`: `ThemeClass`, `ThemeColor`, `ThemeScheme`, `Config.Theme`; `internal/api/spa_render.go`: `themeFromRequest`), the inline script of `web/app/index.html` (before the first paint) and `web/app/src/utils/theme.js`. The three are tested with one table, `web/app/src/utils/theme.cases.json` (whose `themes` must equal the registry): add the case there, never in one test only. The test of the inline script extracts it from `index.html`, injects the registry like the build and runs it.
 - A valid `theme` cookie wins; otherwise `ui.default-theme`, otherwise `ui.dark-mode`. The HTML already comes with the class and the `theme-color`, and goes out with `Cache-Control: no-cache` and `Vary: Cookie` because it depends on the cookie (pages with a login keep `private, no-store`).
 - **Colours.** Use the variable classes (`bg-background`, `text-muted-foreground`, ...) or the `gray` scale, which goes through CSS variables (`--gray-N`) so that a theme can tint it. `white`, `black`, `blue` and the status colours are literal on purpose. **A gray that means a status** ("no data", a skipped step) uses `statusgray-*`, a literal copy of the scale: a status colour is the same in every theme. The teal of the bio theme has a contrast of 1.9 to 2.4 on white: never text nor the only focus indication, except inside the navy header.
 - The navy header of the bio theme redefines the theme variables inside `.app-header`; what lives in a header must use the variable classes to follow it.
-- A canvas cannot use classes: `ResponseTimeChart.vue` reads `--chart-*` and redraws when the class of `<html>` changes. Do not pick colours with `classList.contains('dark')`.
+- A canvas cannot use classes: `ResponseTimeChart.vue` reads `--chart-*` and redraws when `themeKey()` (`utils/theme.js`: `data-theme` and the class of `<html>`) changes, which tells two light themes apart. Do not pick colours with `classList.contains('dark')`.
 - `test/e2e/theme-colors.sh` is the safety net of any change to the colour plumbing: it collects the computed colours of every element of 24 screens and states and compares two versions element by element (`--compare`); with `--contrast` it measures every text of the bio theme against the light one. Collect the reference **before** the change. Its list of activated states is its coverage: add the state you touch.
 - The theme selector is `ThemeSelector.vue` (`menuitemradio`, arrows, Home/End, Escape giving the focus back), used by the settings of the dashboard, the header of the public pages and the login screen. The E2E helpers `set_theme` know the three themes.
 
@@ -285,7 +301,7 @@ Change (archived): `openspec/changes/archive/2026-09-16-kuma-response-time-chart
 
 Change (archived): `openspec/changes/archive/2026-09-17-style-thin-scrollbars/`; specs in `openspec/specs/ui-square-style` and `openspec/specs/ui-theme`.
 
-- The rules are in `web/app/src/index.css`, **outside of `@layer base`** and next to `html { height: 100% }`: the `custom.css` of `ui.custom-css` is an unlayered `<link>` and would win over anything inside a layer, whatever the order. Keeping the rules unlayered means `ui.custom-css` needs `!important` to override them, which is what `docs/README.md` says.
+- The rules are in `web/app/src/style.css`, **outside of `@layer base`** and next to `html { height: 100% }`: the `custom.css` of `ui.custom-css` is an unlayered `<link>` and would win over anything inside a layer, whatever the order. Keeping the rules unlayered means `ui.custom-css` needs `!important` to override them, which is what `docs/README.md` says.
 - `--scrollbar-size` (10 px) lives in `:root`; `--scrollbar-thumb` and `--scrollbar-thumb-hover` are defined for both themes with the HSL triple convention, from `--muted-foreground` (contrast of at least 3:1 over the background of every scrollable area).
 - `::-webkit-scrollbar` (Chrome, Edge, Safari) is the main path. `scrollbar-width`/`scrollbar-color` are isolated in `@supports not selector(::-webkit-scrollbar)` for Firefox: defining them outside of it makes Chromium 121+ ignore every `::-webkit-scrollbar` rule and fall back to `thin` (about 11 px, rounded, no hover).
 - Everything is inside `@media not all and (pointer: coarse)`, so touch screens keep the scrollbar of the system. A browser without a pointing device reports `pointer: none` and is styled like a desktop, which is what makes the end-to-end measurement possible.
@@ -297,7 +313,7 @@ Change (archived): `openspec/changes/archive/2026-09-17-style-thin-scrollbars/`;
 Change (archived): `openspec/changes/archive/2026-09-17-self-host-inter-font/`; spec in `openspec/specs/ui-theme`.
 
 - The interface uses **Inter, served by Go Uptime itself**: `web/app/src/assets/fonts/inter-4-1-latin.woff2` and `inter-4-1-latin-ext.woff2` (variable, weights 100–900), emitted by the build to `web/static/fonts/` and embedded in the binary. Nothing is fetched from a font service, on any screen. The licence is served next to them, at `/fonts/OFL.txt` (`web/app/public/fonts/OFL.txt`).
-- The `@font-face` in `web/app/src/index.css` references the files with a **relative** path (`./assets/fonts/…`). An absolute `/fonts/…` breaks the build: the css-loader treats a path starting with `/` as a module request and resolves it from `web/app`.
+- The `@font-face` in `web/app/src/style.css` references the files with a **relative** path (`./assets/fonts/…`). An absolute `/fonts/…` breaks the build: the css-loader treats a path starting with `/` as a module request and resolves it from `web/app`.
 - The name of the file carries the version of the font, because the static middleware sends no `Cache-Control`: updating the font means a new name, which is what busts the cache of the browsers.
 - **How to update:** fetch the stylesheet with a desktop Chrome `User-Agent`, which is what makes Google Fonts answer with `woff2`:
   ```
@@ -320,7 +336,7 @@ Change (archived): `openspec/changes/archive/2026-09-15-add-basic-login-page/` (
 - Sessions are read from the store on every request, without cache and without goroutine: the login and the lookup that finds an expired session delete it. The credential fingerprint (username and hash) invalidates the sessions when the credential changes.
 - `security` cannot import `statuspage` (cycle through `config`): `internal/api/auth.go` computes the client IP with `statuspage.ClientIP` and `status-pages.trusted-proxies` and stores it in `security.LocalsClientIP`, before `/api/v1/config`, the login routes and the protected router.
 - `POST /api/v1/auth/login` and `/logout` are always registered in the unprotected block (404 without basic login), with the origin rules of `internal/api/admin_middleware.go`. Never log passwords or tokens.
-- Frontend: `views/LoginPage.vue` (`meta.login`, no dashboard header), redirect validated by `utils/redirect.js` (`npm run test:unit`), calls to the protected API with `PROTECTED_API_HEADERS` and `notifyUnauthorized()` on 401 (`utils/auth.js`). Without these headers, a 401 carries `WWW-Authenticate: Basic` and the browser opens its native dialog.
+- Frontend: `pages/LoginPage.vue` (`meta.login`, no dashboard header), redirect validated by `utils/redirect.js` (`npm run test:unit`), calls to the protected API with `PROTECTED_API_HEADERS` and `notifyUnauthorized()` on 401 (`utils/auth.js`). Without these headers, a 401 carries `WWW-Authenticate: Basic` and the browser opens its native dialog.
 
 ## Alerting providers through the web
 

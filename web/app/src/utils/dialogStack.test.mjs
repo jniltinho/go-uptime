@@ -1,7 +1,17 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-import { afterEach, beforeEach, test } from 'node:test'
+import { afterEach, beforeEach, test } from 'vitest'
 import assert from 'node:assert/strict'
-import { dialogOpen, dialogPosition, isTopDialog, nextDialogId, openDialogs, pushDialog, removeDialog, topDialog, uniqueId } from './dialogStack.js'
+import {
+  dialogOpen,
+  dialogPosition,
+  isTopDialog,
+  nextDialogId,
+  openDialogs,
+  pushDialog,
+  removeDialog,
+  topDialog,
+  uniqueId,
+} from './dialogStack.js'
 
 // A fake document that records its listeners and the classes of the body
 const createDocument = () => {
@@ -18,7 +28,7 @@ const createDocument = () => {
       }
     },
     dispatch: (type, event) => listeners.filter((item) => item.type === type).forEach((item) => item.listener(event)),
-    body: { classList: { add: (name) => classes.add(name), remove: (name) => classes.delete(name) } }
+    body: { classList: { add: (name) => classes.add(name), remove: (name) => classes.delete(name) } },
   }
 }
 
@@ -71,7 +81,13 @@ test('a single capturing listener and the body class only exist while the stack 
   assert.equal(fakeDocument.listeners.length, 0)
   pushDialog(1)
   pushDialog(2)
-  assert.deepEqual(fakeDocument.listeners.map((item) => [item.type, item.capture]), [['keydown', true], ['focusin', true]])
+  assert.deepEqual(
+    fakeDocument.listeners.map((item) => [item.type, item.capture]),
+    [
+      ['keydown', true],
+      ['focusin', true],
+    ],
+  )
   assert.equal(fakeDocument.classes.has('overflow-hidden'), true)
   removeDialog(2)
   assert.equal(fakeDocument.listeners.length, 2)

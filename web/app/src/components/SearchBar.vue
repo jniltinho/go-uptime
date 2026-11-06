@@ -18,19 +18,19 @@
     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
       <div class="flex items-center gap-2 flex-1 sm:flex-initial">
         <label class="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap">Filter by:</label>
-        <Select 
-          v-model="filterBy" 
+        <Select
+          v-model="filterBy"
           :options="filterOptions"
           placeholder="None"
           class="flex-1 sm:w-[140px] md:w-[160px]"
           @update:model-value="handleFilterChange"
         />
       </div>
-      
+
       <div class="flex items-center gap-2 flex-1 sm:flex-initial">
         <label class="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap">Sort by:</label>
-        <Select 
-          v-model="sortBy" 
+        <Select
+          v-model="sortBy"
           :options="sortOptions"
           placeholder="Name"
           class="flex-1 sm:w-[90px] md:w-[100px]"
@@ -55,26 +55,32 @@ const sortBy = ref(readPreference('sort-by') || (typeof window !== 'undefined' &
 const filterOptions = [
   { label: 'None', value: 'none' },
   { label: 'Failing', value: 'failing' },
-  { label: 'Unstable', value: 'unstable' }
+  { label: 'Unstable', value: 'unstable' },
 ]
 
 const sortOptions = [
   { label: 'Name', value: 'name' },
   { label: 'Group', value: 'group' },
-  { label: 'Health', value: 'health' }
+  { label: 'Health', value: 'health' },
 ]
 
-const emit = defineEmits(['search', 'update:showOnlyFailing', 'update:showRecentFailures', 'update:groupByGroup', 'update:sortBy', 'initializeCollapsedGroups'])
+const emit = defineEmits([
+  'search',
+  'update:showOnlyFailing',
+  'update:showRecentFailures',
+  'update:groupByGroup',
+  'update:sortBy',
+  'initializeCollapsedGroups',
+])
 
 const handleFilterChange = (value, store = true) => {
   filterBy.value = value
-  if (store)
-    writePreference('filter-by', value)
-  
+  if (store) writePreference('filter-by', value)
+
   // Reset all filter states first
   emit('update:showOnlyFailing', false)
   emit('update:showRecentFailures', false)
-  
+
   // Apply the selected filter
   if (value === 'failing') {
     emit('update:showOnlyFailing', true)
@@ -85,12 +91,11 @@ const handleFilterChange = (value, store = true) => {
 
 const handleSortChange = (value, store = true) => {
   sortBy.value = value
-  if (store)
-    writePreference('sort-by', value)
+  if (store) writePreference('sort-by', value)
 
   emit('update:sortBy', value)
   emit('update:groupByGroup', value === 'group')
-  
+
   // When switching to group view, initialize collapsed groups
   if (value === 'group') {
     emit('initializeCollapsedGroups')

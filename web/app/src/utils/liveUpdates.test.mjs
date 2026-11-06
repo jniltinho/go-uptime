@@ -1,5 +1,5 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-import { beforeEach, afterEach, mock, test } from 'node:test'
+import { beforeEach, afterEach, test, vi } from 'vitest'
 import assert from 'node:assert/strict'
 import { REOPEN_DELAYS_MS, RESULT_DELAY_MS, reopenDelayMs, urlWithLastEventId, watchEndpointResults } from './liveUpdates.js'
 
@@ -20,7 +20,7 @@ class FakeEventSource {
   }
 
   addEventListener(type, listener) {
-    (this.listeners[type] ||= []).push(listener)
+    ;(this.listeners[type] ||= []).push(listener)
   }
 
   removeEventListener(type, listener) {
@@ -81,12 +81,18 @@ let calls
 let watcher
 
 const start = (options = {}) => {
-  watcher = watchEndpointResults(URL, () => { calls++ }, { EventSource: FakeEventSource, document: doc, ...options })
+  watcher = watchEndpointResults(
+    URL,
+    () => {
+      calls++
+    },
+    { EventSource: FakeEventSource, document: doc, ...options },
+  )
   return watcher
 }
 
 beforeEach(() => {
-  mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+  vi.useFakeTimers({ toFake: ['setTimeout', 'Date', 'clearTimeout'] })
   FakeEventSource.instances = []
   doc = new FakeDocument()
   calls = 0
@@ -95,7 +101,7 @@ beforeEach(() => {
 
 afterEach(() => {
   watcher?.stop()
-  mock.timers.reset()
+  vi.useRealTimers()
 })
 
 test('the waits before reopening grow up to 5 minutes', () => {
@@ -129,13 +135,13 @@ test('close notifications are merged into a single call', () => {
   latest().open()
   latest().result(1)
   latest().result(2)
-  mock.timers.tick(RESULT_DELAY_MS - 1)
+  vi.advanceTimersByTime(RESULT_DELAY_MS - 1)
   latest().result(3)
   assert.equal(calls, 0)
-  mock.timers.tick(1)
+  vi.advanceTimersByTime(1)
   assert.equal(calls, 1)
   latest().result(4)
-  mock.timers.tick(RESULT_DELAY_MS)
+  vi.advanceTimersByTime(RESULT_DELAY_MS)
   assert.equal(calls, 2)
 })
 
@@ -143,7 +149,7 @@ test('the native reconnection is left alone', () => {
   start()
   latest().open()
   latest().fail(FakeEventSource.CONNECTING)
-  mock.timers.tick(10 * 60 * 1000)
+  vi.advanceTimersByTime(10 * 60 * 1000)
   assert.equal(FakeEventSource.instances.length, 1)
   assert.equal(openSources().length, 1)
 })
@@ -152,26 +158,26 @@ test('a channel closed by an error is reopened with backoff and the last event i
   start()
   latest().open()
   latest().result(5)
-  mock.timers.tick(RESULT_DELAY_MS)
+  vi.advanceTimersByTime(RESULT_DELAY_MS)
   latest().fail(FakeEventSource.CLOSED)
   assert.equal(openSources().length, 0)
 
   for (const delay of [30000, 60000, 120000, 300000, 300000]) {
     const count = FakeEventSource.instances.length
-    mock.timers.tick(delay - 1)
+    vi.advanceTimersByTime(delay - 1)
     assert.equal(FakeEventSource.instances.length, count)
-    mock.timers.tick(1)
+    vi.advanceTimersByTime(1)
     assert.equal(FakeEventSource.instances.length, count + 1)
     assert.equal(latest().url, `${URL}?lastEventId=5`)
     latest().fail(FakeEventSource.CLOSED)
   }
 
   // A successful connection starts the backoff over
-  mock.timers.tick(300000)
+  vi.advanceTimersByTime(300000)
   latest().open()
   latest().fail(FakeEventSource.CLOSED)
   const count = FakeEventSource.instances.length
-  mock.timers.tick(30000)
+  vi.advanceTimersByTime(30000)
   assert.equal(FakeEventSource.instances.length, count + 1)
 })
 
@@ -183,30 +189,30 @@ test('a successful refresh reopens a closed channel before the backoff, at most 
 
   // Refused right away: the refreshes of the next 30 seconds do not reopen it
   latest().fail(FakeEventSource.CLOSED)
-  mock.timers.tick(10000)
+  vi.advanceTimersByTime(10000)
   notifyRefreshSucceeded()
   assert.equal(FakeEventSource.instances.length, 1)
-  mock.timers.tick(20000)
+  vi.advanceTimersByTime(20000)
   assert.equal(FakeEventSource.instances.length, 2)
 
   // Refused again: the backoff is now 60 seconds, but a refresh 30 seconds later reopens it and cancels the wait
   latest().fail(FakeEventSource.CLOSED)
   assert.equal(openSources().length, 0)
-  mock.timers.tick(30000)
+  vi.advanceTimersByTime(30000)
   notifyRefreshSucceeded()
   assert.equal(FakeEventSource.instances.length, 3)
   assert.equal(openSources().length, 1)
   notifyRefreshSucceeded()
   assert.equal(FakeEventSource.instances.length, 3)
-  mock.timers.tick(30000)
+  vi.advanceTimersByTime(30000)
   assert.equal(FakeEventSource.instances.length, 3)
 
   // A channel that opens resets the backoff to 30 seconds
   latest().open()
   latest().fail(FakeEventSource.CLOSED)
-  mock.timers.tick(29999)
+  vi.advanceTimersByTime(29999)
   assert.equal(FakeEventSource.instances.length, 3)
-  mock.timers.tick(1)
+  vi.advanceTimersByTime(1)
   assert.equal(FakeEventSource.instances.length, 4)
   assert.equal(openSources().length, 1)
 })
@@ -217,7 +223,7 @@ test('the channel is closed while the tab is hidden', () => {
   latest().result(9)
   doc.setVisibility('hidden')
   assert.equal(openSources().length, 0)
-  mock.timers.tick(10 * 60 * 1000)
+  vi.advanceTimersByTime(10 * 60 * 1000)
   assert.equal(calls, 0)
 
   doc.setVisibility('visible')
@@ -225,7 +231,7 @@ test('the channel is closed while the tab is hidden', () => {
   assert.equal(latest().url, `${URL}?lastEventId=9`)
   // The event sent right away by the server is merged with the refresh of the return
   latest().result(10)
-  mock.timers.tick(RESULT_DELAY_MS)
+  vi.advanceTimersByTime(RESULT_DELAY_MS)
   assert.equal(calls, 1)
 
   // A second visible notification does not open another channel
@@ -237,7 +243,7 @@ test('without refreshOnVisible, the return only reopens the channel', () => {
   start({ refreshOnVisible: false })
   doc.setVisibility('hidden')
   doc.setVisibility('visible')
-  mock.timers.tick(RESULT_DELAY_MS)
+  vi.advanceTimersByTime(RESULT_DELAY_MS)
   assert.equal(calls, 0)
   assert.equal(openSources().length, 1)
 })
@@ -254,7 +260,7 @@ test('the channel closed by an error while hidden is reopened when shown', () =>
   start()
   latest().fail(FakeEventSource.CLOSED)
   doc.setVisibility('hidden')
-  mock.timers.tick(30000)
+  vi.advanceTimersByTime(30000)
   assert.equal(FakeEventSource.instances.length, 1)
   watcher.notifyRefreshSucceeded()
   assert.equal(FakeEventSource.instances.length, 1)
@@ -269,7 +275,7 @@ test('stop closes everything', () => {
   stop()
   assert.equal(openSources().length, 0)
   assert.equal(doc.listeners.size, 0)
-  mock.timers.tick(10 * 60 * 1000)
+  vi.advanceTimersByTime(10 * 60 * 1000)
   assert.equal(calls, 0)
   notifyRefreshSucceeded()
   doc.setVisibility('visible')

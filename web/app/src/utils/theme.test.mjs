@@ -1,11 +1,23 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-import { afterEach, test } from 'node:test'
+import { afterEach, test } from 'vitest'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import vm from 'node:vm'
-import { THEMES, applyTheme, currentTheme, defaultTheme, defaultThemeIsDark, setTheme, themeFromCookie, wantsDarkMode } from './theme.js'
+import { inlineRegistry, THEMES_MARKER } from '../themes/build.js'
+import { THEME_REGISTRY } from '../themes/index.js'
+import {
+  THEMES,
+  themeKey,
+  applyTheme,
+  currentTheme,
+  defaultTheme,
+  defaultThemeIsDark,
+  setTheme,
+  themeFromCookie,
+  wantsDarkMode,
+} from './theme.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const { themes, cases } = JSON.parse(readFileSync(join(here, 'theme.cases.json'), 'utf8'))
@@ -14,24 +26,36 @@ const { themes, cases } = JSON.parse(readFileSync(join(here, 'theme.cases.json')
 // meta. It serves both theme.js (dataset) and the inline script of index.html (getAttribute).
 const fakeDocument = ({ defaultTheme: value, cookie = '', classes = [] } = {}) => {
   const classSet = new Set(classes)
-  const meta = { content: '', setAttribute(name, attribute) { this[name] = attribute } }
+  const attributes = {}
+  const meta = {
+    content: '',
+    setAttribute(name, attribute) {
+      this[name] = attribute
+    },
+  }
   const absent = value === undefined || value === null
+  const dataset = absent ? {} : { defaultTheme: value }
   return {
     classSet,
     meta,
+    // data-theme and data-scheme, whether they were set through the dataset (theme.js) or setAttribute (inline script)
+    attributes: () => ({ theme: attributes['data-theme'] ?? dataset.theme, scheme: attributes['data-scheme'] ?? dataset.scheme }),
     document: {
       cookie,
       documentElement: {
-        dataset: absent ? {} : { defaultTheme: value },
+        dataset,
+        setAttribute: (name, attribute) => {
+          attributes[name] = attribute
+        },
         getAttribute: (name) => (name === 'data-default-theme' && !absent ? value : null),
         classList: {
           toggle: (name, force) => (force ? classSet.add(name) : classSet.delete(name)),
           add: (name) => classSet.add(name),
-          remove: (...names) => names.forEach((name) => classSet.delete(name))
-        }
+          remove: (...names) => names.forEach((name) => classSet.delete(name)),
+        },
       },
-      querySelector: (selector) => (selector === 'meta[name="theme-color"]' ? meta : null)
-    }
+      querySelector: (selector) => (selector === 'meta[name="theme-color"]' ? meta : null),
+    },
   }
 }
 
@@ -42,8 +66,17 @@ afterEach(() => {
   delete global.document
 })
 
-test('the table of themes of theme.js is the one of theme.cases.json', () => {
-  assert.deepEqual(Object.fromEntries(Object.entries(THEMES).map(([theme, { className, themeColor }]) => [theme, { class: className, themeColor }])), themes)
+test('the table of themes of theme.js is the registry, and the one of theme.cases.json', () => {
+  assert.deepEqual(
+    Object.keys(THEMES),
+    THEME_REGISTRY.map((theme) => theme.id),
+  )
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(THEMES).map(([theme, { className, themeColor, scheme }]) => [theme, { class: className, themeColor, scheme }]),
+    ),
+    themes,
+  )
 })
 
 test('theme.js follows every case of theme.cases.json', () => {
@@ -56,25 +89,37 @@ test('theme.js follows every case of theme.cases.json', () => {
     applyTheme(currentTheme())
     assert.equal(classOf(fake.classSet), ['unrelated', item.class].filter(Boolean).sort().join(' '), JSON.stringify(item))
     assert.equal(fake.meta.content, item.themeColor, JSON.stringify(item))
+    assert.deepEqual(fake.attributes(), { theme: item.theme, scheme: themes[item.theme].scheme }, JSON.stringify(item))
   }
 })
 
 test('the inline script of index.html follows every case of theme.cases.json', () => {
-  const html = readFileSync(join(here, '..', '..', 'public', 'index.html'), 'utf8')
+  const html = readFileSync(join(here, '..', '..', 'index.html'), 'utf8')
   const start = html.indexOf('(function() {', html.indexOf('Initialize theme immediately'))
   const end = html.indexOf('})();', start) + '})();'.length
-  assert.ok(start > 0 && end > start, 'the inline theme script was not found in public/index.html')
-  const script = new vm.Script(html.slice(start, end))
+  assert.ok(start > 0 && end > start, 'the inline theme script was not found in index.html')
+  // The build injects the registry in place of the marker (src/themes/build.js)
+  const source = html.slice(start, end)
+  assert.ok(source.includes(THEMES_MARKER), 'the inline theme script has no marker for the registry')
+  const script = new vm.Script(source.replace(THEMES_MARKER, inlineRegistry(THEME_REGISTRY)))
   for (const item of cases) {
     const fake = fakeDocument({ defaultTheme: item.default, cookie: cookieOf(item.cookie), classes: ['dark', 'theme-bio', 'unrelated'] })
     script.runInNewContext({ document: fake.document })
     assert.equal(classOf(fake.classSet), ['unrelated', item.class].filter(Boolean).sort().join(' '), JSON.stringify(item))
     assert.equal(fake.meta.content, item.themeColor, JSON.stringify(item))
+    assert.deepEqual(fake.attributes(), { theme: item.theme, scheme: themes[item.theme].scheme }, JSON.stringify(item))
   }
 })
 
 test('the default theme: the attribute, its absence, the template not rendered and the HTML of a previous version', () => {
-  for (const [value, expected] of [['dark', 'dark'], ['light', 'light'], ['bio', 'bio'], ['', 'light'], [undefined, 'dark'], ['{{ .DefaultTheme }}', 'dark']]) {
+  for (const [value, expected] of [
+    ['dark', 'dark'],
+    ['light', 'light'],
+    ['bio', 'bio'],
+    ['', 'light'],
+    [undefined, 'dark'],
+    ['{{ .DefaultTheme }}', 'dark'],
+  ]) {
     global.document = fakeDocument({ defaultTheme: value }).document
     assert.equal(defaultTheme(), expected, String(value))
     assert.equal(defaultThemeIsDark(), expected === 'dark', String(value))
@@ -102,4 +147,15 @@ test('choosing a theme saves the cookie and moves between every pair of themes w
     }
   }
   assert.equal(setTheme('blue'), 'light', 'a value that is not a theme falls back to light')
+})
+
+test('the key of the theme tells two light themes apart, so that the canvas of the chart redraws', () => {
+  const fake = fakeDocument({ defaultTheme: 'light' })
+  fake.document.documentElement.className = ''
+  global.document = fake.document
+  applyTheme('light')
+  const light = themeKey()
+  applyTheme('bio')
+  assert.equal(fake.attributes().scheme, 'light')
+  assert.notEqual(themeKey(), light, 'light and bio have the same scheme but must not have the same key')
 })

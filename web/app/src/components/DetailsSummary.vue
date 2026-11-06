@@ -24,7 +24,7 @@ const props = defineProps({
   uptime: { type: Object, default: null },
   responseTime: { type: Object, default: null },
   // Push endpoints are labeled "Ping"
-  push: { type: Boolean, default: false }
+  push: { type: Boolean, default: false },
 })
 
 const items = computed(() => detailsSummaryItems(props))

@@ -7,11 +7,11 @@
           <ArrowLeft class="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
-        
+
         <div v-if="endpointStatus && endpointStatus.name" class="space-y-6">
           <div class="flex items-start justify-between">
             <div>
-              <h1 class="text-2xl font-semibold tracking-tight break-words" data-testid="endpoint-name">{{ endpointStatus.name }}</h1>
+              <h1 class="text-2xl font-semibold tracking-tight wrap-break-word" data-testid="endpoint-name">{{ endpointStatus.name }}</h1>
               <div class="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                 <span v-if="endpointStatus.group">Group: {{ endpointStatus.group }}</span>
                 <span v-if="endpointStatus.group && hostname">•</span>
@@ -40,13 +40,7 @@
                     <Activity v-if="showAverageResponseTime" class="h-5 w-5" />
                     <Timer v-else class="h-5 w-5" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    @click="fetchData()"
-                    title="Refresh data"
-                    :disabled="isRefreshing"
-                  >
+                  <Button variant="ghost" size="icon" @click="fetchData()" title="Refresh data" :disabled="isRefreshing">
                     <RefreshCw :class="['h-4 w-4', isRefreshing && 'animate-spin']" />
                   </Button>
                 </div>
@@ -82,7 +76,7 @@
                 <select
                   v-model="selectedChartPeriod"
                   aria-label="Period of the response time chart"
-                  class="text-sm bg-background border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                  class="text-sm bg-background border rounded-md px-3 py-1 focus:outline-hidden focus:ring-2 focus:ring-ring"
                   data-testid="response-time-chart-period"
                 >
                   <option v-for="option in CHART_PERIOD_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
@@ -113,7 +107,9 @@
             <Card v-for="period in ['30d', '7d', '24h', '1h']" :key="period">
               <CardHeader class="pb-2">
                 <CardTitle class="text-sm font-medium text-muted-foreground text-center">
-                  {{ period === '30d' ? 'Last 30 days' : period === '7d' ? 'Last 7 days' : period === '24h' ? 'Last 24 hours' : 'Last hour' }}
+                  {{
+                    period === '30d' ? 'Last 30 days' : period === '7d' ? 'Last 7 days' : period === '24h' ? 'Last 24 hours' : 'Last hour'
+                  }}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -181,7 +177,15 @@ const endpointStatus = ref(null) // For paginated historical data
 const currentStatus = ref(null) // For current/latest status (always page 1)
 const events = ref([])
 // Fork: items of the collapsible events, see components/EventsTimeline.vue
-const eventItems = computed(() => events.value.map((event) => ({ key: `${event.type}-${event.timestamp}`, type: event.type, text: event.fancyText, dateTime: prettifyTimestamp(event.timestamp), timeAgo: event.fancyTimeAgo })))
+const eventItems = computed(() =>
+  events.value.map((event) => ({
+    key: `${event.type}-${event.timestamp}`,
+    type: event.type,
+    text: event.fancyText,
+    dateTime: prettifyTimestamp(event.timestamp),
+    timeAgo: event.fancyTimeAgo,
+  })),
+)
 const currentPage = ref(1)
 const resultPageSize = 50
 const showResponseTimeChartAndBadges = ref(false)
@@ -218,7 +222,7 @@ const certificate = computed(() => {
   return {
     text: certificateText(expiration.days),
     className: certificateClass(expiration.days),
-    date: certificateDate(expiration.expiresAt)
+    date: certificateDate(expiration.expiresAt),
   }
 })
 
@@ -270,10 +274,11 @@ let refreshingGeneration = 0
 // Fork: real-time channel of the endpoint, see utils/liveUpdates.js
 let liveUpdates = null
 
-const fetchStatuses = (key, page) => fetch(`/api/v1/endpoints/${key}/statuses?page=${page}&pageSize=${resultPageSize}`, {
-  credentials: 'include',
-  headers: PROTECTED_API_HEADERS
-})
+const fetchStatuses = (key, page) =>
+  fetch(`/api/v1/endpoints/${key}/statuses?page=${page}&pageSize=${resultPageSize}`, {
+    credentials: 'include',
+    headers: PROTECTED_API_HEADERS,
+  })
 
 // fetchData fetches the page of results of the table and, on another page, also the first page, which feeds the bars,
 // the numbers and the chart. With silent, used by the real-time notifications, the refresh button does not spin.
@@ -286,7 +291,9 @@ const fetchData = async ({ silent = false } = {}) => {
     isRefreshing.value = true
   }
   try {
-    const [pageResponse, firstPageResponse] = await Promise.all(page === 1 ? [fetchStatuses(key, page)] : [fetchStatuses(key, page), fetchStatuses(key, 1)])
+    const [pageResponse, firstPageResponse] = await Promise.all(
+      page === 1 ? [fetchStatuses(key, page)] : [fetchStatuses(key, page), fetchStatuses(key, 1)],
+    )
     if (pageResponse.status === 401 || (firstPageResponse && firstPageResponse.status === 401)) {
       notifyUnauthorized()
       return
@@ -372,18 +379,21 @@ watch(selectedChartPeriod, (period) => {
 })
 
 // Fork: another endpoint on the same screen starts from scratch, with its own real-time channel
-watch(() => route.params.key, (key, previousKey) => {
-  if (!key || key === previousKey || route.name !== 'EndpointDetails') {
-    return
-  }
-  endpointStatus.value = null
-  currentStatus.value = null
-  events.value = []
-  currentPage.value = 1
-  showResponseTimeChartAndBadges.value = false
-  startLiveUpdates()
-  fetchData()
-})
+watch(
+  () => route.params.key,
+  (key, previousKey) => {
+    if (!key || key === previousKey || route.name !== 'EndpointDetails') {
+      return
+    }
+    endpointStatus.value = null
+    currentStatus.value = null
+    events.value = []
+    currentPage.value = 1
+    showResponseTimeChartAndBadges.value = false
+    startLiveUpdates()
+    fetchData()
+  },
+)
 
 onMounted(() => {
   fetchData()

@@ -143,7 +143,11 @@ func TestSinglePageApplication_DefaultTheme(t *testing.T) {
 				defer response.Body.Close()
 				body, _ := io.ReadAll(response.Body)
 				html := string(body)
-				if !strings.Contains(html, `<html lang="en" class="`+scenario.expectedClass+`" data-default-theme="`+scenario.expectedDflt+`">`) {
+				theme, scheme := "light", "light"
+				if scenario.expectedClass == "dark" {
+					theme, scheme = "dark", "dark"
+				}
+				if !strings.Contains(html, `<html lang="en" class="`+scenario.expectedClass+`" data-theme="`+theme+`" data-scheme="`+scheme+`" data-default-theme="`+scenario.expectedDflt+`">`) {
 					t.Errorf("unexpected html element for class=%q default=%q: %s", scenario.expectedClass, scenario.expectedDflt, html[:min(len(html), 200)])
 				}
 				if !strings.Contains(html, `<meta name="theme-color" content="`+scenario.expectedColor+`"`) {

@@ -1,0 +1,1289 @@
+<!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
+<template>
+  <!-- Fork: the form fills the window on larger screens and each column scrolls on its own, like the lists -->
+  <div class="mx-auto flex w-full max-w-[1760px] flex-col px-4 py-4 sm:px-12 md:min-h-0 md:flex-1">
+    <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="min-w-0">
+        <h1 class="text-xl font-semibold tracking-tight text-foreground dark:text-gray-100">{{ title }}</h1>
+        <p v-if="isEdit" class="mt-0.5 font-mono text-sm text-muted-foreground dark:text-gray-400">
+          <a
+            :href="`/status/${slug}`"
+            target="_blank"
+            rel="noopener"
+            class="underline-offset-4 hover:underline"
+            data-testid="status-page-public-link"
+            >/status/{{ slug }}</a
+          ><span v-if="version"> · version {{ version }}</span>
+        </p>
+      </div>
+      <Button variant="outline" data-testid="admin-back" @click="goBack">Back</Button>
+    </div>
+
+    <!-- Warnings that stay while the screen is open: they are outside of the area that scrolls -->
+    <div
+      v-if="conflictError"
+      role="alert"
+      data-testid="admin-error"
+      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+    >
+      <p class="whitespace-pre-line">{{ conflictError }}</p>
+      <Button variant="outline" size="sm" class="mt-2" data-testid="admin-reload" @click="reloadCurrentVersion"
+        >Reload current version</Button
+      >
+    </div>
+    <div
+      v-if="loadError"
+      role="alert"
+      data-testid="admin-load-error"
+      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+    >
+      <p class="whitespace-pre-line">{{ loadError }}</p>
+    </div>
+    <div
+      v-if="readOnly"
+      class="mt-3 shrink-0 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+    >
+      This status page is defined in the configuration file and can only be viewed.
+    </div>
+    <div
+      v-if="savedError"
+      role="alert"
+      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+    >
+      The saved definition is invalid and the page is not published: {{ savedError }}
+    </div>
+
+    <div v-if="loading" class="flex justify-center py-12 md:min-h-0 md:flex-1 md:items-center md:py-0"><Loading /></div>
+    <template v-else>
+      <!-- Page of the configuration file: the YAML scrolls inside its own area -->
+      <div
+        v-if="readOnly"
+        class="mt-3 border bg-card p-6 dark:border-gray-700 dark:bg-gray-900 md:min-h-0 md:flex-1 md:overflow-auto md:overscroll-contain"
+        data-testid="status-page-yaml-panel"
+      >
+        <pre class="whitespace-pre-wrap font-mono text-sm text-foreground dark:text-gray-100" data-testid="status-page-yaml">{{
+          yamlText
+        }}</pre>
+      </div>
+
+      <div v-else class="mt-3 grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2 md:grid-rows-1">
+        <!-- Left column: general, groups and the warnings of the validation -->
+        <div class="flex flex-col gap-4 md:min-h-0 md:overflow-auto md:overscroll-contain" data-testid="status-page-column-general">
+          <div
+            v-if="validationWarnings.length"
+            ref="validationBand"
+            data-testid="status-page-validation"
+            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+          >
+            <p class="font-medium">
+              The page will show {{ validation.endpoints === 1 ? '1 endpoint' : `${validation.endpoints} endpoints` }}.
+            </p>
+            <ul class="mt-1 list-disc pl-5">
+              <li v-for="warning in validationWarnings" :key="`${warning.type}-${warning.value}`">{{ warningMessage(warning) }}</li>
+            </ul>
+          </div>
+
+          <!-- General -->
+          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-general">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">General</h2>
+              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Address, title and publication of the page.</p>
+            </header>
+            <div class="grid gap-4">
+              <div>
+                <label for="status-page-slug" class="block text-sm font-medium text-foreground dark:text-gray-200">Slug</label>
+                <div class="mt-1.5 flex flex-wrap gap-2 lg:flex-nowrap">
+                  <div class="flex w-full min-w-0 lg:flex-1">
+                    <span
+                      class="inline-flex h-10 shrink-0 items-center border border-r-0 border-input bg-muted/40 px-3 font-mono text-sm text-muted-foreground dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                      >/status/</span
+                    >
+                    <Input
+                      id="status-page-slug"
+                      v-model="form.slug"
+                      :disabled="isEdit"
+                      placeholder="infrastructure"
+                      class="min-w-0 font-mono dark:border-gray-700"
+                      data-testid="status-page-field-slug"
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    class="w-28 shrink-0"
+                    :disabled="!slugValid"
+                    data-testid="status-page-copy-link"
+                    @click="copyPublicUrl"
+                    >{{ copied ? 'Copied' : 'Copy link' }}</Button
+                  >
+                  <a
+                    v-if="isEdit"
+                    :href="publicPath"
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex h-10 shrink-0 items-center border border-input bg-background px-4 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+                    data-testid="status-page-open"
+                    >Open</a
+                  >
+                </div>
+                <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
+                  Lowercase letters, digits and hyphens, up to 64 characters. It cannot be changed later.
+                </p>
+              </div>
+              <label class="block">
+                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Title</span>
+                <Input
+                  v-model="form.title"
+                  placeholder="Infrastructure"
+                  class="mt-1.5 dark:border-gray-700"
+                  data-testid="status-page-field-title"
+                />
+              </label>
+              <label class="block">
+                <span class="flex items-baseline justify-between text-sm font-medium text-foreground dark:text-gray-200">
+                  Description
+                  <span class="text-xs font-normal text-muted-foreground dark:text-gray-400">{{ form.description.length }}/1000</span>
+                </span>
+                <textarea
+                  v-model="form.description"
+                  rows="3"
+                  maxlength="1000"
+                  placeholder="Shown below the title of the page"
+                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  data-testid="status-page-field-description"
+                ></textarea>
+              </label>
+              <label
+                :class="[
+                  'flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700',
+                  form.enabled ? 'border-green-300 bg-green-50/60 dark:border-green-800 dark:bg-green-900/20' : '',
+                ]"
+              >
+                <input
+                  v-model="form.enabled"
+                  type="checkbox"
+                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  data-testid="status-page-field-enabled"
+                />
+                <span>
+                  <span class="block font-medium text-foreground dark:text-gray-200">Published</span>
+                  <span class="block text-xs text-muted-foreground dark:text-gray-400">
+                    Visible at <span class="font-mono">{{ publicPath }}</span
+                    >{{ form.requiresLogin ? ', with the login of the page' : ', without login' }}. An unpublished page can still be
+                    validated and previewed here.
+                  </span>
+                </span>
+              </label>
+              <!-- Fork: login of the page, asked by the browser itself -->
+              <div
+                :class="[
+                  'border px-3 py-2.5 text-sm dark:border-gray-700',
+                  form.requiresLogin ? 'border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-900/20' : '',
+                ]"
+              >
+                <label class="flex items-start gap-3">
+                  <input
+                    v-model="form.requiresLogin"
+                    type="checkbox"
+                    class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                    data-testid="status-page-field-requires-login"
+                  />
+                  <span>
+                    <span class="block font-medium text-foreground dark:text-gray-200">Require login to view this page</span>
+                    <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                      >The browser asks for the username and the password of this page. It is not the login of the administration, and there
+                      is no way to sign out other than closing the browser.</span
+                    >
+                  </span>
+                </label>
+                <div v-if="form.requiresLogin" class="mt-2.5 space-y-2.5">
+                  <label class="block">
+                    <span class="block text-sm font-medium text-foreground dark:text-gray-200">Username</span>
+                    <Input
+                      v-model="form.authUsername"
+                      autocomplete="off"
+                      placeholder="client"
+                      class="mt-1.5 dark:border-gray-700"
+                      data-testid="status-page-field-auth-username"
+                    />
+                  </label>
+                  <label class="block">
+                    <span class="block text-sm font-medium text-foreground dark:text-gray-200">Password</span>
+                    <Input
+                      v-model="form.authPassword"
+                      type="password"
+                      autocomplete="new-password"
+                      :placeholder="savedRequiresLogin ? 'Unchanged' : 'At least 8 characters'"
+                      class="mt-1.5 dark:border-gray-700"
+                      data-testid="status-page-field-auth-password"
+                    />
+                    <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400">{{
+                      savedRequiresLogin
+                        ? 'Leave it empty to keep the current password. Only the hash is stored, so it is never shown again.'
+                        : 'At least 8 characters. Only the hash is stored, so it is never shown again.'
+                    }}</span>
+                  </label>
+                </div>
+              </div>
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+                <input
+                  v-model="form.showCertificateExpiration"
+                  type="checkbox"
+                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  data-testid="status-page-field-show-certificate-expiration"
+                />
+                <span>
+                  <span class="block font-medium text-foreground dark:text-gray-200">Show certificate expiration</span>
+                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                    >Shows below the name of each endpoint how many days are left until its TLS certificate expires.</span
+                  >
+                </span>
+              </label>
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+                <input
+                  v-model="form.showMessages"
+                  type="checkbox"
+                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  data-testid="status-page-field-show-messages"
+                />
+                <span>
+                  <span class="block font-medium text-foreground dark:text-gray-200">Show messages</span>
+                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                    >Messages of pushes and HTTP status are public; errors of checks are never published.</span
+                  >
+                </span>
+              </label>
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+                <input
+                  v-model="form.groupsCollapsed"
+                  type="checkbox"
+                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  data-testid="status-page-field-groups-collapsed"
+                />
+                <span>
+                  <span class="block font-medium text-foreground dark:text-gray-200">Start with the groups collapsed</span>
+                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                    >Visitors expand the groups they want. A group with a problem always appears expanded.</span
+                  >
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <!-- Groups -->
+          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-groups">
+            <header class="mb-3 flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Groups</h2>
+                <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+                  Every enabled endpoint of the group is shown on the page, including the ones created later.
+                </p>
+              </div>
+              <div class="flex shrink-0 items-center gap-2">
+                <span class="text-xs text-muted-foreground dark:text-gray-400" data-testid="status-page-groups-count"
+                  >{{ form.groups.length }} selected</span
+                >
+                <Button v-if="form.groups.length" variant="ghost" size="sm" data-testid="status-page-groups-clear" @click="form.groups = []"
+                  >Clear</Button
+                >
+              </div>
+            </header>
+            <p v-if="groupOptions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No groups with endpoints.</p>
+            <div class="grid gap-2 lg:grid-cols-2">
+              <label
+                v-for="group in groupOptions"
+                :key="group.name"
+                :class="[
+                  'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-accent/50 dark:hover:bg-gray-800/60',
+                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
+                ]"
+              >
+                <input
+                  v-model="form.groups"
+                  type="checkbox"
+                  :value="group.name"
+                  class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  :data-testid="`status-page-group-${group.name}`"
+                />
+                <span class="min-w-0 flex-1 truncate font-medium text-foreground dark:text-gray-100">{{ group.name }}</span>
+                <span class="shrink-0 text-xs text-muted-foreground dark:text-gray-400">{{
+                  group.endpoints === 1 ? '1 endpoint' : `${group.endpoints} endpoints`
+                }}</span>
+              </label>
+            </div>
+          </section>
+
+          <!-- Fork: views of the page (grouped by environment, matrix) and the classification of its endpoints -->
+          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-views">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Views</h2>
+              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+                Layouts the public page offers. The grouped and matrix views place each endpoint in an application and an environment.
+              </p>
+            </header>
+            <div class="grid gap-4">
+              <fieldset>
+                <legend class="text-sm font-medium text-foreground dark:text-gray-200">Enabled views</legend>
+                <div class="mt-1.5 grid gap-2 sm:grid-cols-3">
+                  <label
+                    v-for="view in VIEW_OPTIONS"
+                    :key="view.id"
+                    :class="[
+                      'flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm',
+                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
+                    ]"
+                  >
+                    <input
+                      v-model="form.views.enabled"
+                      type="checkbox"
+                      :value="view.id"
+                      class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                      :data-testid="`status-page-view-${view.id}`"
+                    />
+                    <span>
+                      <span class="block font-medium text-foreground dark:text-gray-100">{{ view.label }}</span>
+                      <span class="block text-xs text-muted-foreground dark:text-gray-400">{{ view.help }}</span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="block">
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Default view</span>
+                  <select
+                    v-model="form.views.default"
+                    class="mt-1.5 h-10 w-full border border-input bg-background px-3 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    data-testid="status-page-view-default"
+                  >
+                    <option value="">First enabled</option>
+                    <option
+                      v-for="view in VIEW_OPTIONS.filter((option) => form.views.enabled.includes(option.id))"
+                      :key="view.id"
+                      :value="view.id"
+                    >
+                      {{ view.label }}
+                    </option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Name of a group</span>
+                  <Input
+                    v-model="form.views.groupLabel"
+                    maxlength="30"
+                    placeholder="Group"
+                    class="mt-1.5 dark:border-gray-700"
+                    data-testid="status-page-view-group-label"
+                  />
+                  <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400"
+                    >For example Client: "By client", "Clients".</span
+                  >
+                </label>
+              </div>
+
+              <div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm font-medium text-foreground dark:text-gray-200">Environments</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    :disabled="form.views.environments.length >= 10"
+                    data-testid="status-page-view-environment-add"
+                    @click="form.views.environments.push({ id: '', name: '', short: '' })"
+                    >Add</Button
+                  >
+                </div>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">
+                  The first one is the primary environment (production): its incidents and its uptime are the ones highlighted.
+                </p>
+                <div
+                  v-for="(environment, index) in form.views.environments"
+                  :key="`environment-${index}`"
+                  class="mt-2 grid grid-cols-[1fr_1.5fr_1fr_auto] gap-2"
+                >
+                  <Input
+                    v-model="environment.id"
+                    placeholder="prod"
+                    class="font-mono dark:border-gray-700"
+                    :aria-label="`Id of environment ${index + 1}`"
+                    :data-testid="`status-page-view-environment-id-${index}`"
+                  />
+                  <Input
+                    v-model="environment.name"
+                    placeholder="Production"
+                    class="dark:border-gray-700"
+                    :aria-label="`Name of environment ${index + 1}`"
+                    :data-testid="`status-page-view-environment-name-${index}`"
+                  />
+                  <Input
+                    v-model="environment.short"
+                    maxlength="8"
+                    placeholder="PROD"
+                    class="dark:border-gray-700"
+                    :aria-label="`Short name of environment ${index + 1}`"
+                  />
+                  <div class="flex">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      :disabled="index === 0"
+                      :aria-label="`Move environment ${index + 1} up`"
+                      @click="moveEnvironment(index, -1)"
+                      >↑</Button
+                    >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      :aria-label="`Remove environment ${index + 1}`"
+                      @click="form.views.environments.splice(index, 1)"
+                      >✕</Button
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <label class="block">
+                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Order of the applications</span>
+                <textarea
+                  v-model="form.views.applicationsText"
+                  rows="3"
+                  placeholder="One per line: the columns of the matrix and the filters. Others come after, alphabetically."
+                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  data-testid="status-page-view-applications"
+                ></textarea>
+              </label>
+
+              <div v-if="viewGroupRows.length">
+                <span class="text-sm font-medium text-foreground dark:text-gray-200">Groups</span>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">
+                  Description and tags (comma separated, up to 5) shown next to the name of each group.
+                </p>
+                <div
+                  v-for="row in viewGroupRows.filter((candidate) => form.views.groups[candidate.name])"
+                  :key="`group-details-${row.name}`"
+                  class="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_auto] items-center gap-2"
+                >
+                  <span
+                    :class="[
+                      'truncate text-sm',
+                      row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100',
+                    ]"
+                    :title="row.orphan ? 'Group not selected by the page: the entry is kept until removed' : row.name"
+                    >{{ row.name }}</span
+                  >
+                  <Input
+                    v-model="form.views.groups[row.name].description"
+                    maxlength="100"
+                    placeholder="Description"
+                    class="dark:border-gray-700"
+                    :aria-label="`Description of ${row.name}`"
+                    :data-testid="`status-page-view-group-description-${row.name}`"
+                  />
+                  <Input
+                    v-model="form.views.groups[row.name].tagsText"
+                    placeholder="BR, OCI"
+                    class="dark:border-gray-700"
+                    :aria-label="`Tags of ${row.name}`"
+                  />
+                  <Button
+                    v-if="row.orphan"
+                    variant="ghost"
+                    size="sm"
+                    :aria-label="`Remove the entry of ${row.name}`"
+                    @click="delete form.views.groups[row.name]"
+                    >✕</Button
+                  >
+                  <span v-else></span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-sm font-medium text-foreground dark:text-gray-200">Classification of the endpoints</span>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">
+                  Without an application, the name of the endpoint is used. Entries of endpoints the page does not show are kept until
+                  removed.
+                </p>
+                <datalist id="status-page-view-applications-list">
+                  <option v-for="application in applicationSuggestions" :key="`suggestion-${application}`" :value="application"></option>
+                </datalist>
+                <p v-if="classificationRows.length === 0" class="mt-2 text-sm text-muted-foreground dark:text-gray-400">
+                  Select groups or endpoints to classify them.
+                </p>
+                <div v-else class="mt-2 max-h-96 overflow-y-auto border dark:border-gray-700">
+                  <div
+                    v-for="row in classificationRows.filter((candidate) => form.views.endpoints[candidate.key])"
+                    :key="`classification-${row.key}`"
+                    class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 border-t px-2 py-1.5 text-sm first:border-t-0 dark:border-gray-800"
+                    :data-testid="`status-page-classification-${row.key}`"
+                  >
+                    <span class="min-w-0" :title="row.key">
+                      <span
+                        :class="[
+                          'block truncate',
+                          row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100',
+                        ]"
+                        >{{ row.name }}</span
+                      >
+                      <span class="block truncate text-xs text-muted-foreground dark:text-gray-400">{{
+                        row.orphan ? 'not shown by the page' : row.group || 'no group'
+                      }}</span>
+                    </span>
+                    <input
+                      v-model="form.views.endpoints[row.key].application"
+                      list="status-page-view-applications-list"
+                      maxlength="40"
+                      :placeholder="row.orphan ? '' : row.name"
+                      class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                      :aria-label="`Application of ${row.name}`"
+                      :data-testid="`status-page-classification-application-${row.key}`"
+                    />
+                    <select
+                      v-model="form.views.endpoints[row.key].environment"
+                      class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                      :aria-label="`Environment of ${row.name}`"
+                      :data-testid="`status-page-classification-environment-${row.key}`"
+                    >
+                      <option value="">No environment</option>
+                      <option
+                        v-for="environment in form.views.environments.filter((candidate) => candidate.id.trim())"
+                        :key="`option-${environment.id}`"
+                        :value="environment.id.trim()"
+                      >
+                        {{ environment.name || environment.id }}
+                      </option>
+                    </select>
+                    <Button
+                      v-if="row.orphan"
+                      variant="ghost"
+                      size="sm"
+                      :aria-label="`Remove the classification of ${row.name}`"
+                      @click="delete form.views.endpoints[row.key]"
+                      >✕</Button
+                    >
+                    <span v-else class="w-8"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right column: endpoints, with the list filling the column -->
+        <section
+          class="flex flex-col border bg-card dark:border-gray-700 dark:bg-gray-900 md:min-h-0"
+          data-testid="status-page-section-endpoints"
+        >
+          <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
+            <div class="flex items-start justify-between gap-4">
+              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Endpoints</h2>
+              <span class="shrink-0 text-xs text-muted-foreground dark:text-gray-400" data-testid="status-page-endpoints-count">
+                {{ form.endpoints.length }} selected · {{ form.featured.length }}/{{ MAXIMUM_FEATURED }} featured
+              </span>
+            </div>
+            <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+              Picked one by one, in addition to the groups. <strong>Featured</strong> endpoints are shown at the top of the page with more
+              details. Every endpoint of the page links to a public details page with its response time chart.
+            </p>
+          </header>
+          <div class="flex shrink-0 flex-wrap items-center gap-2 px-5 py-3">
+            <Input
+              v-model="endpointSearch"
+              placeholder="Search by name, group or key"
+              class="min-w-0 flex-1 dark:border-gray-700"
+              data-testid="status-page-endpoint-search"
+            />
+            <label
+              class="flex h-10 shrink-0 items-center gap-2 border px-3 text-sm text-foreground dark:border-gray-700 dark:text-gray-200"
+            >
+              <input
+                v-model="onlySelected"
+                type="checkbox"
+                class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                data-testid="status-page-only-selected"
+              />
+              Only selected
+            </label>
+          </div>
+          <div
+            class="mx-5 mb-5 max-h-80 overflow-y-auto border dark:border-gray-700 md:max-h-none md:min-h-0 md:flex-1"
+            data-testid="status-page-endpoint-list"
+          >
+            <div
+              class="sticky top-0 z-10 grid grid-cols-[1fr_auto] gap-4 bg-gray-50 px-3 py-2 text-xs font-medium text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] sm:grid-cols-[1fr_auto_auto] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+            >
+              <span>Endpoint</span>
+              <span class="hidden sm:block">Key</span>
+              <span class="text-right">Featured</span>
+            </div>
+            <p v-if="filteredEndpoints.length === 0" class="px-3 py-4 text-sm text-muted-foreground dark:text-gray-400">
+              No endpoints found.
+            </p>
+            <div
+              v-for="endpoint in filteredEndpoints"
+              :key="endpoint.key"
+              :class="[
+                'grid grid-cols-[1fr_auto] items-center gap-4 border-t px-3 py-2 text-sm first-of-type:border-t-0 sm:grid-cols-[1fr_auto_auto] dark:border-gray-800',
+                form.endpoints.includes(endpoint.key) ? 'bg-muted/40 dark:bg-gray-800/40' : '',
+              ]"
+            >
+              <label class="flex min-w-0 cursor-pointer items-center gap-2">
+                <input
+                  v-model="form.endpoints"
+                  type="checkbox"
+                  :value="endpoint.key"
+                  class="h-4 w-4 shrink-0 accent-gray-900 dark:accent-gray-100"
+                  :data-testid="`status-page-endpoint-${endpoint.key}`"
+                />
+                <span class="truncate font-medium text-foreground dark:text-gray-100">{{ endpoint.name }}</span>
+                <span class="truncate text-muted-foreground dark:text-gray-400">{{ endpoint.group || 'no group' }}</span>
+              </label>
+              <span class="hidden font-mono text-xs text-muted-foreground sm:block dark:text-gray-500">{{ endpoint.key }}</span>
+              <label
+                class="flex items-center justify-end gap-1.5 text-xs text-foreground dark:text-gray-200"
+                :title="featuredLimitReached(endpoint.key) ? `At most ${MAXIMUM_FEATURED} featured endpoints` : ''"
+              >
+                <input
+                  v-model="form.featured"
+                  type="checkbox"
+                  :value="endpoint.key"
+                  :disabled="featuredLimitReached(endpoint.key)"
+                  class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  :data-testid="`status-page-featured-${endpoint.key}`"
+                />
+                <span class="sm:sr-only">Featured</span>
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="mt-3 flex shrink-0 flex-wrap items-center gap-2 border-t pt-3 dark:border-gray-700">
+        <Button v-if="!readOnly" variant="outline" :disabled="busy" data-testid="status-page-validate" @click="validate">Validate</Button>
+        <Button ref="previewButton" variant="secondary" :disabled="busy" data-testid="status-page-preview-button" @click="showPreview"
+          >Preview</Button
+        >
+        <Button v-if="!readOnly" :disabled="busy" class="sm:ml-auto" data-testid="status-page-save" @click="save">Save</Button>
+      </div>
+    </template>
+
+    <!-- Preview of the saved version, in the dialog of the administration -->
+    <AdminDialog
+      :open="preview !== null"
+      size="xl"
+      testid="status-page-preview"
+      title="Preview of the saved version"
+      :description="preview ? previewSummary : ''"
+      :return-focus="previewElement"
+      @close="preview = null"
+    >
+      <div v-if="preview">
+        <!-- Fork: the views of the saved version; links open the public pages -->
+        <div v-if="previewViews.enabled.length > 1" class="mb-3 flex justify-end">
+          <ViewSwitcher v-model="previewView" :views="previewViews.enabled" :group-label="previewViews.groupLabel" />
+        </div>
+        <GroupedView
+          v-if="previewView === 'grouped'"
+          :groups="groupedModel(preview)"
+          :collapsed="new Set()"
+          :slug="props.slug"
+          :has-environments="previewViews.environments.length > 0"
+          @toggle="() => {}"
+        />
+        <MatrixView
+          v-else-if="previewView === 'matrix'"
+          :model="matrixModel(preview)"
+          :slug="props.slug"
+          :group-label="previewViews.groupLabel"
+          :primary-name="previewViews.environments[0]?.name || ''"
+        />
+        <template v-else>
+          <p v-if="preview.truncated" class="mb-3 text-sm text-amber-800 dark:text-amber-300" data-testid="status-page-preview-truncated">
+            Showing the first {{ preview.summary?.total ?? 0 }} services.
+          </p>
+          <p
+            v-if="preview.groups.length === 0 && (preview.featured || []).length === 0"
+            class="text-sm text-muted-foreground dark:text-gray-400"
+          >
+            No endpoints selected.
+          </p>
+          <div v-if="(preview.featured || []).length" class="mb-4" data-testid="status-page-preview-featured">
+            <h3 class="border-b pb-1 text-sm font-semibold text-foreground dark:border-gray-800 dark:text-gray-100">Featured</h3>
+            <ul class="mt-1 space-y-1 text-sm">
+              <li v-for="endpoint in preview.featured" :key="`${endpoint.group}-${endpoint.name}`" class="flex justify-between gap-4">
+                <span class="text-foreground dark:text-gray-200"
+                  >{{ endpoint.name }} <span class="text-muted-foreground dark:text-gray-400">{{ endpoint.group }}</span></span
+                >
+                <span class="text-muted-foreground dark:text-gray-400"
+                  >{{ endpointStatusLabel(endpoint.status) }} · 24h {{ formatUptime(endpoint.uptime['24h']) }}</span
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- The groups follow the default of the page and what is clicked here. The choices that the public page keeps
+             in the browser are neither read nor written: the preview shows what a new visitor sees. -->
+          <div
+            v-for="(group, groupIndex) in preview.groups"
+            :key="`group:${group.name || ''}`"
+            class="mb-4 last:mb-0"
+            :data-testid="`status-page-preview-group-${group.name || 'outros'}`"
+          >
+            <h3 class="border-b pb-1 text-sm font-semibold text-foreground dark:border-gray-800 dark:text-gray-100">
+              <button
+                type="button"
+                class="flex w-full items-baseline gap-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                :aria-expanded="!previewCollapsedGroups.has(group.name || '')"
+                :aria-controls="`status-page-preview-panel-${groupIndex}`"
+                @click="togglePreviewGroup(group)"
+              >
+                <component
+                  :is="previewCollapsedGroups.has(group.name || '') ? ChevronRight : ChevronDown"
+                  class="h-3.5 w-3.5 shrink-0 self-center text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <span>{{ group.name || 'Other services' }}</span>
+                <span class="text-xs font-normal text-muted-foreground dark:text-gray-400">{{ groupCounts(group.summary) }}</span>
+              </button>
+            </h3>
+            <div :id="`status-page-preview-panel-${groupIndex}`">
+              <ul v-if="!previewCollapsedGroups.has(group.name || '')" class="mt-1 space-y-1 text-sm">
+                <li v-for="endpoint in group.endpoints" :key="endpoint.name" class="flex justify-between gap-4">
+                  <span class="text-foreground dark:text-gray-200">{{ endpoint.name }}</span>
+                  <span class="text-muted-foreground dark:text-gray-400"
+                    >{{ endpointStatusLabel(endpoint.status) }} · 24h {{ formatUptime(endpoint.uptime['24h']) }}</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </template>
+      </div>
+      <template #footer>
+        <Button variant="outline" data-testid="status-page-preview-close" @click="preview = null">Close</Button>
+      </template>
+    </AdminDialog>
+  </div>
+</template>
+
+<script setup>
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import AdminDialog from '@/components/admin/AdminDialog.vue'
+import Loading from '@/components/Loading.vue'
+import { describeStatusPageError, statusPagesApi } from '@/utils/adminApi'
+import { formatUptime, SLUG_PATTERN, STATUS_LABELS } from '@/utils/statusPage'
+import { toast } from '@/utils/toast'
+import { ChevronDown, ChevronRight } from 'lucide-vue-next'
+import { COLLAPSED, EXPANDED, groupCounts, isCollapsed } from '@/utils/statusPageGroups'
+import ViewSwitcher from '@/components/public/ViewSwitcher.vue'
+import GroupedView from '@/components/public/GroupedView.vue'
+import MatrixView from '@/components/public/MatrixView.vue'
+import { groupedModel, matrixModel, normalizeViews } from '@/utils/statusPageViews'
+
+const props = defineProps({
+  slug: { type: String, default: '' },
+})
+
+const router = useRouter()
+
+const loading = ref(true)
+const busy = ref(false)
+// Warnings that stay on the screen instead of a toast: they are needed while the administrator works on the page
+const conflictError = ref('')
+const loadError = ref('')
+const origin = ref('admin')
+const version = ref(0)
+const yamlText = ref('')
+const savedError = ref('')
+const options = ref({ groups: [], endpoints: [] })
+const endpointSearch = ref('')
+// Shows only the selected and featured endpoints in the list (fork)
+const onlySelected = ref(false)
+const validation = ref(null)
+const preview = ref(null)
+
+// Groups of the preview: the rule of the public page (utils/statusPageGroups.js) with the default of the page and the
+// clicks made in this dialog, which are forgotten when it closes. Nothing is read from nor written to the browser.
+const previewGroupChoices = ref(new Map())
+const previewCollapsedGroups = computed(() => {
+  const collapsed = new Set()
+  for (const group of preview.value?.groups || []) {
+    const name = group.name || ''
+    if (
+      isCollapsed({
+        status: group.status,
+        visitChoice: previewGroupChoices.value.get(name),
+        pageDefault: preview.value.groupsCollapsed === true,
+      })
+    ) {
+      collapsed.add(name)
+    }
+  }
+  return collapsed
+})
+const togglePreviewGroup = (group) => {
+  const name = group.name || ''
+  previewGroupChoices.value = new Map(previewGroupChoices.value).set(name, previewCollapsedGroups.value.has(name) ? EXPANDED : COLLAPSED)
+}
+// Fork: the preview opens on the default view of the saved version
+const previewViews = computed(() => normalizeViews(preview.value?.views))
+const previewView = ref('list')
+watch(preview, () => {
+  previewGroupChoices.value = new Map()
+  previewView.value = previewViews.value.default
+})
+// show-messages of the saved version, which the payload of the preview does not have (fork)
+const savedShowMessages = ref(false)
+// Whether the saved version already requires a login: only then an empty password means "keep the current one" (fork)
+const savedRequiresLogin = ref(false)
+const validationBand = ref(null)
+const previewButton = ref(null)
+const copied = ref(false)
+let copiedTimer = null
+
+const MAXIMUM_FEATURED = 10
+
+// Fork: the views a page can enable, see internal/config/statuspage/views.go
+const VIEW_OPTIONS = [
+  { id: 'list', label: 'List', help: 'Groups with one row per endpoint.' },
+  { id: 'grouped', label: 'Grouped', help: 'Groups split by environment, with filters.' },
+  { id: 'matrix', label: 'Matrix', help: 'Groups by application, one cell each.' },
+]
+
+// The views block in the shape of the form: tags and applications as text, classifications by key
+const emptyViews = () => ({
+  enabled: ['list'],
+  default: '',
+  groupLabel: '',
+  environments: [],
+  applicationsText: '',
+  groups: {},
+  endpoints: {},
+})
+
+// The deprecated charts are not part of the form: saving a page removes them
+const emptyForm = () => ({
+  slug: '',
+  title: '',
+  description: '',
+  enabled: false,
+  groups: [],
+  endpoints: [],
+  featured: [],
+  showCertificateExpiration: false,
+  showMessages: false,
+  groupsCollapsed: false,
+  requiresLogin: false,
+  authUsername: '',
+  authPassword: '',
+  views: emptyViews(),
+})
+const form = reactive(emptyForm())
+
+// Message shown after the route changes from the creation to the edition of the created page
+let pendingSuccess = ''
+
+const isEdit = computed(() => props.slug !== '')
+const readOnly = computed(() => origin.value === 'config')
+const slugValid = computed(() => SLUG_PATTERN.test(form.slug.trim()))
+const publicPath = computed(() => `/status/${form.slug.trim() || '<slug>'}`)
+const title = computed(() => {
+  if (!isEdit.value) {
+    return 'New status page'
+  }
+  return readOnly.value ? 'Status page from the configuration file' : 'Edit status page'
+})
+
+// Groups of the options, plus the selected groups that have no endpoint at the moment
+const groupOptions = computed(() => {
+  const names = new Set(options.value.groups.map((group) => group.name))
+  const missing = form.groups.filter((name) => !names.has(name)).map((name) => ({ name, endpoints: 0 }))
+  return [...options.value.groups, ...missing]
+})
+
+// Endpoints of the options matching the search, plus the selected and featured keys that do not exist at the moment
+const filteredEndpoints = computed(() => {
+  const keys = new Set(options.value.endpoints.map((endpoint) => endpoint.key))
+  const missing = [...new Set([...form.endpoints, ...form.featured])]
+    .filter((key) => !keys.has(key))
+    .map((key) => ({ key, name: key, group: '' }))
+  const query = endpointSearch.value.trim().toLowerCase()
+  return [...options.value.endpoints, ...missing].filter(
+    (endpoint) =>
+      (!onlySelected.value || form.endpoints.includes(endpoint.key) || form.featured.includes(endpoint.key)) &&
+      (!query || [endpoint.key, endpoint.name, endpoint.group].some((value) => (value || '').toLowerCase().includes(query))),
+  )
+})
+
+// Fork: rows of the views section. The endpoints the page shows (its groups, the picked and the featured keys), then the
+// classifications of keys it does not show, which are kept until removed; the same for the details of the groups.
+const classificationRows = computed(() => {
+  const rows = []
+  const seen = new Set()
+  const byKey = new Map(options.value.endpoints.map((endpoint) => [endpoint.key, endpoint]))
+  for (const endpoint of options.value.endpoints) {
+    if (form.groups.includes(endpoint.group || '')) {
+      rows.push({ key: endpoint.key, name: endpoint.name, group: endpoint.group })
+      seen.add(endpoint.key)
+    }
+  }
+  for (const key of [...form.endpoints, ...form.featured]) {
+    if (!seen.has(key)) {
+      const endpoint = byKey.get(key)
+      rows.push({ key, name: endpoint ? endpoint.name : key, group: endpoint ? endpoint.group : '', orphan: !endpoint })
+      seen.add(key)
+    }
+  }
+  for (const key of Object.keys(form.views.endpoints).sort()) {
+    const entry = form.views.endpoints[key]
+    if (!seen.has(key) && ((entry.application || '').trim() || (entry.environment || '').trim())) {
+      rows.push({ key, name: key, group: '', orphan: true })
+    }
+  }
+  return rows
+})
+
+const viewGroupRows = computed(() => [
+  ...form.groups.map((name) => ({ name })),
+  ...Object.keys(form.views.groups)
+    .filter(
+      (name) => !form.groups.includes(name) && (form.views.groups[name].description.trim() || form.views.groups[name].tagsText.trim()),
+    )
+    .sort()
+    .map((name) => ({ name, orphan: true })),
+])
+
+// Entries exist for every row, so that the inputs bind to them; empty entries are not sent
+watch(
+  classificationRows,
+  (rows) => {
+    for (const row of rows) {
+      if (!form.views.endpoints[row.key]) {
+        form.views.endpoints[row.key] = { application: '', environment: '' }
+      }
+    }
+  },
+  { immediate: true },
+)
+watch(
+  viewGroupRows,
+  (rows) => {
+    for (const row of rows) {
+      if (!form.views.groups[row.name]) {
+        form.views.groups[row.name] = { description: '', tagsText: '' }
+      }
+    }
+  },
+  { immediate: true },
+)
+
+const applicationLines = () => [
+  ...new Set(
+    form.views.applicationsText
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean),
+  ),
+]
+
+const applicationSuggestions = computed(() => [
+  ...new Set([
+    ...applicationLines(),
+    ...Object.values(form.views.endpoints)
+      .map((entry) => (entry.application || '').trim())
+      .filter(Boolean),
+  ]),
+])
+
+const moveEnvironment = (index, delta) => {
+  const list = form.views.environments
+  const [moved] = list.splice(index, 1)
+  list.splice(index + delta, 0, moved)
+}
+
+// viewsDocument returns the views block to send, or null when it holds only defaults: a page saved without views keeps
+// its definition unchanged
+const viewsDocument = () => {
+  const views = form.views
+  const block = {}
+  // The order of the administrator is kept: without a default, the first enabled view is the one a visitor sees first
+  const known = VIEW_OPTIONS.map((option) => option.id)
+  const enabled = [...new Set(views.enabled)].filter((id) => known.includes(id))
+  if (enabled.length !== 1 || enabled[0] !== 'list') block.enabled = enabled
+  if (views.default && enabled.includes(views.default) && views.default !== enabled[0]) block.default = views.default
+  if (views.groupLabel.trim()) block['group-label'] = views.groupLabel.trim()
+  const environments = views.environments
+    .filter((environment) => environment.id.trim())
+    .map((environment) => ({
+      id: environment.id.trim(),
+      ...(environment.name.trim() ? { name: environment.name.trim() } : {}),
+      ...(environment.short.trim() ? { short: environment.short.trim() } : {}),
+    }))
+  if (environments.length) block.environments = environments
+  const applications = applicationLines()
+  if (applications.length) block.applications = applications
+  const groups = {}
+  for (const [name, details] of Object.entries(views.groups)) {
+    const description = details.description.trim()
+    const tags = details.tagsText
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+    if (description || tags.length) groups[name] = { ...(description ? { description } : {}), ...(tags.length ? { tags } : {}) }
+  }
+  if (Object.keys(groups).length) block.groups = groups
+  const endpoints = {}
+  for (const [key, entry] of Object.entries(views.endpoints)) {
+    const application = (entry.application || '').trim()
+    const environment = (entry.environment || '').trim()
+    if (application || environment) endpoints[key] = { ...(application ? { application } : {}), ...(environment ? { environment } : {}) }
+  }
+  if (Object.keys(endpoints).length) block.endpoints = endpoints
+  return Object.keys(block).length ? block : null
+}
+
+// formViews converts the views block of a definition to the shape of the form
+const formViews = (views) => {
+  const result = emptyViews()
+  if (!views) return result
+  if (Array.isArray(views.enabled) && views.enabled.length) result.enabled = [...views.enabled]
+  result.default = views.default || ''
+  result.groupLabel = views['group-label'] || ''
+  result.environments = (views.environments || []).map((environment) => ({
+    id: environment.id || '',
+    name: environment.name || '',
+    short: environment.short || '',
+  }))
+  result.applicationsText = (views.applications || []).join('\n')
+  for (const [name, details] of Object.entries(views.groups || {})) {
+    result.groups[name] = { description: details?.description || '', tagsText: (details?.tags || []).join(', ') }
+  }
+  for (const [key, entry] of Object.entries(views.endpoints || {})) {
+    result.endpoints[key] = { application: entry?.application || '', environment: entry?.environment || '' }
+  }
+  return result
+}
+
+const featuredLimitReached = (key) => !form.featured.includes(key) && form.featured.length >= MAXIMUM_FEATURED
+
+const warningMessage = (warning) =>
+  ({
+    group: `Group ${warning.value} has no endpoints at the moment.`,
+    endpoint: `Endpoint ${warning.value} does not exist at the moment.`,
+    featured: `Featured endpoint ${warning.value} does not exist at the moment.`,
+    truncated: `The page selects more endpoints than status-pages.maximum-endpoints-per-page (${warning.value}): only the first ${warning.value} are shown, and the others cannot be opened from this page.`,
+    classification: `The classification of ${warning.value} matches no endpoint at the moment. It is kept.`,
+    charts: `The saved charts (${warning.value}) are no longer used: every endpoint of the page has a details page with its response time chart. Saving the page removes them.`,
+  })[warning.type] || `${warning.type}: ${warning.value}`
+
+const pageStatusLabel = (status) => STATUS_LABELS[status]?.page || STATUS_LABELS.unknown.page
+const endpointStatusLabel = (status) => STATUS_LABELS[status]?.endpoint || STATUS_LABELS.unknown.endpoint
+
+const validationWarnings = computed(() => (validation.value ? validation.value.warnings || [] : []))
+
+const endpointsCount = (count) => (count === 1 ? '1 endpoint' : `${count} endpoints`)
+
+const previewSummary = computed(() => {
+  if (!preview.value) {
+    return ''
+  }
+  const label = `${preview.value.title} · ${pageStatusLabel(preview.value.status)}`
+  return savedShowMessages.value ? `${label} · Messages shown on the details pages` : label
+})
+
+// Element focused again when the preview dialog closes
+const previewElement = () => (previewButton.value && previewButton.value.$el) || null
+
+const copyPublicUrl = async () => {
+  const url = `${window.location.origin}/status/${form.slug.trim()}`
+  try {
+    await navigator.clipboard.writeText(url)
+    copied.value = true
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  } catch (e) {
+    toast.warning(`The browser did not allow copying: the address of the page is ${url}`)
+  }
+}
+
+const currentDocument = () => ({
+  slug: form.slug.trim(),
+  title: form.title.trim(),
+  description: form.description.trim(),
+  groups: [...form.groups],
+  endpoints: [...form.endpoints],
+  featured: [...form.featured],
+  // Only sent when checked, like the other optional fields of the definition (fork)
+  ...(form.showCertificateExpiration ? { 'show-certificate-expiration': true } : {}),
+  ...(form.showMessages ? { 'show-messages': true } : {}),
+  ...(form.groupsCollapsed ? { 'groups-collapsed': true } : {}),
+  // Fork: only sent when it differs from the defaults
+  ...(viewsDocument() ? { views: viewsDocument() } : {}),
+  // Fork: the password travels only here, in the submission, and the server answers with the hash masked
+  ...(form.requiresLogin
+    ? { auth: { username: form.authUsername.trim(), ...(form.authPassword ? { password: form.authPassword } : {}) } }
+    : {}),
+  enabled: form.enabled,
+})
+
+const loadDetail = async () => {
+  const { data } = await statusPagesApi.get(props.slug)
+  origin.value = data.origin
+  version.value = data.version || 0
+  yamlText.value = data.yaml || ''
+  savedError.value = data.error || ''
+  const definition = data.definition
+  Object.assign(form, emptyForm(), { slug: data.slug })
+  if (definition) {
+    Object.assign(form, {
+      title: definition.title || '',
+      description: definition.description || '',
+      enabled: data.origin === 'config' ? definition.enabled !== false : definition.enabled === true,
+      groups: definition.groups || [],
+      endpoints: definition.endpoints || [],
+      featured: definition.featured || [],
+      showCertificateExpiration: definition['show-certificate-expiration'] === true,
+      showMessages: definition['show-messages'] === true,
+      groupsCollapsed: definition['groups-collapsed'] === true,
+      requiresLogin: !!definition.auth,
+      authUsername: definition.auth?.username || '',
+      views: formViews(definition.views),
+    })
+  }
+  savedShowMessages.value = form.showMessages
+  savedRequiresLogin.value = form.requiresLogin
+}
+
+const load = async () => {
+  loading.value = true
+  conflictError.value = ''
+  loadError.value = ''
+  validation.value = null
+  preview.value = null
+  try {
+    const { data } = await statusPagesApi.options()
+    options.value = data || { groups: [], endpoints: [] }
+    if (isEdit.value) {
+      await loadDetail()
+    } else {
+      origin.value = 'admin'
+      version.value = 0
+      savedError.value = ''
+      Object.assign(form, emptyForm())
+    }
+  } catch (e) {
+    loadError.value = describeStatusPageError(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+// One message per action: the summary goes to a toast and only the warnings stay on the screen
+const validate = async () => {
+  busy.value = true
+  try {
+    const { data } = await statusPagesApi.validate(currentDocument(), isEdit.value ? props.slug : '')
+    validation.value = data
+    toast.info(`The page will show ${endpointsCount(data.endpoints)}.`)
+    if ((data.warnings || []).length) {
+      await nextTick()
+      validationBand.value?.scrollIntoView({ block: 'nearest' })
+    }
+    return true
+  } catch (e) {
+    validation.value = null
+    toast.error(describeStatusPageError(e))
+    return false
+  } finally {
+    busy.value = false
+  }
+}
+
+const showPreview = async () => {
+  // A page that was not saved yet has no public payload to preview
+  if (!isEdit.value) {
+    if (await validate()) {
+      toast.info('Save the page to preview it with the data of its endpoints.')
+    }
+    return
+  }
+  busy.value = true
+  try {
+    const { data } = await statusPagesApi.preview(props.slug)
+    preview.value = data
+  } catch (e) {
+    toast.error(describeStatusPageError(e))
+  } finally {
+    busy.value = false
+  }
+}
+
+const save = async () => {
+  busy.value = true
+  try {
+    if (isEdit.value) {
+      const { data } = await statusPagesApi.update(props.slug, currentDocument(), version.value)
+      version.value = data.version || version.value
+      savedError.value = ''
+      savedShowMessages.value = form.showMessages
+      // The password was either kept or replaced: either way it is stored as a hash and never shown again (fork)
+      savedRequiresLogin.value = form.requiresLogin
+      form.authPassword = ''
+      preview.value = null
+      conflictError.value = ''
+      toast.success(data.published ? 'Status page saved and published.' : 'Status page saved. It is not published.')
+    } else {
+      const { data } = await statusPagesApi.create(currentDocument())
+      // The creation navigates to the edition, and App.vue clears the toasts on every route change: the message is
+      // shown again by the watcher of the slug, after the load
+      pendingSuccess = data.published
+        ? 'Status page created and published.'
+        : 'Status page created. It is not published yet: check "Published" once you have reviewed the preview.'
+      await router.push({ name: 'AdminStatusPageEdit', params: { slug: data.slug } })
+    }
+  } catch (e) {
+    const message = describeStatusPageError(e)
+    if (e.status === 412) {
+      // Only reloading the current version or a successful save clears it, so that nothing typed is lost
+      conflictError.value = message
+    } else {
+      toast.error(message)
+    }
+  } finally {
+    busy.value = false
+  }
+}
+
+const reloadCurrentVersion = async () => {
+  try {
+    await loadDetail()
+    conflictError.value = ''
+    toast.success('Current version loaded.')
+  } catch (e) {
+    toast.error(describeStatusPageError(e))
+  }
+}
+
+const goBack = () => {
+  router.push({ name: 'AdminStatusPages' })
+}
+
+// The same component serves the creation and the edition: after a creation, the route changes to the edition
+watch(
+  () => props.slug,
+  async (slug, previousSlug) => {
+    if (slug === previousSlug) {
+      return
+    }
+    await load()
+    if (pendingSuccess) {
+      toast.success(pendingSuccess)
+      pendingSuccess = ''
+    }
+  },
+)
+
+onMounted(load)
+onUnmounted(() => clearTimeout(copiedTimer))
+</script>

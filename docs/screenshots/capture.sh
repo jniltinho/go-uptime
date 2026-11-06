@@ -145,7 +145,7 @@ sleep "$HISTORY_SECONDS"
 
 set_theme() {
   browser cookies set theme "$1" --url "$BASE" >/dev/null
-  browser eval "document.cookie = 'theme=$1; path=/; max-age=31536000; samesite=strict'; (() => { const themes = { dark: ['dark', '#030712'], light: ['', '#f7f9fb'], bio: ['theme-bio', '#f2f8fa'] }; const theme = themes['$1'] ? '$1' : 'light'; for (const name in themes) { if (themes[name][0]) { document.documentElement.classList.toggle(themes[name][0], name === theme) } } const meta = document.querySelector('meta[name=\"theme-color\"]'); if (meta) { meta.setAttribute('content', themes[theme][1]) } })()" >/dev/null 2>&1 || true
+  browser eval "document.cookie = 'theme=$1; path=/; max-age=31536000; samesite=strict'; (() => { const themes = { dark: ['dark', '#030712'], light: ['', '#f7f9fb'], bio: ['theme-bio', '#f2f8fa'] }; const theme = themes['$1'] ? '$1' : 'light'; document.documentElement.dataset.theme = theme; document.documentElement.dataset.scheme = theme === 'dark' ? 'dark' : 'light'; for (const name in themes) { if (themes[name][0]) { document.documentElement.classList.toggle(themes[name][0], name === theme) } } const meta = document.querySelector('meta[name=\"theme-color\"]'); if (meta) { meta.setAttribute('content', themes[theme][1]) } })()" >/dev/null 2>&1 || true
 }
 capture() { # name url [selector to wait for]
   browser open "$BASE$2" >/dev/null

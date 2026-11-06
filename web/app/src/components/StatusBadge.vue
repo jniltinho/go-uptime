@@ -14,8 +14,8 @@ const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ['healthy', 'unhealthy', 'degraded', 'pending', 'unknown'].includes(value)
-  }
+    validator: (value) => ['healthy', 'unhealthy', 'degraded', 'pending', 'unknown'].includes(value),
+  },
 })
 
 const variant = computed(() => {

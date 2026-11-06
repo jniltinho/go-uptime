@@ -1,5 +1,5 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-import { test } from 'node:test'
+import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import {
   CHART_COLORS,
@@ -11,7 +11,7 @@ import {
   chartSummary,
   readStoredPeriod,
   recentDatasets,
-  storePeriod
+  storePeriod,
 } from './responseTimeChart.js'
 
 const SECOND = 1000
@@ -21,7 +21,16 @@ const BASE = Date.parse('2026-09-16T10:00:00Z')
 
 const iso = (ms) => new Date(ms).toISOString()
 const result = (offsetMs, status, durationMs = 0) => ({ timestamp: iso(BASE + offsetMs), status, durationMs })
-const bucket = (offsetMs, fields) => ({ timestamp: iso(BASE + offsetMs), up: 0, down: 0, pending: 0, avgMs: null, minMs: null, maxMs: null, ...fields })
+const bucket = (offsetMs, fields) => ({
+  timestamp: iso(BASE + offsetMs),
+  up: 0,
+  down: 0,
+  pending: 0,
+  avgMs: null,
+  minMs: null,
+  maxMs: null,
+  ...fields,
+})
 const ys = (points) => points.map((point) => point.y)
 const xs = (points) => points.map((point) => point.x)
 
@@ -46,12 +55,10 @@ class MemoryStorage {
 // Recent
 
 test('recent: the line only has the duration of the Up results of at least 1 ms', () => {
-  const series = recentDatasets([
-    result(0, 'up', 40),
-    result(MINUTE, 'up', 0),
-    result(2 * MINUTE, 'down', 25),
-    result(3 * MINUTE, 'pending', 30)
-  ], 60)
+  const series = recentDatasets(
+    [result(0, 'up', 40), result(MINUTE, 'up', 0), result(2 * MINUTE, 'down', 25), result(3 * MINUTE, 'pending', 30)],
+    60,
+  )
   assert.deepEqual(ys(series.line), [40, null, null, null])
   assert.deepEqual(xs(series.line), [BASE, BASE + MINUTE, BASE + 2 * MINUTE, BASE + 3 * MINUTE])
 })
@@ -100,24 +107,32 @@ test('aggregates: colors of the columns', () => {
 })
 
 test('aggregates: a column has the value 1 with Down or Pending, whatever the count', () => {
-  const series = bucketDatasets([
-    bucket(0, { up: 2, avgMs: 20, minMs: 10, maxMs: 30 }),
-    bucket(MINUTE, { down: 7 }),
-    bucket(2 * MINUTE, { pending: 3 }),
-    bucket(3 * MINUTE, { up: 1, down: 5, avgMs: 15, minMs: 15, maxMs: 15 })
-  ], '3h', 60)
+  const series = bucketDatasets(
+    [
+      bucket(0, { up: 2, avgMs: 20, minMs: 10, maxMs: 30 }),
+      bucket(MINUTE, { down: 7 }),
+      bucket(2 * MINUTE, { pending: 3 }),
+      bucket(3 * MINUTE, { up: 1, down: 5, avgMs: 15, minMs: 15, maxMs: 15 }),
+    ],
+    '3h',
+    60,
+  )
   assert.deepEqual(ys(series.bars), [0, 1, 1, 1])
   assert.deepEqual(series.barColors, [CHART_COLORS.none, CHART_COLORS.down, CHART_COLORS.pending, CHART_COLORS.pending])
   assert.deepEqual(chartSummary(series), { linePoints: 2, downColumns: 1, pendingColumns: 2 })
 })
 
 test('aggregates: the lines only have values with Up and an average above 0', () => {
-  const series = bucketDatasets([
-    bucket(0, { up: 2, avgMs: 20, minMs: 10, maxMs: 30 }),
-    bucket(MINUTE, { up: 3, avgMs: null }),
-    bucket(2 * MINUTE, { down: 1 }),
-    bucket(3 * MINUTE, { up: 1, avgMs: 0, minMs: 0, maxMs: 0 })
-  ], '6h', 60)
+  const series = bucketDatasets(
+    [
+      bucket(0, { up: 2, avgMs: 20, minMs: 10, maxMs: 30 }),
+      bucket(MINUTE, { up: 3, avgMs: null }),
+      bucket(2 * MINUTE, { down: 1 }),
+      bucket(3 * MINUTE, { up: 1, avgMs: 0, minMs: 0, maxMs: 0 }),
+    ],
+    '6h',
+    60,
+  )
   assert.deepEqual(ys(series.line), [20, null, null, null])
   assert.deepEqual(ys(series.min), [10, null, null, null])
   assert.deepEqual(ys(series.max), [30, null, null, null])
@@ -142,7 +157,10 @@ test('aggregates: windows of 4 up to 6h start from the newest aggregate and adva
 })
 
 test('aggregates: windows of 12 in 24h and 1w', () => {
-  for (const [period, step] of [['24h', MINUTE], ['1w', HOUR]]) {
+  for (const [period, step] of [
+    ['24h', MINUTE],
+    ['1w', HOUR],
+  ]) {
     const buckets = Array.from({ length: 25 }, (_, i) => bucket(i * step, { up: 1, avgMs: 10, minMs: 10, maxMs: 10 }))
     const series = bucketDatasets(buckets, period, 60)
     // [24..13], [18..7], [12..1], [6..0]
@@ -174,10 +192,11 @@ test('aggregates: joined windows add Down and Pending to the color', () => {
 })
 
 test('aggregates: in 24h, a gap longer than max(10 min, 10 intervals) gets the null points of Uptime Kuma', () => {
-  const series = bucketDatasets([
-    bucket(0, { up: 1, avgMs: 10, minMs: 10, maxMs: 10 }),
-    bucket(30 * MINUTE, { up: 1, avgMs: 20, minMs: 20, maxMs: 20 })
-  ], '24h', 60)
+  const series = bucketDatasets(
+    [bucket(0, { up: 1, avgMs: 10, minMs: 10, maxMs: 10 }), bucket(30 * MINUTE, { up: 1, avgMs: 20, minMs: 20, maxMs: 20 })],
+    '24h',
+    60,
+  )
   // Walking from the newest: previous (30 min) - interval, then current (0) + 60 s
   assert.deepEqual(xs(series.line), [BASE, BASE + MINUTE, BASE + 29 * MINUTE, BASE + 30 * MINUTE])
   assert.deepEqual(ys(series.line), [10, null, null, 20])
@@ -245,7 +264,7 @@ test('stored period: an unreadable storage goes back to Recent and writing does 
     },
     setItem() {
       throw new Error('blocked')
-    }
+    },
   }
   assert.equal(readStoredPeriod(broken), 'recent')
   assert.doesNotThrow(() => storePeriod('1w', broken))
@@ -265,25 +284,49 @@ test('legend: Recent without columns has only the response time', () => {
 })
 
 test('legend: Recent with Down and with Pending', () => {
-  assert.deepEqual(chartLegend('recent', { downColumns: 2, pendingColumns: 0 }).map((item) => item.id), ['response-time', 'down'])
-  assert.deepEqual(chartLegend('recent', { downColumns: 0, pendingColumns: 1 }).map((item) => item.id), ['response-time', 'pending'])
+  assert.deepEqual(
+    chartLegend('recent', { downColumns: 2, pendingColumns: 0 }).map((item) => item.id),
+    ['response-time', 'down'],
+  )
+  assert.deepEqual(
+    chartLegend('recent', { downColumns: 0, pendingColumns: 1 }).map((item) => item.id),
+    ['response-time', 'pending'],
+  )
 })
 
 test('legend: the aggregates name the three lines, in the order they are drawn', () => {
   const items = chartLegend('24h', { linePoints: 10, downColumns: 0, pendingColumns: 0 })
-  assert.deepEqual(items.map((item) => item.id), ['average', 'minimum', 'maximum'])
-  assert.deepEqual(items.map((item) => item.dash), ['solid', 'dashed', 'dotted'])
-  assert.deepEqual(items.map((item) => item.color), [CHART_LEGEND_COLORS.line, CHART_LEGEND_COLORS.minLine, CHART_LEGEND_COLORS.maxLine])
+  assert.deepEqual(
+    items.map((item) => item.id),
+    ['average', 'minimum', 'maximum'],
+  )
+  assert.deepEqual(
+    items.map((item) => item.dash),
+    ['solid', 'dashed', 'dotted'],
+  )
+  assert.deepEqual(
+    items.map((item) => item.color),
+    [CHART_LEGEND_COLORS.line, CHART_LEGEND_COLORS.minLine, CHART_LEGEND_COLORS.maxLine],
+  )
 })
 
 test('legend: the columns come after the lines, Down before Pending', () => {
   const items = chartLegend('6h', { downColumns: 1, pendingColumns: 3 })
-  assert.deepEqual(items.map((item) => item.id), ['average', 'minimum', 'maximum', 'down', 'pending'])
+  assert.deepEqual(
+    items.map((item) => item.id),
+    ['average', 'minimum', 'maximum', 'down', 'pending'],
+  )
   assert.equal(items[3].column, true)
   assert.equal(items[4].column, true)
 })
 
 test('legend: an aggregate period without a line keeps the three lines', () => {
-  assert.deepEqual(chartLegend('1w', { linePoints: 0, downColumns: 1, pendingColumns: 0 }).map((item) => item.id), ['average', 'minimum', 'maximum', 'down'])
-  assert.deepEqual(chartLegend('1w').map((item) => item.id), ['average', 'minimum', 'maximum'])
+  assert.deepEqual(
+    chartLegend('1w', { linePoints: 0, downColumns: 1, pendingColumns: 0 }).map((item) => item.id),
+    ['average', 'minimum', 'maximum', 'down'],
+  )
+  assert.deepEqual(
+    chartLegend('1w').map((item) => item.id),
+    ['average', 'minimum', 'maximum'],
+  )
 })

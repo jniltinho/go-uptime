@@ -12,11 +12,12 @@ export const VIEW_MATRIX = 'matrix'
 export const ALL = ''
 
 // Labels of the views, for the switcher; the noun of a group comes from the page (views.groupLabel)
-export const viewLabel = (view, groupLabel = 'Group') => ({
-  [VIEW_LIST]: 'List',
-  [VIEW_GROUPED]: `By ${groupLabel.toLowerCase()}`,
-  [VIEW_MATRIX]: 'Matrix'
-}[view] || view)
+export const viewLabel = (view, groupLabel = 'Group') =>
+  ({
+    [VIEW_LIST]: 'List',
+    [VIEW_GROUPED]: `By ${groupLabel.toLowerCase()}`,
+    [VIEW_MATRIX]: 'Matrix',
+  })[view] || view
 
 // Kinds of an empty cell of the matrix
 export const CELL_NOT_CONFIGURED = 'not-configured'
@@ -31,7 +32,7 @@ export const normalizeViews = (views) => {
     default: enabled.includes(views?.default) ? views.default : enabled[0],
     groupLabel: views?.groupLabel || 'Group',
     environments: Array.isArray(views?.environments) ? views.environments : [],
-    applications: Array.isArray(views?.applications) ? views.applications : []
+    applications: Array.isArray(views?.applications) ? views.applications : [],
   }
 }
 
@@ -63,7 +64,8 @@ export const isProblem = (endpoint) => endpoint.status === 'down' || endpoint.st
 
 // groupStatuses returns the status of every group of the views, featured endpoints included, by group name: the status
 // that decides whether a group of the grouped view may stay collapsed
-export const groupStatuses = (payload) => new Map(collectGroups(payload).map((group) => [group.name, aggregateStatus(group.endpoints.map((endpoint) => endpoint.status))]))
+export const groupStatuses = (payload) =>
+  new Map(collectGroups(payload).map((group) => [group.name, aggregateStatus(group.endpoints.map((endpoint) => endpoint.status))]))
 
 // collectGroups returns the groups of the payload with their endpoints, the featured ones placed back in their group
 // (a group reached only through featured endpoints is added after the others), each endpoint with its group name
@@ -106,7 +108,9 @@ export const orderedApplications = (views, groups) => {
     }
   }
   const listed = normalizeViews(views).applications.filter((application) => present.has(application))
-  const others = [...present].filter((application) => !listed.includes(application)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+  const others = [...present]
+    .filter((application) => !listed.includes(application))
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
   return [...listed, ...others]
 }
 
@@ -129,7 +133,18 @@ export const counters = (payload) => {
   const views = normalizeViews(payload?.views)
   const primary = views.environments[0]?.id
   const groups = collectGroups(payload)
-  const result = { groups: groups.filter((group) => group.endpoints.length > 0).length, monitors: 0, primaryDown: 0, otherDown: 0, affectedGroups: 0, up: 0, down: 0, pending: 0, unknown: 0, hasEnvironments: views.environments.length > 0 }
+  const result = {
+    groups: groups.filter((group) => group.endpoints.length > 0).length,
+    monitors: 0,
+    primaryDown: 0,
+    otherDown: 0,
+    affectedGroups: 0,
+    up: 0,
+    down: 0,
+    pending: 0,
+    unknown: 0,
+    hasEnvironments: views.environments.length > 0,
+  }
   for (const group of groups) {
     let affected = false
     for (const endpoint of group.endpoints) {
@@ -175,7 +190,7 @@ export const groupedModel = (payload, filters = {}) => {
           endpoints: [...sectionEndpoints].sort((a, b) => applicationCompare(views, a, b)),
           up: statuses.filter((status) => status === 'up').length,
           down: statuses.filter((status) => status === 'down').length,
-          pending: statuses.filter((status) => status === 'pending').length
+          pending: statuses.filter((status) => status === 'pending').length,
         }
       })
     const applications = new Map()
@@ -196,7 +211,7 @@ export const groupedModel = (payload, filters = {}) => {
       pending: statuses.filter((status) => status === 'pending').length,
       environments: orderedSections.filter((section) => section.environment).map((section) => section.environment.short),
       applications: order.map((name) => ({ name, status: aggregateStatus(applications.get(name)) })),
-      sections: orderedSections
+      sections: orderedSections,
     })
   }
   return model
@@ -241,7 +256,9 @@ export const matrixModel = (payload, filters = {}) => {
   const environments = views.environments
   const groups = collectGroups(payload)
   const applicationFilter = filters.application
-  const columns = orderedApplications(payload?.views, groups).filter((application) => !applicationFilter || application === applicationFilter)
+  const columns = orderedApplications(payload?.views, groups).filter(
+    (application) => !applicationFilter || application === applicationFilter,
+  )
   const rows = []
   for (const group of groups) {
     const filtered = group.endpoints.filter((endpoint) => matchesFilters(endpoint, filters))
@@ -266,7 +283,7 @@ export const matrixModel = (payload, filters = {}) => {
         status: aggregateStatus(endpoints.map((endpoint) => endpoint.status)),
         uptime: cellUptime(environments, endpoints),
         environments: shorts,
-        endpoints
+        endpoints,
       }
     })
     rows.push({ name: group.name, description: group.description, tags: group.tags, cells })
@@ -282,7 +299,7 @@ export const filterOptions = (payload) => {
   const used = new Set(groups.flatMap((group) => group.endpoints.map((endpoint) => endpoint.environment)))
   return {
     environments: views.environments.filter((environment) => used.has(environment.id)),
-    applications: orderedApplications(payload?.views, groups)
+    applications: orderedApplications(payload?.views, groups),
   }
 }
 
@@ -292,6 +309,6 @@ export const sanitizeFilters = (payload, filters) => {
   return {
     environment: options.environments.some((environment) => environment.id === filters.environment) ? filters.environment : ALL,
     application: options.applications.includes(filters.application) ? filters.application : ALL,
-    onlyProblems: filters.onlyProblems === true
+    onlyProblems: filters.onlyProblems === true,
   }
 }

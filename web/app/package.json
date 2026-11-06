@@ -2,18 +2,22 @@
   "name": "go-uptime",
   "version": "4.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build --modern --mode production",
-    "lint": "vue-cli-service lint",
-    "test:unit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/utils/*.test.mjs"
+    "dev": "vp dev",
+    "serve": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "check": "vp check",
+    "lint": "eslint --ext .js,.vue src",
+    "test": "vp test",
+    "test:unit": "vp test"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "core-js": "^3.45.0",
     "date-fns": "^4.1.0",
     "dompurify": "^3.3.0",
     "lucide-vue-next": "^0.539.0",
@@ -24,20 +28,26 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.25.1",
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vue/compiler-sfc": "^3.5.18",
-    "autoprefixer": "^10.4.21",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.28.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^4.3.5",
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0",
+    "vite-plus": "1.5.0"
   },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0"
+  },
+  "browserslist": [
+    "defaults",
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "eslintConfig": {
-    "root": true,
     "env": {
       "node": true
     },
@@ -45,26 +55,42 @@
       "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser",
-      "requireConfigFile": false
-    },
-    "rules": {
-      "vue/multi-word-component-names": ["error", {
-        "ignores": ["Home", "Details", "Loading", "Settings", "Social", "Tooltip", "Pagination", "Button", "Badge", "Card", "Input", "Select"]
-      }]
-    },
     "globals": {
-      "defineProps": "readonly",
       "defineEmits": "readonly",
       "defineExpose": "readonly",
+      "defineProps": "readonly",
       "withDefaults": "readonly"
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "requireConfigFile": false,
+      "sourceType": "module"
+    },
+    "root": true,
+    "rules": {
+      "no-extra-semi": "off",
+      "vue/multi-word-component-names": [
+        "error",
+        {
+          "ignores": [
+            "Home",
+            "Details",
+            "Loading",
+            "Settings",
+            "Social",
+            "Tooltip",
+            "Pagination",
+            "Button",
+            "Badge",
+            "Card",
+            "Input",
+            "Select"
+          ]
+        }
+      ]
     }
   },
-  "browserslist": [
-    "defaults",
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "engines": {
+    "node": "^24.16.0"
+  }
 }

@@ -101,7 +101,7 @@ docker-build-and-run: docker-build docker-run
 
 .PHONY: frontend-install
 frontend-install:
-	npm --prefix web/app install
+	npm --prefix web/app ci
 
 .PHONY: frontend-build
 frontend-build:
@@ -109,4 +109,14 @@ frontend-build:
 
 .PHONY: frontend-dev
 frontend-dev:
-	npm --prefix web/app run serve
+	npm --prefix web/app run dev
+
+# vp check (Oxlint, Oxfmt and types) and ESLint with eslint-plugin-vue for the templates, which Oxlint does not lint
+.PHONY: frontend-check
+frontend-check:
+	npm --prefix web/app run check
+	npm --prefix web/app run lint
+
+.PHONY: frontend-test
+frontend-test:
+	npm --prefix web/app run test

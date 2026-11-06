@@ -9,7 +9,11 @@
     data-testid="admin-backup"
   >
     <template #actions>
-      <router-link to="/" class="inline-flex h-9 items-center border border-input bg-background px-3 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800">Dashboard</router-link>
+      <router-link
+        to="/"
+        class="inline-flex h-9 items-center border border-input bg-background px-3 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+        >Dashboard</router-link
+      >
     </template>
 
     <div class="grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2 md:grid-rows-1">
@@ -17,22 +21,40 @@
       <section class="flex min-h-0 flex-col border bg-card dark:border-gray-700 dark:bg-gray-900" data-testid="backup-section-download">
         <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
           <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Download backup</h2>
-          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">A JSON file with the complete definitions, that can be restored in another installation with any supported database.</p>
+          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+            A JSON file with the complete definitions, that can be restored in another installation with any supported database.
+          </p>
         </header>
 
         <div class="min-h-0 flex-1 space-y-4 overflow-auto overscroll-contain px-5 py-4">
           <div class="grid grid-cols-2 gap-2">
             <div v-for="counter in counters" :key="counter.id" class="border px-3 py-2 dark:border-gray-700">
-              <span class="block truncate text-xs text-muted-foreground dark:text-gray-400" :title="counter.label">{{ counter.label }}</span>
-              <span class="block text-lg font-semibold text-foreground dark:text-gray-100" :data-testid="`backup-count-${counter.id}`">{{ counter.value === null ? '—' : counter.value }}</span>
+              <span class="block truncate text-xs text-muted-foreground dark:text-gray-400" :title="counter.label">{{
+                counter.label
+              }}</span>
+              <span class="block text-lg font-semibold text-foreground dark:text-gray-100" :data-testid="`backup-count-${counter.id}`">{{
+                counter.value === null ? '—' : counter.value
+              }}</span>
             </div>
           </div>
 
-          <label :class="['flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700', encrypt ? 'border-green-300 bg-green-50/60 dark:border-green-800 dark:bg-green-900/20' : '']">
-            <input v-model="encrypt" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="backup-encrypt" />
+          <label
+            :class="[
+              'flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700',
+              encrypt ? 'border-green-300 bg-green-50/60 dark:border-green-800 dark:bg-green-900/20' : '',
+            ]"
+          >
+            <input
+              v-model="encrypt"
+              type="checkbox"
+              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+              data-testid="backup-encrypt"
+            />
             <span>
               <span class="block font-medium text-foreground dark:text-gray-200">Encrypt with a password</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400">Argon2id and AES-256-GCM. The password is not stored anywhere: without it the file cannot be restored.</span>
+              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                >Argon2id and AES-256-GCM. The password is not stored anywhere: without it the file cannot be restored.</span
+              >
             </span>
           </label>
 
@@ -40,27 +62,52 @@
             <label class="block">
               <span class="flex items-baseline justify-between text-sm font-medium text-foreground dark:text-gray-200">
                 Password
-                <span class="text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="backup-password-bytes">{{ downloadPasswordBytes }}/{{ MAX_PASSWORD_BYTES }} bytes</span>
+                <span class="text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="backup-password-bytes"
+                  >{{ downloadPasswordBytes }}/{{ MAX_PASSWORD_BYTES }} bytes</span
+                >
               </span>
-              <Input v-model="downloadPassword" type="password" autocomplete="new-password" class="mt-1.5 dark:border-gray-700" data-testid="backup-password" />
+              <Input
+                v-model="downloadPassword"
+                type="password"
+                autocomplete="new-password"
+                class="mt-1.5 dark:border-gray-700"
+                data-testid="backup-password"
+              />
             </label>
             <label class="block">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Confirm the password</span>
-              <Input v-model="downloadPasswordConfirmation" type="password" autocomplete="new-password" class="mt-1.5 dark:border-gray-700" data-testid="backup-password-confirm" />
+              <Input
+                v-model="downloadPasswordConfirmation"
+                type="password"
+                autocomplete="new-password"
+                class="mt-1.5 dark:border-gray-700"
+                data-testid="backup-password-confirm"
+              />
             </label>
             <p class="text-xs text-muted-foreground sm:col-span-2 dark:text-gray-400" data-testid="backup-password-hint">
-              <span v-if="downloadPasswordError && (downloadPassword || downloadPasswordConfirmation)" class="text-red-700 dark:text-red-300">{{ downloadPasswordError }}</span>
+              <span
+                v-if="downloadPasswordError && (downloadPassword || downloadPasswordConfirmation)"
+                class="text-red-700 dark:text-red-300"
+                >{{ downloadPasswordError }}</span
+              >
               <span v-else>Between {{ MIN_PASSWORD_BYTES }} and {{ MAX_PASSWORD_BYTES }} bytes in UTF-8.</span>
             </p>
           </div>
 
-          <div v-else role="status" class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100" data-testid="backup-plaintext-warning">
+          <div
+            v-else
+            role="status"
+            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100"
+            data-testid="backup-plaintext-warning"
+          >
             Without a password, the file contains tokens, passwords, headers and webhooks in plain text. Keep it somewhere safe.
           </div>
         </div>
 
         <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 dark:border-gray-700">
-          <Button :disabled="downloading || (encrypt && Boolean(downloadPasswordError))" data-testid="backup-download" @click="download">{{ downloading ? 'Downloading…' : 'Download' }}</Button>
+          <Button :disabled="downloading || (encrypt && Boolean(downloadPasswordError))" data-testid="backup-download" @click="download">{{
+            downloading ? 'Downloading…' : 'Download'
+          }}</Button>
         </footer>
       </section>
 
@@ -68,7 +115,9 @@
       <section class="flex min-h-0 flex-col border bg-card dark:border-gray-700 dark:bg-gray-900" data-testid="backup-section-restore">
         <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
           <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Restore</h2>
-          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Merges a backup into this installation: nothing is removed, and the preview shows exactly what will be applied.</p>
+          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+            Merges a backup into this installation: nothing is removed, and the preview shows exactly what will be applied.
+          </p>
         </header>
 
         <div class="min-h-0 flex-1 space-y-4 overflow-auto overscroll-contain px-5 py-4">
@@ -83,9 +132,22 @@
                 data-testid="restore-file"
                 @change="onFileChange"
               />
-              <Button variant="outline" class="shrink-0" :disabled="!selectedFile || reading || previewing || restoring" data-testid="restore-reload" @click="readFile(selectedFile)">Read again</Button>
+              <Button
+                variant="outline"
+                class="shrink-0"
+                :disabled="!selectedFile || reading || previewing || restoring"
+                data-testid="restore-reload"
+                @click="readFile(selectedFile)"
+                >Read again</Button
+              >
             </div>
-            <p :class="['mt-1 text-xs', fileError && !reading ? 'text-red-700 dark:text-red-300' : 'text-muted-foreground dark:text-gray-400']" data-testid="restore-file-status">
+            <p
+              :class="[
+                'mt-1 text-xs',
+                fileError && !reading ? 'text-red-700 dark:text-red-300' : 'text-muted-foreground dark:text-gray-400',
+              ]"
+              data-testid="restore-file-status"
+            >
               <template v-if="reading">Reading the file…</template>
               <!-- The refused file keeps explaining why Preview is disabled, announced once when it changes -->
               <span v-else-if="fileError" :key="fileErrorKey" role="alert">{{ fileError }}</span>
@@ -106,28 +168,55 @@
               :aria-describedby="wrongPassword ? 'restore-password-error' : undefined"
               data-testid="restore-password"
             />
-            <span v-if="wrongPassword" id="restore-password-error" class="mt-1 block text-xs text-red-700 dark:text-red-300" data-testid="restore-password-error">{{ WRONG_PASSWORD_MESSAGE }}</span>
-            <span v-else-if="restorePassword && restorePasswordError" class="mt-1 block text-xs text-red-700 dark:text-red-300" data-testid="restore-password-hint">{{ restorePasswordError }}</span>
+            <span
+              v-if="wrongPassword"
+              id="restore-password-error"
+              class="mt-1 block text-xs text-red-700 dark:text-red-300"
+              data-testid="restore-password-error"
+              >{{ WRONG_PASSWORD_MESSAGE }}</span
+            >
+            <span
+              v-else-if="restorePassword && restorePasswordError"
+              class="mt-1 block text-xs text-red-700 dark:text-red-300"
+              data-testid="restore-password-hint"
+              >{{ restorePasswordError }}</span
+            >
           </label>
 
           <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
-            <input v-model="overwrite" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="restore-overwrite" />
+            <input
+              v-model="overwrite"
+              type="checkbox"
+              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+              data-testid="restore-overwrite"
+            />
             <span>
               <span class="block font-medium text-foreground dark:text-gray-200">Overwrite existing items</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400">Items that already exist with a different definition are updated. Without it they are skipped.</span>
+              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                >Items that already exist with a different definition are updated. Without it they are skipped.</span
+              >
             </span>
           </label>
           <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
-            <input v-model="disableEndpoints" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="restore-disable-endpoints" />
+            <input
+              v-model="disableEndpoints"
+              type="checkbox"
+              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+              data-testid="restore-disable-endpoints"
+            />
             <span>
               <span class="block font-medium text-foreground dark:text-gray-200">Restore endpoints as disabled</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400">Created or updated endpoints are saved disabled: no checks and no alerts until they are enabled.</span>
+              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                >Created or updated endpoints are saved disabled: no checks and no alerts until they are enabled.</span
+              >
             </span>
           </label>
         </div>
 
         <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 dark:border-gray-700">
-          <Button ref="previewButton" :disabled="!canPreview" data-testid="restore-preview" @click="runPreview">{{ previewing ? 'Previewing…' : 'Preview' }}</Button>
+          <Button ref="previewButton" :disabled="!canPreview" data-testid="restore-preview" @click="runPreview">{{
+            previewing ? 'Previewing…' : 'Preview'
+          }}</Button>
         </footer>
       </section>
     </div>
@@ -145,12 +234,19 @@
         @close="closePlan"
       >
         <div v-if="plan" class="space-y-3">
-          <div v-if="notices.monitoringStarts || notices.withAlerts" role="status" class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100" data-testid="restore-notices">
+          <div
+            v-if="notices.monitoringStarts || notices.withAlerts"
+            role="status"
+            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100"
+            data-testid="restore-notices"
+          >
             <p v-if="notices.monitoringStarts" data-testid="restore-notice-monitoring">
-              {{ notices.monitoringStarts }} enabled {{ notices.monitoringStarts === 1 ? 'endpoint' : 'endpoints' }} will start monitoring right away, from the network of this installation.
+              {{ notices.monitoringStarts }} enabled {{ notices.monitoringStarts === 1 ? 'endpoint' : 'endpoints' }} will start monitoring
+              right away, from the network of this installation.
             </p>
             <p v-if="notices.withAlerts" data-testid="restore-notice-alerts">
-              {{ notices.withAlerts }} of them {{ notices.withAlerts === 1 ? 'has' : 'have' }} alerts that can be sent to the real providers.
+              {{ notices.withAlerts }} of them {{ notices.withAlerts === 1 ? 'has' : 'have' }} alerts that can be sent to the real
+              providers.
             </p>
           </div>
 
@@ -162,16 +258,22 @@
               :aria-pressed="actionFilter === option.id"
               :class="[
                 '-ml-px h-9 border px-3 text-xs font-medium first:ml-0 dark:border-gray-700',
-                actionFilter === option.id ? 'relative z-10 border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900' : 'bg-background text-foreground hover:bg-accent dark:text-gray-200 dark:hover:bg-gray-800'
+                actionFilter === option.id
+                  ? 'relative z-10 border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900'
+                  : 'bg-background text-foreground hover:bg-accent dark:text-gray-200 dark:hover:bg-gray-800',
               ]"
               :data-testid="`restore-filter-${option.id}`"
               @click="actionFilter = option.id"
-            >{{ option.label }} ({{ option.count }})</button>
+            >
+              {{ option.label }} ({{ option.count }})
+            </button>
           </div>
 
           <div class="border dark:border-gray-700">
             <table class="w-full text-sm" data-testid="restore-plan-table">
-              <thead class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]">
+              <thead
+                class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+              >
                 <tr>
                   <th class="px-3 py-2 font-medium">Type</th>
                   <th class="px-3 py-2 font-medium">ID</th>
@@ -192,7 +294,9 @@
                 >
                   <td class="whitespace-nowrap px-3 py-1.5 text-muted-foreground dark:text-gray-400">{{ typeLabel(item.type) }}</td>
                   <td class="px-3 py-1.5 font-mono text-xs text-foreground break-all dark:text-gray-100">{{ item.id }}</td>
-                  <td class="px-3 py-1.5"><span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.action)]">{{ item.action }}</span></td>
+                  <td class="px-3 py-1.5">
+                    <span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.action)]">{{ item.action }}</span>
+                  </td>
                   <td class="px-3 py-1.5 text-xs">
                     <span v-if="item.reason" class="text-foreground dark:text-gray-200">{{ item.reason }}</span>
                     <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
@@ -206,7 +310,9 @@
         </div>
         <template #footer>
           <Button variant="outline" :disabled="restoring" data-testid="restore-plan-close" @click="closePlan">Cancel</Button>
-          <Button variant="destructive" :disabled="!canRestore" data-testid="restore-apply" @click="confirming = true">{{ restoring ? 'Restoring…' : 'Restore' }}</Button>
+          <Button variant="destructive" :disabled="!canRestore" data-testid="restore-apply" @click="confirming = true">{{
+            restoring ? 'Restoring…' : 'Restore'
+          }}</Button>
         </template>
       </AdminDialog>
 
@@ -222,7 +328,9 @@
       >
         <div v-if="results" class="border dark:border-gray-700">
           <table class="w-full text-sm" data-testid="restore-results-table">
-            <thead class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]">
+            <thead
+              class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+            >
               <tr>
                 <th class="px-3 py-2 font-medium">Type</th>
                 <th class="px-3 py-2 font-medium">ID</th>
@@ -243,7 +351,9 @@
               >
                 <td class="whitespace-nowrap px-3 py-1.5 text-muted-foreground dark:text-gray-400">{{ typeLabel(item.type) }}</td>
                 <td class="px-3 py-1.5 font-mono text-xs text-foreground break-all dark:text-gray-100">{{ item.id }}</td>
-                <td class="px-3 py-1.5"><span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.result)]">{{ item.result }}</span></td>
+                <td class="px-3 py-1.5">
+                  <span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.result)]">{{ item.result }}</span>
+                </td>
                 <td class="px-3 py-1.5 text-xs">
                   <span v-if="item.message" class="text-foreground dark:text-gray-200">{{ item.message }}</span>
                   <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
@@ -293,7 +403,7 @@ import {
   planSummaryText,
   restoreConfirmationMessage,
   resultCounts,
-  validatePassword
+  validatePassword,
 } from '@/utils/adminBackup'
 import { toast } from '@/utils/toast'
 
@@ -302,7 +412,7 @@ const PERSISTENT_ERROR_STATUSES = [409, 413, 422, 429]
 
 const errorToastOptions = (error, title) => ({
   title,
-  duration: error && PERSISTENT_ERROR_STATUSES.includes(error.status) ? 0 : undefined
+  duration: error && PERSISTENT_ERROR_STATUSES.includes(error.status) ? 0 : undefined,
 })
 
 // Answer of the server to a wrong password (or a changed encrypted file)
@@ -316,11 +426,16 @@ const counters = computed(() => [
   { id: 'status-pages', label: 'Managed status pages', value: counts.value.statusPages },
   { id: 'push-keys', label: 'Web push keys', value: counts.value.pushKeys },
   // Fork: alerting providers configured through the web, shadowed ones included
-  { id: 'alert-providers', label: 'Web notifications', value: counts.value.alertProviders }
+  { id: 'alert-providers', label: 'Web notifications', value: counts.value.alertProviders },
 ])
 
 const loadCounts = async () => {
-  const [endpoints, statusPages, pushKeys, alertProviders] = await Promise.allSettled([adminApi.list(), statusPagesApi.list(), pushKeysApi.list(), alertProvidersApi.list()])
+  const [endpoints, statusPages, pushKeys, alertProviders] = await Promise.allSettled([
+    adminApi.list(),
+    statusPagesApi.list(),
+    pushKeysApi.list(),
+    alertProvidersApi.list(),
+  ])
   const failures = []
   const value = (outcome, pick) => {
     if (outcome.status === 'fulfilled') {
@@ -333,7 +448,10 @@ const loadCounts = async () => {
     endpoints: value(endpoints, (data) => (Array.isArray(data) ? data : []).filter((item) => item.source === 'admin').length),
     statusPages: value(statusPages, (data) => ((data && data.statusPages) || []).filter((item) => item.origin === 'admin').length),
     pushKeys: value(pushKeys, (data) => ((data && data.keys) || []).filter((item) => item.origin === 'admin').length),
-    alertProviders: value(alertProviders, (data) => ((data && data.providers) || []).filter((item) => item.source === 'web' || item.shadowed).length)
+    alertProviders: value(
+      alertProviders,
+      (data) => ((data && data.providers) || []).filter((item) => item.source === 'web' || item.shadowed).length,
+    ),
   }
   if (failures.length) {
     toast.error(`The quantities could not be loaded: ${describeBackupError(failures[0])}`)
@@ -487,17 +605,20 @@ const onFileChange = (event) => {
 
 const restorePasswordError = computed(() => (fileFormat.value === 'encrypted' ? validatePassword(restorePassword.value) : ''))
 
-const canPreview = computed(() => Boolean(parsedFile.value) && !reading.value && !previewing.value && !restoring.value && !restorePasswordError.value)
+const canPreview = computed(
+  () => Boolean(parsedFile.value) && !reading.value && !previewing.value && !restoring.value && !restorePasswordError.value,
+)
 const canRestore = computed(() => Boolean(plan.value && plan.value.fingerprint) && !reading.value && !previewing.value && !restoring.value)
 
-const restoreBody = (fingerprint) => buildRestoreBody({
-  file: parsedFile.value,
-  format: fileFormat.value,
-  password: restorePassword.value,
-  overwrite: overwrite.value,
-  disableEndpoints: disableEndpoints.value,
-  fingerprint
-})
+const restoreBody = (fingerprint) =>
+  buildRestoreBody({
+    file: parsedFile.value,
+    format: fileFormat.value,
+    password: restorePassword.value,
+    overwrite: overwrite.value,
+    disableEndpoints: disableEndpoints.value,
+    fingerprint,
+  })
 
 const runPreview = async () => {
   if (!canPreview.value) {
@@ -563,13 +684,15 @@ const filterOptions = computed(() => {
     { id: 'create', label: 'Create', count: counted.create },
     { id: 'update', label: 'Update', count: counted.update },
     { id: 'unchanged', label: 'Unchanged', count: counted.unchanged },
-    { id: 'skip', label: 'Skip', count: counted.skip }
+    { id: 'skip', label: 'Skip', count: counted.skip },
   ]
 })
 
 const filteredItems = computed(() => filterPlanItems(plan.value && plan.value.items, actionFilter.value))
 
-const confirmationMessage = computed(() => `${restoreConfirmationMessage(plan.value)}\nNothing is removed, and items that are skipped in the preview are not changed.`)
+const confirmationMessage = computed(
+  () => `${restoreConfirmationMessage(plan.value)}\nNothing is removed, and items that are skipped in the preview are not changed.`,
+)
 
 const resultsSummaryText = computed(() => {
   const summary = resultCounts(results.value)
@@ -584,9 +707,18 @@ const BADGES = {
   blue: 'border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200',
   gray: 'border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300',
   amber: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100',
-  red: 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200'
+  red: 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
 }
-const BADGE_COLORS = { create: 'green', created: 'green', update: 'blue', updated: 'blue', unchanged: 'gray', skip: 'amber', skipped: 'amber', failed: 'red' }
+const BADGE_COLORS = {
+  create: 'green',
+  created: 'green',
+  update: 'blue',
+  updated: 'blue',
+  unchanged: 'gray',
+  skip: 'amber',
+  skipped: 'amber',
+  failed: 'red',
+}
 const badgeClass = (value) => BADGES[BADGE_COLORS[value] || 'gray']
 
 onMounted(loadCounts)

@@ -4,12 +4,14 @@
 const RESERVED_SCALAR = /^(true|false|yes|no|on|off|null|~|[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)$/i
 
 function needsQuotes(value) {
-  return value === '' ||
+  return (
+    value === '' ||
     value !== value.trim() ||
     RESERVED_SCALAR.test(value) ||
     /^[-?:,[\]{}#&*!|>'"%@`]/.test(value) ||
     /: |\s#|\n/.test(value) ||
     value.endsWith(':')
+  )
 }
 
 function scalar(value) {
@@ -34,28 +36,32 @@ export function toYaml(value, indent = 0) {
     if (value.length === 0) {
       return `${padding}[]`
     }
-    return value.map((item) => {
-      if (isNonEmptyCollection(item)) {
-        if (Array.isArray(item)) {
-          return `${padding}-\n${toYaml(item, indent + 1)}`
+    return value
+      .map((item) => {
+        if (isNonEmptyCollection(item)) {
+          if (Array.isArray(item)) {
+            return `${padding}-\n${toYaml(item, indent + 1)}`
+          }
+          return `${padding}- ${toYaml(item, indent + 1).trimStart()}`
         }
-        return `${padding}- ${toYaml(item, indent + 1).trimStart()}`
-      }
-      return `${padding}- ${item !== null && typeof item === 'object' ? emptyCollection(item) : scalar(item)}`
-    }).join('\n')
+        return `${padding}- ${item !== null && typeof item === 'object' ? emptyCollection(item) : scalar(item)}`
+      })
+      .join('\n')
   }
   if (value !== null && typeof value === 'object') {
     const keys = Object.keys(value)
     if (keys.length === 0) {
       return `${padding}{}`
     }
-    return keys.map((key) => {
-      const item = value[key]
-      if (isNonEmptyCollection(item)) {
-        return `${padding}${scalar(key)}:\n${toYaml(item, indent + 1)}`
-      }
-      return `${padding}${scalar(key)}: ${item !== null && typeof item === 'object' ? emptyCollection(item) : scalar(item)}`
-    }).join('\n')
+    return keys
+      .map((key) => {
+        const item = value[key]
+        if (isNonEmptyCollection(item)) {
+          return `${padding}${scalar(key)}:\n${toYaml(item, indent + 1)}`
+        }
+        return `${padding}${scalar(key)}: ${item !== null && typeof item === 'object' ? emptyCollection(item) : scalar(item)}`
+      })
+      .join('\n')
   }
   return `${padding}${scalar(value)}`
 }

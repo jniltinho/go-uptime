@@ -1,9 +1,9 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div id="settings" class="fixed bottom-4 left-4 z-50">
-    <div class="flex items-center gap-1 bg-background/95 backdrop-blur-sm border rounded-none shadow-md p-1">
+    <div class="flex items-center gap-1 bg-background/95 backdrop-blur-xs border rounded-none shadow-md p-1">
       <!-- Refresh Rate -->
-      <button 
+      <button
         @click="showRefreshMenu = !showRefreshMenu"
         :aria-label="`Refresh interval: ${formatRefreshInterval(refreshIntervalValue)}`"
         :aria-expanded="showRefreshMenu"
@@ -11,9 +11,9 @@
       >
         <RefreshCw class="w-3.5 h-3.5 text-muted-foreground" />
         <span class="text-xs font-medium">{{ formatRefreshInterval(refreshIntervalValue) }}</span>
-        
+
         <!-- Refresh Rate Dropdown -->
-        <div 
+        <div
           v-if="showRefreshMenu"
           @click.stop
           class="absolute bottom-full left-0 mb-2 bg-popover border rounded-lg shadow-lg overflow-hidden"
@@ -24,7 +24,7 @@
             @click="selectRefreshInterval(interval.value)"
             :class="[
               'block w-full px-4 py-2 text-xs text-left hover:bg-accent transition-colors',
-              refreshIntervalValue === interval.value && 'bg-accent'
+              refreshIntervalValue === interval.value && 'bg-accent',
             ]"
           >
             {{ interval.label }}
@@ -40,7 +40,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
@@ -59,18 +58,18 @@ const REFRESH_INTERVALS = [
   { value: '60', label: '1m' },
   { value: '120', label: '2m' },
   { value: '300', label: '5m' },
-  { value: '600', label: '10m' }
+  { value: '600', label: '10m' },
 ]
 const DEFAULT_REFRESH_INTERVAL = '300'
 const STORAGE_KEYS = {
-  REFRESH_INTERVAL: 'refresh-interval'
+  REFRESH_INTERVAL: 'refresh-interval',
 }
 
 // Helper functions
 function getStoredRefreshInterval() {
   const stored = readPreference(STORAGE_KEYS.REFRESH_INTERVAL)
   const parsedValue = stored && parseInt(stored)
-  const isValid = parsedValue && parsedValue >= 10 && REFRESH_INTERVALS.some(i => i.value === stored)
+  const isValid = parsedValue && parsedValue >= 10 && REFRESH_INTERVALS.some((i) => i.value === stored)
   return isValid ? stored : DEFAULT_REFRESH_INTERVAL
 }
 
@@ -81,7 +80,7 @@ let refreshIntervalHandler = null
 
 // Methods
 const formatRefreshInterval = (value) => {
-  const interval = REFRESH_INTERVALS.find(i => i.value === value)
+  const interval = REFRESH_INTERVALS.find((i) => i.value === value)
   return interval ? interval.label : `${value}s`
 }
 
@@ -133,7 +132,6 @@ onUnmounted(() => {
 })
 </script>
 
-
 <style scoped>
 /* Animations for smooth transitions */
 @keyframes slideIn {
@@ -157,6 +155,8 @@ onUnmounted(() => {
 
 #settings > div:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  box-shadow:
+    0 10px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 </style>

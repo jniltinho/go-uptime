@@ -1,13 +1,13 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="relative min-h-screen bg-background px-4 text-foreground" data-testid="login-page">
+  <div class="relative min-h-[var(--view-h)] bg-background px-4 text-foreground" data-testid="login-page">
     <div class="absolute right-4 top-4">
       <ThemeSelector testid="login-theme-toggle" />
     </div>
 
     <!-- The card starts at 10% of the height of the window -->
     <div class="mx-auto w-full max-w-sm pb-8 pt-[10vh]">
-      <form class="border bg-card p-6 shadow-sm dark:border-gray-700" data-testid="login-card" @submit.prevent="submit">
+      <form class="border bg-card p-6 shadow-xs dark:border-gray-700" data-testid="login-card" @submit.prevent="submit">
         <div class="mb-6 flex flex-col items-center gap-3 text-center">
           <img v-if="logo" :src="logo" alt="" class="h-12 w-12 object-contain" />
           <div>

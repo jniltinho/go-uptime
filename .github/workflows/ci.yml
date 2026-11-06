@@ -80,6 +80,37 @@ jobs:
         # As variáveis mantêm o Go e os caches configurados pelo setup-go.
         run: sudo env "PATH=$PATH" "GOROOT=$(go env GOROOT)" "GOCACHE=$(go env GOCACHE)" "GOMODCACHE=$(go env GOMODCACHE)" "GO_UPTIME_TEST_POSTGRES_URL=$GO_UPTIME_TEST_POSTGRES_URL" "GO_UPTIME_TEST_MYSQL_URL=$GO_UPTIME_TEST_MYSQL_URL" "GO_UPTIME_TEST_MARIADB_URL=$GO_UPTIME_TEST_MARIADB_URL" go test ./... -race
 
+  frontend:
+    name: Frontend (vp check, ESLint, vp test, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: web/app/.nvmrc
+          cache: npm
+          cache-dependency-path: web/app/package-lock.json
+
+      - name: Install
+        # npm ci: the exact versions of package-lock.json, vite-plus included; never a remote install script
+        run: make frontend-install
+
+      - name: Check
+        run: make frontend-check
+
+      - name: Test
+        run: make frontend-test
+
+      - name: Build matches web/static
+        # web/static is versioned and embedded in the binary: it must be the build of the sources of the commit
+        run: |
+          make frontend-build
+          git diff --exit-code --stat -- web/static
+
   storage-latest:
     name: Storage mysql nas LTS mais novas
     runs-on: ubuntu-latest

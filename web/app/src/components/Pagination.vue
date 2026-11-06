@@ -1,28 +1,14 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div class="flex items-center justify-between">
-    <Button
-      variant="outline"
-      size="sm"
-      :disabled="currentPage >= maxPages"
-      @click="previousPage"
-      class="flex items-center gap-1"
-    >
+    <Button variant="outline" size="sm" :disabled="currentPage >= maxPages" @click="previousPage" class="flex items-center gap-1">
       <ChevronLeft class="h-4 w-4" />
       Previous
     </Button>
-    
-    <span class="text-sm text-muted-foreground">
-      Page {{ currentPage }} of {{ maxPages }}
-    </span>
-    
-    <Button
-      variant="outline"
-      size="sm"
-      :disabled="currentPage <= 1"
-      @click="nextPage"
-      class="flex items-center gap-1"
-    >
+
+    <span class="text-sm text-muted-foreground"> Page {{ currentPage }} of {{ maxPages }} </span>
+
+    <Button variant="outline" size="sm" :disabled="currentPage <= 1" @click="nextPage" class="flex items-center gap-1">
       Next
       <ChevronRight class="h-4 w-4" />
     </Button>
@@ -38,8 +24,8 @@ const props = defineProps({
   numberOfResultsPerPage: Number,
   currentPageProp: {
     type: Number,
-    default: 1
-  }
+    default: 1,
+  },
 })
 
 const emit = defineEmits(['page'])
