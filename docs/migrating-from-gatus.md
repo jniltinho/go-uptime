@@ -16,7 +16,7 @@ that is three files while Gatus runs (`data.db`, `data.db-wal`, `data.db-shm`), 
  services:
    gatus:
 -    image: jniltinho/gatus:v6.3.0
-+    image: jniltinho/go-uptime:v7.4.1
++    image: jniltinho/go-uptime:v7.4.2
 ```
 
 **Keep everything else as it is**: the name of the service, the volume, the database and its user, the labels of
