@@ -7,7 +7,7 @@
 
     <!-- The card starts at 10% of the height of the window -->
     <div class="mx-auto w-full max-w-sm pb-8 pt-[10vh]">
-      <form class="border bg-card p-6 shadow-xs dark:border-gray-700" data-testid="login-card" @submit.prevent="submit">
+      <form class="border bg-card p-6 shadow-xs border-line" data-testid="login-card" @submit.prevent="submit">
         <div class="mb-6 flex flex-col items-center gap-3 text-center">
           <img v-if="logo" :src="logo" alt="" class="h-12 w-12 object-contain" />
           <div>
@@ -19,7 +19,7 @@
         <div
           v-if="error"
           role="alert"
-          class="mb-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-900/30 dark:text-red-300"
+          class="mb-4 border border-red-200 bg-danger-soft px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:text-red-300"
           data-testid="login-error"
         >
           {{ error }}
@@ -38,7 +38,7 @@
               autocapitalize="none"
               spellcheck="false"
               required
-              class="h-10 w-full border border-input bg-background px-3 text-sm text-foreground dark:border-gray-700 dark:text-gray-100"
+              class="h-10 w-full border border-field bg-background px-3 text-sm text-fg-strong"
               data-testid="login-username"
             />
           </div>
@@ -51,7 +51,7 @@
               name="password"
               autocomplete="current-password"
               required
-              class="h-10 w-full border border-input bg-background px-3 text-sm text-foreground dark:border-gray-700 dark:text-gray-100"
+              class="h-10 w-full border border-field bg-background px-3 text-sm text-fg-strong"
               data-testid="login-password"
             />
           </div>

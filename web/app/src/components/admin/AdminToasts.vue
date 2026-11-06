@@ -23,7 +23,7 @@
         v-for="item in toasts"
         :key="item.id"
         :class="[
-          'pointer-events-auto flex w-full items-start gap-3 border border-l-4 bg-card px-4 py-3 text-sm text-card-foreground shadow-lg dark:bg-gray-900',
+          'pointer-events-auto flex w-full items-start gap-3 border border-l-4 bg-surface px-4 py-3 text-sm text-card-foreground shadow-lg',
           STYLES[item.type],
         ]"
         data-testid="toast"
@@ -31,12 +31,12 @@
       >
         <component :is="ICONS[item.type]" class="mt-0.5 h-4 w-4 shrink-0" :class="ICON_COLORS[item.type]" aria-hidden="true" />
         <div class="min-w-0 flex-1">
-          <p v-if="item.title" class="font-medium text-foreground dark:text-gray-100" data-testid="toast-title">{{ item.title }}</p>
-          <p class="wrap-break-word text-foreground dark:text-gray-200" data-testid="toast-message">{{ item.message }}</p>
+          <p v-if="item.title" class="font-medium text-fg-strong" data-testid="toast-title">{{ item.title }}</p>
+          <p class="wrap-break-word text-fg" data-testid="toast-message">{{ item.message }}</p>
         </div>
         <button
           type="button"
-          class="-mr-1 shrink-0 p-0.5 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100"
+          class="-mr-1 shrink-0 p-0.5 text-fg-muted hover:text-fg-strong"
           aria-label="Dismiss"
           data-testid="toast-dismiss"
           @click="dismissToast(item.id)"
@@ -65,9 +65,9 @@ const STYLES = {
 
 const ICON_COLORS = {
   success: 'text-green-600 dark:text-green-400',
-  info: 'text-blue-600 dark:text-blue-400',
+  info: 'text-info',
   warning: 'text-amber-600 dark:text-amber-400',
-  error: 'text-red-600 dark:text-red-400',
+  error: 'text-danger',
 }
 
 const list = ref(null)

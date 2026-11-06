@@ -31,10 +31,10 @@
           {{ option.label }}
         </button>
       </div>
-      <label class="ml-auto flex shrink-0 cursor-pointer items-center gap-2 text-xs text-muted-foreground dark:text-gray-400">
+      <label class="ml-auto flex shrink-0 cursor-pointer items-center gap-2 text-xs text-fg-muted">
         <input
           type="checkbox"
-          class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+          class="h-4 w-4 accent-check"
           :checked="modelValue.onlyProblems"
           data-testid="status-filter-only-problems"
           @change="update({ onlyProblems: $event.target.checked })"
@@ -69,9 +69,9 @@ const applicationOptions = computed(() => [
 const update = (change) => emit('update:modelValue', { ...props.modelValue, ...change })
 
 const chipClass = (active) => [
-  'border px-3 py-0.5 text-xs font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400',
+  'border px-3 py-0.5 text-xs font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus',
   active
     ? 'border-sky-300 bg-sky-100 text-sky-900 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-100'
-    : 'border-input text-foreground hover:bg-muted dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800',
+    : 'border-field text-fg hover:bg-muted dark:hover:bg-gray-800',
 ]
 </script>

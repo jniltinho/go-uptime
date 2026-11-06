@@ -249,8 +249,13 @@ for theme in $THEMES; do
   browser wait 800 >/dev/null
   collect "$theme-admin-status-page-new-errors"
   screen "$theme-admin-status-page-edit" /admin/status-pages/managed/edit '[data-testid="status-page-preview-button"]'
-  browser click '[data-testid="status-page-preview-button"]' >/dev/null
-  browser wait '[data-testid="status-page-preview-close"]' >/dev/null
+  # The click can land while the form is still loading (the button is disabled): wait for the form and retry
+  browser wait '[data-testid="status-page-section-views"]' >/dev/null
+  for attempt in 1 2 3; do
+    browser click '[data-testid="status-page-preview-button"]' >/dev/null
+    browser wait '[data-testid="status-page-preview-close"]' >/dev/null 2>&1 && break
+    [ "$attempt" = 3 ] && { echo "the preview did not open"; exit 1; }
+  done
   collect "$theme-admin-status-page-preview"
   screen "$theme-admin-status-page-readonly" /admin/status-pages/services/edit
   screen "$theme-admin-push-keys" /admin/push-keys

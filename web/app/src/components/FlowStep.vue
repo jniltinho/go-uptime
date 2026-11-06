@@ -37,7 +37,7 @@
         </span>
         <span
           v-if="step.errors?.length"
-          class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-md"
+          class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-danger-strong dark:bg-red-900 rounded-md"
         >
           {{ step.errors.length }} error{{ step.errors.length !== 1 ? 's' : '' }}
         </span>

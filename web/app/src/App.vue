@@ -55,7 +55,7 @@
               <router-link
                 v-if="showAdminLink"
                 to="/admin"
-                class="px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors"
+                class="px-2.5 py-1 text-xs font-medium hover:bg-hover hover:text-accent-foreground transition-colors"
                 data-testid="admin-link"
               >
                 Admin
@@ -64,7 +64,7 @@
               <button
                 v-if="showLogout"
                 type="button"
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium hover:bg-hover hover:text-accent-foreground transition-colors disabled:opacity-50"
                 :disabled="loggingOut"
                 data-testid="logout-button"
                 @click="logout"

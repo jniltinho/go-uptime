@@ -5,20 +5,20 @@
       type="button"
       :aria-expanded="expanded"
       data-testid="recent-checks-toggle"
-      class="flex w-full items-center gap-2 border px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-accent dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+      class="flex w-full items-center gap-2 border px-3 py-2 text-left text-sm font-medium text-fg hover:bg-hover border-line"
       @click="toggle"
     >
       <ChevronDown v-if="expanded" class="h-4 w-4" />
       <ChevronRight v-else class="h-4 w-4" />
       Checks table
-      <span class="font-normal text-muted-foreground dark:text-gray-400">({{ rows.length }})</span>
-      <span class="ml-auto text-xs font-normal text-muted-foreground dark:text-gray-400">{{
+      <span class="font-normal text-fg-muted">({{ rows.length }})</span>
+      <span class="ml-auto text-xs font-normal text-fg-muted">{{
         showMessage ? 'Status, date and time, message and origin' : 'Status, date and time and response time'
       }}</span>
     </button>
     <div v-if="expanded" class="overflow-x-auto border border-t-0 dark:border-gray-700" data-testid="recent-checks-table">
       <table class="w-full text-sm">
-        <thead class="bg-muted/50 text-left text-muted-foreground dark:bg-gray-800 dark:text-gray-400">
+        <thead class="bg-muted/50 text-left text-fg-muted dark:bg-gray-800">
           <tr>
             <th class="px-3 py-2 font-medium">Status</th>
             <th class="px-3 py-2 font-medium">Date and time</th>
@@ -31,7 +31,7 @@
         </thead>
         <tbody>
           <tr v-if="rows.length === 0">
-            <td :colspan="showMessage ? 4 : 3" class="px-3 py-6 text-center text-muted-foreground dark:text-gray-400">No checks yet.</td>
+            <td :colspan="showMessage ? 4 : 3" class="px-3 py-6 text-center text-fg-muted">No checks yet.</td>
           </tr>
           <tr
             v-for="(row, index) in rows"
@@ -42,19 +42,18 @@
             <td class="px-3 py-2">
               <span :class="['border px-1.5 py-0.5 text-xs font-medium', STATUS_CLASSES[row.status]]">{{ STATUS_TEXTS[row.status] }}</span>
             </td>
-            <td class="px-3 py-2 whitespace-nowrap text-muted-foreground dark:text-gray-400">{{ row.dateTime }}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-fg-muted">{{ row.dateTime }}</td>
             <template v-if="showMessage">
-              <td class="px-3 py-2 wrap-break-word text-foreground dark:text-gray-200" data-testid="recent-check-message">
+              <td class="px-3 py-2 wrap-break-word text-fg" data-testid="recent-check-message">
                 {{ row.message }}
               </td>
               <td class="px-3 py-2 whitespace-nowrap">
-                <span
-                  :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-muted-foreground dark:text-gray-400']"
-                  >{{ row.push ? 'Push' : 'Check' }}</span
-                >
+                <span :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-fg-muted']">{{
+                  row.push ? 'Push' : 'Check'
+                }}</span>
               </td>
             </template>
-            <td v-else class="px-3 py-2 whitespace-nowrap text-muted-foreground dark:text-gray-400">{{ row.responseTime }}</td>
+            <td v-else class="px-3 py-2 whitespace-nowrap text-fg-muted">{{ row.responseTime }}</td>
           </tr>
         </tbody>
       </table>
@@ -82,9 +81,9 @@ const props = defineProps({
 // Pending results are not successful, but are shown in yellow
 const STATUS_TEXTS = { up: 'Up', pending: 'Pending', down: 'Down' }
 const STATUS_CLASSES = {
-  up: 'border-green-300 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300',
+  up: 'border-success bg-success-soft text-green-800 dark:text-green-300',
   pending: 'border-yellow-300 bg-yellow-50 text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-  down: 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300',
+  down: 'border-danger bg-danger-soft text-red-800 dark:text-red-300',
 }
 
 const PREFERENCE = 'show-recent-checks-table'

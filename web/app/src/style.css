@@ -240,6 +240,7 @@
 @import './themes/light.css';
 @import './themes/dark.css';
 @import './themes/bio.css';
+@import './themes/roles.css';
 
 @layer base {
   * {

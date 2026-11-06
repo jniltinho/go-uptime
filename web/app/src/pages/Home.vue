@@ -16,14 +16,14 @@
               data-testid="dashboard-summary"
             >
               <span
-                class="inline-flex items-center gap-1.5 border px-2 py-1 text-muted-foreground dark:border-gray-700"
+                class="inline-flex items-center gap-1.5 border px-2 py-1 text-muted-foreground border-line"
                 data-testid="dashboard-summary-up"
               >
                 <span class="h-2 w-2 rounded-full bg-green-500" aria-hidden="true"></span>{{ endpointSummary.up }} up
               </span>
               <span
                 v-if="endpointSummary.down"
-                class="inline-flex items-center gap-1.5 border border-red-300 bg-red-50 px-2 py-1 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+                class="inline-flex items-center gap-1.5 border border-danger bg-danger-soft px-2 py-1 text-danger-strong"
                 data-testid="dashboard-summary-down"
               >
                 <span class="h-2 w-2 rounded-full bg-red-500" aria-hidden="true"></span>{{ endpointSummary.down }} down
@@ -37,7 +37,7 @@
               </span>
               <span
                 v-if="endpointSummary.unknown"
-                class="inline-flex items-center gap-1.5 border px-2 py-1 text-muted-foreground dark:border-gray-700"
+                class="inline-flex items-center gap-1.5 border px-2 py-1 text-muted-foreground border-line"
                 data-testid="dashboard-summary-unknown"
               >
                 <span class="h-2 w-2 rounded-full bg-statusgray-400" aria-hidden="true"></span>{{ endpointSummary.unknown }} no data

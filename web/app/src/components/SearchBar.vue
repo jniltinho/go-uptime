@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="flex flex-col lg:flex-row gap-3 lg:gap-4 p-3 bg-card border dark:border-gray-700">
+  <div class="flex flex-col lg:flex-row gap-3 lg:gap-4 p-3 bg-card border border-line">
     <div class="flex-1">
       <div class="relative">
         <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />

@@ -15,18 +15,18 @@
         tabindex="-1"
         :data-testid="testid"
         :class="[
-          'flex max-h-[calc(var(--view-h)-2rem)] w-full flex-col border bg-card text-card-foreground shadow-lg outline-hidden dark:border-gray-700 dark:bg-gray-900',
+          'flex max-h-[calc(var(--view-h)-2rem)] w-full flex-col border bg-surface text-card-foreground shadow-lg outline-hidden border-line',
           SIZES[size] || SIZES.lg,
         ]"
       >
         <div class="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4 dark:border-gray-700">
           <div class="min-w-0">
-            <h2 :id="titleId" class="text-lg font-semibold text-foreground dark:text-gray-100">{{ title }}</h2>
-            <p v-if="description" :id="descriptionId" class="mt-0.5 text-sm text-muted-foreground dark:text-gray-400">{{ description }}</p>
+            <h2 :id="titleId" class="text-lg font-semibold text-fg-strong">{{ title }}</h2>
+            <p v-if="description" :id="descriptionId" class="mt-0.5 text-sm text-fg-muted">{{ description }}</p>
           </div>
           <button
             type="button"
-            class="-mr-2 shrink-0 p-1 text-muted-foreground hover:text-foreground disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-100"
+            class="-mr-2 shrink-0 p-1 text-fg-muted hover:text-fg-strong disabled:opacity-50"
             aria-label="Close"
             :disabled="busy"
             :data-testid="`${testid}-x`"

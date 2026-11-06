@@ -6,7 +6,7 @@
       <div
         v-for="card in cards"
         :key="card.key"
-        class="border bg-card px-3 py-2 dark:border-gray-800"
+        class="border bg-card px-3 py-2 border-line-soft"
         :data-testid="`status-counter-${card.key}`"
       >
         <dt class="text-xs text-muted-foreground">{{ card.label }}</dt>
@@ -18,8 +18,8 @@
       :class="[
         'mt-3 flex flex-col gap-1 border px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between',
         counts.primaryDown > 0
-          ? 'border-red-300 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/30 dark:text-red-100'
-          : 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100',
+          ? 'border-danger bg-danger-soft text-red-900 dark:text-red-100'
+          : 'border-warning bg-warning-soft text-warning-strong',
       ]"
       role="status"
       data-testid="status-view-banner"
@@ -53,7 +53,7 @@ const cards = computed(() => {
     { key: 'groups', label: `${props.groupLabel}s`, value: props.counts.groups, class: '' },
     { key: 'monitors', label: 'Monitors', value: props.counts.monitors, class: '' },
   ]
-  const red = (value) => (value > 0 ? 'text-red-600 dark:text-red-400' : '')
+  const red = (value) => (value > 0 ? 'text-danger' : '')
   const amber = (value) => (value > 0 ? 'text-amber-600 dark:text-amber-400' : '')
   if (props.counts.hasEnvironments) {
     list.push({

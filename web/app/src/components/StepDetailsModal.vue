@@ -22,20 +22,18 @@
       <div class="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
         <!-- Special properties -->
         <div v-if="step.isAlwaysRun" class="flex flex-wrap gap-2">
-          <div
-            class="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700"
-          >
-            <RotateCcw class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <div class="flex items-center gap-2 px-3 py-2 bg-info-soft rounded-lg border border-blue-200 dark:border-blue-700">
+            <RotateCcw class="w-4 h-4 text-info" />
             <div>
               <p class="text-sm font-medium text-blue-900 dark:text-blue-200">Always Run</p>
-              <p class="text-xs text-blue-600 dark:text-blue-400">This endpoint is configured to execute even after failures</p>
+              <p class="text-xs text-info">This endpoint is configured to execute even after failures</p>
             </div>
           </div>
         </div>
 
         <!-- Errors section -->
         <div v-if="step.errors?.length" class="space-y-2">
-          <h3 class="text-sm font-medium flex items-center gap-2 text-red-600 dark:text-red-400">
+          <h3 class="text-sm font-medium flex items-center gap-2 text-danger">
             <AlertCircle class="w-4 h-4" />
             Errors ({{ step.errors.length }})
           </h3>
@@ -72,7 +70,7 @@
             </div>
             <div>
               <span class="text-muted-foreground">Success:</span>
-              <p class="mt-1" :class="step.result.success ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+              <p class="mt-1" :class="step.result.success ? 'text-green-600 dark:text-green-400' : 'text-danger'">
                 {{ step.result.success ? 'Yes' : 'No' }}
               </p>
             </div>
@@ -92,27 +90,27 @@
               class="flex items-start gap-3 p-1 rounded-lg border"
               :class="
                 conditionResult.success
-                  ? 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700'
-                  : 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700'
+                  ? 'bg-success-soft border-green-200 dark:border-green-700'
+                  : 'bg-danger-soft border-red-200 dark:border-red-700'
               "
             >
               <!-- Status icon -->
               <div class="shrink-0 mt-0.5">
                 <CheckCircle v-if="conditionResult.success" class="w-4 h-4 text-green-600 dark:text-green-400" />
-                <XCircle v-else class="w-4 h-4 text-red-600 dark:text-red-400" />
+                <XCircle v-else class="w-4 h-4 text-danger" />
               </div>
 
               <!-- Condition text -->
               <div class="flex-1 min-w-0 flex items-center justify-between gap-3">
                 <p
                   class="text-sm font-mono break-all"
-                  :class="conditionResult.success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'"
+                  :class="conditionResult.success ? 'text-green-800 dark:text-green-200' : 'text-danger-strong'"
                 >
                   {{ conditionResult.condition }}
                 </p>
                 <span
                   class="text-xs font-medium whitespace-nowrap"
-                  :class="conditionResult.success ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
+                  :class="conditionResult.success ? 'text-green-600 dark:text-green-400' : 'text-danger'"
                 >
                   {{ conditionResult.success ? 'Passed' : 'Failed' }}
                 </span>
@@ -149,7 +147,7 @@
 
         <!-- Result Errors (separate from step errors) -->
         <div v-if="step.result?.errors?.length" class="space-y-2">
-          <h3 class="text-sm font-medium flex items-center gap-2 text-red-600 dark:text-red-400">
+          <h3 class="text-sm font-medium flex items-center gap-2 text-danger">
             <AlertCircle class="w-4 h-4" />
             Result Errors ({{ step.result.errors.length }})
           </h3>
@@ -202,11 +200,11 @@ const iconClasses = computed(() => {
     case 'success':
       return 'text-green-600 dark:text-green-400'
     case 'failed':
-      return 'text-red-600 dark:text-red-400'
+      return 'text-danger'
     case 'skipped':
       return 'text-statusgray-600 dark:text-statusgray-400'
     default:
-      return 'text-blue-600 dark:text-blue-400'
+      return 'text-info'
   }
 })
 </script>

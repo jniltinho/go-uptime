@@ -1,0 +1,202 @@
+/* Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. */
+/* Role utilities (fork), like the role contract of ad-manager: a component names what a colour is for (text-fg-muted,
+   border-line, bg-surface) instead of a pair of a light class and a dark: class. Each role is the light value and, for
+   the dark schemes (data-scheme="dark", see themes.json), the dark value; the variables are resolved on the element
+   itself, so a theme that redefines them, also in an inner scope like the navy header of bio, reaches the roles.
+
+   The values are the ones of the pairs they replaced, so the colours of the three themes did not change
+   (test/e2e/theme-colors.sh). The status tones (danger, warning, success, info) are literal on purpose: a status has
+   the same colour in every light theme and in every dark theme. A role works with the variants, like hover:bg-hover
+   and focus-visible:outline-focus. */
+
+/* secondary text: labels, hints, metadata */
+@utility text-fg-muted {
+  color: hsl(var(--muted-foreground));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-400));
+  }
+}
+
+/* text of forms and lists */
+@utility text-fg {
+  color: hsl(var(--foreground));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-200));
+  }
+}
+
+/* titles and values that stand out */
+@utility text-fg-strong {
+  color: hsl(var(--foreground));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-100));
+  }
+}
+
+/* borders of cards, sections and tables */
+@utility border-line {
+  border-color: hsl(var(--border));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-700));
+  }
+}
+
+/* borders inside a surface: rows, dividers */
+@utility border-line-soft {
+  border-color: hsl(var(--border));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-800));
+  }
+}
+
+/* borders of fields and buttons */
+@utility border-field {
+  border-color: hsl(var(--input));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-700));
+  }
+}
+
+/* cards and panels */
+@utility bg-surface {
+  background-color: hsl(var(--card));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-900));
+  }
+}
+
+/* headers of tables and inner panels */
+@utility bg-surface-2 {
+  background-color: rgb(var(--gray-50));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-800));
+  }
+}
+
+/* hovered rows and buttons (with hover:) */
+@utility bg-hover {
+  background-color: hsl(var(--accent));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-800));
+  }
+}
+
+/* a softer hover (with hover:) */
+@utility bg-hover-soft {
+  background-color: color-mix(in oklab, hsl(var(--muted)) 40%, transparent);
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, rgb(var(--gray-800)) 50%, transparent);
+  }
+}
+
+/* checkboxes and radios */
+@utility accent-check {
+  accent-color: rgb(var(--gray-900));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    accent-color: rgb(var(--gray-100));
+  }
+}
+
+/* focus outline (with focus-visible:) */
+@utility outline-focus {
+  outline-color: #2563eb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    outline-color: #60a5fa;
+  }
+}
+
+/* background of an error banner */
+@utility bg-danger-soft {
+  background-color: #fef2f2;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #7f1d1d 30%, transparent);
+  }
+}
+
+/* border of an error banner */
+@utility border-danger {
+  border-color: #fca5a5;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #991b1b;
+  }
+}
+
+/* text of an error banner */
+@utility text-danger-strong {
+  color: #991b1b;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #fecaca;
+  }
+}
+
+/* an error message or a destructive action */
+@utility text-danger {
+  color: #dc2626;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #f87171;
+  }
+}
+
+/* background of a warning banner */
+@utility bg-warning-soft {
+  background-color: #fffbeb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #78350f 30%, transparent);
+  }
+}
+
+/* border of a warning banner */
+@utility border-warning {
+  border-color: #fcd34d;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #b45309;
+  }
+}
+
+/* text of a warning banner */
+@utility text-warning-strong {
+  color: #78350f;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #fef3c7;
+  }
+}
+
+/* background of a success banner */
+@utility bg-success-soft {
+  background-color: #f0fdf4;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #14532d 30%, transparent);
+  }
+}
+
+/* border of a success banner */
+@utility border-success {
+  border-color: #86efac;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #166534;
+  }
+}
+
+/* a success state */
+@utility text-success {
+  color: #15803d;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #4ade80;
+  }
+}
+
+/* background of an information banner */
+@utility bg-info-soft {
+  background-color: #eff6ff;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #1e3a8a 30%, transparent);
+  }
+}
+
+/* an information or a link-like value */
+@utility text-info {
+  color: #2563eb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #60a5fa;
+  }
+}

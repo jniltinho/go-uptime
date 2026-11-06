@@ -4,8 +4,8 @@
   <div class="mx-auto flex w-full max-w-[1760px] flex-col px-4 py-4 sm:px-12 md:min-h-0 md:flex-1">
     <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="min-w-0">
-        <h1 class="text-xl font-semibold tracking-tight text-foreground dark:text-gray-100">{{ title }}</h1>
-        <p v-if="isEdit" class="mt-0.5 font-mono text-sm text-muted-foreground dark:text-gray-400">
+        <h1 class="text-xl font-semibold tracking-tight text-fg-strong">{{ title }}</h1>
+        <p v-if="isEdit" class="mt-0.5 font-mono text-sm text-fg-muted">
           <a
             :href="`/status/${slug}`"
             target="_blank"
@@ -24,7 +24,7 @@
       v-if="conflictError"
       role="alert"
       data-testid="admin-error"
-      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+      class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-strong"
     >
       <p class="whitespace-pre-line">{{ conflictError }}</p>
       <Button variant="outline" size="sm" class="mt-2" data-testid="admin-reload" @click="reloadCurrentVersion"
@@ -35,21 +35,17 @@
       v-if="loadError"
       role="alert"
       data-testid="admin-load-error"
-      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+      class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-strong"
     >
       <p class="whitespace-pre-line">{{ loadError }}</p>
     </div>
     <div
       v-if="readOnly"
-      class="mt-3 shrink-0 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+      class="mt-3 shrink-0 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
     >
       This status page is defined in the configuration file and can only be viewed.
     </div>
-    <div
-      v-if="savedError"
-      role="alert"
-      class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
-    >
+    <div v-if="savedError" role="alert" class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-strong">
       The saved definition is invalid and the page is not published: {{ savedError }}
     </div>
 
@@ -58,12 +54,10 @@
       <!-- Page of the configuration file: the YAML scrolls inside its own area -->
       <div
         v-if="readOnly"
-        class="mt-3 border bg-card p-6 dark:border-gray-700 dark:bg-gray-900 md:min-h-0 md:flex-1 md:overflow-auto md:overscroll-contain"
+        class="mt-3 border bg-surface p-6 border-line md:min-h-0 md:flex-1 md:overflow-auto md:overscroll-contain"
         data-testid="status-page-yaml-panel"
       >
-        <pre class="whitespace-pre-wrap font-mono text-sm text-foreground dark:text-gray-100" data-testid="status-page-yaml">{{
-          yamlText
-        }}</pre>
+        <pre class="whitespace-pre-wrap font-mono text-sm text-fg-strong" data-testid="status-page-yaml">{{ yamlText }}</pre>
       </div>
 
       <div v-else class="mt-3 grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2 md:grid-rows-1">
@@ -73,7 +67,7 @@
             v-if="validationWarnings.length"
             ref="validationBand"
             data-testid="status-page-validation"
-            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+            class="border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
           >
             <p class="font-medium">
               The page will show {{ validation.endpoints === 1 ? '1 endpoint' : `${validation.endpoints} endpoints` }}.
@@ -84,18 +78,18 @@
           </div>
 
           <!-- General -->
-          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-general">
+          <section class="border bg-surface p-5 border-line" data-testid="status-page-section-general">
             <header class="mb-4">
-              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">General</h2>
-              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Address, title and publication of the page.</p>
+              <h2 class="text-base font-semibold text-fg-strong">General</h2>
+              <p class="mt-0.5 text-xs text-fg-muted">Address, title and publication of the page.</p>
             </header>
             <div class="grid gap-4">
               <div>
-                <label for="status-page-slug" class="block text-sm font-medium text-foreground dark:text-gray-200">Slug</label>
+                <label for="status-page-slug" class="block text-sm font-medium text-fg">Slug</label>
                 <div class="mt-1.5 flex flex-wrap gap-2 lg:flex-nowrap">
                   <div class="flex w-full min-w-0 lg:flex-1">
                     <span
-                      class="inline-flex h-10 shrink-0 items-center border border-r-0 border-input bg-muted/40 px-3 font-mono text-sm text-muted-foreground dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                      class="inline-flex h-10 shrink-0 items-center border border-r-0 border-field bg-muted/40 px-3 font-mono text-sm text-fg-muted dark:bg-gray-800"
                       >/status/</span
                     >
                     <Input
@@ -103,7 +97,7 @@
                       v-model="form.slug"
                       :disabled="isEdit"
                       placeholder="infrastructure"
-                      class="min-w-0 font-mono dark:border-gray-700"
+                      class="min-w-0 font-mono border-field"
                       data-testid="status-page-field-slug"
                     />
                   </div>
@@ -120,53 +114,48 @@
                     :href="publicPath"
                     target="_blank"
                     rel="noopener"
-                    class="inline-flex h-10 shrink-0 items-center border border-input bg-background px-4 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+                    class="inline-flex h-10 shrink-0 items-center border border-field bg-background px-4 text-sm font-medium hover:bg-hover"
                     data-testid="status-page-open"
                     >Open</a
                   >
                 </div>
-                <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
+                <p class="mt-1 text-xs text-fg-muted">
                   Lowercase letters, digits and hyphens, up to 64 characters. It cannot be changed later.
                 </p>
               </div>
               <label class="block">
-                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Title</span>
+                <span class="block text-sm font-medium text-fg">Title</span>
                 <Input
                   v-model="form.title"
                   placeholder="Infrastructure"
-                  class="mt-1.5 dark:border-gray-700"
+                  class="mt-1.5 border-field"
                   data-testid="status-page-field-title"
                 />
               </label>
               <label class="block">
-                <span class="flex items-baseline justify-between text-sm font-medium text-foreground dark:text-gray-200">
+                <span class="flex items-baseline justify-between text-sm font-medium text-fg">
                   Description
-                  <span class="text-xs font-normal text-muted-foreground dark:text-gray-400">{{ form.description.length }}/1000</span>
+                  <span class="text-xs font-normal text-fg-muted">{{ form.description.length }}/1000</span>
                 </span>
                 <textarea
                   v-model="form.description"
                   rows="3"
                   maxlength="1000"
                   placeholder="Shown below the title of the page"
-                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  class="mt-1.5 w-full border border-field bg-background px-3 py-2 text-sm text-fg-strong placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                   data-testid="status-page-field-description"
                 ></textarea>
               </label>
               <label
                 :class="[
-                  'flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700',
-                  form.enabled ? 'border-green-300 bg-green-50/60 dark:border-green-800 dark:bg-green-900/20' : '',
+                  'flex items-start gap-3 border px-3 py-2.5 text-sm border-line',
+                  form.enabled ? 'border-success bg-green-50/60 dark:bg-green-900/20' : '',
                 ]"
               >
-                <input
-                  v-model="form.enabled"
-                  type="checkbox"
-                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
-                  data-testid="status-page-field-enabled"
-                />
+                <input v-model="form.enabled" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="status-page-field-enabled" />
                 <span>
-                  <span class="block font-medium text-foreground dark:text-gray-200">Published</span>
-                  <span class="block text-xs text-muted-foreground dark:text-gray-400">
+                  <span class="block font-medium text-fg">Published</span>
+                  <span class="block text-xs text-fg-muted">
                     Visible at <span class="font-mono">{{ publicPath }}</span
                     >{{ form.requiresLogin ? ', with the login of the page' : ', without login' }}. An unpublished page can still be
                     validated and previewed here.
@@ -176,7 +165,7 @@
               <!-- Fork: login of the page, asked by the browser itself -->
               <div
                 :class="[
-                  'border px-3 py-2.5 text-sm dark:border-gray-700',
+                  'border px-3 py-2.5 text-sm border-line',
                   form.requiresLogin ? 'border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-900/20' : '',
                 ]"
               >
@@ -184,12 +173,12 @@
                   <input
                     v-model="form.requiresLogin"
                     type="checkbox"
-                    class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                    class="mt-0.5 h-4 w-4 accent-check"
                     data-testid="status-page-field-requires-login"
                   />
                   <span>
-                    <span class="block font-medium text-foreground dark:text-gray-200">Require login to view this page</span>
-                    <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                    <span class="block font-medium text-fg">Require login to view this page</span>
+                    <span class="block text-xs text-fg-muted"
                       >The browser asks for the username and the password of this page. It is not the login of the administration, and there
                       is no way to sign out other than closing the browser.</span
                     >
@@ -197,26 +186,26 @@
                 </label>
                 <div v-if="form.requiresLogin" class="mt-2.5 space-y-2.5">
                   <label class="block">
-                    <span class="block text-sm font-medium text-foreground dark:text-gray-200">Username</span>
+                    <span class="block text-sm font-medium text-fg">Username</span>
                     <Input
                       v-model="form.authUsername"
                       autocomplete="off"
                       placeholder="client"
-                      class="mt-1.5 dark:border-gray-700"
+                      class="mt-1.5 border-field"
                       data-testid="status-page-field-auth-username"
                     />
                   </label>
                   <label class="block">
-                    <span class="block text-sm font-medium text-foreground dark:text-gray-200">Password</span>
+                    <span class="block text-sm font-medium text-fg">Password</span>
                     <Input
                       v-model="form.authPassword"
                       type="password"
                       autocomplete="new-password"
                       :placeholder="savedRequiresLogin ? 'Unchanged' : 'At least 8 characters'"
-                      class="mt-1.5 dark:border-gray-700"
+                      class="mt-1.5 border-field"
                       data-testid="status-page-field-auth-password"
                     />
-                    <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400">{{
+                    <span class="mt-0.5 block text-xs text-fg-muted">{{
                       savedRequiresLogin
                         ? 'Leave it empty to keep the current password. Only the hash is stored, so it is never shown again.'
                         : 'At least 8 characters. Only the hash is stored, so it is never shown again.'
@@ -224,44 +213,44 @@
                   </label>
                 </div>
               </div>
-              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm border-line">
                 <input
                   v-model="form.showCertificateExpiration"
                   type="checkbox"
-                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  class="mt-0.5 h-4 w-4 accent-check"
                   data-testid="status-page-field-show-certificate-expiration"
                 />
                 <span>
-                  <span class="block font-medium text-foreground dark:text-gray-200">Show certificate expiration</span>
-                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                  <span class="block font-medium text-fg">Show certificate expiration</span>
+                  <span class="block text-xs text-fg-muted"
                     >Shows below the name of each endpoint how many days are left until its TLS certificate expires.</span
                   >
                 </span>
               </label>
-              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm border-line">
                 <input
                   v-model="form.showMessages"
                   type="checkbox"
-                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  class="mt-0.5 h-4 w-4 accent-check"
                   data-testid="status-page-field-show-messages"
                 />
                 <span>
-                  <span class="block font-medium text-foreground dark:text-gray-200">Show messages</span>
-                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                  <span class="block font-medium text-fg">Show messages</span>
+                  <span class="block text-xs text-fg-muted"
                     >Messages of pushes and HTTP status are public; errors of checks are never published.</span
                   >
                 </span>
               </label>
-              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
+              <label class="flex items-start gap-3 border px-3 py-2.5 text-sm border-line">
                 <input
                   v-model="form.groupsCollapsed"
                   type="checkbox"
-                  class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  class="mt-0.5 h-4 w-4 accent-check"
                   data-testid="status-page-field-groups-collapsed"
                 />
                 <span>
-                  <span class="block font-medium text-foreground dark:text-gray-200">Start with the groups collapsed</span>
-                  <span class="block text-xs text-muted-foreground dark:text-gray-400"
+                  <span class="block font-medium text-fg">Start with the groups collapsed</span>
+                  <span class="block text-xs text-fg-muted"
                     >Visitors expand the groups they want. A group with a problem always appears expanded.</span
                   >
                 </span>
@@ -270,42 +259,40 @@
           </section>
 
           <!-- Groups -->
-          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-groups">
+          <section class="border bg-surface p-5 border-line" data-testid="status-page-section-groups">
             <header class="mb-3 flex items-start justify-between gap-4">
               <div>
-                <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Groups</h2>
-                <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+                <h2 class="text-base font-semibold text-fg-strong">Groups</h2>
+                <p class="mt-0.5 text-xs text-fg-muted">
                   Every enabled endpoint of the group is shown on the page, including the ones created later.
                 </p>
               </div>
               <div class="flex shrink-0 items-center gap-2">
-                <span class="text-xs text-muted-foreground dark:text-gray-400" data-testid="status-page-groups-count"
-                  >{{ form.groups.length }} selected</span
-                >
+                <span class="text-xs text-fg-muted" data-testid="status-page-groups-count">{{ form.groups.length }} selected</span>
                 <Button v-if="form.groups.length" variant="ghost" size="sm" data-testid="status-page-groups-clear" @click="form.groups = []"
                   >Clear</Button
                 >
               </div>
             </header>
-            <p v-if="groupOptions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No groups with endpoints.</p>
+            <p v-if="groupOptions.length === 0" class="text-sm text-fg-muted">No groups with endpoints.</p>
             <div class="grid gap-2 lg:grid-cols-2">
               <label
                 v-for="group in groupOptions"
                 :key="group.name"
                 :class="[
                   'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-accent/50 dark:hover:bg-gray-800/60',
-                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
+                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : 'border-line',
                 ]"
               >
                 <input
                   v-model="form.groups"
                   type="checkbox"
                   :value="group.name"
-                  class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  class="h-4 w-4 accent-check"
                   :data-testid="`status-page-group-${group.name}`"
                 />
-                <span class="min-w-0 flex-1 truncate font-medium text-foreground dark:text-gray-100">{{ group.name }}</span>
-                <span class="shrink-0 text-xs text-muted-foreground dark:text-gray-400">{{
+                <span class="min-w-0 flex-1 truncate font-medium text-fg-strong">{{ group.name }}</span>
+                <span class="shrink-0 text-xs text-fg-muted">{{
                   group.endpoints === 1 ? '1 endpoint' : `${group.endpoints} endpoints`
                 }}</span>
               </label>
@@ -313,45 +300,45 @@
           </section>
 
           <!-- Fork: views of the page (grouped by environment, matrix) and the classification of its endpoints -->
-          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-views">
+          <section class="border bg-surface p-5 border-line" data-testid="status-page-section-views">
             <header class="mb-4">
-              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Views</h2>
-              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+              <h2 class="text-base font-semibold text-fg-strong">Views</h2>
+              <p class="mt-0.5 text-xs text-fg-muted">
                 Layouts the public page offers. The grouped and matrix views place each endpoint in an application and an environment.
               </p>
             </header>
             <div class="grid gap-4">
               <fieldset>
-                <legend class="text-sm font-medium text-foreground dark:text-gray-200">Enabled views</legend>
+                <legend class="text-sm font-medium text-fg">Enabled views</legend>
                 <div class="mt-1.5 grid gap-2 sm:grid-cols-3">
                   <label
                     v-for="view in VIEW_OPTIONS"
                     :key="view.id"
                     :class="[
                       'flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm',
-                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
+                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : 'border-line',
                     ]"
                   >
                     <input
                       v-model="form.views.enabled"
                       type="checkbox"
                       :value="view.id"
-                      class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                      class="mt-0.5 h-4 w-4 accent-check"
                       :data-testid="`status-page-view-${view.id}`"
                     />
                     <span>
-                      <span class="block font-medium text-foreground dark:text-gray-100">{{ view.label }}</span>
-                      <span class="block text-xs text-muted-foreground dark:text-gray-400">{{ view.help }}</span>
+                      <span class="block font-medium text-fg-strong">{{ view.label }}</span>
+                      <span class="block text-xs text-fg-muted">{{ view.help }}</span>
                     </span>
                   </label>
                 </div>
               </fieldset>
               <div class="grid gap-4 sm:grid-cols-2">
                 <label class="block">
-                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Default view</span>
+                  <span class="block text-sm font-medium text-fg">Default view</span>
                   <select
                     v-model="form.views.default"
-                    class="mt-1.5 h-10 w-full border border-input bg-background px-3 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    class="mt-1.5 h-10 w-full border border-field bg-background px-3 text-sm text-fg-strong dark:bg-gray-900"
                     data-testid="status-page-view-default"
                   >
                     <option value="">First enabled</option>
@@ -365,23 +352,21 @@
                   </select>
                 </label>
                 <label class="block">
-                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Name of a group</span>
+                  <span class="block text-sm font-medium text-fg">Name of a group</span>
                   <Input
                     v-model="form.views.groupLabel"
                     maxlength="30"
                     placeholder="Group"
-                    class="mt-1.5 dark:border-gray-700"
+                    class="mt-1.5 border-field"
                     data-testid="status-page-view-group-label"
                   />
-                  <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400"
-                    >For example Client: "By client", "Clients".</span
-                  >
+                  <span class="mt-0.5 block text-xs text-fg-muted">For example Client: "By client", "Clients".</span>
                 </label>
               </div>
 
               <div>
                 <div class="flex items-baseline justify-between">
-                  <span class="text-sm font-medium text-foreground dark:text-gray-200">Environments</span>
+                  <span class="text-sm font-medium text-fg">Environments</span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -391,7 +376,7 @@
                     >Add</Button
                   >
                 </div>
-                <p class="text-xs text-muted-foreground dark:text-gray-400">
+                <p class="text-xs text-fg-muted">
                   The first one is the primary environment (production): its incidents and its uptime are the ones highlighted.
                 </p>
                 <div
@@ -402,14 +387,14 @@
                   <Input
                     v-model="environment.id"
                     placeholder="prod"
-                    class="font-mono dark:border-gray-700"
+                    class="font-mono border-field"
                     :aria-label="`Id of environment ${index + 1}`"
                     :data-testid="`status-page-view-environment-id-${index}`"
                   />
                   <Input
                     v-model="environment.name"
                     placeholder="Production"
-                    class="dark:border-gray-700"
+                    class="border-field"
                     :aria-label="`Name of environment ${index + 1}`"
                     :data-testid="`status-page-view-environment-name-${index}`"
                   />
@@ -417,7 +402,7 @@
                     v-model="environment.short"
                     maxlength="8"
                     placeholder="PROD"
-                    class="dark:border-gray-700"
+                    class="border-field"
                     :aria-label="`Short name of environment ${index + 1}`"
                   />
                   <div class="flex">
@@ -441,31 +426,26 @@
               </div>
 
               <label class="block">
-                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Order of the applications</span>
+                <span class="block text-sm font-medium text-fg">Order of the applications</span>
                 <textarea
                   v-model="form.views.applicationsText"
                   rows="3"
                   placeholder="One per line: the columns of the matrix and the filters. Others come after, alphabetically."
-                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  class="mt-1.5 w-full border border-field bg-background px-3 py-2 text-sm text-fg-strong placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                   data-testid="status-page-view-applications"
                 ></textarea>
               </label>
 
               <div v-if="viewGroupRows.length">
-                <span class="text-sm font-medium text-foreground dark:text-gray-200">Groups</span>
-                <p class="text-xs text-muted-foreground dark:text-gray-400">
-                  Description and tags (comma separated, up to 5) shown next to the name of each group.
-                </p>
+                <span class="text-sm font-medium text-fg">Groups</span>
+                <p class="text-xs text-fg-muted">Description and tags (comma separated, up to 5) shown next to the name of each group.</p>
                 <div
                   v-for="row in viewGroupRows.filter((candidate) => form.views.groups[candidate.name])"
                   :key="`group-details-${row.name}`"
                   class="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_auto] items-center gap-2"
                 >
                   <span
-                    :class="[
-                      'truncate text-sm',
-                      row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100',
-                    ]"
+                    :class="['truncate text-sm', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-fg-strong']"
                     :title="row.orphan ? 'Group not selected by the page: the entry is kept until removed' : row.name"
                     >{{ row.name }}</span
                   >
@@ -473,14 +453,14 @@
                     v-model="form.views.groups[row.name].description"
                     maxlength="100"
                     placeholder="Description"
-                    class="dark:border-gray-700"
+                    class="border-field"
                     :aria-label="`Description of ${row.name}`"
                     :data-testid="`status-page-view-group-description-${row.name}`"
                   />
                   <Input
                     v-model="form.views.groups[row.name].tagsText"
                     placeholder="BR, OCI"
-                    class="dark:border-gray-700"
+                    class="border-field"
                     :aria-label="`Tags of ${row.name}`"
                   />
                   <Button
@@ -496,18 +476,18 @@
               </div>
 
               <div>
-                <span class="text-sm font-medium text-foreground dark:text-gray-200">Classification of the endpoints</span>
-                <p class="text-xs text-muted-foreground dark:text-gray-400">
+                <span class="text-sm font-medium text-fg">Classification of the endpoints</span>
+                <p class="text-xs text-fg-muted">
                   Without an application, the name of the endpoint is used. Entries of endpoints the page does not show are kept until
                   removed.
                 </p>
                 <datalist id="status-page-view-applications-list">
                   <option v-for="application in applicationSuggestions" :key="`suggestion-${application}`" :value="application"></option>
                 </datalist>
-                <p v-if="classificationRows.length === 0" class="mt-2 text-sm text-muted-foreground dark:text-gray-400">
+                <p v-if="classificationRows.length === 0" class="mt-2 text-sm text-fg-muted">
                   Select groups or endpoints to classify them.
                 </p>
-                <div v-else class="mt-2 max-h-96 overflow-y-auto border dark:border-gray-700">
+                <div v-else class="mt-2 max-h-96 overflow-y-auto border border-line">
                   <div
                     v-for="row in classificationRows.filter((candidate) => form.views.endpoints[candidate.key])"
                     :key="`classification-${row.key}`"
@@ -516,13 +496,10 @@
                   >
                     <span class="min-w-0" :title="row.key">
                       <span
-                        :class="[
-                          'block truncate',
-                          row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100',
-                        ]"
+                        :class="['block truncate', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-fg-strong']"
                         >{{ row.name }}</span
                       >
-                      <span class="block truncate text-xs text-muted-foreground dark:text-gray-400">{{
+                      <span class="block truncate text-xs text-fg-muted">{{
                         row.orphan ? 'not shown by the page' : row.group || 'no group'
                       }}</span>
                     </span>
@@ -531,13 +508,13 @@
                       list="status-page-view-applications-list"
                       maxlength="40"
                       :placeholder="row.orphan ? '' : row.name"
-                      class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                      class="h-9 w-full min-w-0 border border-field bg-background px-2 text-sm text-fg-strong dark:bg-gray-900"
                       :aria-label="`Application of ${row.name}`"
                       :data-testid="`status-page-classification-application-${row.key}`"
                     />
                     <select
                       v-model="form.views.endpoints[row.key].environment"
-                      class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                      class="h-9 w-full min-w-0 border border-field bg-background px-2 text-sm text-fg-strong dark:bg-gray-900"
                       :aria-label="`Environment of ${row.name}`"
                       :data-testid="`status-page-classification-environment-${row.key}`"
                     >
@@ -567,18 +544,15 @@
         </div>
 
         <!-- Right column: endpoints, with the list filling the column -->
-        <section
-          class="flex flex-col border bg-card dark:border-gray-700 dark:bg-gray-900 md:min-h-0"
-          data-testid="status-page-section-endpoints"
-        >
+        <section class="flex flex-col border bg-surface border-line md:min-h-0" data-testid="status-page-section-endpoints">
           <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
             <div class="flex items-start justify-between gap-4">
-              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Endpoints</h2>
-              <span class="shrink-0 text-xs text-muted-foreground dark:text-gray-400" data-testid="status-page-endpoints-count">
+              <h2 class="text-base font-semibold text-fg-strong">Endpoints</h2>
+              <span class="shrink-0 text-xs text-fg-muted" data-testid="status-page-endpoints-count">
                 {{ form.endpoints.length }} selected · {{ form.featured.length }}/{{ MAXIMUM_FEATURED }} featured
               </span>
             </div>
-            <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+            <p class="mt-0.5 text-xs text-fg-muted">
               Picked one by one, in addition to the groups. <strong>Featured</strong> endpoints are shown at the top of the page with more
               details. Every endpoint of the page links to a public details page with its response time chart.
             </p>
@@ -587,35 +561,26 @@
             <Input
               v-model="endpointSearch"
               placeholder="Search by name, group or key"
-              class="min-w-0 flex-1 dark:border-gray-700"
+              class="min-w-0 flex-1 border-field"
               data-testid="status-page-endpoint-search"
             />
-            <label
-              class="flex h-10 shrink-0 items-center gap-2 border px-3 text-sm text-foreground dark:border-gray-700 dark:text-gray-200"
-            >
-              <input
-                v-model="onlySelected"
-                type="checkbox"
-                class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
-                data-testid="status-page-only-selected"
-              />
+            <label class="flex h-10 shrink-0 items-center gap-2 border px-3 text-sm text-fg border-line">
+              <input v-model="onlySelected" type="checkbox" class="h-4 w-4 accent-check" data-testid="status-page-only-selected" />
               Only selected
             </label>
           </div>
           <div
-            class="mx-5 mb-5 max-h-80 overflow-y-auto border dark:border-gray-700 md:max-h-none md:min-h-0 md:flex-1"
+            class="mx-5 mb-5 max-h-80 overflow-y-auto border border-line md:max-h-none md:min-h-0 md:flex-1"
             data-testid="status-page-endpoint-list"
           >
             <div
-              class="sticky top-0 z-10 grid grid-cols-[1fr_auto] gap-4 bg-gray-50 px-3 py-2 text-xs font-medium text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] sm:grid-cols-[1fr_auto_auto] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+              class="sticky top-0 z-10 grid grid-cols-[1fr_auto] gap-4 bg-surface-2 px-3 py-2 text-xs font-medium text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] sm:grid-cols-[1fr_auto_auto] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
             >
               <span>Endpoint</span>
               <span class="hidden sm:block">Key</span>
               <span class="text-right">Featured</span>
             </div>
-            <p v-if="filteredEndpoints.length === 0" class="px-3 py-4 text-sm text-muted-foreground dark:text-gray-400">
-              No endpoints found.
-            </p>
+            <p v-if="filteredEndpoints.length === 0" class="px-3 py-4 text-sm text-fg-muted">No endpoints found.</p>
             <div
               v-for="endpoint in filteredEndpoints"
               :key="endpoint.key"
@@ -629,15 +594,15 @@
                   v-model="form.endpoints"
                   type="checkbox"
                   :value="endpoint.key"
-                  class="h-4 w-4 shrink-0 accent-gray-900 dark:accent-gray-100"
+                  class="h-4 w-4 shrink-0 accent-check"
                   :data-testid="`status-page-endpoint-${endpoint.key}`"
                 />
-                <span class="truncate font-medium text-foreground dark:text-gray-100">{{ endpoint.name }}</span>
-                <span class="truncate text-muted-foreground dark:text-gray-400">{{ endpoint.group || 'no group' }}</span>
+                <span class="truncate font-medium text-fg-strong">{{ endpoint.name }}</span>
+                <span class="truncate text-fg-muted">{{ endpoint.group || 'no group' }}</span>
               </label>
               <span class="hidden font-mono text-xs text-muted-foreground sm:block dark:text-gray-500">{{ endpoint.key }}</span>
               <label
-                class="flex items-center justify-end gap-1.5 text-xs text-foreground dark:text-gray-200"
+                class="flex items-center justify-end gap-1.5 text-xs text-fg"
                 :title="featuredLimitReached(endpoint.key) ? `At most ${MAXIMUM_FEATURED} featured endpoints` : ''"
               >
                 <input
@@ -645,7 +610,7 @@
                   type="checkbox"
                   :value="endpoint.key"
                   :disabled="featuredLimitReached(endpoint.key)"
-                  class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                  class="h-4 w-4 accent-check"
                   :data-testid="`status-page-featured-${endpoint.key}`"
                 />
                 <span class="sm:sr-only">Featured</span>
@@ -698,20 +663,17 @@
           <p v-if="preview.truncated" class="mb-3 text-sm text-amber-800 dark:text-amber-300" data-testid="status-page-preview-truncated">
             Showing the first {{ preview.summary?.total ?? 0 }} services.
           </p>
-          <p
-            v-if="preview.groups.length === 0 && (preview.featured || []).length === 0"
-            class="text-sm text-muted-foreground dark:text-gray-400"
-          >
+          <p v-if="preview.groups.length === 0 && (preview.featured || []).length === 0" class="text-sm text-fg-muted">
             No endpoints selected.
           </p>
           <div v-if="(preview.featured || []).length" class="mb-4" data-testid="status-page-preview-featured">
-            <h3 class="border-b pb-1 text-sm font-semibold text-foreground dark:border-gray-800 dark:text-gray-100">Featured</h3>
+            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong dark:border-gray-800">Featured</h3>
             <ul class="mt-1 space-y-1 text-sm">
               <li v-for="endpoint in preview.featured" :key="`${endpoint.group}-${endpoint.name}`" class="flex justify-between gap-4">
-                <span class="text-foreground dark:text-gray-200"
-                  >{{ endpoint.name }} <span class="text-muted-foreground dark:text-gray-400">{{ endpoint.group }}</span></span
+                <span class="text-fg"
+                  >{{ endpoint.name }} <span class="text-fg-muted">{{ endpoint.group }}</span></span
                 >
-                <span class="text-muted-foreground dark:text-gray-400"
+                <span class="text-fg-muted"
                   >{{ endpointStatusLabel(endpoint.status) }} · 24h {{ formatUptime(endpoint.uptime['24h']) }}</span
                 >
               </li>
@@ -725,10 +687,10 @@
             class="mb-4 last:mb-0"
             :data-testid="`status-page-preview-group-${group.name || 'outros'}`"
           >
-            <h3 class="border-b pb-1 text-sm font-semibold text-foreground dark:border-gray-800 dark:text-gray-100">
+            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong dark:border-gray-800">
               <button
                 type="button"
-                class="flex w-full items-baseline gap-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                class="flex w-full items-baseline gap-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 :aria-expanded="!previewCollapsedGroups.has(group.name || '')"
                 :aria-controls="`status-page-preview-panel-${groupIndex}`"
                 @click="togglePreviewGroup(group)"
@@ -739,14 +701,14 @@
                   aria-hidden="true"
                 />
                 <span>{{ group.name || 'Other services' }}</span>
-                <span class="text-xs font-normal text-muted-foreground dark:text-gray-400">{{ groupCounts(group.summary) }}</span>
+                <span class="text-xs font-normal text-fg-muted">{{ groupCounts(group.summary) }}</span>
               </button>
             </h3>
             <div :id="`status-page-preview-panel-${groupIndex}`">
               <ul v-if="!previewCollapsedGroups.has(group.name || '')" class="mt-1 space-y-1 text-sm">
                 <li v-for="endpoint in group.endpoints" :key="endpoint.name" class="flex justify-between gap-4">
-                  <span class="text-foreground dark:text-gray-200">{{ endpoint.name }}</span>
-                  <span class="text-muted-foreground dark:text-gray-400"
+                  <span class="text-fg">{{ endpoint.name }}</span>
+                  <span class="text-fg-muted"
                     >{{ endpointStatusLabel(endpoint.status) }} · 24h {{ formatUptime(endpoint.uptime['24h']) }}</span
                   >
                 </li>

@@ -129,7 +129,7 @@ const typeConfigs = {
     icon: XCircle,
     background: 'bg-red-50 border-gray-200 dark:bg-red-900/50 dark:border-gray-600',
     border: 'border-red-500',
-    iconColor: 'text-red-600 dark:text-red-400',
+    iconColor: 'text-danger',
     text: 'text-red-700 dark:text-red-300',
   },
   warning: {
@@ -143,7 +143,7 @@ const typeConfigs = {
     icon: Info,
     background: 'bg-blue-50 border-gray-200 dark:bg-blue-900/50 dark:border-gray-600',
     border: 'border-blue-500',
-    iconColor: 'text-blue-600 dark:text-blue-400',
+    iconColor: 'text-info',
     text: 'text-blue-700 dark:text-blue-300',
   },
   operational: {

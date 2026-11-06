@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <li :class="featured ? 'border bg-card p-3 dark:border-gray-800' : 'py-2'" :data-testid="`status-endpoint-${endpoint.name}`">
+  <li :class="featured ? 'border bg-card p-3 border-line-soft' : 'py-2'" :data-testid="`status-endpoint-${endpoint.name}`">
     <div v-if="showHeader" class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex items-center gap-2 min-w-0">
         <span :class="['inline-block h-2.5 w-2.5 rounded-full shrink-0', dotClass]" aria-hidden="true"></span>
@@ -98,7 +98,7 @@
         v-if="activeResult"
         aria-hidden="true"
         :class="[
-          'pointer-events-none absolute z-10 w-max border bg-card px-2 py-1 text-xs text-muted-foreground shadow-xs dark:border-gray-700',
+          'pointer-events-none absolute z-10 w-max border bg-card px-2 py-1 text-xs text-muted-foreground shadow-xs border-line',
           tooltipAbove ? 'bottom-full mb-1' : 'top-full mt-1',
         ]"
         :style="tooltipStyle"
@@ -216,7 +216,7 @@ const dotClass = computed(
 const statusTextClass = computed(
   () =>
     ({
-      up: 'text-green-700 dark:text-green-400',
+      up: 'text-success',
       pending: 'text-yellow-700 dark:text-yellow-400',
       down: 'text-red-700 dark:text-red-400',
     })[props.endpoint.status] || 'text-muted-foreground',

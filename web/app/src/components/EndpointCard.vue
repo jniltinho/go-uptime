@@ -2,9 +2,7 @@
 <template>
   <!-- Fork: in compact mode (the details page) the card has no header of its own and the bars are the ones of the
        public details page: the name, the group, the host and the status are already in the header of the page -->
-  <Card
-    :class="['endpoint h-full flex flex-col transition dark:hover:border-gray-700', compact ? '' : 'hover:shadow-lg hover:scale-[1.01]']"
-  >
+  <Card :class="['endpoint h-full flex flex-col transition hover:border-line', compact ? '' : 'hover:shadow-lg hover:scale-[1.01]']">
     <CardHeader v-if="!compact" class="endpoint-header px-3 sm:px-6 pt-3 sm:pt-6 pb-2 space-y-0">
       <div class="flex items-start justify-between gap-2 sm:gap-3">
         <div class="flex-1 min-w-0 overflow-hidden">
