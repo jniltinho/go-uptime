@@ -1,7 +1,7 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Modal backdrop -->
-  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" @click="$emit('close')">
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50" @click="$emit('close')">
     <!-- Modal content -->
     <div class="bg-background border rounded-lg shadow-lg max-w-2xl w-full max-h-[80vh] overflow-hidden" @click.stop>
       <!-- Header -->
@@ -97,7 +97,7 @@
               "
             >
               <!-- Status icon -->
-              <div class="flex-shrink-0 mt-0.5">
+              <div class="shrink-0 mt-0.5">
                 <CheckCircle v-if="conditionResult.success" class="w-4 h-4 text-green-600 dark:text-green-400" />
                 <XCircle v-else class="w-4 h-4 text-red-600 dark:text-red-400" />
               </div>

@@ -135,7 +135,7 @@
                 spellcheck="false"
                 :placeholder="field.kind === 'map' ? 'Name: value, one per line' : field.default"
                 :data-testid="`alert-provider-field-${field.key}`"
-                class="mt-1.5 w-full border border-input bg-background p-2 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                class="mt-1.5 w-full border border-input bg-background p-2 font-mono text-sm text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
               ></textarea>
 
               <div v-else class="relative mt-1.5">
@@ -253,7 +253,7 @@
           spellcheck="false"
           aria-label="Definition in YAML"
           data-testid="alert-provider-yaml"
-          class="min-h-[22rem] w-full border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+          class="min-h-88 w-full border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
         ></textarea>
         <p class="mt-2 text-xs text-muted-foreground dark:text-gray-400">
           The keys of the {{ info.type }} block of the alerting section, without "type". Environment variables such as ${TOKEN} are not
@@ -324,7 +324,7 @@
           {{ testResult.success ? 'The test notification was accepted' : 'The test notification failed'
           }}<template v-if="testResult.resolved">, and so was its resolution</template> · {{ testResult.durationMs }} ms
         </p>
-        <p v-if="testResult.error" class="mt-1 whitespace-pre-line break-words font-mono text-xs">{{ testResult.error }}</p>
+        <p v-if="testResult.error" class="mt-1 whitespace-pre-line wrap-break-word font-mono text-xs">{{ testResult.error }}</p>
       </div>
     </template>
   </div>

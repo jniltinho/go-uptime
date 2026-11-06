@@ -315,7 +315,7 @@
                   id="admin-push-url"
                   :value="pushUrl"
                   readonly
-                  class="h-10 w-full min-w-0 border border-input bg-muted/40 px-3 font-mono text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  class="h-10 w-full min-w-0 border border-input bg-muted/40 px-3 font-mono text-xs text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
                   data-testid="admin-push-url"
                   @focus="$event.target.select()"
                 />
@@ -561,7 +561,7 @@
           :readonly="readOnly"
           spellcheck="false"
           data-testid="admin-yaml"
-          class="min-h-[24rem] w-full border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+          class="min-h-96 w-full border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
         ></textarea>
       </div>
 

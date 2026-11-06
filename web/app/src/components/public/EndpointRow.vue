@@ -3,14 +3,14 @@
   <li :class="featured ? 'border bg-card p-3 dark:border-gray-800' : 'py-2'" :data-testid="`status-endpoint-${endpoint.name}`">
     <div v-if="showHeader" class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex items-center gap-2 min-w-0">
-        <span :class="['inline-block h-2.5 w-2.5 rounded-full flex-shrink-0', dotClass]" aria-hidden="true"></span>
+        <span :class="['inline-block h-2.5 w-2.5 rounded-full shrink-0', dotClass]" aria-hidden="true"></span>
         <component
           :is="slug ? RouterLink : 'span'"
           :to="slug ? detailsRoute : undefined"
           :class="[
             'truncate',
             featured ? 'text-lg font-semibold' : 'font-medium',
-            slug ? 'underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring' : '',
+            slug ? 'underline-offset-4 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring' : '',
           ]"
           :title="endpoint.name"
           :data-testid="slug ? `status-endpoint-link-${endpoint.name}` : undefined"
@@ -66,7 +66,7 @@
       <RouterLink
         v-if="slug"
         :to="detailsRoute"
-        class="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        class="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
         :data-testid="`status-endpoint-details-${endpoint.name}`"
         >View details<span class="sr-only"> of {{ endpoint.name }}</span></RouterLink
       >
@@ -74,7 +74,7 @@
     <p class="sr-only">{{ accessibleSummary }}</p>
     <div
       :class="[
-        'relative flex gap-px outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'relative flex gap-px outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
         showHeader && !featured ? 'mt-1.5' : 'mt-2',
       ]"
       role="group"
@@ -98,7 +98,7 @@
         v-if="activeResult"
         aria-hidden="true"
         :class="[
-          'pointer-events-none absolute z-10 w-max border bg-card px-2 py-1 text-xs text-muted-foreground shadow-sm dark:border-gray-700',
+          'pointer-events-none absolute z-10 w-max border bg-card px-2 py-1 text-xs text-muted-foreground shadow-xs dark:border-gray-700',
           tooltipAbove ? 'bottom-full mb-1' : 'top-full mt-1',
         ]"
         :style="tooltipStyle"

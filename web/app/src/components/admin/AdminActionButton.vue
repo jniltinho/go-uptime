@@ -14,7 +14,7 @@
     :tabindex="disabled ? -1 : undefined"
     :data-testid="testid"
     :class="[
-      'inline-flex shrink-0 items-center justify-center border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
+      'inline-flex shrink-0 items-center justify-center border border-transparent transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
       compact ? 'h-7 w-7' : 'h-9 w-9',
       disabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-accent dark:hover:bg-gray-800',
       destructive ? 'text-red-600 dark:text-red-400' : 'text-foreground dark:text-gray-200',

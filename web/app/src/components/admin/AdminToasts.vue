@@ -2,10 +2,7 @@
 <template>
   <!-- Fork: toast messages of the administration, see utils/toast.js. Centered, at the top on larger screens and below
        the header of the app on phones, above the dialogs, and only the toasts take clicks -->
-  <div
-    class="pointer-events-none fixed left-1/2 top-14 z-[70] w-[calc(100%-2rem)] -translate-x-1/2 sm:w-[28rem] md:top-3"
-    data-testid="toasts"
-  >
+  <div class="pointer-events-none fixed left-1/2 top-14 z-70 w-[calc(100%-2rem)] -translate-x-1/2 sm:w-md md:top-3" data-testid="toasts">
     <!-- Live regions, always present before the messages: the visual stack below has no role -->
     <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-testid="toast-status-region">
       <span v-if="announcements.status.text" :key="announcements.status.id">{{ announcements.status.text }}</span>
@@ -35,7 +32,7 @@
         <component :is="ICONS[item.type]" class="mt-0.5 h-4 w-4 shrink-0" :class="ICON_COLORS[item.type]" aria-hidden="true" />
         <div class="min-w-0 flex-1">
           <p v-if="item.title" class="font-medium text-foreground dark:text-gray-100" data-testid="toast-title">{{ item.title }}</p>
-          <p class="break-words text-foreground dark:text-gray-200" data-testid="toast-message">{{ item.message }}</p>
+          <p class="wrap-break-word text-foreground dark:text-gray-200" data-testid="toast-message">{{ item.message }}</p>
         </div>
         <button
           type="button"

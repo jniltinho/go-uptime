@@ -1,7 +1,7 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div v-if="announcements && announcements.length" class="announcement-container mb-6">
-    <div :class="['rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-200', containerClasses]">
+    <div :class="['rounded-lg border bg-card text-card-foreground shadow-xs transition-all duration-200', containerClasses]">
       <!-- Header -->
       <div
         :class="[
@@ -44,7 +44,7 @@
                   <!-- Timeline Icon -->
                   <div
                     :class="[
-                      'absolute -left-[26px] w-5 h-5 rounded-full border bg-white dark:bg-gray-800 flex items-center justify-center z-10',
+                      'absolute left-[-26px] w-5 h-5 rounded-full border bg-white dark:bg-gray-800 flex items-center justify-center z-10',
                       index === group.length - 1 ? 'top-3' : 'top-1/2 -translate-y-1/2',
                       getTypeClasses(announcement.type).border,
                     ]"
@@ -73,13 +73,13 @@
                   <!-- Announcement Card -->
                   <div
                     :class="[
-                      'rounded-md border p-3 transition-all duration-200 hover:shadow-sm',
+                      'rounded-md border p-3 transition-all duration-200 hover:shadow-xs',
                       getTypeClasses(announcement.type).background,
                     ]"
                   >
                     <div class="flex items-center gap-3">
                       <time
-                        :class="['text-sm font-mono whitespace-nowrap flex-shrink-0', getTypeClasses(announcement.type).text]"
+                        :class="['text-sm font-mono whitespace-nowrap shrink-0', getTypeClasses(announcement.type).text]"
                         :title="formatFullTimestamp(announcement.timestamp)"
                       >
                         {{ formatTime(announcement.timestamp) }}

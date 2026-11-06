@@ -117,7 +117,7 @@
               <h2 :id="`status-group-${groupIndex}`" class="min-w-0 flex-1">
                 <button
                   type="button"
-                  class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                  class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
                   :aria-expanded="!collapsedGroups.has(group.name || '')"
                   :aria-controls="`status-group-panel-${groupIndex}`"
                   :data-testid="`status-group-toggle-${group.name || 'outros'}`"

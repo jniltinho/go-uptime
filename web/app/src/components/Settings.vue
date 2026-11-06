@@ -1,7 +1,7 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <div id="settings" class="fixed bottom-4 left-4 z-50">
-    <div class="flex items-center gap-1 bg-background/95 backdrop-blur-sm border rounded-none shadow-md p-1">
+    <div class="flex items-center gap-1 bg-background/95 backdrop-blur-xs border rounded-none shadow-md p-1">
       <!-- Refresh Rate -->
       <button
         @click="showRefreshMenu = !showRefreshMenu"

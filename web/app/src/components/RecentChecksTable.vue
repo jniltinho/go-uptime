@@ -44,7 +44,9 @@
             </td>
             <td class="px-3 py-2 whitespace-nowrap text-muted-foreground dark:text-gray-400">{{ row.dateTime }}</td>
             <template v-if="showMessage">
-              <td class="px-3 py-2 break-words text-foreground dark:text-gray-200" data-testid="recent-check-message">{{ row.message }}</td>
+              <td class="px-3 py-2 wrap-break-word text-foreground dark:text-gray-200" data-testid="recent-check-message">
+                {{ row.message }}
+              </td>
               <td class="px-3 py-2 whitespace-nowrap">
                 <span
                   :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-muted-foreground dark:text-gray-400']"

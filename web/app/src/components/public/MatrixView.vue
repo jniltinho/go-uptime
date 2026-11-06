@@ -24,7 +24,7 @@
               v-for="column in model.columns"
               :key="`col-${column}`"
               scope="col"
-              class="min-w-[8.5rem] px-1.5 py-2 text-center font-medium text-foreground"
+              class="min-w-34 px-1.5 py-2 text-center font-medium text-foreground"
             >
               {{ column }}
             </th>
@@ -53,10 +53,10 @@
                 :is="cell.endpoints.length === 1 ? RouterLink : 'div'"
                 :to="cell.endpoints.length === 1 ? detailsRoute(cell.endpoints[0]) : undefined"
                 :class="[
-                  'flex min-h-[3.5rem] flex-col items-center justify-center border px-2 py-1.5 text-center',
+                  'flex min-h-14 flex-col items-center justify-center border px-2 py-1.5 text-center',
                   cellClass(cell),
                   cell.endpoints.length === 1
-                    ? 'hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:hover:brightness-125'
+                    ? 'hover:brightness-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:hover:brightness-125'
                     : '',
                 ]"
                 :data-status="cell.kind === 'cell' ? cell.status : cell.kind"

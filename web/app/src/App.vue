@@ -32,7 +32,7 @@
       ]"
     >
       <!-- Header -->
-      <header :class="['app-header border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60', isAdminList && 'md:shrink-0']">
+      <header :class="['app-header border-b bg-card/50 backdrop-blur-sm', isAdminList && 'md:shrink-0']">
         <!-- Fork: a slim bar of 40 px, like the header of the public pages -->
         <div :class="['mx-auto w-full px-4', isAdmin ? 'max-w-[1760px] sm:px-12' : 'container max-w-7xl']">
           <div class="flex h-10 items-center justify-between">
@@ -145,7 +145,7 @@
 
           <a
             :href="`/oidc/login`"
-            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full"
             @click="isOidcLoading = true"
           >
             <Loading v-if="isOidcLoading" size="xs" />

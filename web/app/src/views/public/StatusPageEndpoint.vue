@@ -4,7 +4,7 @@
     <RouterLink
       v-if="validAddress"
       :to="{ name: 'PublicStatusPage', params: { slug } }"
-      class="mb-4 inline-flex h-9 items-center gap-2 px-3 text-sm font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:hover:bg-gray-800"
+      class="mb-4 inline-flex h-9 items-center gap-2 px-3 text-sm font-medium hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:hover:bg-gray-800"
       data-testid="status-endpoint-back"
     >
       <ArrowLeft class="h-4 w-4" aria-hidden="true" />
@@ -46,7 +46,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div class="min-w-0">
             <!-- Fork: same header as the details page of the dashboard -->
-            <h1 class="text-2xl font-semibold tracking-tight break-words" data-testid="status-endpoint-name">{{ details.name }}</h1>
+            <h1 class="text-2xl font-semibold tracking-tight wrap-break-word" data-testid="status-endpoint-name">{{ details.name }}</h1>
             <div class="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
               <span v-if="details.group">Group: {{ details.group }}</span>
               <span v-if="details.group">•</span>
@@ -90,7 +90,7 @@
               <select
                 v-model="chartPeriod"
                 aria-label="Period of the response time chart"
-                class="border border-input bg-background px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring dark:border-gray-700"
+                class="border border-input bg-background px-3 py-1 text-sm focus:outline-hidden focus:ring-2 focus:ring-ring dark:border-gray-700"
                 data-testid="status-endpoint-chart-duration"
               >
                 <option v-for="option in CHART_PERIOD_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>

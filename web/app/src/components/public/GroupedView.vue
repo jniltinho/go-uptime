@@ -15,7 +15,7 @@
       <h2 :id="`grouped-group-${groupIndex}`">
         <button
           type="button"
-          class="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+          class="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
           :aria-expanded="!collapsed.has(group.name)"
           :aria-controls="`grouped-panel-${groupIndex}`"
           :data-testid="`status-grouped-toggle-${group.name || 'outros'}`"
@@ -103,7 +103,7 @@
               <td class="max-w-0 px-2 py-1.5 align-middle">
                 <RouterLink
                   :to="detailsRoute(endpoint)"
-                  class="block truncate font-mono text-xs underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  class="block truncate font-mono text-xs underline-offset-4 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                   :title="endpoint.name"
                   >{{ endpoint.name }}</RouterLink
                 >

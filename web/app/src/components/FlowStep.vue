@@ -5,7 +5,7 @@
     @click="$emit('step-click')"
   >
     <!-- Step circle with status icon -->
-    <div class="relative flex-shrink-0">
+    <div class="relative shrink-0">
       <!-- Connection line from previous step -->
       <div v-if="index > 0" :class="incomingLineClasses" class="absolute left-1/2 bottom-8 w-0.5 h-4 -translate-x-px"></div>
 

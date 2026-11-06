@@ -91,7 +91,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version-file: web/app/.node-version
+          node-version-file: web/app/package.json
           cache: npm
           cache-dependency-path: web/app/package-lock.json
 

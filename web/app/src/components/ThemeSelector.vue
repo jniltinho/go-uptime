@@ -26,7 +26,7 @@
       role="menu"
       aria-label="Theme"
       :class="[
-        'absolute z-50 min-w-[9rem] border border-input bg-popover py-1 text-sm text-popover-foreground shadow-md dark:border-gray-700',
+        'absolute z-50 min-w-36 border border-input bg-popover py-1 text-sm text-popover-foreground shadow-md dark:border-gray-700',
         placementClass,
       ]"
       :data-testid="`${testid}-menu`"
@@ -48,7 +48,7 @@
           role="menuitemradio"
           :aria-checked="name === theme"
           tabindex="-1"
-          class="flex w-full items-center gap-2 px-3 py-1.5 text-left hover:bg-accent focus:bg-accent focus:outline-none"
+          class="flex w-full items-center gap-2 px-3 py-1.5 text-left hover:bg-accent focus:bg-accent focus:outline-hidden"
           :data-testid="`${testid}-option-${name}`"
           @click="choose(name)"
         >

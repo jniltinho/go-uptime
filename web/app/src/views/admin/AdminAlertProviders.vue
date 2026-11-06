@@ -116,7 +116,7 @@
             <td class="px-2 py-1">
               <button
                 type="button"
-                class="whitespace-nowrap underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                class="whitespace-nowrap underline-offset-2 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                 :aria-label="`Endpoints using ${item.name}: ${usageCount(item)}`"
                 :data-testid="`alert-provider-usage-${item.type}`"
                 @click="usageItem = item"
@@ -175,7 +175,7 @@
               <component :is="stateIcon(item)" class="h-3.5 w-3.5" aria-hidden="true" />{{ providerState(item).label }}
             </span>
           </div>
-          <p v-if="item.error" class="mt-1 break-words text-xs text-red-700 dark:text-red-400">{{ item.error }}</p>
+          <p v-if="item.error" class="mt-1 wrap-break-word text-xs text-red-700 dark:text-red-400">{{ item.error }}</p>
           <button
             type="button"
             class="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline dark:text-gray-400"
@@ -237,7 +237,7 @@
           v-model="search"
           type="search"
           placeholder="Search, e.g. telegram"
-          class="mb-3 h-9 w-full border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+          class="mb-3 h-9 w-full border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
           data-testid="alert-provider-search"
         />
         <p v-if="pickerGroups.length === 0" class="py-6 text-center text-sm text-muted-foreground dark:text-gray-400">
@@ -252,7 +252,7 @@
               type="button"
               :disabled="isConfigured(type.type)"
               :data-testid="`alert-provider-pick-${type.type}`"
-              class="flex items-center justify-between gap-2 border px-3 py-2 text-left text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+              class="flex items-center justify-between gap-2 border px-3 py-2 text-left text-sm hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
               @click="pick(type)"
             >
               <span class="min-w-0">

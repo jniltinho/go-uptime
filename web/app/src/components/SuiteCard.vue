@@ -23,7 +23,7 @@
             <span v-if="endpointCount">{{ endpointCount }} endpoint{{ endpointCount !== 1 ? 's' : '' }}</span>
           </div>
         </div>
-        <div class="flex-shrink-0 ml-2">
+        <div class="shrink-0 ml-2">
           <StatusBadge :status="currentStatus" />
         </div>
       </div>

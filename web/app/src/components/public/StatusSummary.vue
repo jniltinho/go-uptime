@@ -5,7 +5,7 @@
     data-testid="status-summary"
   >
     <p role="status" class="font-medium flex items-center gap-2">
-      <span :class="['inline-block h-2.5 w-2.5 rounded-full flex-shrink-0', dotClass]" aria-hidden="true"></span>
+      <span :class="['inline-block h-2.5 w-2.5 rounded-full shrink-0', dotClass]" aria-hidden="true"></span>
       {{ label }}
     </p>
     <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-80">

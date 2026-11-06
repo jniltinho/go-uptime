@@ -26,10 +26,10 @@
             <div class="flex items-start gap-3">
               <component
                 :is="getTypeIcon(announcement.type)"
-                :class="['w-5 h-5 flex-shrink-0 mt-0.5', getTypeClasses(announcement.type).iconColor]"
+                :class="['w-5 h-5 shrink-0 mt-0.5', getTypeClasses(announcement.type).iconColor]"
               />
               <time
-                :class="['text-sm font-mono whitespace-nowrap flex-shrink-0 mt-0.5', getTypeClasses(announcement.type).text]"
+                :class="['text-sm font-mono whitespace-nowrap shrink-0 mt-0.5', getTypeClasses(announcement.type).text]"
                 :title="formatFullTimestamp(announcement.timestamp)"
               >
                 {{ formatTime(announcement.timestamp) }}

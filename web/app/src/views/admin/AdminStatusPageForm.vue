@@ -148,7 +148,7 @@
                   rows="3"
                   maxlength="1000"
                   placeholder="Shown below the title of the page"
-                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
                   data-testid="status-page-field-description"
                 ></textarea>
               </label>
@@ -293,8 +293,8 @@
                 v-for="group in groupOptions"
                 :key="group.name"
                 :class="[
-                  'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-accent/50 dark:border-gray-700 dark:hover:bg-gray-800/60',
-                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : '',
+                  'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-accent/50 dark:hover:bg-gray-800/60',
+                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
                 ]"
               >
                 <input
@@ -328,8 +328,8 @@
                     v-for="view in VIEW_OPTIONS"
                     :key="view.id"
                     :class="[
-                      'flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm dark:border-gray-700',
-                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : '',
+                      'flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm',
+                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : 'dark:border-gray-700',
                     ]"
                   >
                     <input
@@ -446,7 +446,7 @@
                   v-model="form.views.applicationsText"
                   rows="3"
                   placeholder="One per line: the columns of the matrix and the filters. Others come after, alphabetically."
-                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+                  class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
                   data-testid="status-page-view-applications"
                 ></textarea>
               </label>
@@ -603,7 +603,7 @@
             </label>
           </div>
           <div
-            class="mx-5 mb-5 max-h-80 overflow-y-auto border dark:border-gray-700 md:max-h-[none] md:min-h-0 md:flex-1"
+            class="mx-5 mb-5 max-h-80 overflow-y-auto border dark:border-gray-700 md:max-h-none md:min-h-0 md:flex-1"
             data-testid="status-page-endpoint-list"
           >
             <div
@@ -728,7 +728,7 @@
             <h3 class="border-b pb-1 text-sm font-semibold text-foreground dark:border-gray-800 dark:text-gray-100">
               <button
                 type="button"
-                class="flex w-full items-baseline gap-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                class="flex w-full items-baseline gap-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
                 :aria-expanded="!previewCollapsedGroups.has(group.name || '')"
                 :aria-controls="`status-page-preview-panel-${groupIndex}`"
                 @click="togglePreviewGroup(group)"

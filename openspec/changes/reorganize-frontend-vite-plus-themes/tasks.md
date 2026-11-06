@@ -18,8 +18,8 @@
 
 ## 3. Tailwind 4
 
-- [ ] 3.1 `@tailwindcss/vite` and `@import 'tailwindcss'`; move `tailwind.config.js` to `@theme` in `src/style.css`
-- [ ] 3.2 Pin the v3 defaults that changed (border colour, ring, placeholder); `theme-colors.sh --compare`
+- [x] 3.1 `@tailwindcss/vite` and `@import 'tailwindcss'`; move `tailwind.config.js` to `@theme` in `src/style.css`
+- [x] 3.2 Pin the v3 defaults that changed (border colour, ring, placeholder); `theme-colors.sh --compare`
 
 ## 4. Themes like ad-manager
 

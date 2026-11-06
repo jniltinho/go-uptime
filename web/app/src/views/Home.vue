@@ -186,7 +186,7 @@
             <Button
               v-for="page in visiblePages"
               :key="page"
-              :variant="page === currentPage ? 'default' : 'outline'"
+              :variant="page === currentPage ? 'default' : 'outline-solid'"
               size="sm"
               @click="goToPage(page)"
             >

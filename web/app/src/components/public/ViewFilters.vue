@@ -69,7 +69,7 @@ const applicationOptions = computed(() => [
 const update = (change) => emit('update:modelValue', { ...props.modelValue, ...change })
 
 const chipClass = (active) => [
-  'border px-3 py-0.5 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400',
+  'border px-3 py-0.5 text-xs font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400',
   active
     ? 'border-sky-300 bg-sky-100 text-sky-900 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-100'
     : 'border-input text-foreground hover:bg-muted dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800',

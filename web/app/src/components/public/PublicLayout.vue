@@ -11,7 +11,7 @@
           :rel="link ? 'noopener' : undefined"
           class="flex min-w-0 items-center gap-2"
         >
-          <img v-if="logo" :src="logo" alt="" class="h-5 w-5 flex-shrink-0 object-contain" />
+          <img v-if="logo" :src="logo" alt="" class="h-5 w-5 shrink-0 object-contain" />
           <span class="truncate text-sm font-semibold tracking-tight">{{ header }}</span>
         </component>
         <ThemeSelector testid="public-theme-toggle" compact />

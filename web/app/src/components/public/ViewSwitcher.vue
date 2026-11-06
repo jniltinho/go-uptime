@@ -13,7 +13,7 @@
       type="button"
       :aria-pressed="view === modelValue"
       :class="[
-        'px-3 py-1 text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400',
+        'px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400',
         view === modelValue
           ? 'bg-foreground text-background dark:bg-gray-100 dark:text-gray-900'
           : 'text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100',

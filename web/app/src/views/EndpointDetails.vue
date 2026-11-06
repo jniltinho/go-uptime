@@ -11,7 +11,7 @@
         <div v-if="endpointStatus && endpointStatus.name" class="space-y-6">
           <div class="flex items-start justify-between">
             <div>
-              <h1 class="text-2xl font-semibold tracking-tight break-words" data-testid="endpoint-name">{{ endpointStatus.name }}</h1>
+              <h1 class="text-2xl font-semibold tracking-tight wrap-break-word" data-testid="endpoint-name">{{ endpointStatus.name }}</h1>
               <div class="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                 <span v-if="endpointStatus.group">Group: {{ endpointStatus.group }}</span>
                 <span v-if="endpointStatus.group && hostname">•</span>
@@ -76,7 +76,7 @@
                 <select
                   v-model="selectedChartPeriod"
                   aria-label="Period of the response time chart"
-                  class="text-sm bg-background border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                  class="text-sm bg-background border rounded-md px-3 py-1 focus:outline-hidden focus:ring-2 focus:ring-ring"
                   data-testid="response-time-chart-period"
                 >
                   <option v-for="option in CHART_PERIOD_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
