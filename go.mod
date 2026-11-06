@@ -1,7 +1,7 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 module github.com/jniltinho/go-uptime/v7
 
-go 1.26.3
+go 1.27.3
 
 require (
 	code.gitea.io/sdk/gitea v0.25.1
