@@ -31,3 +31,17 @@ physical size instead of becoming a thin strip. The administration and the dashb
 #### Scenario: 4K at 100% scaling
 - **WHEN** a public page is shown on a viewport of 3840 pixels
 - **THEN** the public layout has a zoom of 1.6 and the content is centred with the same proportions as in Full HD
+
+### Requirement: Administration on large screens
+The screens of the administration SHALL use the same side spacing as the grouped and matrix views (up to 1760 pixels
+with 48 pixels of inner padding; the forms keep a narrower reading width) and the same zoom for QHD and 4K. The lists of
+the administration, which fill the window, SHALL stay exactly as tall as the window at every zoom. The header of the
+dashboard and of the administration SHALL be the same slim 40-pixel bar as the public header, with compact links.
+
+#### Scenario: Administration at 4K
+- **WHEN** the list of status pages is opened on a viewport of 3840 by 2160 pixels
+- **THEN** the zoom is 1.6 and the page has no vertical scrolling of its own
+
+#### Scenario: Header of the administration
+- **WHEN** the administration is shown at 1920 pixels
+- **THEN** its header is at most 44 pixels high and aligned with the content, 128 pixels from each side

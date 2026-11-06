@@ -172,7 +172,7 @@ enabled falls back to the default, and a filter value that no longer exists fall
 
 ### 6. Slim header and large screens
 
-`PublicLayout.vue`: height 40px (`h-10`), logo `h-5 w-5`, title `text-sm`, compact theme selector. Large screens: the grouped and matrix views and the header use up to 1760px with 48px of inner padding (128px of space on each side in Full HD) and the list `max-w-6xl`, 1400px from `2xl`, so the side margins stay small; `.public-scale` applies `zoom: 1.25` from 2400px and `1.6` from 3200px of viewport (QHD and 4K at 100% scaling), only on the public layout. `zoom` scales the layout (not only the paint), so widths and hit areas stay right. The page title
+`PublicLayout.vue`: height 40px (`h-10`), logo `h-5 w-5`, title `text-sm`, compact theme selector. Large screens: the grouped and matrix views and the header use up to 1760px with 48px of inner padding (128px of space on each side in Full HD) and the list `max-w-6xl`, 1400px from `2xl`, so the side margins stay small; `.screen-scale` (public layout and administration) applies `zoom: 1.25` from 2400px and `1.6` from 3200px of viewport (QHD and 4K at 100% scaling), on the public pages and on the administration; the lists of the administration, which fill the window, use `calc(100dvh / var(--screen-zoom))` so that the zoom does not make them taller than the window. `zoom` scales the layout (not only the paint), so widths and hit areas stay right. The page title
 block uses `text-xl sm:text-2xl` with the description in `text-sm`, and `StatusSummary.vue` becomes a single compact line
 (`py-2 text-sm`). Containers widen to `max-w-6xl` for the matrix to fit five or more columns. The bio theme navy header
 keeps redefining its variables inside `.app-header`.

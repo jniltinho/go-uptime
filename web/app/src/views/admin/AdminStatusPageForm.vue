@@ -1,7 +1,7 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: the form fills the window on larger screens and each column scrolls on its own, like the lists -->
-  <div class="container mx-auto flex max-w-7xl flex-col px-4 py-4 md:min-h-0 md:flex-1">
+  <div class="mx-auto flex w-full max-w-[1760px] flex-col px-4 py-4 sm:px-12 md:min-h-0 md:flex-1">
     <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="min-w-0">
         <h1 class="text-xl font-semibold tracking-tight text-foreground dark:text-gray-100">{{ title }}</h1>

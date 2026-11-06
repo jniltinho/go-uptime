@@ -19,7 +19,7 @@
 - [x] 3.1 `utils/statusPageViews.js` (filters, counters, environment sections, matrix cells, application order) with `statusPageViews.test.mjs`
 - [x] 3.2 `ViewSwitcher.vue`, `GroupedView.vue` and `MatrixView.vue` with `dark:` classes and test ids
 - [x] 3.3 `StatusPage.vue`: view from `?view=`, switcher, featured above every view, list view unchanged
-- [x] 3.4 Slim header (40 px): `PublicLayout.vue`, title block and `StatusSummary.vue`; wider containers and zoom for Full HD, QHD and 4K
+- [x] 3.4 Slim header (40 px, public, dashboard and administration): `PublicLayout.vue`, title block and `StatusSummary.vue`; wider containers and zoom for Full HD, QHD and 4K
 
 ## 4. Administration
 
