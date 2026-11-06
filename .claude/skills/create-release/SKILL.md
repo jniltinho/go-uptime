@@ -18,7 +18,7 @@ docker info | grep Username    # precisa de login no Docker Hub para publicar a 
 git status                     # precisa estar limpo
 git fetch origin --tags && git checkout main && git pull --ff-only
 
-# Última release (a maior tag; até a v6.0.0 elas eram v5.36.0-fork.N)
+# Última release (a maior tag; só as mais recentes são mantidas no GitHub)
 LAST_TAG=$(git tag --list 'v[0-9]*' --sort=-v:refname | head -n1)
 echo "Última release: ${LAST_TAG:-none}"
 ```
@@ -27,7 +27,7 @@ echo "Última release: ${LAST_TAG:-none}"
 
 ## Esquema de versão
 
-SemVer simples, `vX.Y.Z`, a partir da `v6.0.0`. O projeto derivou do TwiN/gatus e é independente desde a v6.0.0 (chamou-se `jniltinho/gatus` até a v6.3.0 e go-uptime a partir da v7.0.0), então a versão não segue mais a do upstream, e as tags `v5.36.0-fork.N` ficam só como histórico: nunca criar outra.
+SemVer simples, `vX.Y.Z`. O projeto derivou do TwiN/gatus e é independente desde a v6.0.0 (chamou-se `jniltinho/gatus` até a v6.3.0 e go-uptime a partir da v7.0.0), então a versão não segue mais a do upstream. Só as tags e GitHub Releases mais recentes são mantidas: em 2026-11-06 tudo antes da `v7.3.0` foi removido (inclusive as `v5.36.0-fork.N` e as tags herdadas do Gatus original); os commits continuam, e as imagens de todas as versões continuam no Docker Hub. Nunca criar uma tag `v5.36.0-fork.N`.
 
 - **Z** (patch): correções, sem mudança de comportamento para quem opera.
 - **Y** (minor): recurso novo, compatível com a configuração e a API existentes.
@@ -35,7 +35,7 @@ SemVer simples, `vX.Y.Z`, a partir da `v6.0.0`. O projeto derivou do TwiN/gatus 
 - O módulo Go é `github.com/jniltinho/go-uptime/v7`: o sufixo `/v7` acompanha a versão maior das tags. Uma futura `v8.0.0` exige trocar o caminho do módulo (go.mod, imports e os `-ldflags -X` do `Makefile` e do `Dockerfile`) no mesmo PR.
 
 ```bash
-NEXT=v6.0.1   # escolha pelo que mudou desde $LAST_TAG: git log --oneline "$LAST_TAG"..HEAD
+NEXT=v7.4.3   # escolha pelo que mudou desde $LAST_TAG: git log --oneline "$LAST_TAG"..HEAD
 echo "Próxima versão: $NEXT"
 ```
 
@@ -120,18 +120,18 @@ docker buildx imagetools inspect "jniltinho/go-uptime:$NEXT"
 
 ### 0. Antes da tag: teste de atualização
 
-Com a imagem candidata construída localmente (`make docker-build`), rode o teste de atualização contra a última release
-publicada. Ele faz backup na versão antiga e restaura na nova, sobe a nova sobre o banco da antiga e roda os scripts
+Com a imagem candidata construída localmente (`make docker-build VERSION=<x.y.z>-rc`), rode o teste de atualização a
+partir da v6.3.0. Ele faz backup na versão antiga e restaura na nova, sobe a nova sobre o banco da antiga e roda os scripts
 Python de `docs/` contra as duas:
 
 ```bash
-OLD_IMAGE=jniltinho/go-uptime:$LAST_TAG NEW_IMAGE=<imagem candidata> test/e2e/upgrade.sh
+OLD_IMAGE=jniltinho/gatus:v6.3.0 NEW_IMAGE=jniltinho/go-uptime:<x.y.z>-rc test/e2e/upgrade.sh
 ```
 
-Na **v7.0.0** a versão anterior foi publicada com o nome antigo: `OLD_IMAGE=jniltinho/gatus:v6.3.0`. É o teste que sustenta
-a promessa de `docs/migrating-from-gatus.md` (variáveis `GATUS_*`, `/gatus` na imagem, backups da v6, preferências do
-navegador), então ele continua valendo a pena durante a série 7.x: rode-o também contra `jniltinho/gatus:v6.3.0` quando
-uma mudança tocar em algo dessa lista.
+A versão antiga fica na `jniltinho/gatus:v6.3.0` durante toda a série 7.x: o teste sustenta a promessa de
+`docs/migrating-from-gatus.md` (variáveis `GATUS_*`, `/gatus` na imagem, backups da v6, preferências do navegador), e uma
+das etapas confere que a sessão da v6 não é reconhecida, o que só vale com uma imagem da v6. Contra uma 7.x essa etapa
+falha sem que haja defeito.
 
 ### 7. Depois da release: versões dos exemplos
 
