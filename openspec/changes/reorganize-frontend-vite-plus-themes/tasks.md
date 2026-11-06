@@ -31,7 +31,7 @@
 - [ ] 4.5b `ResponseTimeChart.vue` observes `data-theme`; unit test switching two light themes
 - [ ] 4.5c Bio header roles in an inner scope of `themes/bio.css`; `theme-colors.sh --contrast`
 - [ ] 4.5d `internal/config/ui` validates `ui.default-theme` against `themes.json`; delta of `ui-theme` applied
-- [ ] 4.6 Root zoom for QHD/4K with `--z` and measured `--view-h`; remove `.public-scale`
+- [ ] 4.6 Root zoom for QHD/4K with `--z` and measured `--view-h`; remove `.screen-scale` from `PublicLayout.vue` and `App.vue` in the same commit (no double zoom), and replace `--screen-zoom` and `calc(100dvh / var(--screen-zoom))` by `var(--view-h)`
 - [ ] 4.7 Document how to add a theme (one CSS file and one registry line)
 
 ## 5. Documentation

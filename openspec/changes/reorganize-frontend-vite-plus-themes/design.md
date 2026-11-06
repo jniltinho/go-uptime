@@ -65,8 +65,10 @@ install on developer machines (it stays a devDependency).
    every existing `dark:` class working while components move to roles one screen at a time; `theme-colors.sh
    --compare` proves each screen unchanged.
 12. **Zoom for QHD/4K on the whole interface.** `:root { zoom }` at 2400 and 3200 CSS pixels, `--z` and a measured
-   `--view-h` (engines disagree on whether `dvh` follows zoom), as ad-manager. The `.public-scale` of
-   `add-status-page-views` is replaced by it.
+   `--view-h` (engines disagree on whether `dvh` follows zoom), as ad-manager. The `.screen-scale` class
+   of `add-status-page-views` (on `PublicLayout.vue` and on the administration root in `App.vue`) is removed in the same
+   commit, or the two zooms would multiply; `--screen-zoom` and the height `calc(100dvh / var(--screen-zoom))` of the
+   administration lists become `--z` and `var(--view-h)`.
 
 ## Risks / Trade-offs
 
