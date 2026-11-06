@@ -264,9 +264,12 @@ old_name="go-uptime-upgrade-old-$SUFFIX"
 docker stop "$old_name" >/dev/null
 INPLACE=$(start inplace "$NEW_IMAGE" "$WORK/old" "$PORT") || fail "the new version did not start over the database of the old one"
 [ "$INPLACE" = "$OLD" ] && ok "the new version answers on the address of the old one ($INPLACE)" || fail "expected $OLD, got $INPLACE"
-inplace_log() { docker logs "go-uptime-upgrade-inplace-$SUFFIX" 2>&1; }
-inplace_log | grep -q "GATUS_CONFIG_PATH is deprecated, use GO_UPTIME_CONFIG_PATH instead" && inplace_log | grep -q "GATUS_LOG_LEVEL is deprecated, use GO_UPTIME_LOG_LEVEL instead" && ok "GATUS_CONFIG_PATH and GATUS_LOG_LEVEL are still read, each with its warning" || { inplace_log | head -5; fail "the variables of v6 were not warned about"; }
-inplace_log | grep -q "Log Level is set to DEBUG" && ok "GATUS_LOG_LEVEL=DEBUG is in force" || fail "the log level of GATUS_LOG_LEVEL was not applied"
+# The log is read into a file: with pipefail, grep -q stops reading early and docker logs, killed by SIGPIPE (141),
+# would make a match look like a failure once the log is long enough
+inplace_log() { docker logs "go-uptime-upgrade-inplace-$SUFFIX" > "$WORK/inplace.log" 2>&1; cat "$WORK/inplace.log"; }
+inplace_has() { docker logs "go-uptime-upgrade-inplace-$SUFFIX" > "$WORK/inplace.log" 2>&1; grep -q "$1" "$WORK/inplace.log"; }
+inplace_has "GATUS_CONFIG_PATH is deprecated, use GO_UPTIME_CONFIG_PATH instead" && inplace_has "GATUS_LOG_LEVEL is deprecated, use GO_UPTIME_LOG_LEVEL instead" && ok "GATUS_CONFIG_PATH and GATUS_LOG_LEVEL are still read, each with its warning" || { inplace_log | head -5; fail "the variables of v6 were not warned about"; }
+inplace_has "Log Level is set to DEBUG" && ok "GATUS_LOG_LEVEL=DEBUG is in force" || fail "the log level of GATUS_LOG_LEVEL was not applied"
 
 step "New version, in the same browser: one more login, and the preference migrated"
 browser open "$INPLACE/" >/dev/null
