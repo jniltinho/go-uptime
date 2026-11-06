@@ -2,7 +2,7 @@
 <template>
   <div id="global" class="bg-background text-foreground">
     <!-- Waiting for the router: the layout depends on the route -->
-    <div v-if="!routerReady" class="flex items-center justify-center min-h-screen">
+    <div v-if="!routerReady" class="flex items-center justify-center min-h-[var(--view-h)]">
       <Loading size="lg" />
     </div>
 
@@ -12,7 +12,7 @@
     </PublicLayout>
 
     <!-- Loading State, and redirection from or to the login screen of security.basic (fork) -->
-    <div v-else-if="!retrievedConfig || pendingLoginRedirect" class="flex items-center justify-center min-h-screen">
+    <div v-else-if="!retrievedConfig || pendingLoginRedirect" class="flex items-center justify-center min-h-[var(--view-h)]">
       <Loading size="lg" />
     </div>
 
@@ -21,15 +21,11 @@
 
     <!-- Main App Container (fork: compact header, same height on the dashboard and on the administration) -->
     <!-- Fork: the lists of the administration fill the window on larger screens and scroll inside their tables -->
-    <!-- Fork: the administration uses the width of large screens like the public pages, with the same zoom for QHD and
-         4K; the height of the lists divides the window by the zoom (--screen-zoom), or it would overflow it -->
+    <!-- Fork: the lists of the administration fill the window: --view-h is its height after the zoom of QHD and 4K
+         (style.css), measured by main.js -->
     <div
       v-else-if="!config || !config.oidc || config.authenticated"
-      :class="[
-        'relative',
-        isAdmin && 'screen-scale',
-        isAdminList && 'md:flex md:h-[calc(100dvh/var(--screen-zoom,1))] md:flex-col md:overflow-hidden',
-      ]"
+      :class="['relative', isAdminList && 'md:flex md:h-[var(--view-h)] md:flex-col md:overflow-hidden']"
     >
       <!-- Header -->
       <header :class="['app-header border-b bg-card/50 backdrop-blur-sm', isAdminList && 'md:shrink-0']">
@@ -126,7 +122,7 @@
     </div>
 
     <!-- OIDC Login Screen -->
-    <div v-else id="login-container" class="flex items-center justify-center min-h-screen p-4">
+    <div v-else id="login-container" class="flex items-center justify-center min-h-[var(--view-h)] p-4">
       <Card class="w-full max-w-md">
         <CardHeader class="text-center">
           <img v-if="logo" :src="logo" alt="" class="w-20 h-20 object-contain mx-auto mb-4" />

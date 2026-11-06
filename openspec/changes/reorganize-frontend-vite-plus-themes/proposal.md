@@ -39,7 +39,7 @@ touching every screen.
     `--color-line`, `--color-field`, status roles, chart roles…), whose defaults are today's light theme, pixel for
     pixel; components use role utilities (`text-fg`, `bg-surface`, `border-line`) instead of `dark:` pairs and literals.
   - `src/themes/<id>.css` per theme: `light.css`, `dark.css`, `bio.css` first (the three current themes, identical
-    colours), each declaring its `color-scheme`; `src/themes/index.js` is the registry (id, label, scheme, theme
+    colours), the scheme of each in the registry (no CSS `color-scheme`, which would change the native controls); `src/themes/themes.json` is the registry (id, label, scheme, theme
     colour) read by the selector, by `utils/theme.js` and — through a generated JSON — by the server.
   - The root carries `data-theme="<id>"` (and `data-scheme="light|dark"`); the `dark:` variant is redefined as
     `[data-scheme=dark]` so components not yet migrated keep working. The `dark` and `theme-bio` classes stay for the

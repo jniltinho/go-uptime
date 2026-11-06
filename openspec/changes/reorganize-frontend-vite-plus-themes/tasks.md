@@ -26,15 +26,16 @@
 - [x] 4.1 Role contract in `src/style.css` (`@theme static`) with the light theme as defaults
 - [x] 4.2 `src/themes/light.css`, `dark.css`, `bio.css` and the registry `src/themes/index.js`; `web/static/themes.json`
 - [x] 4.3 `data-theme` and `data-scheme` on the root from the server, the inline script and `utils/theme.js`; `theme.cases.json` extended; legacy classes kept
-- [ ] 4.4 `dark:` variant on `data-scheme`; migrate components to role utilities screen by screen, comparing colours
-- [ ] 4.5 `views/` → `pages/`; router and imports
-- [ ] 4.5b `ResponseTimeChart.vue` observes `data-theme`; unit test switching two light themes
+- [x] 4.4 `dark:` variant on `data-scheme`
+- [ ] 4.4b Migrate the components from `dark:` pairs to role utilities, screen by screen, comparing colours (follow-up)
+- [x] 4.5 `views/` → `pages/`; router and imports
+- [x] 4.5b `ResponseTimeChart.vue` observes `data-theme`; unit test switching two light themes
 - [x] 4.5c Bio header roles in an inner scope of `themes/bio.css`; `theme-colors.sh --contrast`
 - [x] 4.5d `internal/config/ui` validates `ui.default-theme` against `themes.json`; delta of `ui-theme` applied
-- [ ] 4.6 Root zoom for QHD/4K with `--z` and measured `--view-h`; remove `.screen-scale` from `PublicLayout.vue` and `App.vue` in the same commit (no double zoom), and replace `--screen-zoom` and `calc(100dvh / var(--screen-zoom))` by `var(--view-h)`
-- [ ] 4.7 Document how to add a theme (one CSS file and one registry line)
+- [x] 4.6 Root zoom for QHD/4K with `--z` and measured `--view-h`; remove `.screen-scale` from `PublicLayout.vue` and `App.vue` in the same commit (no double zoom), and replace `--screen-zoom` and `calc(100dvh / var(--screen-zoom))` by `var(--view-h)`
+- [x] 4.7 Document how to add a theme (one CSS file and one registry line)
 
 ## 5. Documentation
 
-- [ ] 5.1 Update `AGENTS.md` (commands), `docs/` and the README where the build is described
+- [x] 5.1 Update `AGENTS.md` (commands), `docs/` and the README where the build is described
 - [ ] 5.2 Release notes: the legacy bundle of `--modern` is gone; required Node version

@@ -15,7 +15,7 @@
         tabindex="-1"
         :data-testid="testid"
         :class="[
-          'flex max-h-[calc(100dvh-2rem)] w-full flex-col border bg-card text-card-foreground shadow-lg outline-hidden dark:border-gray-700 dark:bg-gray-900',
+          'flex max-h-[calc(var(--view-h)-2rem)] w-full flex-col border bg-card text-card-foreground shadow-lg outline-hidden dark:border-gray-700 dark:bg-gray-900',
           SIZES[size] || SIZES.lg,
         ]"
       >

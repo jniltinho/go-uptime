@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="screen-scale min-h-screen flex flex-col bg-background text-foreground" data-testid="public-layout">
+  <div class="min-h-[var(--view-h)] flex flex-col bg-background text-foreground" data-testid="public-layout">
     <header class="app-header border-b bg-card/50 dark:border-gray-800" data-testid="public-header">
       <!-- Fork: a slim bar, with only the logo, the header and the theme -->
       <div class="mx-auto flex h-10 w-full max-w-[1760px] items-center justify-between gap-4 px-4 sm:px-12">

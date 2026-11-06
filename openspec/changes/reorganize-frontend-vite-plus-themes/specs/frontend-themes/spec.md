@@ -1,18 +1,20 @@
 ## ADDED Requirements
 
 ### Requirement: Role contract of colours
-`web/app/src/style.css` SHALL define the colour roles of the interface with `@theme static`, their defaults being the
-light theme. Components SHALL use role utilities for text, page, surfaces, lines and fields, and SHALL NOT use literal
-palette values for them. Status colours SHALL be roles that keep the same value in every theme.
+`web/app/src/style.css` SHALL define the colour roles of the interface (the variables `--background`, `--card`,
+`--border`, `--muted`, the gray scale `--gray-N`, the chart colours `--chart-*`, ...), their defaults being the light
+theme, and expose them as utilities through `@theme`. New and changed components SHALL use the role utilities for text,
+page, surfaces, lines and fields; the existing `dark:` pairs keep working through the `data-scheme` variant and are
+migrated screen by screen. Status colours SHALL keep the same value in every theme (`statusgray` and the literal
+status families).
 
 #### Scenario: A new component
-- **WHEN** a component needs the colour of a card
-- **THEN** it uses `bg-surface`, and every theme renders it with its own surface colour without a `dark:` class
+- **WHEN** a new component needs the colour of a card
+- **THEN** it uses `bg-card`, and every theme renders it with its own card colour without a `dark:` class
 
 ### Requirement: One file per theme
 Each theme SHALL be a file `web/app/src/themes/<id>.css` that only redefines roles and parameters under
-`:root[data-theme='<id>']`, or under scopes inside it (such as the header of the Bio theme), and declares its
-`color-scheme`, plus one entry `{ id, label, scheme, themeColor }` in
+`:root[data-theme='<id>']`, or under scopes inside it (such as the header of the Bio theme), plus one entry `{ id, label, scheme, themeColor }` in
 `web/app/src/themes/index.js`. The change SHALL ship the themes `light`, `dark` and `bio` with their current colours.
 
 #### Scenario: Adding a theme

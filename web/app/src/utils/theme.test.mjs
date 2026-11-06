@@ -7,7 +7,17 @@ import { dirname, join } from 'node:path'
 import vm from 'node:vm'
 import { inlineRegistry, THEMES_MARKER } from '../themes/build.js'
 import { THEME_REGISTRY } from '../themes/index.js'
-import { THEMES, applyTheme, currentTheme, defaultTheme, defaultThemeIsDark, setTheme, themeFromCookie, wantsDarkMode } from './theme.js'
+import {
+  THEMES,
+  themeKey,
+  applyTheme,
+  currentTheme,
+  defaultTheme,
+  defaultThemeIsDark,
+  setTheme,
+  themeFromCookie,
+  wantsDarkMode,
+} from './theme.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const { themes, cases } = JSON.parse(readFileSync(join(here, 'theme.cases.json'), 'utf8'))
@@ -137,4 +147,15 @@ test('choosing a theme saves the cookie and moves between every pair of themes w
     }
   }
   assert.equal(setTheme('blue'), 'light', 'a value that is not a theme falls back to light')
+})
+
+test('the key of the theme tells two light themes apart, so that the canvas of the chart redraws', () => {
+  const fake = fakeDocument({ defaultTheme: 'light' })
+  fake.document.documentElement.className = ''
+  global.document = fake.document
+  applyTheme('light')
+  const light = themeKey()
+  applyTheme('bio')
+  assert.equal(fake.attributes().scheme, 'light')
+  assert.notEqual(themeKey(), light, 'light and bio have the same scheme but must not have the same key')
 })

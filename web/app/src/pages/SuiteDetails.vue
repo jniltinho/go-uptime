@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="suite-details-container bg-background min-h-screen">
+  <div class="suite-details-container bg-background min-h-[var(--view-h)]">
     <div class="container mx-auto px-4 py-8 max-w-7xl">
       <!-- Back button and header -->
       <div class="mb-6">
@@ -324,6 +324,6 @@ onMounted(() => {
 
 <style scoped>
 .suite-details-container {
-  min-height: 100vh;
+  min-height: var(--view-h);
 }
 </style>

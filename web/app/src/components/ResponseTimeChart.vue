@@ -66,6 +66,7 @@ import {
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import { PROTECTED_API_HEADERS, notifyUnauthorized } from '@/utils/auth'
+import { themeKey } from '@/utils/theme'
 import {
   CHART_COLORS,
   CHART_LINE_DASHES,
@@ -118,9 +119,10 @@ const AGGREGATES_REFRESH_INTERVAL_MS = 60000
 const loading = ref(true)
 const error = ref(null)
 const payload = ref(null)
-// Fork: the colours of the chart come from CSS variables of the theme (--chart-*, in index.css), read again whenever
-// the class of <html> changes. A boolean "is it dark" cannot tell the light theme from the bio one.
-const themeClass = ref(document.documentElement.className)
+// Fork: the colours of the chart come from CSS variables of the theme (--chart-*, in style.css and src/themes), read
+// again whenever the theme of <html> changes. The key is the theme itself (data-theme) and not its scheme nor a
+// boolean "is it dark", which cannot tell two light themes apart (light and bio); the legacy class is kept in it.
+const themeClass = ref(themeKey())
 const CHART_COLOR_FALLBACKS = {
   '--chart-grid': 'rgba(0,0,0,0.1)',
   '--chart-text': 'rgba(12,12,18,1.0)',
@@ -442,9 +444,9 @@ onMounted(() => {
   fetchChart()
   window.addEventListener('resize', onResize)
   themeObserver = new MutationObserver(() => {
-    themeClass.value = document.documentElement.className
+    themeClass.value = themeKey()
   })
-  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme', 'data-scheme'] })
 })
 
 onUnmounted(() => {

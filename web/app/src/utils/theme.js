@@ -81,3 +81,8 @@ export const setTheme = (theme) => {
   document.cookie = `${THEME_COOKIE_NAME}=${selected}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; samesite=strict`
   return applyTheme(selected)
 }
+
+// themeKey identifies the theme applied to an element (the root by default): its data-theme and its class. Whatever
+// draws with the colours of the theme (the canvas of the response time chart) redraws when it changes: it tells two
+// themes of the same scheme apart (light and bio), which data-scheme or a dark class cannot.
+export const themeKey = (root = document.documentElement) => `${(root.dataset && root.dataset.theme) || ''}|${root.className || ''}`

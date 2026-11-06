@@ -322,19 +322,24 @@
   }
 }
 
-/* Fork: public status pages and administration on large screens. Full HD (1920) widens the content; QHD and 4K at 100% scaling also
-   enlarge it with zoom, so that the same layout reads at the same physical size instead of becoming a thin strip in the
-   middle of the screen. Media queries keep using the real width of the viewport. */
+/* Fork: large screens, like ad-manager. On QHD and 4K without OS scaling (CSS width of 2400 and 3200 pixels or more) the
+   whole interface grows proportionally; with OS scaling (125%, 150%, 200%) the CSS width stays at Full HD and nothing
+   changes. --view-h is the usable window height in CSS pixels after the zoom: use it instead of 100dvh, because
+   engines disagree on whether dvh follows the zoom. main.js measures it; this is only the value until then. */
+:root {
+  --z: 1;
+  --view-h: calc(100dvh / var(--z));
+}
 @media (min-width: 2400px) {
-  .screen-scale {
+  :root {
     zoom: 1.25;
-    --screen-zoom: 1.25;
+    --z: 1.25;
   }
 }
 @media (min-width: 3200px) {
-  .screen-scale {
+  :root {
     zoom: 1.6;
-    --screen-zoom: 1.6;
+    --z: 1.6;
   }
 }
 
@@ -343,7 +348,7 @@ html {
 }
 
 body {
-  min-height: 100vh;
+  min-height: var(--view-h);
 }
 
 @media screen and (max-width: 1279px) {
