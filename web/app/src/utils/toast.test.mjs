@@ -13,7 +13,7 @@ import {
   showToast,
   toast,
   toasts,
-  toastsPaused
+  toastsPaused,
 } from './toast.js'
 
 beforeEach(() => {

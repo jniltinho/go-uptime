@@ -2,7 +2,20 @@
 import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { INHERIT, MASKED, NO, YES, documentFromForm, formFromDocument, groupByCategory, mapToText, missingRequired, providerState, textToMap, usageCount } from './alertProviderForm.js'
+import {
+  INHERIT,
+  MASKED,
+  NO,
+  YES,
+  documentFromForm,
+  formFromDocument,
+  groupByCategory,
+  mapToText,
+  missingRequired,
+  providerState,
+  textToMap,
+  usageCount,
+} from './alertProviderForm.js'
 
 const telegram = {
   type: 'telegram',
@@ -80,12 +93,21 @@ test('state, usage and categories of the list', () => {
   assert.equal(providerState({ source: 'none' }).label, 'Not configured')
   assert.equal(providerState({ source: 'web', state: 'invalid' }).tone, 'error')
   assert.equal(usageCount({ usage: { managed: ['a'], file: ['b', 'c'] } }), 3)
-  const groups = groupByCategory([telegram, { type: 'ntfy', name: 'Ntfy', category: 'Push' }, { type: 'slack', name: 'Slack', category: 'Chat' }], 'sl')
-  assert.deepEqual(groups.map((group) => [group.category, group.types.map((type) => type.type)]), [['Chat', ['slack']]])
+  const groups = groupByCategory(
+    [telegram, { type: 'ntfy', name: 'Ntfy', category: 'Push' }, { type: 'slack', name: 'Slack', category: 'Chat' }],
+    'sl',
+  )
+  assert.deepEqual(
+    groups.map((group) => [group.category, group.types.map((type) => type.type)]),
+    [['Chat', ['slack']]],
+  )
 })
 
 test('every category of the providers is known to the picker', () => {
   const docs = JSON.parse(readFileSync(new URL('../../../../internal/alertprovider/docs.json', import.meta.url)))
   const groups = groupByCategory(Object.entries(docs).map(([type, doc]) => ({ type, name: doc.name, category: doc.category })))
-  assert.equal(groups.reduce((total, group) => total + group.types.length, 0), Object.keys(docs).length)
+  assert.equal(
+    groups.reduce((total, group) => total + group.types.length, 0),
+    Object.keys(docs).length,
+  )
 })

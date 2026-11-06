@@ -11,16 +11,20 @@ import {
   isCollapsed,
   readChoices,
   rememberedChoices,
-  writeChoice
+  writeChoice,
 } from './statusPageGroups.js'
 
 const memoryStorage = (initial = {}) => {
   const items = new Map(Object.entries(initial))
   return {
     getItem: (key) => (items.has(key) ? items.get(key) : null),
-    setItem: (key, value) => { items.set(key, String(value)) },
-    removeItem: (key) => { items.delete(key) },
-    raw: () => items.get(STORAGE_KEY)
+    setItem: (key, value) => {
+      items.set(key, String(value))
+    },
+    removeItem: (key) => {
+      items.delete(key)
+    },
+    raw: () => items.get(STORAGE_KEY),
   }
 }
 
@@ -74,7 +78,14 @@ test('the key of a group is a hash of the slug and of its raw name, and stores n
 
 test('without crypto.subtle the keys are not derived and nothing is remembered', async () => {
   assert.equal(await groupHashes('services', ['sites'], null), null)
-  assert.equal(await groupHashes('services', ['sites'], { digest: () => { throw new Error('insecure context') } }), null)
+  assert.equal(
+    await groupHashes('services', ['sites'], {
+      digest: () => {
+        throw new Error('insecure context')
+      },
+    }),
+    null,
+  )
   const { hashes, remembered } = await rememberedChoices('services', [{ name: 'sites' }], { subtle: null, storage: memoryStorage() })
   assert.equal(hashes, null)
   assert.equal(remembered.size, 0)
@@ -92,7 +103,16 @@ test('a remembered choice comes back for the right group of the right page', asy
 
 test('invalid stored data is ignored', () => {
   const key = 'a'.repeat(64)
-  for (const raw of ['not json', '[]', '"text"', '42', 'null', JSON.stringify({ sites: COLLAPSED }), JSON.stringify({ [key]: 'x' }), JSON.stringify({ __proto__: COLLAPSED })]) {
+  for (const raw of [
+    'not json',
+    '[]',
+    '"text"',
+    '42',
+    'null',
+    JSON.stringify({ sites: COLLAPSED }),
+    JSON.stringify({ [key]: 'x' }),
+    JSON.stringify({ __proto__: COLLAPSED }),
+  ]) {
     assert.equal(readChoices(memoryStorage({ [STORAGE_KEY]: raw })).size, 0, raw)
   }
   const mixed = JSON.stringify({ [key]: EXPANDED, sites: COLLAPSED, ['b'.repeat(64)]: 'zzz' })
@@ -100,7 +120,14 @@ test('invalid stored data is ignored', () => {
 })
 
 test('a storage that throws or is missing does not break anything', () => {
-  const broken = { getItem: () => { throw new Error('blocked') }, setItem: () => { throw new Error('blocked') } }
+  const broken = {
+    getItem: () => {
+      throw new Error('blocked')
+    },
+    setItem: () => {
+      throw new Error('blocked')
+    },
+  }
   assert.equal(readChoices(broken).size, 0)
   assert.equal(writeChoice('a'.repeat(64), COLLAPSED, broken), false)
   assert.equal(readChoices(null).size, 0)

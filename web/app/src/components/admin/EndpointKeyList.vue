@@ -7,7 +7,12 @@
       <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground dark:text-gray-400">Managed through the web</h3>
       <ul class="space-y-0.5">
         <li v-for="key in managed" :key="`managed-${key}`">
-          <router-link :to="{ name: 'AdminEndpointEdit', params: { endpointKey: key } }" target="_blank" class="font-mono text-xs text-foreground underline underline-offset-2 dark:text-gray-100">{{ key }}</router-link>
+          <router-link
+            :to="{ name: 'AdminEndpointEdit', params: { endpointKey: key } }"
+            target="_blank"
+            class="font-mono text-xs text-foreground underline underline-offset-2 dark:text-gray-100"
+            >{{ key }}</router-link
+          >
         </li>
       </ul>
     </div>
@@ -23,6 +28,6 @@
 <script setup>
 defineProps({
   managed: { type: Array, default: () => [] },
-  file: { type: Array, default: () => [] }
+  file: { type: Array, default: () => [] },
 })
 </script>

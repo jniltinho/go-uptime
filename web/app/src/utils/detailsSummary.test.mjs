@@ -13,8 +13,14 @@ test('shows the numbers of an HTTP endpoint', () => {
     uptime: { '24h': 1, '7d': 0.995, '30d': 0.9925 },
     push: false,
   })
-  assert.deepEqual(items.map((item) => item.label), ['Response (Current)', 'Avg. Response (24h)', 'Uptime (24h)', 'Uptime (7d)', 'Uptime (30d)'])
-  assert.deepEqual(items.map((item) => item.value), ['5 ms', '12 ms', percent(1), percent(0.995), percent(0.9925)])
+  assert.deepEqual(
+    items.map((item) => item.label),
+    ['Response (Current)', 'Avg. Response (24h)', 'Uptime (24h)', 'Uptime (7d)', 'Uptime (30d)'],
+  )
+  assert.deepEqual(
+    items.map((item) => item.value),
+    ['5 ms', '12 ms', percent(1), percent(0.995), percent(0.9925)],
+  )
   assert.equal(percent(0.9925).replace(',', '.').replace(/\s/g, ''), '99.25%')
   assert.equal(percent(0.995).replace(',', '.').replace(/\s/g, ''), '99.5%')
   assert.equal(percent(1).replace(/\s/g, ''), '100%')
@@ -29,9 +35,18 @@ test('labels the push endpoints with ping', () => {
 
 test('shows dashes without execution or without results', () => {
   const nulls = { '24h': null, '7d': null, '30d': null }
-  assert.deepEqual(detailsSummaryItems({ currentResponseTime: null, uptime: nulls, responseTime: nulls }).map((item) => item.value), ['—', '—', '—', '—', '—'])
-  assert.deepEqual(detailsSummaryItems({}).map((item) => item.value), ['—', '—', '—', '—', '—'])
-  assert.deepEqual(detailsSummaryItems().map((item) => item.value), ['—', '—', '—', '—', '—'])
+  assert.deepEqual(
+    detailsSummaryItems({ currentResponseTime: null, uptime: nulls, responseTime: nulls }).map((item) => item.value),
+    ['—', '—', '—', '—', '—'],
+  )
+  assert.deepEqual(
+    detailsSummaryItems({}).map((item) => item.value),
+    ['—', '—', '—', '—', '—'],
+  )
+  assert.deepEqual(
+    detailsSummaryItems().map((item) => item.value),
+    ['—', '—', '—', '—', '—'],
+  )
 })
 
 test('shows a dash for a current response time of zero, but keeps an average and an uptime of zero', () => {

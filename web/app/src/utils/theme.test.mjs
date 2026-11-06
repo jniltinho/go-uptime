@@ -14,7 +14,12 @@ const { themes, cases } = JSON.parse(readFileSync(join(here, 'theme.cases.json')
 // meta. It serves both theme.js (dataset) and the inline script of index.html (getAttribute).
 const fakeDocument = ({ defaultTheme: value, cookie = '', classes = [] } = {}) => {
   const classSet = new Set(classes)
-  const meta = { content: '', setAttribute(name, attribute) { this[name] = attribute } }
+  const meta = {
+    content: '',
+    setAttribute(name, attribute) {
+      this[name] = attribute
+    },
+  }
   const absent = value === undefined || value === null
   return {
     classSet,
@@ -27,11 +32,11 @@ const fakeDocument = ({ defaultTheme: value, cookie = '', classes = [] } = {}) =
         classList: {
           toggle: (name, force) => (force ? classSet.add(name) : classSet.delete(name)),
           add: (name) => classSet.add(name),
-          remove: (...names) => names.forEach((name) => classSet.delete(name))
-        }
+          remove: (...names) => names.forEach((name) => classSet.delete(name)),
+        },
       },
-      querySelector: (selector) => (selector === 'meta[name="theme-color"]' ? meta : null)
-    }
+      querySelector: (selector) => (selector === 'meta[name="theme-color"]' ? meta : null),
+    },
   }
 }
 
@@ -43,7 +48,10 @@ afterEach(() => {
 })
 
 test('the table of themes of theme.js is the one of theme.cases.json', () => {
-  assert.deepEqual(Object.fromEntries(Object.entries(THEMES).map(([theme, { className, themeColor }]) => [theme, { class: className, themeColor }])), themes)
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(THEMES).map(([theme, { className, themeColor }]) => [theme, { class: className, themeColor }])),
+    themes,
+  )
 })
 
 test('theme.js follows every case of theme.cases.json', () => {
@@ -74,7 +82,14 @@ test('the inline script of index.html follows every case of theme.cases.json', (
 })
 
 test('the default theme: the attribute, its absence, the template not rendered and the HTML of a previous version', () => {
-  for (const [value, expected] of [['dark', 'dark'], ['light', 'light'], ['bio', 'bio'], ['', 'light'], [undefined, 'dark'], ['{{ .DefaultTheme }}', 'dark']]) {
+  for (const [value, expected] of [
+    ['dark', 'dark'],
+    ['light', 'light'],
+    ['bio', 'bio'],
+    ['', 'light'],
+    [undefined, 'dark'],
+    ['{{ .DefaultTheme }}', 'dark'],
+  ]) {
     global.document = fakeDocument({ defaultTheme: value }).document
     assert.equal(defaultTheme(), expected, String(value))
     assert.equal(defaultThemeIsDark(), expected === 'dark', String(value))

@@ -39,8 +39,8 @@ export function urlWithLastEventId(url, lastEventId) {
 // refresh so that a channel closed by an error is opened again right away, if it was opened at least REOPEN_DELAYS_MS[0]
 // ago.
 export function watchEndpointResults(url, onResult, options = {}) {
-  const EventSourceClass = 'EventSource' in options ? options.EventSource : (typeof window !== 'undefined' ? window.EventSource : undefined)
-  const doc = 'document' in options ? options.document : (typeof document !== 'undefined' ? document : undefined)
+  const EventSourceClass = 'EventSource' in options ? options.EventSource : typeof window !== 'undefined' ? window.EventSource : undefined
+  const doc = 'document' in options ? options.document : typeof document !== 'undefined' ? document : undefined
   const refreshOnVisible = options.refreshOnVisible !== false
 
   let source = null

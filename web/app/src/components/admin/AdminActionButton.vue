@@ -17,7 +17,7 @@
       'inline-flex shrink-0 items-center justify-center border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
       compact ? 'h-7 w-7' : 'h-9 w-9',
       disabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-accent dark:hover:bg-gray-800',
-      destructive ? 'text-red-600 dark:text-red-400' : 'text-foreground dark:text-gray-200'
+      destructive ? 'text-red-600 dark:text-red-400' : 'text-foreground dark:text-gray-200',
     ]"
     @click="onClick"
   >
@@ -37,7 +37,7 @@ const props = defineProps({
   // Renders an anchor that opens in another tab, for actions that lead to another page
   href: { type: String, default: '' },
   // 28 px in the tables, 36 px in the cards of the touch screens
-  compact: { type: Boolean, default: true }
+  compact: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['click'])

@@ -2,7 +2,10 @@
 <template>
   <!-- Fork: dialog of the administration, teleported to the body in the order it opens, see utils/dialogStack.js -->
   <Teleport v-if="open" to="body">
-    <div class="fixed inset-0 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70" :style="{ zIndex: 50 + Math.max(position, 0) }">
+    <div
+      class="fixed inset-0 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70"
+      :style="{ zIndex: 50 + Math.max(position, 0) }"
+    >
       <div
         ref="panel"
         role="dialog"
@@ -11,7 +14,10 @@
         :aria-describedby="describedbyId"
         tabindex="-1"
         :data-testid="testid"
-        :class="['flex max-h-[calc(100dvh-2rem)] w-full flex-col border bg-card text-card-foreground shadow-lg outline-none dark:border-gray-700 dark:bg-gray-900', SIZES[size] || SIZES.lg]"
+        :class="[
+          'flex max-h-[calc(100dvh-2rem)] w-full flex-col border bg-card text-card-foreground shadow-lg outline-none dark:border-gray-700 dark:bg-gray-900',
+          SIZES[size] || SIZES.lg,
+        ]"
       >
         <div class="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4 dark:border-gray-700">
           <div class="min-w-0">
@@ -60,7 +66,7 @@ const props = defineProps({
   // otherwise)
   returnFocus: { type: Function, default: null },
   // Id of an element of the body that describes the dialog, used instead of the description
-  describedby: { type: String, default: '' }
+  describedby: { type: String, default: '' },
 })
 
 const emit = defineEmits(['close'])
@@ -76,7 +82,7 @@ const FOCUSABLE = [
   'textarea:not([disabled])',
   'iframe',
   '[contenteditable="true"]',
-  '[tabindex]:not([tabindex="-1"])'
+  '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
 const id = nextDialogId()
@@ -91,7 +97,8 @@ let previouslyFocused = null
 const isVisible = (element) => element.getClientRects().length > 0
 
 // An element that can take the focus back: in the document, visible and enabled
-const isUsable = (element) => Boolean(element && element.isConnected && element !== document.body && !element.disabled && isVisible(element))
+const isUsable = (element) =>
+  Boolean(element && element.isConnected && element !== document.body && !element.disabled && isVisible(element))
 
 const resolve = (getter) => {
   if (!getter) {
@@ -220,13 +227,17 @@ const deactivate = async ({ moveFocus = true } = {}) => {
   }
 }
 
-watch(() => props.open, (open) => {
-  if (open) {
-    activate()
-  } else {
-    deactivate()
-  }
-}, { immediate: true })
+watch(
+  () => props.open,
+  (open) => {
+    if (open) {
+      activate()
+    } else {
+      deactivate()
+    }
+  },
+  { immediate: true },
+)
 
 // E.g. the Back button of the browser with the dialog open
 onBeforeUnmount(() => {

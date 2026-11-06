@@ -52,10 +52,30 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, BarController, BarElement, Filler, LinearScale, LineController, LineElement, PointElement, TimeScale, Tooltip } from 'chart.js'
+import {
+  Chart as ChartJS,
+  BarController,
+  BarElement,
+  Filler,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  TimeScale,
+  Tooltip,
+} from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import { PROTECTED_API_HEADERS, notifyUnauthorized } from '@/utils/auth'
-import { CHART_COLORS, CHART_LINE_DASHES, RECENT_PERIOD, bucketDatasets, chartLegend, chartSummary, isChartPeriod, recentDatasets } from '@/utils/responseTimeChart'
+import {
+  CHART_COLORS,
+  CHART_LINE_DASHES,
+  RECENT_PERIOD,
+  bucketDatasets,
+  chartLegend,
+  chartSummary,
+  isChartPeriod,
+  recentDatasets,
+} from '@/utils/responseTimeChart'
 import Loading from './Loading.vue'
 
 ChartJS.register(LineController, BarController, LineElement, BarElement, PointElement, LinearScale, TimeScale, Tooltip, Filler)
@@ -73,23 +93,23 @@ const props = defineProps({
   // Base of the route of the chart, protected or public, without the query
   chartUrl: {
     type: String,
-    required: true
+    required: true,
   },
   period: {
     type: String,
     default: RECENT_PERIOD,
-    validator: (value) => isChartPeriod(value)
+    validator: (value) => isChartPeriod(value),
   },
   // Changes with the data of the page (the timestamp of the latest result), so that the chart is fetched again
   refreshKey: {
     type: [String, Number],
-    default: null
+    default: null,
   },
   // Public route of a status page: fetched without credentials
   publicRoute: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // The aggregates are not fetched again more often than this
@@ -101,7 +121,12 @@ const payload = ref(null)
 // Fork: the colours of the chart come from CSS variables of the theme (--chart-*, in index.css), read again whenever
 // the class of <html> changes. A boolean "is it dark" cannot tell the light theme from the bio one.
 const themeClass = ref(document.documentElement.className)
-const CHART_COLOR_FALLBACKS = { '--chart-grid': 'rgba(0,0,0,0.1)', '--chart-text': 'rgba(12,12,18,1.0)', '--chart-tick': '#6b7280', '--chart-tooltip': 'rgba(212,232,222,1.0)' }
+const CHART_COLOR_FALLBACKS = {
+  '--chart-grid': 'rgba(0,0,0,0.1)',
+  '--chart-text': 'rgba(12,12,18,1.0)',
+  '--chart-tick': '#6b7280',
+  '--chart-tooltip': 'rgba(212,232,222,1.0)',
+}
 const chartColors = computed(() => {
   // The dependency on themeClass makes this recompute when the theme changes
   const style = themeClass.value !== undefined ? getComputedStyle(document.documentElement) : null
@@ -157,7 +182,7 @@ const barDataset = (data) => ({
   barPercentage: 1,
   categoryPercentage: 1,
   inflateAmount: 0.05,
-  label: 'status'
+  label: 'status',
 })
 
 const lineDataset = (data, label, borderColor, backgroundColor, borderDash = []) => ({
@@ -168,7 +193,7 @@ const lineDataset = (data, label, borderColor, backgroundColor, borderDash = [])
   backgroundColor,
   borderDash,
   yAxisID: 'y',
-  label
+  label,
 })
 
 const chartData = computed(() => {
@@ -178,10 +203,7 @@ const chartData = computed(() => {
   }
   if (payload.value.period === RECENT_PERIOD) {
     return {
-      datasets: [
-        lineDataset(data.line, 'ping', CHART_COLORS.line, CHART_COLORS.recentFill),
-        barDataset(data)
-      ]
+      datasets: [lineDataset(data.line, 'ping', CHART_COLORS.line, CHART_COLORS.recentFill), barDataset(data)],
     }
   }
   return {
@@ -189,8 +211,8 @@ const chartData = computed(() => {
       lineDataset(data.line, 'avg-ping', CHART_COLORS.line, CHART_COLORS.bucketFill, CHART_LINE_DASHES.average),
       lineDataset(data.min, 'min-ping', CHART_COLORS.minLine, CHART_COLORS.bucketFill, CHART_LINE_DASHES.minimum),
       lineDataset(data.max, 'max-ping', CHART_COLORS.maxLine, CHART_COLORS.bucketFill, CHART_LINE_DASHES.maximum),
-      barDataset(data)
-    ]
+      barDataset(data),
+    ],
   }
 })
 
@@ -208,15 +230,15 @@ const chartOptions = computed(() => {
         left: 10,
         right: 30,
         top: 30,
-        bottom: 10
-      }
+        bottom: 10,
+      },
     },
     elements: {
       point: {
         // Points hidden unless hovered
         radius: 0,
-        hitRadius: 100
-      }
+        hitRadius: 100,
+      },
     },
     scales: {
       x: {
@@ -227,45 +249,45 @@ const chartOptions = computed(() => {
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
           displayFormats: {
             minute: 'HH:mm',
-            hour: 'MM-dd HH:mm'
-          }
+            hour: 'MM-dd HH:mm',
+          },
         },
         ticks: {
           sampleSize: 3,
           maxRotation: 0,
           autoSkipPadding: 30,
           padding: 3,
-          color: tickColor
+          color: tickColor,
         },
         grid: {
           color: gridColor,
-          offset: false
-        }
+          offset: false,
+        },
       },
       y: {
         title: {
           display: true,
           text: 'Resp. Time (ms)',
-          color: tickColor
+          color: tickColor,
         },
         offset: false,
         ticks: {
-          color: tickColor
+          color: tickColor,
         },
         grid: {
-          color: gridColor
-        }
+          color: gridColor,
+        },
       },
       y1: {
         display: false,
         position: 'right',
         grid: {
-          drawOnChartArea: false
+          drawOnChartArea: false,
         },
         min: 0,
         max: 1,
-        offset: false
-      }
+        offset: false,
+      },
     },
     bounds: 'ticks',
     plugins: {
@@ -279,13 +301,13 @@ const chartOptions = computed(() => {
         // Only the line of the response time, not the columns nor the minimum and maximum
         filter: (tooltipItem) => tooltipItem.datasetIndex === 0,
         callbacks: {
-          label: (context) => ` ${numberFormat.format(context.parsed.y)} ms`
-        }
+          label: (context) => ` ${numberFormat.format(context.parsed.y)} ms`,
+        },
       },
       legend: {
-        display: false
-      }
-    }
+        display: false,
+      },
+    },
   }
 })
 
@@ -389,20 +411,26 @@ const refresh = () => {
 }
 
 // Another period or endpoint: the chart is cleared and the spinner is shown
-watch(() => [props.chartUrl, props.period], ([url, period], [previousUrl, previousPeriod]) => {
-  if (url === previousUrl && period === previousPeriod) {
-    return
-  }
-  payload.value = null
-  fetchChart()
-})
+watch(
+  () => [props.chartUrl, props.period],
+  ([url, period], [previousUrl, previousPeriod]) => {
+    if (url === previousUrl && period === previousPeriod) {
+      return
+    }
+    payload.value = null
+    fetchChart()
+  },
+)
 
-watch(() => props.refreshKey, (value, previous) => {
-  if (value === previous) {
-    return
-  }
-  refresh()
-})
+watch(
+  () => props.refreshKey,
+  (value, previous) => {
+    if (value === previous) {
+      return
+    }
+    refresh()
+  },
+)
 
 const onResize = () => {
   windowWidth.value = window.innerWidth

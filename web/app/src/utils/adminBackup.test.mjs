@@ -26,7 +26,17 @@ test('detects the format of the parsed file', () => {
   // The files written up to v6, while the project was called Gatus, are still restored
   assert.equal(detectBackupFormat({ format: 'gatus-admin-backup', version: 1 }), 'plain')
   assert.equal(detectBackupFormat({ format: 'gatus-admin-backup-encrypted', version: 1 }), 'encrypted')
-  for (const value of [null, undefined, 'go-uptime-admin-backup', 42, [], [{ format: 'go-uptime-admin-backup' }], {}, { format: 'other' }, { format: 'GO-UPTIME-ADMIN-BACKUP' }]) {
+  for (const value of [
+    null,
+    undefined,
+    'go-uptime-admin-backup',
+    42,
+    [],
+    [{ format: 'go-uptime-admin-backup' }],
+    {},
+    { format: 'other' },
+    { format: 'GO-UPTIME-ADMIN-BACKUP' },
+  ]) {
     assert.equal(detectBackupFormat(value), 'unknown')
   }
 })
@@ -54,9 +64,18 @@ test('counts the password in UTF-8 bytes and validates it', () => {
 })
 
 test('reads the name of the file from Content-Disposition', () => {
-  assert.equal(filenameFromContentDisposition('attachment; filename="go-uptime-backup-20260916-180000.enc.json"'), 'go-uptime-backup-20260916-180000.enc.json')
-  assert.equal(filenameFromContentDisposition('attachment; filename=go-uptime-backup-20260916-180000.json'), 'go-uptime-backup-20260916-180000.json')
-  assert.equal(filenameFromContentDisposition("attachment; filename*=UTF-8''go-uptime%20backup.json; filename=\"x.json\""), 'go-uptime backup.json')
+  assert.equal(
+    filenameFromContentDisposition('attachment; filename="go-uptime-backup-20260916-180000.enc.json"'),
+    'go-uptime-backup-20260916-180000.enc.json',
+  )
+  assert.equal(
+    filenameFromContentDisposition('attachment; filename=go-uptime-backup-20260916-180000.json'),
+    'go-uptime-backup-20260916-180000.json',
+  )
+  assert.equal(
+    filenameFromContentDisposition('attachment; filename*=UTF-8\'\'go-uptime%20backup.json; filename="x.json"'),
+    'go-uptime backup.json',
+  )
   assert.equal(filenameFromContentDisposition('attachment; filename="../../etc/passwd"'), 'passwd')
   assert.equal(filenameFromContentDisposition('attachment; filename=""'), 'go-uptime-backup.json')
   assert.equal(filenameFromContentDisposition('attachment'), 'go-uptime-backup.json')
@@ -82,7 +101,10 @@ test('counts and filters the plan', () => {
   assert.deepEqual(planCounts(null), { create: 0, update: 0, unchanged: 0, skip: 0 })
   assert.equal(filterPlanItems(plan.items, 'all').length, 4)
   assert.equal(filterPlanItems(plan.items, '').length, 4)
-  assert.deepEqual(filterPlanItems(plan.items, 'create').map((item) => item.id), ['akamai', 'jobs'])
+  assert.deepEqual(
+    filterPlanItems(plan.items, 'create').map((item) => item.id),
+    ['akamai', 'jobs'],
+  )
   assert.deepEqual(filterPlanItems(plan.items, 'unchanged'), [])
   assert.deepEqual(filterPlanItems(undefined, 'skip'), [])
 })
@@ -112,10 +134,14 @@ test('formats the warnings', () => {
 
 test('builds the body of the preview and of the restore', () => {
   const file = { format: 'go-uptime-admin-backup', version: 1 }
-  assert.deepEqual(buildRestoreBody({ file, format: 'plain', password: 'ignored', overwrite: true }), { file, overwrite: true, disableEndpoints: false })
+  assert.deepEqual(buildRestoreBody({ file, format: 'plain', password: 'ignored', overwrite: true }), {
+    file,
+    overwrite: true,
+    disableEndpoints: false,
+  })
   assert.deepEqual(
     buildRestoreBody({ file, format: 'encrypted', password: 'correct horse battery', disableEndpoints: true, fingerprint: 'f' }),
-    { file, password: 'correct horse battery', overwrite: false, disableEndpoints: true, fingerprint: 'f' }
+    { file, password: 'correct horse battery', overwrite: false, disableEndpoints: true, fingerprint: 'f' },
   )
 })
 
@@ -129,10 +155,16 @@ test('parses Retry-After in seconds', () => {
 
 test('reads the JSON or text of an error answer', () => {
   assert.deepEqual(errorFromResponseText(400, 'Bad Request', '{"error":"password required"}', null), {
-    status: 400, message: 'password required', data: { error: 'password required' }, retryAfter: null,
+    status: 400,
+    message: 'password required',
+    data: { error: 'password required' },
+    retryAfter: null,
   })
   assert.deepEqual(errorFromResponseText(413, 'Request Entity Too Large', 'Request Entity Too Large', null), {
-    status: 413, message: 'Request Entity Too Large', data: null, retryAfter: null,
+    status: 413,
+    message: 'Request Entity Too Large',
+    data: null,
+    retryAfter: null,
   })
   assert.equal(errorFromResponseText(502, 'Bad Gateway', '', null).message, 'Bad Gateway')
   assert.equal(errorFromResponseText(429, '', '{"error":"too many"}', '5').retryAfter, 5)
@@ -145,13 +177,22 @@ test('describes the errors of the backup and of the restore', () => {
   assert.match(describeBackupError({ status: 429, retryAfter: 5 }), /Try again in 5 seconds\./)
   assert.match(describeBackupError({ status: 429, retryAfter: '1' }), /Try again in 1 second\./)
   assert.match(describeBackupError({ status: 429 }), /Try again later\./)
-  assert.equal(describeBackupError({ status: 400, data: { error: 'invalid password or corrupted file' } }), 'Invalid password or corrupted file.')
+  assert.equal(
+    describeBackupError({ status: 400, data: { error: 'invalid password or corrupted file' } }),
+    'Invalid password or corrupted file.',
+  )
   assert.equal(describeBackupError({ status: 400, message: 'Bad Request' }), 'The request or the backup file is invalid.')
   assert.match(describeBackupError({ status: 409, data: { error: 'plan changed' } }), /^Plan changed\. .*run Preview again/)
   assert.match(describeBackupError({ status: 409 }), /run Preview again/)
-  assert.equal(describeBackupError({ status: 415, data: { error: 'content type must be application/json' } }), 'Content type must be application/json.')
+  assert.equal(
+    describeBackupError({ status: 415, data: { error: 'content type must be application/json' } }),
+    'Content type must be application/json.',
+  )
   assert.match(describeBackupError({ status: 503 }), /reloading its configuration/)
-  assert.match(describeBackupError({ status: 503, data: { error: 'managed endpoints unavailable' } }), /^Managed endpoints unavailable\. Try again/)
+  assert.match(
+    describeBackupError({ status: 503, data: { error: 'managed endpoints unavailable' } }),
+    /^Managed endpoints unavailable\. Try again/,
+  )
   assert.equal(describeBackupError({ status: 401 }), 'Authentication required.')
   assert.equal(describeBackupError({ status: 500, message: 'boom' }), 'boom')
   assert.equal(describeBackupError(null), 'Unexpected error.')
@@ -174,15 +215,15 @@ test('throws the errors of a download and notifies a 401', async () => {
   const createError = (status, message, options) => Object.assign(new Error(message), { status, ...options })
   await assert.rejects(
     readBlobResponse(new Response('{"error":"unauthorized"}', { status: 401 }), { onUnauthorized: () => unauthorized++, createError }),
-    (error) => error.status === 401 && error.message === 'unauthorized'
+    (error) => error.status === 401 && error.message === 'unauthorized',
   )
   assert.equal(unauthorized, 1)
   await assert.rejects(
     readBlobResponse(new Response('Request Entity Too Large', { status: 413, statusText: 'Request Entity Too Large' }), { createError }),
-    (error) => error.status === 413 && error.message === 'Request Entity Too Large' && error.data === null
+    (error) => error.status === 413 && error.message === 'Request Entity Too Large' && error.data === null,
   )
   await assert.rejects(
     readBlobResponse(new Response('{"error":"busy"}', { status: 429, headers: { 'Retry-After': '5' } })),
-    (error) => error.status === 429 && error.retryAfter === 5 && error.data.error === 'busy'
+    (error) => error.status === 429 && error.retryAfter === 5 && error.data.error === 'busy',
   )
 })

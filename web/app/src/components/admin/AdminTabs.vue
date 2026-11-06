@@ -12,7 +12,7 @@
         compact ? 'py-1.5' : 'py-2',
         active === tab.id
           ? 'border-foreground text-foreground dark:border-gray-100 dark:text-gray-100'
-          : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100'
+          : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100',
       ]"
     >
       {{ tab.label }}
@@ -25,7 +25,7 @@ defineProps({
   // endpoints, status-pages, push-keys, notifications or backup (fork)
   active: { type: String, required: true },
   // Without the bottom margin, for the layout of the lists of the administration
-  compact: { type: Boolean, default: false }
+  compact: { type: Boolean, default: false },
 })
 
 const tabs = [
@@ -35,6 +35,6 @@ const tabs = [
   // Fork: alerting providers managed through the web
   { id: 'notifications', label: 'Notifications', route: 'AdminAlertProviders' },
   // Fork: backup and restore of the items managed through the web
-  { id: 'backup', label: 'Backup', route: 'AdminBackup' }
+  { id: 'backup', label: 'Backup', route: 'AdminBackup' },
 ]
 </script>

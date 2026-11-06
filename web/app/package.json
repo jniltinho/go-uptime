@@ -38,8 +38,16 @@
     "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0",
     "vite-plus": "1.5.0"
   },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0"
+  },
+  "browserslist": [
+    "defaults",
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "eslintConfig": {
-    "root": true,
     "env": {
       "node": true
     },
@@ -47,12 +55,20 @@
       "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
+    "globals": {
+      "defineEmits": "readonly",
+      "defineExpose": "readonly",
+      "defineProps": "readonly",
+      "withDefaults": "readonly"
+    },
     "parserOptions": {
-      "requireConfigFile": false,
       "ecmaVersion": "latest",
+      "requireConfigFile": false,
       "sourceType": "module"
     },
+    "root": true,
     "rules": {
+      "no-extra-semi": "off",
       "vue/multi-word-component-names": [
         "error",
         {
@@ -72,21 +88,6 @@
           ]
         }
       ]
-    },
-    "globals": {
-      "defineProps": "readonly",
-      "defineEmits": "readonly",
-      "defineExpose": "readonly",
-      "withDefaults": "readonly"
     }
-  },
-  "browserslist": [
-    "defaults",
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ],
-  "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0"
   }
 }

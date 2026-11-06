@@ -13,26 +13,55 @@
 
     <div v-if="loading" class="py-12 flex justify-center"><Loading /></div>
     <template v-else>
-      <div v-if="error" role="alert" data-testid="admin-error" class="mb-4 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200">
+      <div
+        v-if="error"
+        role="alert"
+        data-testid="admin-error"
+        class="mb-4 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+      >
         <p class="whitespace-pre-line">{{ error }}</p>
-        <Button v-if="versionConflict" variant="outline" size="sm" class="mt-2" data-testid="admin-reload" @click="reloadCurrentVersion">Reload current version</Button>
+        <Button v-if="versionConflict" variant="outline" size="sm" class="mt-2" data-testid="admin-reload" @click="reloadCurrentVersion"
+          >Reload current version</Button
+        >
       </div>
-      <div v-if="success" role="status" data-testid="admin-success" class="mb-4 border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200">{{ success }}</div>
-      <div v-if="readOnly" class="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+      <div
+        v-if="success"
+        role="status"
+        data-testid="admin-success"
+        class="mb-4 border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200"
+      >
+        {{ success }}
+      </div>
+      <div
+        v-if="readOnly"
+        class="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+      >
         This endpoint is defined in the configuration file and can only be viewed.
       </div>
-      <div v-if="exposure.length" role="status" data-testid="admin-endpoint-exposure" class="mb-4 border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100">
+      <div
+        v-if="exposure.length"
+        role="status"
+        data-testid="admin-endpoint-exposure"
+        class="mb-4 border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-100"
+      >
         This endpoint will be publicly visible on the {{ exposure.length === 1 ? 'status page' : 'status pages' }}:
         <template v-for="(page, index) in exposure" :key="`${page.origin}-${page.slug}`">
           <a :href="`/status/${page.slug}`" target="_blank" rel="noopener" class="font-medium underline">{{ page.title }}</a>
-          ({{ page.published ? 'published' : 'not published' }}, {{ page.reason === 'group' ? 'by group' : 'by key' }}){{ index < exposure.length - 1 ? ', ' : '' }}
+          ({{ page.published ? 'published' : 'not published' }}, {{ page.reason === 'group' ? 'by group' : 'by key' }}){{
+            index < exposure.length - 1 ? ', ' : ''
+          }}
         </template>
       </div>
 
-      <div v-if="keyChange" role="status" data-testid="admin-key-change" class="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+      <div
+        v-if="keyChange"
+        role="status"
+        data-testid="admin-key-change"
+        class="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+      >
         <p>
-          Saving renames the key from <span class="font-mono">{{ endpointKey }}</span> to <span class="font-mono">{{ keyChange }}</span>.
-          The history is kept, but the URLs of the badges and of the details page change.
+          Saving renames the key from <span class="font-mono">{{ endpointKey }}</span> to <span class="font-mono">{{ keyChange }}</span
+          >. The history is kept, but the URLs of the badges and of the details page change.
         </p>
         <p v-if="receivesPush" class="mt-1" data-testid="admin-key-change-push">
           Push URLs with a global key use the new key; the push URL with the token of the endpoint does not change.
@@ -53,9 +82,16 @@
           role="tab"
           :aria-selected="mode === tab.value"
           :data-testid="`admin-mode-${tab.value}`"
-          :class="['-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors', mode === tab.value ? 'border-primary text-foreground dark:border-gray-100 dark:text-gray-100' : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100']"
+          :class="[
+            '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
+            mode === tab.value
+              ? 'border-primary text-foreground dark:border-gray-100 dark:text-gray-100'
+              : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100',
+          ]"
           @click="switchMode(tab.value)"
-        >{{ tab.label }}</button>
+        >
+          {{ tab.label }}
+        </button>
       </div>
 
       <div v-if="mode === 'form' && !readOnly" class="space-y-4">
@@ -63,14 +99,19 @@
         <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="admin-section-general">
           <header class="mb-4">
             <h2 class="text-base font-semibold text-foreground dark:text-gray-100">General</h2>
-            <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">How the endpoint is monitored and where it appears on the dashboard.</p>
+            <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+              How the endpoint is monitored and where it appears on the dashboard.
+            </p>
           </header>
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Monitor type</span>
               <Select v-model="monitorType" :options="monitorTypeOptions" class="mt-1.5" data-testid="admin-field-type" />
               <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
-                <template v-if="isPush">Passive: Status does not check the endpoint, it receives pushes at its URL, like the Push monitors of Uptime Kuma.</template>
+                <template v-if="isPush"
+                  >Passive: Status does not check the endpoint, it receives pushes at its URL, like the Push monitors of Uptime
+                  Kuma.</template
+                >
                 <template v-else-if="monitorType === 'dns'">The DNS query (query-name and query-type) is edited in YAML mode.</template>
                 <template v-else>Active: Status checks the URL at every interval. The type follows the scheme of the URL.</template>
                 <template v-if="isEdit"> Push endpoints and active endpoints cannot be converted into each other.</template>
@@ -82,22 +123,57 @@
             </label>
             <div>
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Group</span>
-              <Select v-model="groupChoice" :options="groupChoiceOptions" placeholder="No group" class="mt-1.5" data-testid="admin-field-group-select" />
-              <Input v-if="newGroup" v-model="form.group" placeholder="Name of the new group" class="mt-2 dark:border-gray-700" data-testid="admin-field-group" />
+              <Select
+                v-model="groupChoice"
+                :options="groupChoiceOptions"
+                placeholder="No group"
+                class="mt-1.5"
+                data-testid="admin-field-group-select"
+              />
+              <Input
+                v-if="newGroup"
+                v-model="form.group"
+                placeholder="Name of the new group"
+                class="mt-2 dark:border-gray-700"
+                data-testid="admin-field-group"
+              />
             </div>
             <label v-if="isPush" class="block">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Heartbeat interval</span>
-              <Input v-model="form.heartbeatInterval" placeholder="1m (default)" class="mt-1.5 dark:border-gray-700" data-testid="admin-field-heartbeat" />
-              <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400">A failure is recorded for every interval without push.</span>
+              <Input
+                v-model="form.heartbeatInterval"
+                placeholder="1m (default)"
+                class="mt-1.5 dark:border-gray-700"
+                data-testid="admin-field-heartbeat"
+              />
+              <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400"
+                >A failure is recorded for every interval without push.</span
+              >
             </label>
             <!-- Fork: number of Pending results before down (heartbeat.retries) -->
             <label v-if="isPush" class="block">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Retries</span>
-              <Input v-model="form.heartbeatRetries" type="number" min="0" max="100" step="1" placeholder="0 (default)" class="mt-1.5 dark:border-gray-700" data-testid="admin-field-retries" />
-              <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400">Missed heartbeats or down pushes are recorded as pending this many times before down.</span>
+              <Input
+                v-model="form.heartbeatRetries"
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                placeholder="0 (default)"
+                class="mt-1.5 dark:border-gray-700"
+                data-testid="admin-field-retries"
+              />
+              <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400"
+                >Missed heartbeats or down pushes are recorded as pending this many times before down.</span
+              >
             </label>
             <label class="flex items-center gap-2 text-sm text-foreground dark:text-gray-200 sm:col-span-2">
-              <input v-model="form.enabled" type="checkbox" class="h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="admin-field-enabled" />
+              <input
+                v-model="form.enabled"
+                type="checkbox"
+                class="h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                data-testid="admin-field-enabled"
+              />
               Enabled
             </label>
           </div>
@@ -112,7 +188,12 @@
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="block sm:col-span-2">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">URL</span>
-              <Input v-model="form.url" :placeholder="urlPlaceholder" class="mt-1.5 font-mono dark:border-gray-700" data-testid="admin-field-url" />
+              <Input
+                v-model="form.url"
+                :placeholder="urlPlaceholder"
+                class="mt-1.5 font-mono dark:border-gray-700"
+                data-testid="admin-field-url"
+              />
             </label>
             <div v-if="monitorType === 'http'">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Method</span>
@@ -120,22 +201,60 @@
             </div>
             <label class="block">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Interval</span>
-              <Input v-model="form.interval" placeholder="1m (default)" class="mt-1.5 dark:border-gray-700" data-testid="admin-field-interval" />
+              <Input
+                v-model="form.interval"
+                placeholder="1m (default)"
+                class="mt-1.5 dark:border-gray-700"
+                data-testid="admin-field-interval"
+              />
             </label>
             <fieldset class="sm:col-span-2">
               <legend class="text-sm font-medium text-foreground dark:text-gray-200">Options</legend>
               <div class="mt-2 grid gap-2 sm:grid-cols-3">
-                <label v-if="monitorType === 'http'" class="flex items-start gap-2 border px-3 py-2 text-sm text-foreground dark:border-gray-700 dark:text-gray-200">
-                  <input v-model="form.followRedirects" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="admin-field-follow-redirects" />
-                  <span>Follow redirects<span class="block text-xs text-muted-foreground dark:text-gray-400">client.ignore-redirect when off</span></span>
+                <label
+                  v-if="monitorType === 'http'"
+                  class="flex items-start gap-2 border px-3 py-2 text-sm text-foreground dark:border-gray-700 dark:text-gray-200"
+                >
+                  <input
+                    v-model="form.followRedirects"
+                    type="checkbox"
+                    class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                    data-testid="admin-field-follow-redirects"
+                  />
+                  <span
+                    >Follow redirects<span class="block text-xs text-muted-foreground dark:text-gray-400"
+                      >client.ignore-redirect when off</span
+                    ></span
+                  >
                 </label>
-                <label v-if="monitorType === 'http'" class="flex items-start gap-2 border px-3 py-2 text-sm text-foreground dark:border-gray-700 dark:text-gray-200">
-                  <input v-model="form.insecure" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="admin-field-insecure" />
-                  <span>Skip TLS certificate verification<span class="block text-xs text-muted-foreground dark:text-gray-400">Self-signed or incomplete chains</span></span>
+                <label
+                  v-if="monitorType === 'http'"
+                  class="flex items-start gap-2 border px-3 py-2 text-sm text-foreground dark:border-gray-700 dark:text-gray-200"
+                >
+                  <input
+                    v-model="form.insecure"
+                    type="checkbox"
+                    class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                    data-testid="admin-field-insecure"
+                  />
+                  <span
+                    >Skip TLS certificate verification<span class="block text-xs text-muted-foreground dark:text-gray-400"
+                      >Self-signed or incomplete chains</span
+                    ></span
+                  >
                 </label>
                 <label class="flex items-start gap-2 border px-3 py-2 text-sm text-foreground dark:border-gray-700 dark:text-gray-200">
-                  <input v-model="form.acceptPush" type="checkbox" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" data-testid="admin-field-accept-push" />
-                  <span>Accept push<span class="block text-xs text-muted-foreground dark:text-gray-400">Also receive pushes at /api/push</span></span>
+                  <input
+                    v-model="form.acceptPush"
+                    type="checkbox"
+                    class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
+                    data-testid="admin-field-accept-push"
+                  />
+                  <span
+                    >Accept push<span class="block text-xs text-muted-foreground dark:text-gray-400"
+                      >Also receive pushes at /api/push</span
+                    ></span
+                  >
                 </label>
               </div>
             </fieldset>
@@ -157,10 +276,16 @@
               <span class="block text-base font-semibold text-foreground dark:text-gray-100">Push</span>
               <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400">
                 <template v-if="isPush">Token, push URL and examples.</template>
-                <template v-else>Pushes are recorded in the history of the endpoint, with its checks, and count for its uptime and alerts.</template>
+                <template v-else
+                  >Pushes are recorded in the history of the endpoint, with its checks, and count for its uptime and alerts.</template
+                >
               </span>
             </span>
-            <span class="hidden shrink-0 font-mono text-xs text-muted-foreground sm:block dark:text-gray-400" data-testid="admin-push-summary">{{ pushSummary }}</span>
+            <span
+              class="hidden shrink-0 font-mono text-xs text-muted-foreground sm:block dark:text-gray-400"
+              data-testid="admin-push-summary"
+              >{{ pushSummary }}</span
+            >
           </button>
 
           <div v-if="pushExpanded" class="space-y-5 border-t px-5 pb-5 pt-4 dark:border-gray-700">
@@ -174,9 +299,13 @@
                   class="font-mono dark:border-gray-700"
                   data-testid="admin-field-push-token"
                 />
-                <Button variant="outline" class="shrink-0" data-testid="admin-generate-push-token" @click="form.token = generatePushToken()">Generate token</Button>
+                <Button variant="outline" class="shrink-0" data-testid="admin-generate-push-token" @click="form.token = generatePushToken()"
+                  >Generate token</Button
+                >
               </div>
-              <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">To keep the scripts of an Uptime Kuma monitor, paste its token.</p>
+              <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
+                To keep the scripts of an Uptime Kuma monitor, paste its token.
+              </p>
             </div>
 
             <div v-if="pushUrl">
@@ -190,26 +319,41 @@
                   data-testid="admin-push-url"
                   @focus="$event.target.select()"
                 />
-                <Button variant="outline" class="w-24 shrink-0" data-testid="admin-copy-push-url" @click="copyText(pushUrl, 'url')">{{ copiedTarget === 'url' ? 'Copied' : 'Copy' }}</Button>
+                <Button variant="outline" class="w-24 shrink-0" data-testid="admin-copy-push-url" @click="copyText(pushUrl, 'url')">{{
+                  copiedTarget === 'url' ? 'Copied' : 'Copy'
+                }}</Button>
               </div>
               <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
                 <template v-if="isPush">Call this URL at least every {{ form.heartbeatInterval.trim() || '1m' }}. </template>
-                Optional parameters: <span class="font-mono">status</span> (<span class="font-mono">up</span>, or anything else for a failure), <span class="font-mono">msg</span> and <span class="font-mono">ping</span> (in milliseconds).
+                Optional parameters: <span class="font-mono">status</span> (<span class="font-mono">up</span>, or anything else for a
+                failure), <span class="font-mono">msg</span> and <span class="font-mono">ping</span> (in milliseconds).
               </p>
             </div>
 
             <div v-if="pushUrl">
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">Example with curl</span>
               <div class="mt-1.5 flex gap-2">
-                <pre class="flex h-10 min-w-0 flex-1 items-center overflow-x-auto border bg-muted/40 px-3 font-mono text-xs text-foreground dark:border-gray-700 dark:text-gray-100" data-testid="admin-push-curl">{{ curlExample }}</pre>
-                <Button variant="outline" class="w-24 shrink-0" data-testid="admin-copy-push-curl" @click="copyText(curlExample, 'curl')">{{ copiedTarget === 'curl' ? 'Copied' : 'Copy' }}</Button>
+                <pre
+                  class="flex h-10 min-w-0 flex-1 items-center overflow-x-auto border bg-muted/40 px-3 font-mono text-xs text-foreground dark:border-gray-700 dark:text-gray-100"
+                  data-testid="admin-push-curl"
+                  >{{ curlExample }}</pre>
+                <Button variant="outline" class="w-24 shrink-0" data-testid="admin-copy-push-curl" @click="copyText(curlExample, 'curl')">{{
+                  copiedTarget === 'curl' ? 'Copied' : 'Copy'
+                }}</Button>
               </div>
             </div>
 
             <div>
               <span class="block text-sm font-medium text-foreground dark:text-gray-200">With a global key</span>
-              <p class="mt-1.5 break-all border bg-muted/40 px-3 py-2 font-mono text-xs text-muted-foreground dark:border-gray-700 dark:text-gray-400" data-testid="admin-push-global-url">{{ globalKeyUrl }}</p>
-              <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">Global keys are created in the Push keys tab of the administration.</p>
+              <p
+                class="mt-1.5 break-all border bg-muted/40 px-3 py-2 font-mono text-xs text-muted-foreground dark:border-gray-700 dark:text-gray-400"
+                data-testid="admin-push-global-url"
+              >
+                {{ globalKeyUrl }}
+              </p>
+              <p class="mt-1 text-xs text-muted-foreground dark:text-gray-400">
+                Global keys are created in the Push keys tab of the administration.
+              </p>
             </div>
           </div>
         </section>
@@ -221,12 +365,21 @@
               <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Conditions</h2>
               <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Every condition must be true for the check to succeed.</p>
             </div>
-            <Button variant="outline" size="sm" class="shrink-0" data-testid="admin-add-condition" @click="form.conditions.push('')">Add condition</Button>
+            <Button variant="outline" size="sm" class="shrink-0" data-testid="admin-add-condition" @click="form.conditions.push('')"
+              >Add condition</Button
+            >
           </header>
           <p v-if="form.conditions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No conditions.</p>
           <div v-for="(condition, index) in form.conditions" :key="`condition-${index}`" class="mb-2 flex gap-2 last:mb-0">
-            <Input v-model="form.conditions[index]" placeholder="[STATUS] == 200" class="font-mono dark:border-gray-700" :data-testid="`admin-field-condition-${index}`" />
-            <Button variant="outline" size="icon" class="shrink-0" aria-label="Remove condition" @click="form.conditions.splice(index, 1)">✕</Button>
+            <Input
+              v-model="form.conditions[index]"
+              placeholder="[STATUS] == 200"
+              class="font-mono dark:border-gray-700"
+              :data-testid="`admin-field-condition-${index}`"
+            />
+            <Button variant="outline" size="icon" class="shrink-0" aria-label="Remove condition" @click="form.conditions.splice(index, 1)"
+              >✕</Button
+            >
           </div>
         </section>
 
@@ -235,14 +388,33 @@
           <header class="mb-3 flex items-start justify-between gap-4">
             <div>
               <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Headers</h2>
-              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Sent with every request. Secrets are masked after saving.</p>
+              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+                Sent with every request. Secrets are masked after saving.
+              </p>
             </div>
-            <Button variant="outline" size="sm" class="shrink-0" data-testid="admin-add-header" @click="form.headers.push({ name: '', value: '' })">Add header</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="shrink-0"
+              data-testid="admin-add-header"
+              @click="form.headers.push({ name: '', value: '' })"
+              >Add header</Button
+            >
           </header>
           <p v-if="form.headers.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No headers.</p>
           <div v-for="(header, index) in form.headers" :key="`header-${index}`" class="mb-2 grid grid-cols-[1fr_2fr_auto] gap-2 last:mb-0">
-            <Input v-model="header.name" placeholder="Name" class="dark:border-gray-700" :data-testid="`admin-field-header-name-${index}`" />
-            <Input v-model="header.value" placeholder="Value" class="font-mono dark:border-gray-700" :data-testid="`admin-field-header-value-${index}`" />
+            <Input
+              v-model="header.name"
+              placeholder="Name"
+              class="dark:border-gray-700"
+              :data-testid="`admin-field-header-name-${index}`"
+            />
+            <Input
+              v-model="header.value"
+              placeholder="Value"
+              class="font-mono dark:border-gray-700"
+              :data-testid="`admin-field-header-value-${index}`"
+            />
             <Button variant="outline" size="icon" aria-label="Remove header" @click="form.headers.splice(index, 1)">✕</Button>
           </div>
         </section>
@@ -254,20 +426,54 @@
               <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Alerts</h2>
               <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
                 Notifications sent by the providers of the
-                <a href="/admin/alert-providers" target="_blank" rel="noopener" class="underline underline-offset-2" data-testid="admin-alerts-notifications-link">Notifications</a>
+                <a
+                  href="/admin/alert-providers"
+                  target="_blank"
+                  rel="noopener"
+                  class="underline underline-offset-2"
+                  data-testid="admin-alerts-notifications-link"
+                  >Notifications</a
+                >
                 tab or of the configuration file. An endpoint can have several alerts, even of the same type.
               </p>
             </div>
-            <Button v-if="alertTypeOptions.length > 0" variant="outline" size="sm" class="shrink-0" data-testid="admin-add-alert" @click="addAlert">Add alert</Button>
+            <Button
+              v-if="alertTypeOptions.length > 0"
+              variant="outline"
+              size="sm"
+              class="shrink-0"
+              data-testid="admin-add-alert"
+              @click="addAlert"
+              >Add alert</Button
+            >
           </header>
-          <div v-if="alertTypeOptions.length === 0" class="text-sm text-muted-foreground dark:text-gray-400" data-testid="admin-alerts-none">
+          <div
+            v-if="alertTypeOptions.length === 0"
+            class="text-sm text-muted-foreground dark:text-gray-400"
+            data-testid="admin-alerts-none"
+          >
             No notification is configured yet.
-            <a href="/admin/alert-providers/new" target="_blank" rel="noopener" class="font-medium text-foreground underline underline-offset-2 dark:text-gray-100">Configure a notification</a>
+            <a
+              href="/admin/alert-providers/new"
+              target="_blank"
+              rel="noopener"
+              class="font-medium text-foreground underline underline-offset-2 dark:text-gray-100"
+              >Configure a notification</a
+            >
             in a new tab, then add the alert here.
           </div>
           <p v-else-if="form.alerts.length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No alerts.</p>
-          <div v-for="(alert, index) in form.alerts" :key="`alert-${index}`" class="mb-3 border p-4 last:mb-0 dark:border-gray-700" :data-testid="`admin-alert-${index}`">
-            <p v-if="alert.type && !alertProviderOf(alert.type)" role="alert" class="mb-3 border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+          <div
+            v-for="(alert, index) in form.alerts"
+            :key="`alert-${index}`"
+            class="mb-3 border p-4 last:mb-0 dark:border-gray-700"
+            :data-testid="`admin-alert-${index}`"
+          >
+            <p
+              v-if="alert.type && !alertProviderOf(alert.type)"
+              role="alert"
+              class="mb-3 border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+            >
               No valid {{ alert.type }} notification is configured: this alert cannot be saved until one is
               <a href="/admin/alert-providers" target="_blank" rel="noopener" class="underline underline-offset-2">configured</a>.
             </p>
@@ -278,19 +484,40 @@
               </div>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Description</span>
-                <Input v-model="alert.description" :placeholder="inherited(alert.type, 'description') || ''" class="mt-1.5 dark:border-gray-700" />
+                <Input
+                  v-model="alert.description"
+                  :placeholder="inherited(alert.type, 'description') || ''"
+                  class="mt-1.5 dark:border-gray-700"
+                />
               </label>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Failure threshold</span>
-                <Input v-model="alert.failureThreshold" type="number" min="1" :placeholder="inheritedPlaceholder(alert.type, 'failureThreshold')" class="mt-1.5 dark:border-gray-700" />
+                <Input
+                  v-model="alert.failureThreshold"
+                  type="number"
+                  min="1"
+                  :placeholder="inheritedPlaceholder(alert.type, 'failureThreshold')"
+                  class="mt-1.5 dark:border-gray-700"
+                />
               </label>
               <label class="block">
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Success threshold</span>
-                <Input v-model="alert.successThreshold" type="number" min="1" :placeholder="inheritedPlaceholder(alert.type, 'successThreshold')" class="mt-1.5 dark:border-gray-700" />
+                <Input
+                  v-model="alert.successThreshold"
+                  type="number"
+                  min="1"
+                  :placeholder="inheritedPlaceholder(alert.type, 'successThreshold')"
+                  class="mt-1.5 dark:border-gray-700"
+                />
               </label>
               <div>
                 <span class="block text-sm font-medium text-foreground dark:text-gray-200">Send on resolved</span>
-                <Select v-model="alert.sendOnResolved" :options="sendOnResolvedOptionsFor(alert.type)" class="mt-1.5" :data-testid="`admin-alert-send-on-resolved-${index}`" />
+                <Select
+                  v-model="alert.sendOnResolved"
+                  :options="sendOnResolvedOptionsFor(alert.type)"
+                  class="mt-1.5"
+                  :data-testid="`admin-alert-send-on-resolved-${index}`"
+                />
               </div>
             </div>
             <details class="mt-3 border-t pt-3 dark:border-gray-700" :open="alert.enabled === 'no' || Boolean(alert.reminder)">
@@ -298,17 +525,31 @@
               <div class="mt-3 grid gap-3 sm:grid-cols-2">
                 <div>
                   <span class="block text-sm font-medium text-foreground dark:text-gray-200">Enabled</span>
-                  <Select v-model="alert.enabled" :options="alertEnabledOptions" class="mt-1.5" :data-testid="`admin-alert-enabled-${index}`" />
+                  <Select
+                    v-model="alert.enabled"
+                    :options="alertEnabledOptions"
+                    class="mt-1.5"
+                    :data-testid="`admin-alert-enabled-${index}`"
+                  />
                 </div>
                 <label class="block">
                   <span class="block text-sm font-medium text-foreground dark:text-gray-200">Minimum reminder interval</span>
-                  <Input v-model="alert.reminder" placeholder="e.g. 30m; empty sends no reminder" class="mt-1.5 dark:border-gray-700" :data-testid="`admin-alert-reminder-${index}`" />
-                  <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400">Repeats a triggered alert at most this often, at least 5m.</span>
+                  <Input
+                    v-model="alert.reminder"
+                    placeholder="e.g. 30m; empty sends no reminder"
+                    class="mt-1.5 dark:border-gray-700"
+                    :data-testid="`admin-alert-reminder-${index}`"
+                  />
+                  <span class="mt-1 block text-xs text-muted-foreground dark:text-gray-400"
+                    >Repeats a triggered alert at most this often, at least 5m.</span
+                  >
                 </label>
               </div>
             </details>
             <div class="mt-3 flex items-center justify-end gap-4">
-              <Button variant="ghost" size="sm" class="text-red-600 dark:text-red-400" @click="form.alerts.splice(index, 1)">Remove alert</Button>
+              <Button variant="ghost" size="sm" class="text-red-600 dark:text-red-400" @click="form.alerts.splice(index, 1)"
+                >Remove alert</Button
+              >
             </div>
           </div>
         </section>
@@ -333,7 +574,9 @@
       <div v-if="testResult" data-testid="admin-test-result" class="mt-6 border bg-card p-6 dark:border-gray-700 dark:bg-gray-900">
         <h2 class="mb-1 text-lg font-semibold text-foreground dark:text-gray-100">
           Test result:
-          <span :class="testResult.success ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">{{ testResult.success ? 'success' : 'failure' }}</span>
+          <span :class="testResult.success ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">{{
+            testResult.success ? 'success' : 'failure'
+          }}</span>
         </h2>
         <p class="mb-3 text-sm text-muted-foreground dark:text-gray-400">
           Duration: {{ testResult.durationMs }} ms<span v-if="testResult.status"> · HTTP {{ testResult.status }}</span>
@@ -343,7 +586,9 @@
             v-for="(condition, index) in testResult.conditionResults"
             :key="index"
             :class="condition.success ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'"
-          >{{ condition.success ? '✓' : '✗' }} {{ condition.condition }}</li>
+          >
+            {{ condition.success ? '✓' : '✗' }} {{ condition.condition }}
+          </li>
         </ul>
         <ul v-if="testResult.errors && testResult.errors.length" class="mt-3 list-disc pl-5 text-sm text-red-700 dark:text-red-400">
           <li v-for="(message, index) in testResult.errors" :key="index">{{ message }}</li>
@@ -387,7 +632,21 @@ const monitorTypes = [
   { label: 'Push (passive)', value: 'push', placeholder: '', conditions: [] },
 ]
 // Fields of the active endpoints, removed from the definition of a push endpoint
-const activeFields = ['url', 'method', 'interval', 'conditions', 'headers', 'client', 'body', 'graphql', 'dns', 'ssh', 'ui', 'extra-labels', 'push']
+const activeFields = [
+  'url',
+  'method',
+  'interval',
+  'conditions',
+  'headers',
+  'client',
+  'body',
+  'graphql',
+  'dns',
+  'ssh',
+  'ui',
+  'extra-labels',
+  'push',
+]
 const pushTokenAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 const maskedValue = '********'
 
@@ -446,14 +705,21 @@ const title = computed(() => {
   }
   return readOnly.value ? 'Endpoint from the configuration file' : 'Edit endpoint'
 })
-const alertTypeOptions = computed(() => alertProviders.value.length
-  ? alertProviders.value.map((provider) => ({ label: `${provider.name}${provider.source === 'yaml' ? ' (YAML)' : ''}`, value: provider.type }))
-  : alertTypes.value.map((type) => ({ label: type, value: type })))
-const alertProviderOf = (type) => alertProviders.value.find((provider) => provider.type === type) || (alertTypes.value.includes(type) ? { type } : null)
+const alertTypeOptions = computed(() =>
+  alertProviders.value.length
+    ? alertProviders.value.map((provider) => ({
+        label: `${provider.name}${provider.source === 'yaml' ? ' (YAML)' : ''}`,
+        value: provider.type,
+      }))
+    : alertTypes.value.map((type) => ({ label: type, value: type })),
+)
+const alertProviderOf = (type) =>
+  alertProviders.value.find((provider) => provider.type === type) || (alertTypes.value.includes(type) ? { type } : null)
 // An alert of a type that is not configured anymore keeps its type among the options, so that it is not changed silently
-const alertTypeOptionsFor = (type) => (!type || alertTypeOptions.value.some((option) => option.value === type)
-  ? alertTypeOptions.value
-  : [...alertTypeOptions.value, { label: `${type} (not configured)`, value: type }])
+const alertTypeOptionsFor = (type) =>
+  !type || alertTypeOptions.value.some((option) => option.value === type)
+    ? alertTypeOptions.value
+    : [...alertTypeOptions.value, { label: `${type} (not configured)`, value: type }]
 const inherited = (type, key) => {
   const provider = alertProviderOf(type)
   return provider ? provider[key] : undefined
@@ -502,7 +768,10 @@ const pushUrl = computed(() => {
   return `${window.location.origin}/api/push/${encodeURIComponent(token)}?status=up&msg=OK&ping=`
 })
 const curlExample = computed(() => `curl -fsS "${pushUrl.value}"`)
-const globalKeyUrl = computed(() => `${window.location.origin}/api/push/<global-key>/${encodeURIComponent(currentKey.value || '<endpoint-key>')}?status=up&msg=OK&ping=`)
+const globalKeyUrl = computed(
+  () =>
+    `${window.location.origin}/api/push/<global-key>/${encodeURIComponent(currentKey.value || '<endpoint-key>')}?status=up&msg=OK&ping=`,
+)
 // Summary of the push block while it is collapsed
 const pushSummary = computed(() => {
   const token = form.token.trim()
@@ -555,24 +824,27 @@ watch(monitorType, (type, previousType) => {
   }
 })
 
-watch(() => form.acceptPush, (enabled) => {
-  // The token is optional for active endpoints: it can be cleared to accept only the global push keys
-  if (enabled && !loading.value) {
-    if (!form.token) {
-      form.token = generatePushToken()
+watch(
+  () => form.acceptPush,
+  (enabled) => {
+    // The token is optional for active endpoints: it can be cleared to accept only the global push keys
+    if (enabled && !loading.value) {
+      if (!form.token) {
+        form.token = generatePushToken()
+      }
+      pushExpanded.value = true
     }
-    pushExpanded.value = true
-  }
-})
+  },
+)
 
 const loadGroupNames = async () => {
   const [endpoints, options] = await Promise.allSettled([adminApi.list(), statusPagesApi.options()])
   const names = new Set()
   if (endpoints.status === 'fulfilled') {
-    (endpoints.value.data || []).forEach((item) => names.add((item.group || '').trim()))
+    ;(endpoints.value.data || []).forEach((item) => names.add((item.group || '').trim()))
   }
   if (options.status === 'fulfilled') {
-    ((options.value.data && options.value.data.groups) || []).forEach((group) => names.add((group.name || '').trim()))
+    ;((options.value.data && options.value.data.groups) || []).forEach((group) => names.add((group.name || '').trim()))
   }
   names.delete('')
   groupNames.value = [...names].sort((a, b) => a.localeCompare(b))
@@ -612,15 +884,15 @@ const formFromDocument = (document) => {
     headers: document.headers ? Object.entries(document.headers).map(([name, value]) => ({ name, value: String(value) })) : [],
     alerts: Array.isArray(document.alerts)
       ? document.alerts.map((alert) => ({
-        type: alert.type || '',
-        description: alert.description || '',
-        failureThreshold: alert['failure-threshold'] ? String(alert['failure-threshold']) : '',
-        successThreshold: alert['success-threshold'] ? String(alert['success-threshold']) : '',
-        sendOnResolved: alert['send-on-resolved'] === true ? 'yes' : alert['send-on-resolved'] === false ? 'no' : 'default',
-        enabled: alert.enabled === false ? 'no' : 'yes',
-        reminder: alert['minimum-reminder-interval'] ? String(alert['minimum-reminder-interval']) : '',
-        original: alert,
-      }))
+          type: alert.type || '',
+          description: alert.description || '',
+          failureThreshold: alert['failure-threshold'] ? String(alert['failure-threshold']) : '',
+          successThreshold: alert['success-threshold'] ? String(alert['success-threshold']) : '',
+          sendOnResolved: alert['send-on-resolved'] === true ? 'yes' : alert['send-on-resolved'] === false ? 'no' : 'default',
+          enabled: alert.enabled === false ? 'no' : 'yes',
+          reminder: alert['minimum-reminder-interval'] ? String(alert['minimum-reminder-interval']) : '',
+          original: alert,
+        }))
       : [],
     acceptPush: Boolean(document.push && document.push.enabled),
     token: String((isPushDocument ? document.token : document.push && document.push.token) || ''),
@@ -656,7 +928,11 @@ const documentFromForm = () => {
     setOrDelete(heartbeat, 'interval', form.heartbeatInterval.trim())
     // Omitted when 0 (the default); a value that is not a number is sent as it is, so that the API rejects it
     const retries = String(form.heartbeatRetries).trim()
-    setOrDelete(heartbeat, 'retries', retries === '' || Number(retries) === 0 ? null : (Number.isInteger(Number(retries)) ? Number(retries) : retries))
+    setOrDelete(
+      heartbeat,
+      'retries',
+      retries === '' || Number(retries) === 0 ? null : Number.isInteger(Number(retries)) ? Number(retries) : retries,
+    )
     setOrDelete(document, 'heartbeat', Object.keys(heartbeat).length ? heartbeat : null)
   } else {
     delete document.type
@@ -673,9 +949,11 @@ const documentFromForm = () => {
     const conditions = form.conditions.map((condition) => condition.trim()).filter(Boolean)
     setOrDelete(document, 'conditions', conditions.length ? conditions : null)
     const headers = {}
-    form.headers.filter((header) => header.name.trim()).forEach((header) => {
-      headers[header.name.trim()] = header.value
-    })
+    form.headers
+      .filter((header) => header.name.trim())
+      .forEach((header) => {
+        headers[header.name.trim()] = header.value
+      })
     setOrDelete(document, 'headers', Object.keys(headers).length ? headers : null)
     if (form.acceptPush) {
       const push = { enabled: true }
@@ -685,18 +963,20 @@ const documentFromForm = () => {
       delete document.push
     }
   }
-  const alerts = form.alerts.filter((alert) => alert.type).map((alert) => {
-    const result = { ...alert.original, type: alert.type }
-    setOrDelete(result, 'description', alert.description.trim())
-    setOrDelete(result, 'failure-threshold', Number(alert.failureThreshold) > 0 ? Number(alert.failureThreshold) : null)
-    setOrDelete(result, 'success-threshold', Number(alert.successThreshold) > 0 ? Number(alert.successThreshold) : null)
-    // Fork: no is kept as false, so that it can override a provider whose default alert sends on resolved
-    setOrDelete(result, 'send-on-resolved', alert.sendOnResolved === 'yes' ? true : alert.sendOnResolved === 'no' ? false : null)
-    // Fork: an alert is enabled unless it says otherwise, so only false is written
-    setOrDelete(result, 'enabled', alert.enabled === 'no' ? false : null)
-    setOrDelete(result, 'minimum-reminder-interval', alert.reminder.trim())
-    return result
-  })
+  const alerts = form.alerts
+    .filter((alert) => alert.type)
+    .map((alert) => {
+      const result = { ...alert.original, type: alert.type }
+      setOrDelete(result, 'description', alert.description.trim())
+      setOrDelete(result, 'failure-threshold', Number(alert.failureThreshold) > 0 ? Number(alert.failureThreshold) : null)
+      setOrDelete(result, 'success-threshold', Number(alert.successThreshold) > 0 ? Number(alert.successThreshold) : null)
+      // Fork: no is kept as false, so that it can override a provider whose default alert sends on resolved
+      setOrDelete(result, 'send-on-resolved', alert.sendOnResolved === 'yes' ? true : alert.sendOnResolved === 'no' ? false : null)
+      // Fork: an alert is enabled unless it says otherwise, so only false is written
+      setOrDelete(result, 'enabled', alert.enabled === 'no' ? false : null)
+      setOrDelete(result, 'minimum-reminder-interval', alert.reminder.trim())
+      return result
+    })
   setOrDelete(document, 'alerts', alerts.length ? alerts : null)
   return document
 }
@@ -704,7 +984,16 @@ const documentFromForm = () => {
 const currentPayload = () => (mode.value === 'form' ? jsonPayload(documentFromForm()) : yamlPayload(yamlText.value))
 
 const addAlert = () => {
-  form.alerts.push({ type: alertTypes.value[0] || '', description: '', failureThreshold: '', successThreshold: '', sendOnResolved: 'default', enabled: 'yes', reminder: '', original: null })
+  form.alerts.push({
+    type: alertTypes.value[0] || '',
+    description: '',
+    failureThreshold: '',
+    successThreshold: '',
+    sendOnResolved: 'default',
+    enabled: 'yes',
+    reminder: '',
+    original: null,
+  })
 }
 
 const copyText = async (text, target) => {
@@ -713,7 +1002,9 @@ const copyText = async (text, target) => {
     await navigator.clipboard.writeText(text)
     copiedTarget.value = target
     clearTimeout(copiedTimer)
-    copiedTimer = setTimeout(() => { copiedTarget.value = '' }, 2000)
+    copiedTimer = setTimeout(() => {
+      copiedTarget.value = ''
+    }, 2000)
   } catch (e) {
     success.value = 'The browser did not allow copying: select the text and copy it.'
   }

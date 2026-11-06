@@ -8,14 +8,15 @@
           <ArrowLeft class="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
-        
+
         <div class="flex items-start justify-between">
           <div>
             <h1 class="text-3xl font-bold tracking-tight">{{ suite?.name || 'Loading...' }}</h1>
             <p class="text-muted-foreground mt-2">
               <span v-if="suite?.group">{{ suite.group }} • </span>
               <span v-if="latestResult">
-                {{ selectedResult && selectedResult.timestamp !== sortedResults[0]?.timestamp ? 'Ran' : 'Last run' }} {{ formatRelativeTime(latestResult.timestamp) }}
+                {{ selectedResult && selectedResult.timestamp !== sortedResults[0]?.timestamp ? 'Ran' : 'Last run' }}
+                {{ formatRelativeTime(latestResult.timestamp) }}
               </span>
             </p>
           </div>
@@ -42,7 +43,11 @@
         <!-- Latest Execution -->
         <Card v-if="latestResult">
           <CardHeader>
-            <CardTitle>{{ selectedResult?.timestamp === sortedResults[0]?.timestamp ? 'Latest Execution' : `Execution at ${formatTimestamp(selectedResult.timestamp)}` }}</CardTitle>
+            <CardTitle>{{
+              selectedResult?.timestamp === sortedResults[0]?.timestamp
+                ? 'Latest Execution'
+                : `Execution at ${formatTimestamp(selectedResult.timestamp)}`
+            }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="space-y-4">
@@ -77,7 +82,6 @@
                   @step-selected="onStepSelected"
                 />
               </div>
-
 
               <!-- Errors -->
               <div v-if="latestResult.errors && latestResult.errors.length > 0" class="mt-6">
@@ -122,23 +126,16 @@
                 <ChevronRight class="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
-            <div v-else class="text-center py-8 text-muted-foreground">
-              No execution history available
-            </div>
+            <div v-else class="text-center py-8 text-muted-foreground">No execution history available</div>
           </CardContent>
         </Card>
       </div>
     </div>
 
     <Settings @refreshData="fetchData" />
-    
+
     <!-- Step Details Modal -->
-    <StepDetailsModal
-      v-if="selectedStep"
-      :step="selectedStep"
-      :index="selectedStepIndex"
-      @close="selectedStep = null"
-    />
+    <StepDetailsModal v-if="selectedStep" :step="selectedStep" :index="selectedStepIndex" @close="selectedStep = null" />
   </div>
 </template>
 
@@ -194,7 +191,7 @@ const fetchData = async () => {
   try {
     const response = await fetch(`/api/v1/suites/${route.params.key}/statuses`, {
       credentials: 'include',
-      headers: PROTECTED_API_HEADERS
+      headers: PROTECTED_API_HEADERS,
     })
 
     if (response.status === 401) {
@@ -209,8 +206,11 @@ const fetchData = async () => {
         // Sort results by timestamp to get the most recent one
         const sorted = [...data.results].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         // Update selectedResult if: no result selected, or currently viewing the latest result
-        const wasViewingLatest = !selectedResult.value ||
-          (oldSuite?.results && selectedResult.value.timestamp === [...oldSuite.results].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.timestamp)
+        const wasViewingLatest =
+          !selectedResult.value ||
+          (oldSuite?.results &&
+            selectedResult.value.timestamp ===
+              [...oldSuite.results].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.timestamp)
         if (wasViewingLatest) {
           selectedResult.value = sorted[0]
         }
@@ -250,8 +250,8 @@ const calculateSuccessRate = (result) => {
   if (!result || !result.endpointResults || result.endpointResults.length === 0) {
     return 0
   }
-  
-  const successful = result.endpointResults.filter(e => e.success).length
+
+  const successful = result.endpointResults.filter((e) => e.success).length
   return Math.round((successful / result.endpointResults.length) * 100)
 }
 
@@ -282,13 +282,13 @@ const flowSteps = computed(() => {
       duration: result.duration || 0,
       isAlwaysRun: isAlwaysRun,
       errors: result.errors || [],
-      nextStepStatus: nextResult ? determineStepStatus(nextResult, suite.value?.endpoints?.[index + 1]) : null
+      nextStepStatus: nextResult ? determineStepStatus(nextResult, suite.value?.endpoints?.[index + 1]) : null,
     }
   })
 })
 
 const completedStepsCount = computed(() => {
-  return flowSteps.value.filter(step => step.status === 'success').length
+  return flowSteps.value.filter((step) => step.status === 'success').length
 })
 
 const executionProgress = computed(() => {
@@ -296,12 +296,11 @@ const executionProgress = computed(() => {
   return Math.round((completedStepsCount.value / flowSteps.value.length) * 100)
 })
 
-
 // Helper functions
 const determineStepStatus = (result) => {
   if (!result) return 'not-started'
   // Check if step was skipped
-  if (result.conditionResults && result.conditionResults.some(c => c.condition.includes('SKIP'))) {
+  if (result.conditionResults && result.conditionResults.some((c) => c.condition.includes('SKIP'))) {
     return 'skipped'
   }
   // Check if step failed but is always-run (still shows as failed but executed)
@@ -310,7 +309,6 @@ const determineStepStatus = (result) => {
   }
   return 'success'
 }
-
 
 // Event handlers
 const onStepSelected = (step, index) => {

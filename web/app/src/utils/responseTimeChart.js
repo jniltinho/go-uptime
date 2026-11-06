@@ -17,7 +17,7 @@ export const CHART_PERIOD_OPTIONS = Object.freeze([
   { value: '3h', label: '3h' },
   { value: '6h', label: '6h' },
   { value: '24h', label: '24h' },
-  { value: '1w', label: '1w' }
+  { value: '1w', label: '1w' },
 ])
 
 // The preference of the period, and its key in the browser (see storage.js, which also migrates the key of v6)
@@ -32,7 +32,7 @@ export const CHART_COLORS = Object.freeze({
   maxLine: '#7CBD6B38',
   down: 'rgba(220,53,69,0.41)',
   pending: 'rgba(245,182,23,0.41)',
-  none: '#00000000'
+  none: '#00000000',
 })
 
 // Fork: colors of the legend samples, the opaque tone of each series (the minimum and the maximum lines are drawn
@@ -42,14 +42,14 @@ export const CHART_LEGEND_COLORS = Object.freeze({
   minLine: '#3CBD6B',
   maxLine: '#7CBD6B',
   down: '#DC3545',
-  pending: '#F5B617'
+  pending: '#F5B617',
 })
 
 // Dash patterns of the lines, repeated by the sample of each legend item
 export const CHART_LINE_DASHES = Object.freeze({
   average: [],
   minimum: [6, 4],
-  maximum: [2, 3]
+  maximum: [2, 3],
 })
 
 const SECOND_MS = 1000
@@ -141,7 +141,7 @@ const averageBuckets = (buckets) => {
     pending,
     avgMs: timedUp > 0 ? totalMs / timedUp : null,
     minMs,
-    maxMs
+    maxMs,
   }
 }
 
@@ -213,7 +213,7 @@ export const bucketDatasets = (buckets, period, intervalSeconds) => {
     min: min.reverse(),
     max: max.reverse(),
     bars: bars.reverse(),
-    barColors: barColors.reverse()
+    barColors: barColors.reverse(),
   }
 }
 
@@ -242,13 +242,14 @@ export const chartSummary = (series) => {
 // values of data-series read by the end-to-end tests.
 export const chartLegend = (period, summary) => {
   const counts = summary || { downColumns: 0, pendingColumns: 0 }
-  const items = period === RECENT_PERIOD
-    ? [{ id: 'response-time', label: 'Response time', color: CHART_LEGEND_COLORS.line, dash: 'solid' }]
-    : [
-      { id: 'average', label: 'Average', color: CHART_LEGEND_COLORS.line, dash: 'solid' },
-      { id: 'minimum', label: 'Minimum', color: CHART_LEGEND_COLORS.minLine, dash: 'dashed' },
-      { id: 'maximum', label: 'Maximum', color: CHART_LEGEND_COLORS.maxLine, dash: 'dotted' }
-    ]
+  const items =
+    period === RECENT_PERIOD
+      ? [{ id: 'response-time', label: 'Response time', color: CHART_LEGEND_COLORS.line, dash: 'solid' }]
+      : [
+          { id: 'average', label: 'Average', color: CHART_LEGEND_COLORS.line, dash: 'solid' },
+          { id: 'minimum', label: 'Minimum', color: CHART_LEGEND_COLORS.minLine, dash: 'dashed' },
+          { id: 'maximum', label: 'Maximum', color: CHART_LEGEND_COLORS.maxLine, dash: 'dotted' },
+        ]
   if (counts.downColumns > 0) {
     items.push({ id: 'down', label: 'Down', color: CHART_LEGEND_COLORS.down, column: true })
   }

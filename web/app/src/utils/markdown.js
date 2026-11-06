@@ -6,20 +6,13 @@ const escapeHtml = (value) => {
   if (value === null || value === undefined) {
     return ''
   }
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
 const renderer = new marked.Renderer()
 
 renderer.link = (tokenOrHref, title, text) => {
-  const tokenObject = typeof tokenOrHref === 'object' && tokenOrHref !== null
-    ? tokenOrHref
-    : null
+  const tokenObject = typeof tokenOrHref === 'object' && tokenOrHref !== null ? tokenOrHref : null
   const href = tokenObject ? tokenObject.href : tokenOrHref
   const resolvedTitle = tokenObject ? tokenObject.title : title
   const resolvedText = tokenObject ? tokenObject.text : text
@@ -34,7 +27,7 @@ marked.use({
   breaks: true,
   gfm: true,
   headerIds: false,
-  mangle: false
+  mangle: false,
 })
 
 export const formatAnnouncementMessage = (message) => {

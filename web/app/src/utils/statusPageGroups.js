@@ -42,8 +42,11 @@ export const groupCounts = (summary) => {
     [summary.up, 'up'],
     [summary.down, 'down'],
     [summary.pending, 'pending'],
-    [summary.unknown, 'no data']
-  ].filter(([value]) => value > 0).map(([value, label]) => `${value} ${label}`).join(' · ')
+    [summary.unknown, 'no data'],
+  ]
+    .filter(([value]) => value > 0)
+    .map(([value, label]) => `${value} ${label}`)
+    .join(' · ')
 }
 
 // crypto and localStorage are read through typeof, so that the module also loads where one of them does not exist

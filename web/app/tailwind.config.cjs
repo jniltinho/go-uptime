@@ -1,16 +1,13 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 module.exports = {
-  content: [
-    './public/index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}'
-  ],
+  content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     fontFamily: {
-      'mono': ['Consolas', 'Monaco', '"Courier New"', 'monospace'],
+      mono: ['Consolas', 'Monaco', '"Courier New"', 'monospace'],
       // Fork: the Inter is served by Go Uptime itself (see the @font-face of src/index.css); the system stack stays as the
       // fallback, so the interface keeps working if the file does not load
-      'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+      sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
     },
     // Visual quadrado do fork: todas as variantes de rounded-* valem 0, exceto rounded-full (indicadores circulares)
     borderRadius: {
@@ -44,8 +41,16 @@ module.exports = {
         // Fork: the grays that mean a status ("no data", a skipped or not started step) are a literal copy of the scale,
         // outside of the variables above: a theme may tint gray, and a status colour is the same in every theme.
         statusgray: {
-          50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb', 300: '#d1d5db', 400: '#9ca3af',
-          500: '#6b7280', 600: '#4b5563', 700: '#374151', 800: '#1f2937', 900: '#111827',
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -82,18 +87,18 @@ module.exports = {
         },
       },
       keyframes: {
-        "accordion-down": {
+        'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
         },
-        "accordion-up": {
+        'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },

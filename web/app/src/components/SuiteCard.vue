@@ -5,14 +5,15 @@
       <div class="flex items-start justify-between gap-2 sm:gap-3">
         <div class="flex-1 min-w-0 overflow-hidden">
           <CardTitle class="text-base sm:text-lg truncate">
-            <span 
-              class="hover:text-primary cursor-pointer hover:underline text-sm sm:text-base block truncate" 
-              @click="navigateToDetails" 
+            <span
+              class="hover:text-primary cursor-pointer hover:underline text-sm sm:text-base block truncate"
+              @click="navigateToDetails"
               @keydown.enter="navigateToDetails"
               :title="suite.name"
               role="link"
               tabindex="0"
-              :aria-label="`View details for suite ${suite.name}`">
+              :aria-label="`View details for suite ${suite.name}`"
+            >
               {{ suite.name }}
             </span>
           </CardTitle>
@@ -41,11 +42,15 @@
               :class="[
                 'flex-1 h-6 sm:h-8 rounded-sm transition-all',
                 result ? 'cursor-pointer' : '',
-                result ? (
-                  result.success
-                    ? (selectedResultIndex === index ? 'bg-green-700' : 'bg-green-500 hover:bg-green-700')
-                    : (selectedResultIndex === index ? 'bg-red-700' : 'bg-red-500 hover:bg-red-700')
-                ) : 'bg-gray-200 dark:bg-gray-700'
+                result
+                  ? result.success
+                    ? selectedResultIndex === index
+                      ? 'bg-green-700'
+                      : 'bg-green-500 hover:bg-green-700'
+                    : selectedResultIndex === index
+                      ? 'bg-red-700'
+                      : 'bg-red-500 hover:bg-red-700'
+                  : 'bg-gray-200 dark:bg-gray-700',
               ]"
               @mouseenter="result && handleMouseEnter(result, $event)"
               @mouseleave="result && handleMouseLeave(result, $event)"
@@ -74,12 +79,12 @@ const router = useRouter()
 const props = defineProps({
   suite: {
     type: Object,
-    required: true
+    required: true,
   },
   maxResults: {
     type: Number,
-    default: 50
-  }
+    default: 50,
+  },
 })
 
 const emit = defineEmits(['showTooltip'])
@@ -115,8 +120,8 @@ const successRate = computed(() => {
   if (!props.suite.results || props.suite.results.length === 0) {
     return 0
   }
-  
-  const successful = props.suite.results.filter(r => r.success).length
+
+  const successful = props.suite.results.filter((r) => r.success).length
   return Math.round((successful / props.suite.results.length) * 100)
 })
 
@@ -124,17 +129,17 @@ const averageDuration = computed(() => {
   if (!props.suite.results || props.suite.results.length === 0) {
     return null
   }
-  
+
   const total = props.suite.results.reduce((sum, r) => sum + (r.duration || 0), 0)
   // Convert nanoseconds to milliseconds
-  return Math.trunc((total / props.suite.results.length) / 1000000)
+  return Math.trunc(total / props.suite.results.length / 1000000)
 })
 
 const oldestResultTime = computed(() => {
   if (!props.suite.results || props.suite.results.length === 0) {
     return 'N/A'
   }
-  
+
   const oldestResult = props.suite.results[0]
   return generatePrettyTimeAgo(oldestResult.timestamp)
 })
@@ -143,7 +148,7 @@ const newestResultTime = computed(() => {
   if (!props.suite.results || props.suite.results.length === 0) {
     return 'Now'
   }
-  
+
   const newestResult = props.suite.results[props.suite.results.length - 1]
   return generatePrettyTimeAgo(newestResult.timestamp)
 })

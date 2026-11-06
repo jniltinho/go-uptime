@@ -3,12 +3,29 @@
 import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import {
-  aggregateStatus, groupStatuses, CELL_NOT_CONFIGURED, CELL_NOT_IN_ENVIRONMENT, CELL_NOT_SHOWN, collectGroups, counters, filterOptions,
-  groupedModel, matrixModel, normalizeViews, resolveView, sanitizeFilters, viewLabel
+  aggregateStatus,
+  groupStatuses,
+  CELL_NOT_CONFIGURED,
+  CELL_NOT_IN_ENVIRONMENT,
+  CELL_NOT_SHOWN,
+  collectGroups,
+  counters,
+  filterOptions,
+  groupedModel,
+  matrixModel,
+  normalizeViews,
+  resolveView,
+  sanitizeFilters,
+  viewLabel,
 } from './statusPageViews.js'
 
 const endpoint = (name, status, application, environment, uptime30 = 1) => ({
-  name, status, application, ...(environment ? { environment } : {}), uptime: { '24h': uptime30, '7d': uptime30, '30d': uptime30 }, results: []
+  name,
+  status,
+  application,
+  ...(environment ? { environment } : {}),
+  uptime: { '24h': uptime30, '7d': uptime30, '30d': uptime30 },
+  results: [],
 })
 
 const payload = {
@@ -17,17 +34,27 @@ const payload = {
     enabled: ['list', 'grouped', 'matrix'],
     default: 'grouped',
     groupLabel: 'Client',
-    environments: [{ id: 'prod', name: 'Production', short: 'PROD' }, { id: 'stg', name: 'Staging', short: 'STG' }, { id: 'qa', name: 'qa', short: 'QA' }],
-    applications: ['Billing', 'API']
+    environments: [
+      { id: 'prod', name: 'Production', short: 'PROD' },
+      { id: 'stg', name: 'Staging', short: 'STG' },
+      { id: 'qa', name: 'qa', short: 'QA' },
+    ],
+    applications: ['Billing', 'API'],
   },
   featured: [{ ...endpoint('billing-qa', 'down', 'Billing', 'qa', 0.9), group: 'Client A' }],
   groups: [
     {
-      name: 'Client A', description: 'Acme customer', tags: ['BR'],
-      endpoints: [endpoint('billing', 'up', 'Billing', 'prod', 0.995), endpoint('api', 'up', 'API', 'prod'), endpoint('api-stg', 'pending', 'API', 'stg')]
+      name: 'Client A',
+      description: 'Acme customer',
+      tags: ['BR'],
+      endpoints: [
+        endpoint('billing', 'up', 'Billing', 'prod', 0.995),
+        endpoint('api', 'up', 'API', 'prod'),
+        endpoint('api-stg', 'pending', 'API', 'stg'),
+      ],
     },
-    { name: 'Client B', endpoints: [endpoint('Portal', 'down', 'Portal', undefined, null), endpoint('billing', 'up', 'Billing', 'prod')] }
-  ]
+    { name: 'Client B', endpoints: [endpoint('Portal', 'down', 'Portal', undefined, null), endpoint('billing', 'up', 'Billing', 'prod')] },
+  ],
 }
 
 test('views default to the list', () => {
@@ -49,7 +76,10 @@ test('aggregateStatus follows the rule of the groups', () => {
 
 test('featured endpoints go back to their group', () => {
   const groups = collectGroups(payload)
-  assert.deepEqual(groups[0].endpoints.map((e) => e.name), ['api', 'api-stg', 'billing', 'billing-qa'])
+  assert.deepEqual(
+    groups[0].endpoints.map((e) => e.name),
+    ['api', 'api-stg', 'billing', 'billing-qa'],
+  )
   const onlyFeatured = collectGroups({ groups: [], featured: [{ ...endpoint('x', 'up', 'X'), group: 'Solo' }] })
   assert.equal(onlyFeatured[0].name, 'Solo')
 })
@@ -69,13 +99,28 @@ test('grouped model splits by environment and filters', () => {
   const a = model[0]
   assert.equal(a.status, 'degraded')
   assert.deepEqual(a.environments, ['PROD', 'STG', 'QA'])
-  assert.deepEqual(a.sections.map((s) => s.id), ['prod', 'stg', 'qa'])
-  assert.deepEqual(a.sections[0].endpoints.map((e) => e.name), ['billing', 'api'])
-  assert.deepEqual(a.applications.map((x) => x.name), ['Billing', 'API'])
+  assert.deepEqual(
+    a.sections.map((s) => s.id),
+    ['prod', 'stg', 'qa'],
+  )
+  assert.deepEqual(
+    a.sections[0].endpoints.map((e) => e.name),
+    ['billing', 'api'],
+  )
+  assert.deepEqual(
+    a.applications.map((x) => x.name),
+    ['Billing', 'API'],
+  )
   const b = model[1]
-  assert.deepEqual(b.sections.map((s) => s.id), ['prod', ''])
+  assert.deepEqual(
+    b.sections.map((s) => s.id),
+    ['prod', ''],
+  )
   const stg = groupedModel(payload, { environment: 'stg' })
-  assert.deepEqual(stg.map((g) => g.name), ['Client A'])
+  assert.deepEqual(
+    stg.map((g) => g.name),
+    ['Client A'],
+  )
   assert.equal(groupedModel(payload, { application: 'Nothing' }).length, 0)
   const problems = groupedModel(payload, { environment: 'prod', onlyProblems: true })
   assert.equal(problems.length, 0)
@@ -102,24 +147,53 @@ test('matrix cells', () => {
 })
 
 test('uptime falls back to the first environment with data', () => {
-  const p = { views: payload.views, groups: [{ name: 'G', endpoints: [endpoint('a', 'up', 'A', 'prod', null), endpoint('b', 'up', 'A', 'stg', 0.97), endpoint('c', 'up', 'A', 'qa', 0.5)] }] }
+  const p = {
+    views: payload.views,
+    groups: [
+      {
+        name: 'G',
+        endpoints: [endpoint('a', 'up', 'A', 'prod', null), endpoint('b', 'up', 'A', 'stg', 0.97), endpoint('c', 'up', 'A', 'qa', 0.5)],
+      },
+    ],
+  }
   assert.equal(matrixModel(p).rows[0].cells[0].uptime, 0.97)
 })
 
 test('filters that disappeared fall back to all', () => {
-  assert.deepEqual(filterOptions(payload).environments.map((e) => e.id), ['prod', 'stg', 'qa'])
-  assert.deepEqual(sanitizeFilters(payload, { environment: 'uat', application: 'API', onlyProblems: true }), { environment: '', application: 'API', onlyProblems: true })
-  assert.deepEqual(sanitizeFilters(payload, { environment: 'qa', application: 'Gone' }), { environment: 'qa', application: '', onlyProblems: false })
+  assert.deepEqual(
+    filterOptions(payload).environments.map((e) => e.id),
+    ['prod', 'stg', 'qa'],
+  )
+  assert.deepEqual(sanitizeFilters(payload, { environment: 'uat', application: 'API', onlyProblems: true }), {
+    environment: '',
+    application: 'API',
+    onlyProblems: true,
+  })
+  assert.deepEqual(sanitizeFilters(payload, { environment: 'qa', application: 'Gone' }), {
+    environment: 'qa',
+    application: '',
+    onlyProblems: false,
+  })
 })
 
 test('only problems honours the application filter in the matrix', () => {
   // Client A has a problem in Billing (qa) and API (stg pending); Client B only in Portal
-  assert.deepEqual(matrixModel(payload, { application: 'Billing', onlyProblems: true }).rows.map((r) => r.name), ['Client A'])
+  assert.deepEqual(
+    matrixModel(payload, { application: 'Billing', onlyProblems: true }).rows.map((r) => r.name),
+    ['Client A'],
+  )
   assert.deepEqual(matrixModel(payload, { application: 'Integrations', onlyProblems: true }).rows.length, 0)
 })
 
 test('featured-only groups keep their details and their status', () => {
-  const p = { views: { groups: [{ name: 'Solo', description: 'Only featured', tags: ['X'] }] }, groups: [{ name: 'G', status: 'operational', endpoints: [endpoint('a', 'up', 'A')] }], featured: [{ ...endpoint('f', 'down', 'F'), group: 'Solo' }, { ...endpoint('g', 'down', 'F'), group: 'G' }] }
+  const p = {
+    views: { groups: [{ name: 'Solo', description: 'Only featured', tags: ['X'] }] },
+    groups: [{ name: 'G', status: 'operational', endpoints: [endpoint('a', 'up', 'A')] }],
+    featured: [
+      { ...endpoint('f', 'down', 'F'), group: 'Solo' },
+      { ...endpoint('g', 'down', 'F'), group: 'G' },
+    ],
+  }
   const solo = collectGroups(p).find((g) => g.name === 'Solo')
   assert.equal(solo.description, 'Only featured')
   assert.deepEqual(solo.tags, ['X'])

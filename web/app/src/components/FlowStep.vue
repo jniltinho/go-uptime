@@ -1,20 +1,22 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="flex items-start gap-4 relative group hover:bg-accent/30 rounded-lg p-2 -m-2 transition-colors cursor-pointer"
-       @click="$emit('step-click')">
+  <div
+    class="flex items-start gap-4 relative group hover:bg-accent/30 rounded-lg p-2 -m-2 transition-colors cursor-pointer"
+    @click="$emit('step-click')"
+  >
     <!-- Step circle with status icon -->
     <div class="relative flex-shrink-0">
       <!-- Connection line from previous step -->
       <div v-if="index > 0" :class="incomingLineClasses" class="absolute left-1/2 bottom-8 w-0.5 h-4 -translate-x-px"></div>
-      
+
       <div :class="circleClasses" class="w-8 h-8 rounded-full flex items-center justify-center">
         <component :is="statusIcon" class="w-4 h-4" />
       </div>
-      
+
       <!-- Connection line to next step -->
       <div v-if="!isLast" :class="connectionLineClasses" class="absolute left-1/2 top-8 w-0.5 h-4 -translate-x-px"></div>
     </div>
-    
+
     <!-- Step content -->
     <div class="flex-1 min-w-0 pt-1">
       <div class="flex items-center justify-between gap-2 mb-1">
@@ -23,14 +25,20 @@
           {{ formatDuration(step.duration) }}
         </span>
       </div>
-      
+
       <!-- Step badges -->
       <div class="flex flex-wrap gap-1">
-        <span v-if="step.isAlwaysRun" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-md">
+        <span
+          v-if="step.isAlwaysRun"
+          class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-md"
+        >
           <RotateCcw class="w-3 h-3" />
           Always Run
         </span>
-        <span v-if="step.errors?.length" class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-md">
+        <span
+          v-if="step.errors?.length"
+          class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-md"
+        >
           {{ step.errors.length }} error{{ step.errors.length !== 1 ? 's' : '' }}
         </span>
       </div>
@@ -47,7 +55,7 @@ const props = defineProps({
   step: { type: Object, required: true },
   index: { type: Number, required: true },
   isLast: { type: Boolean, default: false },
-  previousStep: { type: Object, default: null }
+  previousStep: { type: Object, default: null },
 })
 
 defineEmits(['step-click'])
@@ -55,18 +63,23 @@ defineEmits(['step-click'])
 // Status icon mapping
 const statusIcon = computed(() => {
   switch (props.step.status) {
-    case 'success': return CheckCircle
-    case 'failed': return XCircle
-    case 'skipped': return SkipForward
-    case 'not-started': return Pause
-    default: return Pause
+    case 'success':
+      return CheckCircle
+    case 'failed':
+      return XCircle
+    case 'skipped':
+      return SkipForward
+    case 'not-started':
+      return Pause
+    default:
+      return Pause
   }
 })
 
 // Circle styling classes
 const circleClasses = computed(() => {
   const baseClasses = 'border-2'
-  
+
   if (props.step.isAlwaysRun) {
     // Always-run endpoints get a special ring effect
     switch (props.step.status) {
@@ -78,7 +91,7 @@ const circleClasses = computed(() => {
         return `${baseClasses} bg-blue-500 text-white border-blue-600 ring-2 ring-blue-200 dark:ring-blue-800`
     }
   }
-  
+
   switch (props.step.status) {
     case 'success':
       return `${baseClasses} bg-green-500 text-white border-green-600`
@@ -96,12 +109,12 @@ const circleClasses = computed(() => {
 // Incoming connection line styling (from previous step to this step)
 const incomingLineClasses = computed(() => {
   if (!props.previousStep) return 'bg-gray-300 dark:bg-gray-600'
-  
+
   // If this step is skipped, the line should be dashed/gray
   if (props.step.status === 'skipped') {
     return 'border-l-2 border-dashed border-statusgray-400 bg-transparent'
   }
-  
+
   // Otherwise, color based on previous step's status
   switch (props.previousStep.status) {
     case 'success':
@@ -119,16 +132,11 @@ const connectionLineClasses = computed(() => {
   const nextStep = props.step.nextStepStatus
   switch (props.step.status) {
     case 'success':
-      return nextStep === 'skipped' 
-        ? 'bg-gray-300 dark:bg-gray-600' 
-        : 'bg-green-500'
+      return nextStep === 'skipped' ? 'bg-gray-300 dark:bg-gray-600' : 'bg-green-500'
     case 'failed':
-      return nextStep === 'skipped'
-        ? 'border-l-2 border-dashed border-gray-400 bg-transparent'
-        : 'bg-red-500'
+      return nextStep === 'skipped' ? 'border-l-2 border-dashed border-gray-400 bg-transparent' : 'bg-red-500'
     default:
       return 'bg-gray-300 dark:bg-gray-600'
   }
 })
-
 </script>

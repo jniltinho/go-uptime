@@ -32,5 +32,4 @@ const templateValue = (value, placeholder) => (value && value !== placeholder ? 
 const logo = computed(() => templateValue(window.config?.logo, '{{ .UI.Logo }}'))
 const header = computed(() => templateValue(window.config?.header, '{{ .UI.Header }}') || 'Status')
 const link = computed(() => templateValue(window.config?.link, '{{ .UI.Link }}') || null)
-
 </script>

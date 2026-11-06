@@ -22,7 +22,9 @@
     <section v-else-if="state === 'unauthorized'" class="py-16 text-center" data-testid="status-page-unauthorized">
       <h1 class="text-2xl font-bold tracking-tight">Login required</h1>
       <p class="mt-2 text-muted-foreground">This status page asks for a username and a password.</p>
-      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">Reload the page</button>
+      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">
+        Reload the page
+      </button>
     </section>
 
     <template v-else>
@@ -30,7 +32,12 @@
         v-if="errorMessage"
         role="alert"
         data-testid="status-page-error"
-        :class="['mb-4 border px-4 py-3 text-sm', details ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100' : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200']"
+        :class="[
+          'mb-4 border px-4 py-3 text-sm',
+          details
+            ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100'
+            : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
+        ]"
       >
         {{ errorMessage }}
       </div>
@@ -46,7 +53,11 @@
               <span>Updated {{ relativeTimeLabel(details.updatedAt, now) }}</span>
             </div>
             <!-- Fork: expiration of the TLS certificate, when the page shows it, with the date like the dashboard -->
-            <p v-if="certificateDays !== null" :class="['mt-1 text-xs', certificateClass(certificateDays)]" data-testid="status-endpoint-certificate">
+            <p
+              v-if="certificateDays !== null"
+              :class="['mt-1 text-xs', certificateClass(certificateDays)]"
+              data-testid="status-endpoint-certificate"
+            >
               {{ certificateText(certificateDays) }}<template v-if="certificateExpiresAt"> · {{ certificateExpiresAt }}</template>
             </p>
           </div>
@@ -87,7 +98,13 @@
             </div>
           </CardHeader>
           <CardContent>
-            <ResponseTimeChart :key="key" :chart-url="chartUrl" :period="chartPeriod" :refresh-key="lastResult ? lastResult.timestamp : null" public-route />
+            <ResponseTimeChart
+              :key="key"
+              :chart-url="chartUrl"
+              :period="chartPeriod"
+              :refresh-key="lastResult ? lastResult.timestamp : null"
+              public-route
+            />
           </CardContent>
         </Card>
 
@@ -103,7 +120,11 @@
               <CardTitle class="text-sm font-medium text-muted-foreground text-center">{{ period.label }}</CardTitle>
             </CardHeader>
             <CardContent>
-              <img :src="badgeURL(`response-times/${period.value}/badge.svg`)" :alt="`Average response time over the ${period.label.toLowerCase()}`" class="mx-auto mt-2" />
+              <img
+                :src="badgeURL(`response-times/${period.value}/badge.svg`)"
+                :alt="`Average response time over the ${period.label.toLowerCase()}`"
+                class="mx-auto mt-2"
+              />
             </CardContent>
           </Card>
         </div>
@@ -156,7 +177,7 @@ const BADGE_PERIODS = [
   { value: '30d', label: 'Last 30 days' },
   { value: '7d', label: 'Last 7 days' },
   { value: '24h', label: 'Last 24 hours' },
-  { value: '1h', label: 'Last hour' }
+  { value: '1h', label: 'Last hour' },
 ]
 
 const route = useRoute()
@@ -186,21 +207,35 @@ const results = computed(() => (details.value && details.value.results) || [])
 const lastResult = computed(() => (results.value.length > 0 ? results.value[results.value.length - 1] : null))
 const events = computed(() => (details.value ? describeEvents(details.value.events || []) : []))
 // Fork: items of the collapsible events, see components/EventsTimeline.vue
-const eventItems = computed(() => events.value.map((event) => ({ key: `${event.type}-${event.timestamp}`, type: event.type, text: event.text, dateTime: formatDateTime(event.timestamp), timeAgo: event.timeAgo })))
+const eventItems = computed(() =>
+  events.value.map((event) => ({
+    key: `${event.type}-${event.timestamp}`,
+    type: event.type,
+    text: event.text,
+    dateTime: formatDateTime(event.timestamp),
+    timeAgo: event.timeAgo,
+  })),
+)
 // Days until the TLS certificate expires, only published when the page shows it (fork)
-const certificateDays = computed(() => (details.value && Number.isInteger(details.value.certificateExpiresInDays) ? details.value.certificateExpiresInDays : null))
+const certificateDays = computed(() =>
+  details.value && Number.isInteger(details.value.certificateExpiresInDays) ? details.value.certificateExpiresInDays : null,
+)
 // Fork: the details page shows the date next to the days, like the dashboard; the rows of the lists show only the days
-const certificateExpiresAt = computed(() => (details.value && details.value.certificateExpiresAt ? certificateDate(details.value.certificateExpiresAt) : ''))
+const certificateExpiresAt = computed(() =>
+  details.value && details.value.certificateExpiresAt ? certificateDate(details.value.certificateExpiresAt) : '',
+)
 // Like the dashboard, which shows the chart as soon as a result has a duration: results faster than 1 ms have a
 // durationMs of 0 in the public payload, but still have points in the chart
 const hasResponseTimes = computed(() => results.value.length > 0)
 
-const healthStatus = computed(() => ({ up: 'healthy', pending: 'pending', down: 'unhealthy' }[details.value?.status] || 'unknown'))
+const healthStatus = computed(() => ({ up: 'healthy', pending: 'pending', down: 'unhealthy' })[details.value?.status] || 'unknown')
 // With show-messages, the table of checks has the same columns as the dashboard, even without any message (fork)
 const showMessages = computed(() => details.value?.page?.showMessages === true)
 
 // Public route of the response time chart
-const chartUrl = computed(() => `/api/v1/status-pages/${encodeURIComponent(slug.value)}/endpoints/${encodeURIComponent(key.value)}/response-time-chart`)
+const chartUrl = computed(
+  () => `/api/v1/status-pages/${encodeURIComponent(slug.value)}/endpoints/${encodeURIComponent(key.value)}/response-time-chart`,
+)
 
 // badgeURL returns the address of a badge of the endpoint under the page, which follows the login of the page (fork).
 // The routes by key of the original Gatus, which the dashboard uses, stay public.
@@ -233,7 +268,7 @@ const startLiveUpdates = () => {
   liveUpdates = watchEndpointResults(
     `/api/v1/status-pages/${encodeURIComponent(slug.value)}/endpoints/${encodeURIComponent(key.value)}/events`,
     () => load(),
-    { refreshOnVisible: false }
+    { refreshOnVisible: false },
   )
 }
 
@@ -269,7 +304,10 @@ const load = async () => {
   let retryDelayMs = REFRESH_INTERVAL_MS
   try {
     // Fork: the credential of a page with a login goes with every request of the page
-    const response = await fetch(`/api/v1/status-pages/${encodeURIComponent(slug.value)}/endpoints/${encodeURIComponent(key.value)}`, { credentials: 'same-origin', signal: abortController.signal })
+    const response = await fetch(`/api/v1/status-pages/${encodeURIComponent(slug.value)}/endpoints/${encodeURIComponent(key.value)}`, {
+      credentials: 'same-origin',
+      signal: abortController.signal,
+    })
     if (generation !== requestGeneration) {
       return
     }
@@ -286,9 +324,10 @@ const load = async () => {
       if (retryAfterSeconds > REFRESH_INTERVAL_MS / 1000) {
         retryDelayMs = retryAfterSeconds * 1000
       }
-      errorMessage.value = response.status === 429
-        ? 'Too many requests right now. This page will refresh automatically.'
-        : 'This page is temporarily unavailable. It will refresh automatically.'
+      errorMessage.value =
+        response.status === 429
+          ? 'Too many requests right now. This page will refresh automatically.'
+          : 'This page is temporarily unavailable. It will refresh automatically.'
     } else if (!response.ok || !(response.headers.get('Content-Type') || '').includes('application/json')) {
       errorMessage.value = 'Could not load the details of the service. It will refresh automatically.'
     } else {
@@ -339,7 +378,9 @@ watch([slug, key], () => {
 onMounted(() => {
   startLiveUpdates()
   load()
-  clockTimer = setInterval(() => { now.value = Date.now() }, CLOCK_INTERVAL_MS)
+  clockTimer = setInterval(() => {
+    now.value = Date.now()
+  }, CLOCK_INTERVAL_MS)
   document.addEventListener('visibilitychange', handleVisibilityChange)
   narrowScreen.addEventListener('change', handleScreenChange)
 })

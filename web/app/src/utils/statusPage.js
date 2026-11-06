@@ -6,7 +6,11 @@ import { generatePrettyTimeAgo, generatePrettyTimeDifference } from './time.js'
 
 export const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/
 
-const sanitizeKeyPart = (value) => (value || '').toLowerCase().trim().replace(/[/_., #+&]/g, '-')
+const sanitizeKeyPart = (value) =>
+  (value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[/_., #+&]/g, '-')
 
 // endpointKey mirrors key.ConvertGroupAndNameToKey of the backend
 export const endpointKey = (group, name) => `${sanitizeKeyPart(group)}_${sanitizeKeyPart(name)}`
@@ -18,7 +22,7 @@ export const STATUS_LABELS = {
   down: { page: 'Major outage', group: 'Major outage', endpoint: 'Down' },
   up: { endpoint: 'Up' },
   pending: { endpoint: 'Pending' },
-  unknown: { page: 'No data', group: 'No data', endpoint: 'No data' }
+  unknown: { page: 'No data', group: 'No data', endpoint: 'No data' },
 }
 
 // Like the dashboard, numbers and dates use the locale of the browser
@@ -63,7 +67,9 @@ export const describeEvents = (events) => {
     } else if (event.type === 'HEALTHY') {
       text = nextEvent ? 'Endpoint became healthy' : 'Endpoint is healthy'
     } else if (event.type === 'UNHEALTHY') {
-      text = nextEvent ? `Endpoint was unhealthy for ${generatePrettyTimeDifference(nextEvent.timestamp, event.timestamp)}` : 'Endpoint is unhealthy'
+      text = nextEvent
+        ? `Endpoint was unhealthy for ${generatePrettyTimeDifference(nextEvent.timestamp, event.timestamp)}`
+        : 'Endpoint is unhealthy'
     } else {
       continue
     }

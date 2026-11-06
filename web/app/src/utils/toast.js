@@ -20,7 +20,7 @@ export const toasts = reactive([])
 // every message, so that the same text is announced again
 export const announcements = reactive({
   status: { id: 0, text: '' },
-  alert: { id: 0, text: '' }
+  alert: { id: 0, text: '' },
 })
 
 let nextId = 1
@@ -124,7 +124,7 @@ export const toast = {
   success: (message, options) => showToast('success', message, options),
   info: (message, options) => showToast('info', message, options),
   warning: (message, options) => showToast('warning', message, options),
-  error: (message, options) => showToast('error', message, options)
+  error: (message, options) => showToast('error', message, options),
 }
 
 // pendingToastTimers returns how many toasts have a timer (for tests)

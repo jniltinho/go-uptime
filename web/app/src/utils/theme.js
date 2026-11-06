@@ -14,7 +14,7 @@ const THEME_COOKIE_MAX_AGE = 31536000 // 1 year
 export const THEMES = Object.freeze({
   light: Object.freeze({ label: 'Light', className: '', themeColor: '#f7f9fb' }),
   dark: Object.freeze({ label: 'Dark', className: 'dark', themeColor: '#030712' }),
-  bio: Object.freeze({ label: 'Bio', className: 'theme-bio', themeColor: '#f2f8fa' })
+  bio: Object.freeze({ label: 'Bio', className: 'theme-bio', themeColor: '#f2f8fa' }),
 })
 
 export const THEME_COLORS = Object.freeze(Object.fromEntries(Object.entries(THEMES).map(([theme, { themeColor }]) => [theme, themeColor])))

@@ -27,7 +27,9 @@ export function mapToText(map) {
   if (!map || typeof map !== 'object') {
     return ''
   }
-  return Object.entries(map).map(([key, value]) => `${key}: ${value}`).join('\n')
+  return Object.entries(map)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n')
 }
 
 // textToMap reads the lines written by mapToText; a line without ":" is ignored
@@ -92,7 +94,10 @@ export function documentFromForm(info, form, original) {
         }
         break
       case 'list': {
-        const items = String(value || '').split(/[,\n]/).map((item) => item.trim()).filter(Boolean)
+        const items = String(value || '')
+          .split(/[,\n]/)
+          .map((item) => item.trim())
+          .filter(Boolean)
         if (items.length) {
           document[field.key] = items
         } else {
@@ -136,7 +141,7 @@ export function documentFromForm(info, form, original) {
       defaultAlert[key] = value
     }
   }
-  const number = (text) => (/^\d+$/.test(String(text).trim()) ? Number(String(text).trim()) : (String(text).trim() || null))
+  const number = (text) => (/^\d+$/.test(String(text).trim()) ? Number(String(text).trim()) : String(text).trim() || null)
   setOrDelete('failure-threshold', number(form.defaultAlert.failureThreshold))
   setOrDelete('success-threshold', number(form.defaultAlert.successThreshold))
   setOrDelete('send-on-resolved', form.defaultAlert.sendOnResolved === YES ? true : form.defaultAlert.sendOnResolved === NO ? false : null)
@@ -172,7 +177,7 @@ export function providerState(item) {
 // usageCount returns how many endpoints use a provider
 export function usageCount(item) {
   const usage = (item && item.usage) || {}
-  return ((usage.managed || []).length) + ((usage.file || []).length)
+  return (usage.managed || []).length + (usage.file || []).length
 }
 
 // groupByCategory groups the descriptions of the types by category, in the order of CATEGORIES, each sorted by name
@@ -181,10 +186,8 @@ export const CATEGORIES = ['Chat', 'Email', 'SMS', 'Push', 'Incidents', 'Observa
 export function groupByCategory(types, query = '') {
   const needle = String(query).trim().toLowerCase()
   const matches = (type) => !needle || type.name.toLowerCase().includes(needle) || type.type.includes(needle)
-  return CATEGORIES
-    .map((category) => ({
-      category,
-      types: (types || []).filter((type) => type.category === category && matches(type)).sort((a, b) => a.name.localeCompare(b.name)),
-    }))
-    .filter((group) => group.types.length > 0)
+  return CATEGORIES.map((category) => ({
+    category,
+    types: (types || []).filter((type) => type.category === category && matches(type)).sort((a, b) => a.name.localeCompare(b.name)),
+  })).filter((group) => group.types.length > 0)
 }

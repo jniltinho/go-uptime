@@ -14,9 +14,16 @@
       <ChevronRight v-else class="h-4 w-4" />
       Events
       <span class="font-normal text-muted-foreground dark:text-gray-400">({{ items.length }})</span>
-      <span v-if="latest" class="ml-auto truncate text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="events-latest">Latest: {{ latest.text }} · {{ latest.timeAgo }}</span>
+      <span v-if="latest" class="ml-auto truncate text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="events-latest"
+        >Latest: {{ latest.text }} · {{ latest.timeAgo }}</span
+      >
     </button>
-    <ul v-if="expanded" id="endpoint-events-list" class="space-y-4 border border-t-0 px-4 py-4 dark:border-gray-700" data-testid="events-list">
+    <ul
+      v-if="expanded"
+      id="endpoint-events-list"
+      class="space-y-4 border border-t-0 px-4 py-4 dark:border-gray-700"
+      data-testid="events-list"
+    >
       <li v-for="item in items" :key="item.key" class="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0 dark:border-gray-800">
         <div class="mt-1" aria-hidden="true">
           <ArrowUpCircle v-if="item.type === 'HEALTHY'" class="h-5 w-5 text-green-500" />
@@ -39,7 +46,7 @@ import { readPreference, writePreference } from '@/utils/storage'
 
 const props = defineProps({
   // Events from the most recent to the oldest: { key, type, text, dateTime, timeAgo }
-  items: { type: Array, default: () => [] }
+  items: { type: Array, default: () => [] },
 })
 
 const PREFERENCE = 'show-events'

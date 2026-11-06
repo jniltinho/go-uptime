@@ -23,7 +23,14 @@
     <!-- Fork: the lists of the administration fill the window on larger screens and scroll inside their tables -->
     <!-- Fork: the administration uses the width of large screens like the public pages, with the same zoom for QHD and
          4K; the height of the lists divides the window by the zoom (--screen-zoom), or it would overflow it -->
-    <div v-else-if="!config || !config.oidc || config.authenticated" :class="['relative', isAdmin && 'screen-scale', isAdminList && 'md:flex md:h-[calc(100dvh/var(--screen-zoom,1))] md:flex-col md:overflow-hidden']">
+    <div
+      v-else-if="!config || !config.oidc || config.authenticated"
+      :class="[
+        'relative',
+        isAdmin && 'screen-scale',
+        isAdminList && 'md:flex md:h-[calc(100dvh/var(--screen-zoom,1))] md:flex-col md:overflow-hidden',
+      ]"
+    >
       <!-- Header -->
       <header :class="['app-header border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60', isAdminList && 'md:shrink-0']">
         <!-- Fork: a slim bar of 40 px, like the header of the public pages -->
@@ -38,11 +45,7 @@
                 :class="['flex min-w-0 items-center gap-2', link && 'hover:opacity-80 transition-opacity']"
               >
                 <div v-if="logo" class="flex h-5 w-5 shrink-0 items-center justify-center">
-                  <img
-                    :src="logo"
-                    :alt="header"
-                    class="w-full h-full object-contain"
-                  />
+                  <img :src="logo" :alt="header" class="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 class="truncate text-sm font-semibold tracking-tight">{{ header }}</h1>
@@ -101,10 +104,7 @@
           </div>
 
           <!-- Mobile Navigation -->
-          <nav
-            v-if="buttons && buttons.length && mobileMenuOpen"
-            class="md:hidden pb-2 pt-2 border-t space-y-1"
-          >
+          <nav v-if="buttons && buttons.length && mobileMenuOpen" class="md:hidden pb-2 pt-2 border-t space-y-1">
             <a
               v-for="button in buttons"
               :key="button.name"
@@ -123,7 +123,6 @@
       <main :class="['relative', isAdminList && 'md:flex md:min-h-0 md:flex-1 md:flex-col']">
         <router-view @showTooltip="showTooltip" :announcements="announcements" />
       </main>
-
     </div>
 
     <!-- OIDC Login Screen -->
@@ -138,9 +137,7 @@
           <div v-if="route && route.query.error" class="mb-6">
             <div class="p-3 rounded-md bg-destructive/10 border border-destructive/20">
               <p class="text-sm text-destructive text-center">
-                <span v-if="route.query.error === 'access_denied'">
-                  You do not have access to this status page
-                </span>
+                <span v-if="route.query.error === 'access_denied'"> You do not have access to this status page </span>
                 <span v-else>{{ route.query.error }}</span>
               </p>
             </div>
@@ -162,7 +159,12 @@
     </div>
 
     <!-- Tooltip -->
-    <Tooltip v-if="routerReady && !isPublic && !isLogin" :result="tooltip.result" :event="tooltip.event" :isPersistent="tooltipIsPersistent" />
+    <Tooltip
+      v-if="routerReady && !isPublic && !isLogin"
+      :result="tooltip.result"
+      :event="tooltip.event"
+      :isPersistent="tooltipIsPersistent"
+    />
 
     <!-- Fork: toast messages, only with the authenticated app visible (never on public pages or login screens) -->
     <AdminToasts v-if="showsToasts" />
@@ -213,11 +215,11 @@ let loggedOut = false
 
 // Computed properties
 const logo = computed(() => {
-  return window.config && window.config.logo && window.config.logo !== '{{ .UI.Logo }}' ? window.config.logo : ""
+  return window.config && window.config.logo && window.config.logo !== '{{ .UI.Logo }}' ? window.config.logo : ''
 })
 
 const header = computed(() => {
-  return window.config && window.config.header && window.config.header !== '{{ .UI.Header }}' ? window.config.header : "Status"
+  return window.config && window.config.header && window.config.header !== '{{ .UI.Header }}' ? window.config.header : 'Status'
 })
 
 const link = computed(() => {
@@ -246,11 +248,20 @@ const pendingLoginRedirect = computed(() => {
 })
 
 // Fork: the toasts only exist with the main app container visible, see the v-else-if chain of the template
-const showsToasts = computed(() => routerReady.value && !isPublic.value && retrievedConfig.value && !pendingLoginRedirect.value
-  && !isLogin.value && (!config.value || !config.value.oidc || config.value.authenticated))
+const showsToasts = computed(
+  () =>
+    routerReady.value &&
+    !isPublic.value &&
+    retrievedConfig.value &&
+    !pendingLoginRedirect.value &&
+    !isLogin.value &&
+    (!config.value || !config.value.oidc || config.value.authenticated),
+)
 
 const loginSubtitle = computed(() => {
-  return window.config && window.config.loginSubtitle && window.config.loginSubtitle !== '{{ .UI.LoginSubtitle }}' ? window.config.loginSubtitle : "System Monitoring Dashboard"
+  return window.config && window.config.loginSubtitle && window.config.loginSubtitle !== '{{ .UI.LoginSubtitle }}'
+    ? window.config.loginSubtitle
+    : 'System Monitoring Dashboard'
 })
 
 // Methods

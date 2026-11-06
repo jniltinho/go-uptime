@@ -24,8 +24,8 @@ function keepGoTemplateLinks() {
         handler(html) {
           kept.length = 0
           return html.replace(keptLink, (link) => `<!--go-uptime-kept-${kept.push(link) - 1}-->`)
-        }
-      }
+        },
+      },
     },
     {
       // The markers are restored on the final HTML, after Vite resolved the assets
@@ -35,9 +35,9 @@ function keepGoTemplateLinks() {
         order: 'post',
         handler(html) {
           return html.replace(/<!--go-uptime-kept-(\d+)-->/g, (_, i) => kept[Number(i)])
-        }
-      }
-    }
+        },
+      },
+    },
   ]
 }
 
@@ -46,7 +46,7 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     // The sources import components and modules without extension, as Vue CLI allowed
-    extensions: ['.mjs', '.js', '.json', '.vue']
+    extensions: ['.mjs', '.js', '.json', '.vue'],
   },
   publicDir: 'public',
   build: {
@@ -66,19 +66,20 @@ export default defineConfig({
           return 'img/[name][extname]'
         },
         // The libraries in js/chunk-vendors.js, like the build of Vue CLI did
-        manualChunks: (id) => (id.includes('node_modules') ? 'chunk-vendors' : undefined)
-      }
-    }
+        manualChunks: (id) => (id.includes('node_modules') ? 'chunk-vendors' : undefined),
+      },
+    },
   },
   // Unit tests of the pure modules (src/utils/*.test.mjs), run by vp test
   test: { environment: 'node', include: ['src/**/*.test.mjs'] },
   // Oxfmt, run by vp check and vp fmt: the style of the sources
-  fmt: { singleQuote: true, semi: false, printWidth: 140 },
+  // index.html is a Go template whose inline script the theme tests extract as written: it is not formatted
+  fmt: { singleQuote: true, semi: false, printWidth: 140, ignorePatterns: ['index.html', 'public/**'] },
   server: {
     port: 8081,
     strictPort: true,
     proxy: {
-      '^/(api|css|oidc)': { target: 'http://localhost:8080', changeOrigin: true, secure: false }
-    }
-  }
+      '^/(api|css|oidc)': { target: 'http://localhost:8080', changeOrigin: true, secure: false },
+    },
+  },
 })

@@ -12,7 +12,7 @@
       <span class="truncate">{{ selectedOption.label }}</span>
       <ChevronDown class="h-3 w-3 sm:h-4 sm:w-4 opacity-50 flex-shrink-0 ml-1" />
     </button>
-    
+
     <div
       v-if="isOpen"
       role="listbox"
@@ -25,7 +25,7 @@
           @click="selectOption(option)"
           :class="[
             'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-6 sm:pl-8 pr-2 text-xs sm:text-sm outline-none hover:bg-accent hover:text-accent-foreground',
-            index === focusedIndex && 'bg-accent text-accent-foreground'
+            index === focusedIndex && 'bg-accent text-accent-foreground',
           ]"
           role="option"
           :aria-selected="modelValue === option.value"
@@ -49,7 +49,7 @@ const props = defineProps({
   modelValue: { type: String, default: '' },
   options: { type: Array, required: true },
   placeholder: { type: String, default: 'Select...' },
-  class: { type: String, default: '' }
+  class: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -59,7 +59,7 @@ const selectRef = ref(null)
 const focusedIndex = ref(-1)
 
 const selectedOption = computed(() => {
-  return props.options.find(option => option.value === props.modelValue) || { label: props.placeholder, value: '' }
+  return props.options.find((option) => option.value === props.modelValue) || { label: props.placeholder, value: '' }
 })
 
 const selectOption = (option) => {
@@ -71,7 +71,7 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
     // Set initial focus to selected option or first option
-    const selectedIdx = props.options.findIndex(opt => opt.value === props.modelValue)
+    const selectedIdx = props.options.findIndex((opt) => opt.value === props.modelValue)
     focusedIndex.value = selectedIdx >= 0 ? selectedIdx : 0
   } else {
     focusedIndex.value = -1

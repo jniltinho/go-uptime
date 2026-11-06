@@ -20,7 +20,7 @@ class FakeEventSource {
   }
 
   addEventListener(type, listener) {
-    (this.listeners[type] ||= []).push(listener)
+    ;(this.listeners[type] ||= []).push(listener)
   }
 
   removeEventListener(type, listener) {
@@ -81,7 +81,13 @@ let calls
 let watcher
 
 const start = (options = {}) => {
-  watcher = watchEndpointResults(URL, () => { calls++ }, { EventSource: FakeEventSource, document: doc, ...options })
+  watcher = watchEndpointResults(
+    URL,
+    () => {
+      calls++
+    },
+    { EventSource: FakeEventSource, document: doc, ...options },
+  )
   return watcher
 }
 

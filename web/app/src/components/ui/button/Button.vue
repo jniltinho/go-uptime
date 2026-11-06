@@ -1,9 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <button
-    :class="combineClasses(buttonVariants({ variant, size }), $attrs.class ?? '')"
-    :disabled="disabled"
-  >
+  <button :class="combineClasses(buttonVariants({ variant, size }), $attrs.class ?? '')" :disabled="disabled">
     <slot />
   </button>
 </template>
@@ -50,6 +47,6 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 )
 </script>

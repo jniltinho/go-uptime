@@ -43,7 +43,7 @@ async function request(method, path, { body, contentType, version } = {}) {
   if (!response.ok) {
     throw new AdminApiError(response.status, (data && data.error) || response.statusText, {
       data,
-      retryAfter: parseRetryAfter(response.headers.get('Retry-After'))
+      retryAfter: parseRetryAfter(response.headers.get('Retry-After')),
     })
   }
   return { data, status: response.status }
@@ -59,7 +59,7 @@ async function requestBlob(method, path, { body, contentType } = {}) {
   const response = await fetch(BASE_URL + path, { method, headers, body, credentials: 'include' })
   return readBlobResponse(response, {
     onUnauthorized: notifyUnauthorized,
-    createError: (status, message, options) => new AdminApiError(status, message, options)
+    createError: (status, message, options) => new AdminApiError(status, message, options),
   })
 }
 
@@ -98,11 +98,13 @@ export const statusPagesApi = {
     }
     return request('GET', `/status-pages/exposure?${params}`)
   },
-  validate: (document, slug) => request('POST', slug ? `/status-pages/validate?slug=${encodeSlug(slug)}` : '/status-pages/validate', jsonPayload(document)),
+  validate: (document, slug) =>
+    request('POST', slug ? `/status-pages/validate?slug=${encodeSlug(slug)}` : '/status-pages/validate', jsonPayload(document)),
   get: (slug) => request('GET', `/status-pages/${encodeSlug(slug)}`),
   create: (document) => request('POST', '/status-pages', jsonPayload(document)),
   update: (slug, document, version) => request('PUT', `/status-pages/${encodeSlug(slug)}`, { ...jsonPayload(document), version }),
-  setEnabled: (slug, enabled, version) => request('POST', `/status-pages/${encodeSlug(slug)}/${enabled ? 'enable' : 'disable'}`, { version }),
+  setEnabled: (slug, enabled, version) =>
+    request('POST', `/status-pages/${encodeSlug(slug)}/${enabled ? 'enable' : 'disable'}`, { version }),
   remove: (slug, version) => request('DELETE', `/status-pages/${encodeSlug(slug)}`, { version }),
   preview: (slug) => request('GET', `/status-pages/${encodeSlug(slug)}/preview`),
 }
@@ -127,8 +129,10 @@ export const alertProvidersApi = {
   parse: (payload) => request('POST', '/alert-providers/parse', payload),
   validate: (payload, type) => request('POST', withQuery('/alert-providers/validate', { type }), payload),
   // resolve sends the resolution right after an accepted notification, closing the incident it may open
-  test: (payload, type, group, resolve) => request('POST', withQuery('/alert-providers/test', { type, group, resolve: resolve ? 'true' : '' }), payload),
-  testConfigured: (type, group, resolve) => request('POST', withQuery(`/alert-providers/${encodeURIComponent(type)}/test`, { group, resolve: resolve ? 'true' : '' })),
+  test: (payload, type, group, resolve) =>
+    request('POST', withQuery('/alert-providers/test', { type, group, resolve: resolve ? 'true' : '' }), payload),
+  testConfigured: (type, group, resolve) =>
+    request('POST', withQuery(`/alert-providers/${encodeURIComponent(type)}/test`, { group, resolve: resolve ? 'true' : '' })),
   create: (payload) => request('POST', '/alert-providers', payload),
   update: (type, payload, version) => request('PUT', `/alert-providers/${encodeURIComponent(type)}`, { ...payload, version }),
   remove: (type, version) => request('DELETE', `/alert-providers/${encodeURIComponent(type)}`, { version }),
@@ -140,7 +144,12 @@ export function describeAlertProviderError(error) {
       return 'This alerting provider no longer exists.'
     case 409:
       if (error.data && error.data.endpoints && !Array.isArray(error.data.endpoints)) {
-        return 'The change would make managed endpoints invalid:\n' + Object.entries(error.data.endpoints).map(([key, message]) => `${key}: ${message}`).join('\n')
+        return (
+          'The change would make managed endpoints invalid:\n' +
+          Object.entries(error.data.endpoints)
+            .map(([key, message]) => `${key}: ${message}`)
+            .join('\n')
+        )
       }
       if (error.data && Array.isArray(error.data.endpoints)) {
         return `This provider is used by ${error.data.endpoints.length === 1 ? 'an endpoint' : `${error.data.endpoints.length} endpoints`}: remove their alerts first.`

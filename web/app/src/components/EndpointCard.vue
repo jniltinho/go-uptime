@@ -2,19 +2,22 @@
 <template>
   <!-- Fork: in compact mode (the details page) the card has no header of its own and the bars are the ones of the
        public details page: the name, the group, the host and the status are already in the header of the page -->
-  <Card :class="['endpoint h-full flex flex-col transition dark:hover:border-gray-700', compact ? '' : 'hover:shadow-lg hover:scale-[1.01]']">
+  <Card
+    :class="['endpoint h-full flex flex-col transition dark:hover:border-gray-700', compact ? '' : 'hover:shadow-lg hover:scale-[1.01]']"
+  >
     <CardHeader v-if="!compact" class="endpoint-header px-3 sm:px-6 pt-3 sm:pt-6 pb-2 space-y-0">
       <div class="flex items-start justify-between gap-2 sm:gap-3">
         <div class="flex-1 min-w-0 overflow-hidden">
           <CardTitle class="text-base sm:text-lg truncate">
-            <span 
-              class="hover:text-primary cursor-pointer hover:underline text-sm sm:text-base block truncate" 
-              @click="navigateToDetails" 
+            <span
+              class="hover:text-primary cursor-pointer hover:underline text-sm sm:text-base block truncate"
+              @click="navigateToDetails"
               @keydown.enter="navigateToDetails"
               :title="endpoint.name"
               role="link"
               tabindex="0"
-              :aria-label="`View details for ${endpoint.name}`">
+              :aria-label="`View details for ${endpoint.name}`"
+            >
               {{ endpoint.name }}
             </span>
           </CardTitle>
@@ -34,7 +37,12 @@
         <div>
           <div class="flex items-center justify-between mb-1">
             <div class="flex-1"></div>
-            <p class="text-xs text-muted-foreground" :title="showAverageResponseTime ? 'Average response time' : 'Minimum and maximum response time'">{{ formattedResponseTime }}</p>
+            <p
+              class="text-xs text-muted-foreground"
+              :title="showAverageResponseTime ? 'Average response time' : 'Minimum and maximum response time'"
+            >
+              {{ formattedResponseTime }}
+            </p>
           </div>
           <div class="flex gap-0.5">
             <div
@@ -44,13 +52,19 @@
                 'flex-1 rounded-sm transition-all',
                 compact ? 'h-5' : 'h-6 sm:h-8',
                 result ? 'cursor-pointer' : '',
-                result ? (
-                  result.success 
-                    ? (selectedResultIndex === index ? 'bg-green-700' : 'bg-green-500 hover:bg-green-700')
+                result
+                  ? result.success
+                    ? selectedResultIndex === index
+                      ? 'bg-green-700'
+                      : 'bg-green-500 hover:bg-green-700'
                     : result.pending
-                      ? (selectedResultIndex === index ? 'bg-yellow-600' : 'bg-yellow-400 hover:bg-yellow-600')
-                      : (selectedResultIndex === index ? 'bg-red-700' : 'bg-red-500 hover:bg-red-700')
-                ) : 'bg-gray-200 dark:bg-gray-700'
+                      ? selectedResultIndex === index
+                        ? 'bg-yellow-600'
+                        : 'bg-yellow-400 hover:bg-yellow-600'
+                      : selectedResultIndex === index
+                        ? 'bg-red-700'
+                        : 'bg-red-500 hover:bg-red-700'
+                  : 'bg-gray-200 dark:bg-gray-700',
               ]"
               @mouseenter="result && handleMouseEnter(result, $event)"
               @mouseleave="result && handleMouseLeave(result, $event)"
@@ -79,21 +93,21 @@ const router = useRouter()
 const props = defineProps({
   endpoint: {
     type: Object,
-    required: true
+    required: true,
   },
   maxResults: {
     type: Number,
-    default: 50
+    default: 50,
   },
   showAverageResponseTime: {
     type: Boolean,
-    default: true
+    default: true,
   },
   // Used by the details page: no header of its own and the same bars as the public details page (fork)
   compact: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['showTooltip'])
@@ -131,12 +145,12 @@ const formattedResponseTime = computed(() => {
   if (!props.endpoint.results || props.endpoint.results.length === 0) {
     return 'N/A'
   }
-  
+
   let total = 0
   let count = 0
   let min = Infinity
   let max = 0
-  
+
   for (const result of props.endpoint.results) {
     if (result.duration) {
       const durationMs = result.duration / 1000000
@@ -146,9 +160,9 @@ const formattedResponseTime = computed(() => {
       max = Math.max(max, durationMs)
     }
   }
-  
+
   if (count === 0) return 'N/A'
-  
+
   if (props.showAverageResponseTime) {
     const avgMs = Math.round(total / count)
     return `~${avgMs}ms`

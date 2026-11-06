@@ -8,8 +8,12 @@ const memoryStorage = (initial = {}) => {
   return {
     items,
     getItem: (key) => (items.has(key) ? items.get(key) : null),
-    setItem: (key, value) => { items.set(key, String(value)) },
-    removeItem: (key) => { items.delete(key) }
+    setItem: (key, value) => {
+      items.set(key, String(value))
+    },
+    removeItem: (key) => {
+      items.delete(key)
+    },
   }
 }
 
@@ -51,9 +55,15 @@ test('removing a preference removes both keys', () => {
 
 test('a storage that is missing or throws never breaks the interface', () => {
   const throwing = {
-    getItem: () => { throw new Error('blocked') },
-    setItem: () => { throw new Error('full') },
-    removeItem: () => { throw new Error('blocked') }
+    getItem: () => {
+      throw new Error('blocked')
+    },
+    setItem: () => {
+      throw new Error('full')
+    },
+    removeItem: () => {
+      throw new Error('blocked')
+    },
   }
   assert.equal(readPreference('sort-by', null), null)
   assert.equal(writePreference('sort-by', 'name', null), false)
@@ -66,8 +76,10 @@ test('a storage that is missing or throws never breaks the interface', () => {
 test('a legacy value is still returned when it cannot be migrated', () => {
   const readOnly = {
     getItem: (key) => (key === 'gatus:sort-by' ? 'health' : null),
-    setItem: () => { throw new Error('full') },
-    removeItem: () => {}
+    setItem: () => {
+      throw new Error('full')
+    },
+    removeItem: () => {},
   }
   assert.equal(readPreference('sort-by', readOnly), 'health')
 })
@@ -76,8 +88,12 @@ test('the write succeeds even when the legacy key cannot be removed', () => {
   const items = new Map()
   const storage = {
     getItem: (key) => (items.has(key) ? items.get(key) : null),
-    setItem: (key, value) => { items.set(key, value) },
-    removeItem: () => { throw new Error('blocked') }
+    setItem: (key, value) => {
+      items.set(key, value)
+    },
+    removeItem: () => {
+      throw new Error('blocked')
+    },
   }
   assert.equal(writePreference('sort-by', 'name', storage), true)
   assert.equal(items.get('go-uptime:sort-by'), 'name')
@@ -94,8 +110,12 @@ test('a preference stored by another tab during the migration is not overwritten
       }
       return items.has(key) ? items.get(key) : null
     },
-    setItem: (key, value) => { items.set(key, value) },
-    removeItem: (key) => { items.delete(key) }
+    setItem: (key, value) => {
+      items.set(key, value)
+    },
+    removeItem: (key) => {
+      items.delete(key)
+    },
   }
   assert.equal(readPreference('sort-by', storage), 'name')
   assert.equal(items.get('go-uptime:sort-by'), 'name')
