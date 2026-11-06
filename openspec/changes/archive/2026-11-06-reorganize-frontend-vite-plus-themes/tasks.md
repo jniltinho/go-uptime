@@ -38,4 +38,4 @@
 ## 5. Documentation
 
 - [x] 5.1 Update `AGENTS.md` (commands), `docs/` and the README where the build is described
-- [ ] 5.2 Release notes: the legacy bundle of `--modern` is gone; required Node version
+- [x] 5.2 Release notes: the legacy bundle of `--modern` is gone; required Node version
