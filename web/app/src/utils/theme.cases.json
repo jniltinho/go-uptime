@@ -1,17 +1,20 @@
 {
-  "comment": "Cases of the theme rule, shared by the three implementations: internal/config/ui + internal/api (Go), the inline script of public/index.html and src/utils/theme.js. default is the default theme known by the page: null means that the attribute is absent.",
+  "comment": "Cases of the theme rule, shared by the three implementations: internal/config/ui + internal/api (Go), the inline script of index.html and src/utils/theme.js. default is the default theme known by the page: null means that the attribute is absent. themes must equal the registry of src/themes/themes.json; every case also checks data-theme (the theme) and data-scheme (its scheme).",
   "themes": {
     "dark": {
       "class": "dark",
-      "themeColor": "#030712"
+      "themeColor": "#030712",
+      "scheme": "dark"
     },
     "light": {
       "class": "",
-      "themeColor": "#f7f9fb"
+      "themeColor": "#f7f9fb",
+      "scheme": "light"
     },
     "bio": {
       "class": "theme-bio",
-      "themeColor": "#f2f8fa"
+      "themeColor": "#f2f8fa",
+      "scheme": "light"
     }
   },
   "cases": [

@@ -5,6 +5,8 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import vm from 'node:vm'
+import { inlineRegistry, THEMES_MARKER } from '../themes/build.js'
+import { THEME_REGISTRY } from '../themes/index.js'
 import { THEMES, applyTheme, currentTheme, defaultTheme, defaultThemeIsDark, setTheme, themeFromCookie, wantsDarkMode } from './theme.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -14,6 +16,7 @@ const { themes, cases } = JSON.parse(readFileSync(join(here, 'theme.cases.json')
 // meta. It serves both theme.js (dataset) and the inline script of index.html (getAttribute).
 const fakeDocument = ({ defaultTheme: value, cookie = '', classes = [] } = {}) => {
   const classSet = new Set(classes)
+  const attributes = {}
   const meta = {
     content: '',
     setAttribute(name, attribute) {
@@ -21,13 +24,19 @@ const fakeDocument = ({ defaultTheme: value, cookie = '', classes = [] } = {}) =
     },
   }
   const absent = value === undefined || value === null
+  const dataset = absent ? {} : { defaultTheme: value }
   return {
     classSet,
     meta,
+    // data-theme and data-scheme, whether they were set through the dataset (theme.js) or setAttribute (inline script)
+    attributes: () => ({ theme: attributes['data-theme'] ?? dataset.theme, scheme: attributes['data-scheme'] ?? dataset.scheme }),
     document: {
       cookie,
       documentElement: {
-        dataset: absent ? {} : { defaultTheme: value },
+        dataset,
+        setAttribute: (name, attribute) => {
+          attributes[name] = attribute
+        },
         getAttribute: (name) => (name === 'data-default-theme' && !absent ? value : null),
         classList: {
           toggle: (name, force) => (force ? classSet.add(name) : classSet.delete(name)),
@@ -47,9 +56,15 @@ afterEach(() => {
   delete global.document
 })
 
-test('the table of themes of theme.js is the one of theme.cases.json', () => {
+test('the table of themes of theme.js is the registry, and the one of theme.cases.json', () => {
   assert.deepEqual(
-    Object.fromEntries(Object.entries(THEMES).map(([theme, { className, themeColor }]) => [theme, { class: className, themeColor }])),
+    Object.keys(THEMES),
+    THEME_REGISTRY.map((theme) => theme.id),
+  )
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(THEMES).map(([theme, { className, themeColor, scheme }]) => [theme, { class: className, themeColor, scheme }]),
+    ),
     themes,
   )
 })
@@ -64,6 +79,7 @@ test('theme.js follows every case of theme.cases.json', () => {
     applyTheme(currentTheme())
     assert.equal(classOf(fake.classSet), ['unrelated', item.class].filter(Boolean).sort().join(' '), JSON.stringify(item))
     assert.equal(fake.meta.content, item.themeColor, JSON.stringify(item))
+    assert.deepEqual(fake.attributes(), { theme: item.theme, scheme: themes[item.theme].scheme }, JSON.stringify(item))
   }
 })
 
@@ -72,12 +88,16 @@ test('the inline script of index.html follows every case of theme.cases.json', (
   const start = html.indexOf('(function() {', html.indexOf('Initialize theme immediately'))
   const end = html.indexOf('})();', start) + '})();'.length
   assert.ok(start > 0 && end > start, 'the inline theme script was not found in index.html')
-  const script = new vm.Script(html.slice(start, end))
+  // The build injects the registry in place of the marker (src/themes/build.js)
+  const source = html.slice(start, end)
+  assert.ok(source.includes(THEMES_MARKER), 'the inline theme script has no marker for the registry')
+  const script = new vm.Script(source.replace(THEMES_MARKER, inlineRegistry(THEME_REGISTRY)))
   for (const item of cases) {
     const fake = fakeDocument({ defaultTheme: item.default, cookie: cookieOf(item.cookie), classes: ['dark', 'theme-bio', 'unrelated'] })
     script.runInNewContext({ document: fake.document })
     assert.equal(classOf(fake.classSet), ['unrelated', item.class].filter(Boolean).sort().join(' '), JSON.stringify(item))
     assert.equal(fake.meta.content, item.themeColor, JSON.stringify(item))
+    assert.deepEqual(fake.attributes(), { theme: item.theme, scheme: themes[item.theme].scheme }, JSON.stringify(item))
   }
 })
 

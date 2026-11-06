@@ -43,7 +43,7 @@ var (
 	ErrButtonValidationFailed = errors.New("invalid button configuration: missing required name or link")
 
 	// ErrInvalidDefaultTheme is returned when default-theme is not one of the themes of the interface.
-	ErrInvalidDefaultTheme = errors.New("invalid default-theme value: must be 'dark', 'light', or 'bio'")
+	ErrInvalidDefaultTheme = errors.New("invalid default-theme value: must be the id of a theme of the interface")
 
 	// ErrInvalidDefaultSortBy is returned by Config.ValidateAndSetDefaults when default-sort-by is set to something
 	// other than name, group or health.
@@ -79,8 +79,9 @@ type Config struct {
 	MaximumNumberOfResults int `yaml:"-"` // MaximumNumberOfResults to display on the page, it's not configurable because we're passing it from the storage config
 }
 
-// Identifiers of the themes of the interface: the values of the theme cookie and of default-theme. The same table
-// lives in web/app/public/index.html (inline script) and in web/app/src/utils/theme.js; the three are tested with
+// Identifiers of the three themes that ship with Go Uptime. The themes come from the registry of the frontend
+// (web/app/src/themes/themes.json, embedded as static/themes.json, see Themes); the inline script of
+// web/app/index.html and web/app/src/utils/theme.js read the same registry, and the three are tested with
 // web/app/src/utils/theme.cases.json.
 const (
 	ThemeDark  = "dark"
@@ -88,33 +89,29 @@ const (
 	ThemeBio   = "bio"
 )
 
-// IsTheme returns whether the value is the identifier of a theme
+// IsTheme returns whether the value is the id of a theme of the registry
 func IsTheme(value string) bool {
-	return value == ThemeDark || value == ThemeLight || value == ThemeBio
+	loadThemes()
+	_, ok := themesByID[value]
+	return ok
 }
 
-// ThemeClass returns the class of <html> of a theme: "dark", "theme-bio", or empty for the light theme and for a
-// value that is not a theme
+// ThemeClass returns the legacy class of <html> of a theme ("dark", "theme-bio" or empty), the one of the light theme
+// for a value that is not a theme
 func ThemeClass(theme string) string {
-	switch theme {
-	case ThemeDark:
-		return "dark"
-	case ThemeBio:
-		return "theme-bio"
-	}
-	return ""
+	return themeInfo(theme).ClassName
 }
 
 // ThemeColor returns the theme-color of the browser for a theme, the one of the light theme for a value that is not
 // a theme
 func ThemeColor(theme string) string {
-	switch theme {
-	case ThemeDark:
-		return "#030712"
-	case ThemeBio:
-		return "#f2f8fa"
-	}
-	return "#f7f9fb"
+	return themeInfo(theme).ThemeColor
+}
+
+// ThemeScheme returns light or dark, the scheme of a theme, the one of the light theme for a value that is not a
+// theme
+func ThemeScheme(theme string) string {
+	return themeInfo(theme).Scheme
 }
 
 // Theme returns the identifier of the default theme: default-theme when it is set, otherwise the one of dark-mode,
@@ -217,14 +214,14 @@ func (cfg *Config) ValidateAndSetDefaults() error {
 		cfg.CustomCSS = defaultCustomCSS
 	}
 	// The presence of dark-mode is looked at before its default is applied: afterwards it is always set
-	switch cfg.DefaultTheme {
-	case "":
-	case ThemeDark, ThemeLight, ThemeBio:
+	switch {
+	case cfg.DefaultTheme == "":
+	case IsTheme(cfg.DefaultTheme):
 		if cfg.DarkMode != nil {
 			logr.Warnf("[ui.ValidateAndSetDefaults] Both ui.default-theme and ui.dark-mode are set: ui.default-theme=%s is used", cfg.DefaultTheme)
 		}
 	default:
-		return ErrInvalidDefaultTheme
+		return invalidDefaultTheme(cfg.DefaultTheme)
 	}
 	if cfg.DarkMode == nil {
 		cfg.DarkMode = &defaultDarkMode
@@ -269,17 +266,21 @@ func (cfg *Config) ValidateAndSetDefaults() error {
 type ViewData struct {
 	// UI is the UI configuration, from which the template takes the title, the texts, the icons and the custom CSS
 	UI *Config
-	// Theme is the class of <html> of the theme the page is rendered with, see ThemeClass: "dark", "theme-bio", or
-	// empty for the light theme. The classes are mutually exclusive.
+	// Theme is the legacy class of <html> of the theme the page is rendered with, see ThemeClass: "dark", "theme-bio",
+	// or empty for the light theme. The classes are mutually exclusive.
 	Theme string
+	// ThemeID is the id of the theme the page is rendered with, the data-theme attribute of <html> (fork)
+	ThemeID string
+	// ThemeScheme is light or dark, the data-scheme attribute of <html>, which the dark: variant follows (fork)
+	ThemeScheme string
 	// ThemeColor is the theme-color of the browser for the theme the page is rendered with, see ThemeColor
 	ThemeColor string
-	// DefaultTheme is the identifier of the default theme (dark, light or bio), used by the browser without a valid
-	// theme cookie (fork)
+	// DefaultTheme is the id of the default theme, used by the browser without a valid theme cookie (fork)
 	DefaultTheme string
 }
 
 // NewViewData returns the data of the index template for a theme, which must be one of the identifiers
 func NewViewData(cfg *Config, theme string) ViewData {
-	return ViewData{UI: cfg, Theme: ThemeClass(theme), ThemeColor: ThemeColor(theme), DefaultTheme: cfg.Theme()}
+	info := themeInfo(theme)
+	return ViewData{UI: cfg, Theme: info.ClassName, ThemeID: info.ID, ThemeScheme: info.Scheme, ThemeColor: info.ThemeColor, DefaultTheme: cfg.Theme()}
 }

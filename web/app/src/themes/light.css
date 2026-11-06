@@ -1,0 +1,8 @@
+/* Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. */
+/* "Light" theme: the defaults of the roles of the contract in style.css (:root) are the light theme, so this file only
+   names it. A new theme copies dark.css or bio.css, redefines the roles under :root[data-theme='<id>'] and is added to
+   themes.json. */
+@layer base {
+  :root[data-theme='light'] {
+  }
+}

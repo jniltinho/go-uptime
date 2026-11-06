@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
+import { injectThemes, themesFile } from './src/themes/build.js'
 
 // The SPA of Go Uptime.
 // - build → ../static, embedded in the Go binary by web/static.go (//go:embed static). The names are stable and have no
@@ -43,7 +44,7 @@ function keepGoTemplateLinks() {
 }
 
 export default defineConfig({
-  plugins: [vue(), tailwindcss(), ...keepGoTemplateLinks()],
+  plugins: [vue(), tailwindcss(), ...keepGoTemplateLinks(), injectThemes(), themesFile()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     // The sources import components and modules without extension, as Vue CLI allowed
