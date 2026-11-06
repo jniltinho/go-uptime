@@ -129,6 +129,58 @@ Statuses:
 The uptime is shown as "—" when there was no check during the period. With SQLite, PostgreSQL and MySQL, the history older
 than 48 hours is aggregated per day, so the edges of the 7 and 30 day periods are approximate, as in the badges.
 
+## Views of a page
+
+A page can offer up to three layouts, and the visitor switches between them with the buttons next to the title (the
+choice goes in the address, `?view=matrix`, so it can be shared):
+
+- **`list`** — the groups with one row per endpoint, described above. It is the only view of a page without `views`.
+- **`grouped`** — one card per group, its endpoints split by environment, with the application, the latest checks and
+  the uptimes of each one; filters by environment and application, and "only groups with problems".
+- **`matrix`** — one row per group and one column per application. Each cell shows the status of the endpoints of
+  the pair in the filtered environments (the rule of a group: all up is operational, all down is down, anything else
+  is a partial outage), the 30-day uptime of the primary environment (or of the first environment with data) and the
+  environments present. An empty cell says "Not configured", "Not in this environment" (filtered out) or "Not shown"
+  (the page is cut by `maximum-endpoints-per-page`, so the pair may exist beyond it).
+
+The `grouped` and `matrix` views also show counters over the whole page — groups, monitors, incidents in the primary
+environment and outside it — and a banner while anything is down or pending. Featured endpoints are shown in their
+group in these two views.
+
+```yaml
+status-pages:
+  pages:
+    - slug: acme
+      title: Acme SaaS
+      groups: [Client A, Client B]
+      views:
+        enabled: [grouped, matrix, list]   # default: [list]; an explicit [] is invalid
+        default: grouped                   # default: the first enabled view
+        group-label: Client                # the noun of a group: "By client", "Clients"; default "Group"
+        environments:                      # at most 10; the FIRST one is the primary environment
+          - {id: prod, name: Production, short: PROD}
+          - {id: stg, name: Staging}       # short defaults to the id in uppercase, cut to 8 characters
+        applications: [Billing, API]       # order of the columns and filters; others follow alphabetically
+        groups:                            # optional: what is shown next to the name of a group
+          Client A: {description: Acme customer, tags: [BR, OCI]}
+        endpoints:                         # endpoint key -> application and environment
+          client-a_billing: {application: Billing, environment: prod}
+          client-a_billing-stg: {application: Billing, environment: stg}
+```
+
+- An endpoint without an entry in `endpoints` uses its **name** as the application and has no environment, so a page
+  whose groups are clients and whose endpoints are named after the applications gets a useful matrix with only
+  `enabled`.
+- The keys are the lowercase `<group>_<name>` keys of the status API. An entry whose key matches no endpoint is kept
+  and reported as a warning by the validation; renaming a managed endpoint moves its entry on the managed pages.
+- Only what the block says is published: the application and environment of each endpoint, the description and tags of
+  each group and the list of environments. The keys of the block are never published.
+- In the administration, the **Views** section of the form enables the views, edits the environments, the order of the
+  applications and the details of the groups, and classifies the endpoints of the page. A page saved with only `list`
+  and nothing else keeps no `views` block.
+- A definition with `views` is refused by versions before this one: remove the block before going back to an older
+  version.
+
 ## Collapsible groups
 
 The header of every group is a button that collapses and expands its endpoints, with the mouse, `Enter` or `Space`.

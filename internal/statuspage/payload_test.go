@@ -76,6 +76,23 @@ type allowedPayload struct {
 	Summary         allowedSummary    `json:"summary"`
 	Featured        []allowedFeatured `json:"featured"`
 	Groups          []allowedGroup    `json:"groups"`
+	// Only what the views block of the page says (fork)
+	Views struct {
+		Enabled      []string `json:"enabled"`
+		Default      string   `json:"default"`
+		GroupLabel   string   `json:"groupLabel"`
+		Environments []struct {
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Short string `json:"short"`
+		} `json:"environments"`
+		Applications []string `json:"applications"`
+		Groups       []struct {
+			Name        string   `json:"name"`
+			Description string   `json:"description"`
+			Tags        []string `json:"tags"`
+		} `json:"groups"`
+	} `json:"views"`
 }
 
 // allowedSummary is the count of the endpoints of the page by status (fork)
@@ -97,12 +114,18 @@ type allowedGroup struct {
 	Status    string            `json:"status"`
 	Summary   allowedSummary    `json:"summary"`
 	Endpoints []allowedEndpoint `json:"endpoints"`
+	// Only the description and the tags of the views block (fork)
+	Description string   `json:"description"`
+	Tags        []string `json:"tags"`
 }
 
 type allowedEndpoint struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
-	Uptime struct {
+	// The classification of the views block, or the name (fork)
+	Application string `json:"application"`
+	Environment string `json:"environment"`
+	Uptime      struct {
 		Last24Hours *float64 `json:"24h"`
 		Last7Days   *float64 `json:"7d"`
 		Last30Days  *float64 `json:"30d"`

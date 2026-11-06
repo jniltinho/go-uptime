@@ -6,6 +6,7 @@ import (
 	"slices"
 
 	"github.com/TwiN/logr"
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
 	"github.com/jniltinho/go-uptime/v7/internal/managedendpoint"
 	"github.com/jniltinho/go-uptime/v7/internal/storage/store/common"
 	"gopkg.in/yaml.v3"
@@ -33,7 +34,7 @@ func (keyRenameParticipant) PrepareKeyRename(oldKey, newKey, author string) (*ma
 	plan := &managedendpoint.KeyRenamePlan{Discard: release}
 	if snap := current.Load(); snap != nil {
 		for _, state := range sortedStates(snap.configStates) {
-			if state.Page != nil && (slices.Contains(state.Page.Endpoints, oldKey) || slices.Contains(state.Page.Featured, oldKey)) {
+			if state.Page != nil && (slices.Contains(state.Page.Endpoints, oldKey) || slices.Contains(state.Page.Featured, oldKey) || state.Page.Views.Classification(oldKey) != nil) {
 				plan.AffectedConfigStatusPages = append(plan.AffectedConfigStatusPages, managedendpoint.AffectedStatusPage{Slug: state.Slug, Title: state.Page.Title})
 			}
 		}
@@ -45,7 +46,10 @@ func (keyRenameParticipant) PrepareKeyRename(oldKey, newKey, author string) (*ma
 			}
 			endpoints, endpointsChanged := replaceEndpointKey(page.Endpoints, oldKey, newKey)
 			featured, featuredChanged := replaceEndpointKey(page.Featured, oldKey, newKey)
-			if !endpointsChanged && !featuredChanged {
+			// Fork: the classification of the views follows the key, including pages that reach the endpoint only
+			// through its group
+			classificationChanged := renameClassification(page, oldKey, newKey, state.Slug)
+			if !endpointsChanged && !featuredChanged && !classificationChanged {
 				continue
 			}
 			page.Endpoints, page.Featured = endpoints, featured
@@ -94,4 +98,20 @@ func replaceEndpointKey(keys []string, oldKey, newKey string) ([]string, bool) {
 		}
 	}
 	return replaced, true
+}
+
+// renameClassification moves the classification of oldKey in the views of the page to newKey and returns whether it
+// found one (fork). A classification already held by newKey is stale, since newKey was not an endpoint: it is replaced
+// by the one in use, and the replacement is logged with both values.
+func renameClassification(page *pageconfig.Page, oldKey, newKey, slug string) bool {
+	classification := page.Views.Classification(oldKey)
+	if classification == nil {
+		return false
+	}
+	if stale := page.Views.Endpoints[newKey]; stale != nil {
+		logr.Warnf("[statuspage.PrepareKeyRename] Status page with slug=%s: the classification of key=%s (application=%q environment=%q) replaced by the one of key=%s (application=%q environment=%q)", slug, newKey, stale.Application, stale.Environment, oldKey, classification.Application, classification.Environment)
+	}
+	delete(page.Views.Endpoints, oldKey)
+	page.Views.Endpoints[newKey] = classification
+	return true
 }

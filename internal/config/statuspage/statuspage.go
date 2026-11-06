@@ -270,6 +270,10 @@ type Page struct {
 	// kept in their browser and wins over it. A null or omitted value means false.
 	GroupsCollapsed bool `yaml:"groups-collapsed,omitempty" json:"groups-collapsed,omitempty"`
 
+	// Views are the layouts the public page offers and how its endpoints are placed in them (fork). Omitted means only
+	// the list of the groups.
+	Views *Views `yaml:"views,omitempty" json:"views,omitempty"`
+
 	// Auth requires a username and a password to view the page: with it, every route of the page answers 401 without
 	// the credential of this page (fork). Without it, the page stays public.
 	Auth *PageAuth `yaml:"auth,omitempty" json:"auth,omitempty"`
@@ -322,6 +326,9 @@ func (p *Page) ValidateAndSetDefaults() error {
 		return ErrEmptySelection
 	}
 	if err = p.Auth.validate(); err != nil {
+		return err
+	}
+	if err = p.Views.validate(); err != nil {
 		return err
 	}
 	p.Groups, p.Endpoints, p.Featured, p.Charts = groups, endpoints, featured, charts

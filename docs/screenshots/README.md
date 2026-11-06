@@ -45,6 +45,16 @@ read-only.
 
 ![Endpoint administration](admin-endpoints.png)
 
+## Views of a status page
+
+A page can offer a **grouped** view — one card per client, its endpoints split by environment, with filters and the
+incidents of production — and a **matrix** of clients by application, besides the list. The administrator enables them
+in the Views section of the form; see [docs/status-pages.md](../status-pages.md#views-of-a-page).
+
+![Grouped view of a status page](status-page-grouped.png)
+
+![Matrix view of a status page](status-page-matrix.png)
+
 ## Status pages
 
 Managed status pages and the ones defined in the configuration file, with their address, state and number of

@@ -1,19 +1,20 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="min-h-screen flex flex-col bg-background text-foreground" data-testid="public-layout">
-    <header class="app-header border-b bg-card/50 dark:border-gray-800">
-      <div class="container mx-auto px-4 py-3 max-w-5xl flex items-center justify-between gap-4">
+  <div class="screen-scale min-h-screen flex flex-col bg-background text-foreground" data-testid="public-layout">
+    <header class="app-header border-b bg-card/50 dark:border-gray-800" data-testid="public-header">
+      <!-- Fork: a slim bar, with only the logo, the header and the theme -->
+      <div class="mx-auto flex h-10 w-full max-w-[1760px] items-center justify-between gap-4 px-4 sm:px-12">
         <component
           :is="link ? 'a' : 'div'"
           :href="link || undefined"
           :target="link ? '_blank' : undefined"
           :rel="link ? 'noopener' : undefined"
-          class="flex items-center gap-3 min-w-0"
+          class="flex min-w-0 items-center gap-2"
         >
-          <img v-if="logo" :src="logo" alt="" class="w-10 h-10 object-contain flex-shrink-0" />
-          <span class="text-lg font-semibold truncate">{{ header }}</span>
+          <img v-if="logo" :src="logo" alt="" class="h-5 w-5 flex-shrink-0 object-contain" />
+          <span class="truncate text-sm font-semibold tracking-tight">{{ header }}</span>
         </component>
-        <ThemeSelector testid="public-theme-toggle" />
+        <ThemeSelector testid="public-theme-toggle" compact />
       </div>
     </header>
     <main class="flex-1">

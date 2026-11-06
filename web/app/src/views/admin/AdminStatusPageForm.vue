@@ -1,7 +1,7 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
   <!-- Fork: the form fills the window on larger screens and each column scrolls on its own, like the lists -->
-  <div class="container mx-auto flex max-w-7xl flex-col px-4 py-4 md:min-h-0 md:flex-1">
+  <div class="mx-auto flex w-full max-w-[1760px] flex-col px-4 py-4 sm:px-12 md:min-h-0 md:flex-1">
     <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="min-w-0">
         <h1 class="text-xl font-semibold tracking-tight text-foreground dark:text-gray-100">{{ title }}</h1>
@@ -167,6 +167,100 @@
               </label>
             </div>
           </section>
+
+          <!-- Fork: views of the page (grouped by environment, matrix) and the classification of its endpoints -->
+          <section class="border bg-card p-5 dark:border-gray-700 dark:bg-gray-900" data-testid="status-page-section-views">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Views</h2>
+              <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">Layouts the public page offers. The grouped and matrix views place each endpoint in an application and an environment.</p>
+            </header>
+            <div class="grid gap-4">
+              <fieldset>
+                <legend class="text-sm font-medium text-foreground dark:text-gray-200">Enabled views</legend>
+                <div class="mt-1.5 grid gap-2 sm:grid-cols-3">
+                  <label v-for="view in VIEW_OPTIONS" :key="view.id" :class="['flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm dark:border-gray-700', form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : '']">
+                    <input v-model="form.views.enabled" type="checkbox" :value="view.id" class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100" :data-testid="`status-page-view-${view.id}`" />
+                    <span>
+                      <span class="block font-medium text-foreground dark:text-gray-100">{{ view.label }}</span>
+                      <span class="block text-xs text-muted-foreground dark:text-gray-400">{{ view.help }}</span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="block">
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Default view</span>
+                  <select v-model="form.views.default" class="mt-1.5 h-10 w-full border border-input bg-background px-3 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" data-testid="status-page-view-default">
+                    <option value="">First enabled</option>
+                    <option v-for="view in VIEW_OPTIONS.filter((option) => form.views.enabled.includes(option.id))" :key="view.id" :value="view.id">{{ view.label }}</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="block text-sm font-medium text-foreground dark:text-gray-200">Name of a group</span>
+                  <Input v-model="form.views.groupLabel" maxlength="30" placeholder="Group" class="mt-1.5 dark:border-gray-700" data-testid="status-page-view-group-label" />
+                  <span class="mt-0.5 block text-xs text-muted-foreground dark:text-gray-400">For example Client: "By client", "Clients".</span>
+                </label>
+              </div>
+
+              <div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm font-medium text-foreground dark:text-gray-200">Environments</span>
+                  <Button variant="ghost" size="sm" :disabled="form.views.environments.length >= 10" data-testid="status-page-view-environment-add" @click="form.views.environments.push({ id: '', name: '', short: '' })">Add</Button>
+                </div>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">The first one is the primary environment (production): its incidents and its uptime are the ones highlighted.</p>
+                <div v-for="(environment, index) in form.views.environments" :key="`environment-${index}`" class="mt-2 grid grid-cols-[1fr_1.5fr_1fr_auto] gap-2">
+                  <Input v-model="environment.id" placeholder="prod" class="font-mono dark:border-gray-700" :aria-label="`Id of environment ${index + 1}`" :data-testid="`status-page-view-environment-id-${index}`" />
+                  <Input v-model="environment.name" placeholder="Production" class="dark:border-gray-700" :aria-label="`Name of environment ${index + 1}`" :data-testid="`status-page-view-environment-name-${index}`" />
+                  <Input v-model="environment.short" maxlength="8" placeholder="PROD" class="dark:border-gray-700" :aria-label="`Short name of environment ${index + 1}`" />
+                  <div class="flex">
+                    <Button variant="ghost" size="sm" :disabled="index === 0" :aria-label="`Move environment ${index + 1} up`" @click="moveEnvironment(index, -1)">↑</Button>
+                    <Button variant="ghost" size="sm" :aria-label="`Remove environment ${index + 1}`" @click="form.views.environments.splice(index, 1)">✕</Button>
+                  </div>
+                </div>
+              </div>
+
+              <label class="block">
+                <span class="block text-sm font-medium text-foreground dark:text-gray-200">Order of the applications</span>
+                <textarea v-model="form.views.applicationsText" rows="3" placeholder="One per line: the columns of the matrix and the filters. Others come after, alphabetically." class="mt-1.5 w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100" data-testid="status-page-view-applications"></textarea>
+              </label>
+
+              <div v-if="viewGroupRows.length">
+                <span class="text-sm font-medium text-foreground dark:text-gray-200">Groups</span>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">Description and tags (comma separated, up to 5) shown next to the name of each group.</p>
+                <div v-for="row in viewGroupRows.filter((candidate) => form.views.groups[candidate.name])" :key="`group-details-${row.name}`" class="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_auto] items-center gap-2">
+                  <span :class="['truncate text-sm', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100']" :title="row.orphan ? 'Group not selected by the page: the entry is kept until removed' : row.name">{{ row.name }}</span>
+                  <Input v-model="form.views.groups[row.name].description" maxlength="100" placeholder="Description" class="dark:border-gray-700" :aria-label="`Description of ${row.name}`" :data-testid="`status-page-view-group-description-${row.name}`" />
+                  <Input v-model="form.views.groups[row.name].tagsText" placeholder="BR, OCI" class="dark:border-gray-700" :aria-label="`Tags of ${row.name}`" />
+                  <Button v-if="row.orphan" variant="ghost" size="sm" :aria-label="`Remove the entry of ${row.name}`" @click="delete form.views.groups[row.name]">✕</Button>
+                  <span v-else></span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-sm font-medium text-foreground dark:text-gray-200">Classification of the endpoints</span>
+                <p class="text-xs text-muted-foreground dark:text-gray-400">Without an application, the name of the endpoint is used. Entries of endpoints the page does not show are kept until removed.</p>
+                <datalist id="status-page-view-applications-list">
+                  <option v-for="application in applicationSuggestions" :key="`suggestion-${application}`" :value="application"></option>
+                </datalist>
+                <p v-if="classificationRows.length === 0" class="mt-2 text-sm text-muted-foreground dark:text-gray-400">Select groups or endpoints to classify them.</p>
+                <div v-else class="mt-2 max-h-96 overflow-y-auto border dark:border-gray-700">
+                  <div v-for="row in classificationRows.filter((candidate) => form.views.endpoints[candidate.key])" :key="`classification-${row.key}`" class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 border-t px-2 py-1.5 text-sm first:border-t-0 dark:border-gray-800" :data-testid="`status-page-classification-${row.key}`">
+                    <span class="min-w-0" :title="row.key">
+                      <span :class="['block truncate', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-foreground dark:text-gray-100']">{{ row.name }}</span>
+                      <span class="block truncate text-xs text-muted-foreground dark:text-gray-400">{{ row.orphan ? 'not shown by the page' : (row.group || 'no group') }}</span>
+                    </span>
+                    <input v-model="form.views.endpoints[row.key].application" list="status-page-view-applications-list" maxlength="40" :placeholder="row.orphan ? '' : row.name" class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" :aria-label="`Application of ${row.name}`" :data-testid="`status-page-classification-application-${row.key}`" />
+                    <select v-model="form.views.endpoints[row.key].environment" class="h-9 w-full min-w-0 border border-input bg-background px-2 text-sm text-foreground dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100" :aria-label="`Environment of ${row.name}`" :data-testid="`status-page-classification-environment-${row.key}`">
+                      <option value="">No environment</option>
+                      <option v-for="environment in form.views.environments.filter((candidate) => candidate.id.trim())" :key="`option-${environment.id}`" :value="environment.id.trim()">{{ environment.name || environment.id }}</option>
+                    </select>
+                    <Button v-if="row.orphan" variant="ghost" size="sm" :aria-label="`Remove the classification of ${row.name}`" @click="delete form.views.endpoints[row.key]">✕</Button>
+                    <span v-else class="w-8"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         <!-- Right column: endpoints, with the list filling the column -->
@@ -242,6 +336,13 @@
       @close="preview = null"
     >
       <div v-if="preview">
+        <!-- Fork: the views of the saved version; links open the public pages -->
+        <div v-if="previewViews.enabled.length > 1" class="mb-3 flex justify-end">
+          <ViewSwitcher v-model="previewView" :views="previewViews.enabled" :group-label="previewViews.groupLabel" />
+        </div>
+        <GroupedView v-if="previewView === 'grouped'" :groups="groupedModel(preview)" :collapsed="new Set()" :slug="props.slug" :has-environments="previewViews.environments.length > 0" @toggle="() => {}" />
+        <MatrixView v-else-if="previewView === 'matrix'" :model="matrixModel(preview)" :slug="props.slug" :group-label="previewViews.groupLabel" :primary-name="previewViews.environments[0]?.name || ''" />
+        <template v-else>
         <p v-if="preview.truncated" class="mb-3 text-sm text-amber-800 dark:text-amber-300" data-testid="status-page-preview-truncated">Showing the first {{ preview.summary?.total ?? 0 }} services.</p>
         <p v-if="preview.groups.length === 0 && (preview.featured || []).length === 0" class="text-sm text-muted-foreground dark:text-gray-400">No endpoints selected.</p>
         <div v-if="(preview.featured || []).length" class="mb-4" data-testid="status-page-preview-featured">
@@ -278,6 +379,7 @@
           </ul>
           </div>
         </div>
+        </template>
       </div>
       <template #footer>
         <Button variant="outline" data-testid="status-page-preview-close" @click="preview = null">Close</Button>
@@ -298,6 +400,10 @@ import { formatUptime, SLUG_PATTERN, STATUS_LABELS } from '@/utils/statusPage'
 import { toast } from '@/utils/toast'
 import { ChevronDown, ChevronRight } from 'lucide-vue-next'
 import { COLLAPSED, EXPANDED, groupCounts, isCollapsed } from '@/utils/statusPageGroups'
+import ViewSwitcher from '@/components/public/ViewSwitcher.vue'
+import GroupedView from '@/components/public/GroupedView.vue'
+import MatrixView from '@/components/public/MatrixView.vue'
+import { groupedModel, matrixModel, normalizeViews } from '@/utils/statusPageViews'
 
 const props = defineProps({
   slug: { type: String, default: '' }
@@ -338,7 +444,13 @@ const togglePreviewGroup = (group) => {
   const name = group.name || ''
   previewGroupChoices.value = new Map(previewGroupChoices.value).set(name, previewCollapsedGroups.value.has(name) ? EXPANDED : COLLAPSED)
 }
-watch(preview, () => { previewGroupChoices.value = new Map() })
+// Fork: the preview opens on the default view of the saved version
+const previewViews = computed(() => normalizeViews(preview.value?.views))
+const previewView = ref('list')
+watch(preview, () => {
+  previewGroupChoices.value = new Map()
+  previewView.value = previewViews.value.default
+})
 // show-messages of the saved version, which the payload of the preview does not have (fork)
 const savedShowMessages = ref(false)
 // Whether the saved version already requires a login: only then an empty password means "keep the current one" (fork)
@@ -350,8 +462,18 @@ let copiedTimer = null
 
 const MAXIMUM_FEATURED = 10
 
+// Fork: the views a page can enable, see internal/config/statuspage/views.go
+const VIEW_OPTIONS = [
+  { id: 'list', label: 'List', help: 'Groups with one row per endpoint.' },
+  { id: 'grouped', label: 'Grouped', help: 'Groups split by environment, with filters.' },
+  { id: 'matrix', label: 'Matrix', help: 'Groups by application, one cell each.' }
+]
+
+// The views block in the shape of the form: tags and applications as text, classifications by key
+const emptyViews = () => ({ enabled: ['list'], default: '', groupLabel: '', environments: [], applicationsText: '', groups: {}, endpoints: {} })
+
 // The deprecated charts are not part of the form: saving a page removes them
-const emptyForm = () => ({ slug: '', title: '', description: '', enabled: false, groups: [], endpoints: [], featured: [], showCertificateExpiration: false, showMessages: false, groupsCollapsed: false, requiresLogin: false, authUsername: '', authPassword: '' })
+const emptyForm = () => ({ slug: '', title: '', description: '', enabled: false, groups: [], endpoints: [], featured: [], showCertificateExpiration: false, showMessages: false, groupsCollapsed: false, requiresLogin: false, authUsername: '', authPassword: '', views: emptyViews() })
 const form = reactive(emptyForm())
 
 // Message shown after the route changes from the creation to the edition of the created page
@@ -386,6 +508,127 @@ const filteredEndpoints = computed(() => {
   )
 })
 
+// Fork: rows of the views section. The endpoints the page shows (its groups, the picked and the featured keys), then the
+// classifications of keys it does not show, which are kept until removed; the same for the details of the groups.
+const classificationRows = computed(() => {
+  const rows = []
+  const seen = new Set()
+  const byKey = new Map(options.value.endpoints.map((endpoint) => [endpoint.key, endpoint]))
+  for (const endpoint of options.value.endpoints) {
+    if (form.groups.includes(endpoint.group || '')) {
+      rows.push({ key: endpoint.key, name: endpoint.name, group: endpoint.group })
+      seen.add(endpoint.key)
+    }
+  }
+  for (const key of [...form.endpoints, ...form.featured]) {
+    if (!seen.has(key)) {
+      const endpoint = byKey.get(key)
+      rows.push({ key, name: endpoint ? endpoint.name : key, group: endpoint ? endpoint.group : '', orphan: !endpoint })
+      seen.add(key)
+    }
+  }
+  for (const key of Object.keys(form.views.endpoints).sort()) {
+    const entry = form.views.endpoints[key]
+    if (!seen.has(key) && ((entry.application || '').trim() || (entry.environment || '').trim())) {
+      rows.push({ key, name: key, group: '', orphan: true })
+    }
+  }
+  return rows
+})
+
+const viewGroupRows = computed(() => [
+  ...form.groups.map((name) => ({ name })),
+  ...Object.keys(form.views.groups)
+    .filter((name) => !form.groups.includes(name) && (form.views.groups[name].description.trim() || form.views.groups[name].tagsText.trim()))
+    .sort()
+    .map((name) => ({ name, orphan: true }))
+])
+
+// Entries exist for every row, so that the inputs bind to them; empty entries are not sent
+watch(classificationRows, (rows) => {
+  for (const row of rows) {
+    if (!form.views.endpoints[row.key]) {
+      form.views.endpoints[row.key] = { application: '', environment: '' }
+    }
+  }
+}, { immediate: true })
+watch(viewGroupRows, (rows) => {
+  for (const row of rows) {
+    if (!form.views.groups[row.name]) {
+      form.views.groups[row.name] = { description: '', tagsText: '' }
+    }
+  }
+}, { immediate: true })
+
+const applicationLines = () => [...new Set(form.views.applicationsText.split('\n').map((line) => line.trim()).filter(Boolean))]
+
+const applicationSuggestions = computed(() => [...new Set([
+  ...applicationLines(),
+  ...Object.values(form.views.endpoints).map((entry) => (entry.application || '').trim()).filter(Boolean)
+])])
+
+const moveEnvironment = (index, delta) => {
+  const list = form.views.environments
+  const [moved] = list.splice(index, 1)
+  list.splice(index + delta, 0, moved)
+}
+
+// viewsDocument returns the views block to send, or null when it holds only defaults: a page saved without views keeps
+// its definition unchanged
+const viewsDocument = () => {
+  const views = form.views
+  const block = {}
+  // The order of the administrator is kept: without a default, the first enabled view is the one a visitor sees first
+  const known = VIEW_OPTIONS.map((option) => option.id)
+  const enabled = [...new Set(views.enabled)].filter((id) => known.includes(id))
+  if (enabled.length !== 1 || enabled[0] !== 'list') block.enabled = enabled
+  if (views.default && enabled.includes(views.default) && views.default !== enabled[0]) block.default = views.default
+  if (views.groupLabel.trim()) block['group-label'] = views.groupLabel.trim()
+  const environments = views.environments
+    .filter((environment) => environment.id.trim())
+    .map((environment) => ({
+      id: environment.id.trim(),
+      ...(environment.name.trim() ? { name: environment.name.trim() } : {}),
+      ...(environment.short.trim() ? { short: environment.short.trim() } : {})
+    }))
+  if (environments.length) block.environments = environments
+  const applications = applicationLines()
+  if (applications.length) block.applications = applications
+  const groups = {}
+  for (const [name, details] of Object.entries(views.groups)) {
+    const description = details.description.trim()
+    const tags = details.tagsText.split(',').map((tag) => tag.trim()).filter(Boolean)
+    if (description || tags.length) groups[name] = { ...(description ? { description } : {}), ...(tags.length ? { tags } : {}) }
+  }
+  if (Object.keys(groups).length) block.groups = groups
+  const endpoints = {}
+  for (const [key, entry] of Object.entries(views.endpoints)) {
+    const application = (entry.application || '').trim()
+    const environment = (entry.environment || '').trim()
+    if (application || environment) endpoints[key] = { ...(application ? { application } : {}), ...(environment ? { environment } : {}) }
+  }
+  if (Object.keys(endpoints).length) block.endpoints = endpoints
+  return Object.keys(block).length ? block : null
+}
+
+// formViews converts the views block of a definition to the shape of the form
+const formViews = (views) => {
+  const result = emptyViews()
+  if (!views) return result
+  if (Array.isArray(views.enabled) && views.enabled.length) result.enabled = [...views.enabled]
+  result.default = views.default || ''
+  result.groupLabel = views['group-label'] || ''
+  result.environments = (views.environments || []).map((environment) => ({ id: environment.id || '', name: environment.name || '', short: environment.short || '' }))
+  result.applicationsText = (views.applications || []).join('\n')
+  for (const [name, details] of Object.entries(views.groups || {})) {
+    result.groups[name] = { description: details?.description || '', tagsText: (details?.tags || []).join(', ') }
+  }
+  for (const [key, entry] of Object.entries(views.endpoints || {})) {
+    result.endpoints[key] = { application: entry?.application || '', environment: entry?.environment || '' }
+  }
+  return result
+}
+
 const featuredLimitReached = (key) => !form.featured.includes(key) && form.featured.length >= MAXIMUM_FEATURED
 
 const warningMessage = (warning) => ({
@@ -393,6 +636,7 @@ const warningMessage = (warning) => ({
   endpoint: `Endpoint ${warning.value} does not exist at the moment.`,
   featured: `Featured endpoint ${warning.value} does not exist at the moment.`,
   truncated: `The page selects more endpoints than status-pages.maximum-endpoints-per-page (${warning.value}): only the first ${warning.value} are shown, and the others cannot be opened from this page.`,
+  classification: `The classification of ${warning.value} matches no endpoint at the moment. It is kept.`,
   charts: `The saved charts (${warning.value}) are no longer used: every endpoint of the page has a details page with its response time chart. Saving the page removes them.`
 }[warning.type] || `${warning.type}: ${warning.value}`)
 
@@ -437,6 +681,8 @@ const currentDocument = () => ({
   ...(form.showCertificateExpiration ? { 'show-certificate-expiration': true } : {}),
   ...(form.showMessages ? { 'show-messages': true } : {}),
   ...(form.groupsCollapsed ? { 'groups-collapsed': true } : {}),
+  // Fork: only sent when it differs from the defaults
+  ...(viewsDocument() ? { views: viewsDocument() } : {}),
   // Fork: the password travels only here, in the submission, and the server answers with the hash masked
   ...(form.requiresLogin
     ? { auth: { username: form.authUsername.trim(), ...(form.authPassword ? { password: form.authPassword } : {}) } }
@@ -464,7 +710,8 @@ const loadDetail = async () => {
       showMessages: definition['show-messages'] === true,
       groupsCollapsed: definition['groups-collapsed'] === true,
       requiresLogin: !!definition.auth,
-      authUsername: definition.auth?.username || ''
+      authUsername: definition.auth?.username || '',
+      views: formViews(definition.views)
     })
   }
   savedShowMessages.value = form.showMessages

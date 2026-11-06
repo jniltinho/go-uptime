@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="container mx-auto max-w-4xl px-4 py-8">
+  <div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-12 2xl:max-w-5xl">
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div class="min-w-0">
         <h1 class="text-3xl font-bold tracking-tight text-foreground dark:text-gray-100" data-testid="alert-provider-title">{{ title }}</h1>

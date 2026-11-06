@@ -67,6 +67,17 @@ CONFIG
   endpoint apis search https://duckduckgo.com "[CERTIFICATE_EXPIRATION] > 48h"
   endpoint sites website https://example.org "[CERTIFICATE_EXPIRATION] > 48h"
   endpoint sites docs https://www.wikipedia.org "[CERTIFICATE_EXPIRATION] > 48h"
+  # Two clients of a SaaS, for the grouped and matrix views of a status page
+  endpoint "Client A" billing https://example.org
+  endpoint "Client A" api https://api.cloudflare.com/client/v4/ips
+  endpoint "Client A" portal https://example.org
+  endpoint "Client A" billing-stg https://example.org
+  endpoint "Client A" api-stg https://api.cloudflare.com/client/v4/ips
+  endpoint "Client A" billing-qa http://127.0.0.1:9
+  endpoint "Client B" billing https://example.org
+  endpoint "Client B" api https://duckduckgo.com
+  endpoint "Client B" reports https://example.org
+  endpoint "Client B" billing-qa https://example.org
   cat <<CONFIG
   - name: legacy
     group: apis
@@ -117,6 +128,7 @@ api POST /api/v1/admin/endpoints application/yaml "$(printf 'name: checkout\ngro
 api POST /api/v1/admin/push-keys application/json '{"name":"deploy-scripts"}'
 api POST /api/v1/admin/push-keys application/json '{"name":"cron-jobs"}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"services","title":"Services","description":"Availability of the services we run for our customers.","enabled":true,"groups":["sites","apis","shop"],"featured":["sites_website","shop_checkout"],"show-certificate-expiration":true}'
+api POST /api/v1/admin/status-pages application/json '{"slug":"clients","title":"Acme SaaS","description":"Availability by client, environment and application.","enabled":true,"groups":["Client A","Client B"],"views":{"enabled":["grouped","matrix","list"],"group-label":"Client","environments":[{"id":"prod","name":"Production","short":"PROD"},{"id":"stg","name":"Staging","short":"STG"},{"id":"qa","name":"QA"}],"applications":["Billing","API","Portal","Reports"],"groups":{"Client A":{"description":"Health insurer","tags":["BR","OCI"]},"Client B":{"description":"Retail chain","tags":["BR","AWS"]}},"endpoints":{"client-a_billing":{"application":"Billing","environment":"prod"},"client-a_api":{"application":"API","environment":"prod"},"client-a_portal":{"application":"Portal","environment":"prod"},"client-a_billing-stg":{"application":"Billing","environment":"stg"},"client-a_api-stg":{"application":"API","environment":"stg"},"client-a_billing-qa":{"application":"Billing","environment":"qa"},"client-b_billing":{"application":"Billing","environment":"prod"},"client-b_api":{"application":"API","environment":"prod"},"client-b_reports":{"application":"Reports","environment":"prod"},"client-b_billing-qa":{"application":"Billing","environment":"qa"}}}}'
 api POST /api/v1/admin/status-pages application/json '{"slug":"internal","title":"Internal tools","enabled":false,"groups":["infra","jobs"]}'
 
 # A push every 5 seconds, with a response time that varies like the one of a real job
@@ -181,8 +193,10 @@ capture status-page-dark /status/services
 set_theme light
 capture status-page /status/services
 capture status-page-endpoint /status/services/endpoints/sites_website
+capture status-page-grouped /status/clients '[data-testid="status-view-grouped"]'
+capture status-page-matrix '/status/clients?view=matrix' '[data-testid="status-view-matrix"] table'
 set_theme bio
 capture status-page-bio /status/services
 capture dashboard-bio /
 
-echo "OK: 17 screenshots of $VERSION in $OUT"
+echo "OK: 19 screenshots of $VERSION in $OUT"

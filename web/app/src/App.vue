@@ -21,20 +21,23 @@
 
     <!-- Main App Container (fork: compact header, same height on the dashboard and on the administration) -->
     <!-- Fork: the lists of the administration fill the window on larger screens and scroll inside their tables -->
-    <div v-else-if="!config || !config.oidc || config.authenticated" :class="['relative', isAdminList && 'md:flex md:h-screen md:flex-col md:overflow-hidden']">
+    <!-- Fork: the administration uses the width of large screens like the public pages, with the same zoom for QHD and
+         4K; the height of the lists divides the window by the zoom (--screen-zoom), or it would overflow it -->
+    <div v-else-if="!config || !config.oidc || config.authenticated" :class="['relative', isAdmin && 'screen-scale', isAdminList && 'md:flex md:h-[calc(100dvh/var(--screen-zoom,1))] md:flex-col md:overflow-hidden']">
       <!-- Header -->
       <header :class="['app-header border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/60', isAdminList && 'md:shrink-0']">
-        <div class="container mx-auto px-4 py-2 max-w-7xl">
-          <div class="flex items-center justify-between">
+        <!-- Fork: a slim bar of 40 px, like the header of the public pages -->
+        <div :class="['mx-auto w-full px-4', isAdmin ? 'max-w-[1760px] sm:px-12' : 'container max-w-7xl']">
+          <div class="flex h-10 items-center justify-between">
             <!-- Logo and Title -->
-            <div class="flex items-center gap-4">
+            <div class="flex min-w-0 items-center gap-4">
               <component
                 :is="link ? 'a' : 'div'"
                 :href="link"
                 target="_blank"
-                :class="['flex items-center gap-3', link && 'hover:opacity-80 transition-opacity']"
+                :class="['flex min-w-0 items-center gap-2', link && 'hover:opacity-80 transition-opacity']"
               >
-                <div v-if="logo" class="flex items-center justify-center w-8 h-8">
+                <div v-if="logo" class="flex h-5 w-5 shrink-0 items-center justify-center">
                   <img
                     :src="logo"
                     :alt="header"
@@ -42,18 +45,18 @@
                   />
                 </div>
                 <div>
-                  <h1 class="text-lg font-bold tracking-tight">{{ header }}</h1>
+                  <h1 class="truncate text-sm font-semibold tracking-tight">{{ header }}</h1>
                 </div>
               </component>
             </div>
 
             <!-- Right Side Actions -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <!-- Administration of endpoints (fork) -->
               <router-link
                 v-if="showAdminLink"
                 to="/admin"
-                class="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors"
+                class="px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors"
                 data-testid="admin-link"
               >
                 Admin
@@ -62,12 +65,12 @@
               <button
                 v-if="showLogout"
                 type="button"
-                class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
                 :disabled="loggingOut"
                 data-testid="logout-button"
                 @click="logout"
               >
-                <LogOut class="h-4 w-4" aria-hidden="true" />
+                <LogOut class="h-3.5 w-3.5" aria-hidden="true" />
                 Logout
               </button>
               <!-- Navigation Links (Desktop) -->
@@ -77,7 +80,7 @@
                   :key="button.name"
                   :href="button.link"
                   target="_blank"
-                  class="px-3 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                  class="px-2.5 py-1 text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   {{ button.name }}
                 </a>
@@ -88,11 +91,11 @@
                 v-if="buttons && buttons.length"
                 variant="ghost"
                 size="icon"
-                class="md:hidden"
+                class="h-8 w-8 md:hidden"
                 @click="mobileMenuOpen = !mobileMenuOpen"
               >
-                <Menu v-if="!mobileMenuOpen" class="h-5 w-5" />
-                <X v-else class="h-5 w-5" />
+                <Menu v-if="!mobileMenuOpen" class="h-4 w-4" />
+                <X v-else class="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -100,7 +103,7 @@
           <!-- Mobile Navigation -->
           <nav
             v-if="buttons && buttons.length && mobileMenuOpen"
-            class="md:hidden mt-4 pt-4 border-t space-y-1"
+            class="md:hidden pb-2 pt-2 border-t space-y-1"
           >
             <a
               v-for="button in buttons"
@@ -191,6 +194,8 @@ const isLogin = computed(() => route.meta.login === true)
 // Fork: the header is compact on every page (dashboard and administration), and the lists of the administration fill
 // the window
 const isAdminList = computed(() => route.meta.adminList === true)
+// Fork: every screen of the administration, lists and forms
+const isAdmin = computed(() => route.path === '/admin' || route.path.startsWith('/admin/'))
 let configLoadingStarted = false
 
 // State

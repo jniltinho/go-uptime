@@ -265,6 +265,16 @@
     }
 }
 
+/* Fork: public status pages and administration on large screens. Full HD (1920) widens the content; QHD and 4K at 100% scaling also
+   enlarge it with zoom, so that the same layout reads at the same physical size instead of becoming a thin strip in the
+   middle of the screen. Media queries keep using the real width of the viewport. */
+@media (min-width: 2400px) {
+  .screen-scale { zoom: 1.25; --screen-zoom: 1.25; }
+}
+@media (min-width: 3200px) {
+  .screen-scale { zoom: 1.6; --screen-zoom: 1.6; }
+}
+
 html {
     height: 100%;
 }
