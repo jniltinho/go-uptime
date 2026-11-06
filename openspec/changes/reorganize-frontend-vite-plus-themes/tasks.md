@@ -10,9 +10,9 @@
 
 ## 2. Vite → Vite+
 
-- [ ] 2.1 Add `vite-plus` pinned; run `vp migrate --no-interactive`; resolve BLOCK and review REVIEW findings
-- [ ] 2.2 Scripts `dev`, `build`, `check`, `test` through `vp`; Makefile targets, including `frontend-check` and `frontend-test`
-- [ ] 2.3 Convert `src/utils/*.test.mjs` to Vitest, keeping `node:assert`
+- [x] 2.1 Add `vite-plus` pinned; run `vp migrate --no-interactive`; resolve BLOCK and review REVIEW findings
+- [x] 2.2 Scripts `dev`, `build`, `check`, `test` through `vp`; Makefile targets, including `frontend-check` and `frontend-test`
+- [x] 2.3 Convert `src/utils/*.test.mjs` to Vitest, keeping `node:assert`
 - [ ] 2.4 `vp check` for scripts, format and types; ESLint + `eslint-plugin-vue` kept for templates; format the tree in a commit of its own
 - [ ] 2.5 Pin Node (`.node-version`, `engines`); CI runs `npm ci`, `vp check` and `vp test`
 

@@ -266,7 +266,7 @@ export const readStoredPeriod = (storage) => {
     const store = storage === undefined ? browserStorage() : storage
     const value = store ? readPreference(CHART_PERIOD_PREFERENCE, store) : null
     return isChartPeriod(value) ? value : RECENT_PERIOD
-  } catch (error) {
+  } catch {
     return RECENT_PERIOD
   }
 }
@@ -281,7 +281,7 @@ export const storePeriod = (period, storage) => {
     if (store) {
       writePreference(CHART_PERIOD_PREFERENCE, period, store)
     }
-  } catch (error) {
+  } catch {
     // The choice is only a convenience
   }
 }

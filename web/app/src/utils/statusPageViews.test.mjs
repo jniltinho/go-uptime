@@ -1,6 +1,6 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Unit tests of the views of the public status pages (fork): npm run test:unit
-import test from 'node:test'
+import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import {
   aggregateStatus, groupStatuses, CELL_NOT_CONFIGURED, CELL_NOT_IN_ENVIRONMENT, CELL_NOT_SHOWN, collectGroups, counters, filterOptions,

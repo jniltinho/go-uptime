@@ -652,7 +652,7 @@ const documentFromForm = () => {
     activeFields.forEach((field) => delete document[field])
     document.type = 'push'
     setOrDelete(document, 'token', form.token.trim())
-    const heartbeat = { ...(document.heartbeat || {}) }
+    const heartbeat = { ...document.heartbeat }
     setOrDelete(heartbeat, 'interval', form.heartbeatInterval.trim())
     // Omitted when 0 (the default); a value that is not a number is sent as it is, so that the API rejects it
     const retries = String(form.heartbeatRetries).trim()
@@ -666,7 +666,7 @@ const documentFromForm = () => {
     setOrDelete(document, 'method', monitorType.value === 'http' ? form.method : null)
     setOrDelete(document, 'interval', form.interval.trim())
     // The other client options (e.g. oauth2, timeout) are only edited in YAML mode and kept as they are
-    const client = { ...(document.client || {}) }
+    const client = { ...document.client }
     setOrDelete(client, 'insecure', form.insecure ? true : null)
     setOrDelete(client, 'ignore-redirect', form.followRedirects ? null : true)
     setOrDelete(document, 'client', Object.keys(client).length ? client : null)
@@ -686,7 +686,7 @@ const documentFromForm = () => {
     }
   }
   const alerts = form.alerts.filter((alert) => alert.type).map((alert) => {
-    const result = { ...(alert.original || {}), type: alert.type }
+    const result = { ...alert.original, type: alert.type }
     setOrDelete(result, 'description', alert.description.trim())
     setOrDelete(result, 'failure-threshold', Number(alert.failureThreshold) > 0 ? Number(alert.failureThreshold) : null)
     setOrDelete(result, 'success-threshold', Number(alert.successThreshold) > 0 ? Number(alert.successThreshold) : null)

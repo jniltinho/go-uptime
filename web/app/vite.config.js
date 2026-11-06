@@ -1,6 +1,6 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 
 // The SPA of Go Uptime.
@@ -70,6 +70,10 @@ export default defineConfig({
       }
     }
   },
+  // Unit tests of the pure modules (src/utils/*.test.mjs), run by vp test
+  test: { environment: 'node', include: ['src/**/*.test.mjs'] },
+  // Oxfmt, run by vp check and vp fmt: the style of the sources
+  fmt: { singleQuote: true, semi: false, printWidth: 140 },
   server: {
     port: 8081,
     strictPort: true,

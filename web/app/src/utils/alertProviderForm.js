@@ -128,7 +128,7 @@ export function documentFromForm(info, form, original) {
       }
     }
   }
-  const defaultAlert = { ...(document[DEFAULT_ALERT] || {}) }
+  const defaultAlert = { ...document[DEFAULT_ALERT] }
   const setOrDelete = (key, value) => {
     if (isEmpty(value)) {
       delete defaultAlert[key]

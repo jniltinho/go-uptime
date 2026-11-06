@@ -33,7 +33,7 @@ async function request(method, path, { body, contentType, version } = {}) {
   if (text) {
     try {
       data = JSON.parse(text)
-    } catch (e) {
+    } catch {
       data = { error: text }
     }
   }

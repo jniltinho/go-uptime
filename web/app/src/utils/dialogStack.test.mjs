@@ -1,5 +1,5 @@
 // Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
-import { afterEach, beforeEach, test } from 'node:test'
+import { afterEach, beforeEach, test } from 'vitest'
 import assert from 'node:assert/strict'
 import { dialogOpen, dialogPosition, isTopDialog, nextDialogId, openDialogs, pushDialog, removeDialog, topDialog, uniqueId } from './dialogStack.js'
 
