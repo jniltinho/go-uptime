@@ -107,6 +107,9 @@ type Payload struct {
 	// repeated in Groups. It is an empty array, never null, when the page has none.
 	Featured []FeaturedEndpointPayload `json:"featured"`
 
+	// Views are the layouts the page offers and the order of its environments and applications (fork)
+	Views ViewsPayload `json:"views"`
+
 	// Groups are the sections of the page: first the groups selected by the page, in the order of its definition, then
 	// the groups only reached through endpoint keys, in alphabetical order, then the endpoints without group. Groups
 	// without endpoint to show are left out. It is an empty array, never null.
@@ -149,6 +152,12 @@ type GroupPayload struct {
 	// header of a collapsed group shows.
 	Summary SummaryPayload `json:"summary"`
 
+	// Description is the description of the group in the views block of the page, omitted when it has none (fork).
+	Description string `json:"description,omitempty"`
+
+	// Tags are the tags of the group in the views block of the page, at most 5, omitted when it has none (fork).
+	Tags []string `json:"tags,omitempty"`
+
 	// Endpoints are the endpoints of the group that are not featured, ordered by name ignoring case. It is never empty.
 	Endpoints []EndpointPayload `json:"endpoints"`
 }
@@ -173,6 +182,14 @@ type EndpointPayload struct {
 	// Status is the status of the endpoint, from its most recent result: "up" when it succeeded, "pending" when it is
 	// pending, "down" when it failed, and "unknown" when the endpoint has no result yet.
 	Status string `json:"status"`
+
+	// Application is the application of the endpoint in the views of the page: the one of its classification, or its
+	// name when the page does not classify it (fork).
+	Application string `json:"application"`
+
+	// Environment is the id of the environment of the endpoint in the views of the page, one of the ids of
+	// views.environments, omitted when the page gives it none (fork).
+	Environment string `json:"environment,omitempty"`
 
 	// Uptime is the uptime of the endpoint over the last 24 hours, 7 days and 30 days.
 	Uptime UptimePayload `json:"uptime"`
@@ -319,6 +336,7 @@ func BuildPayload(page *pageconfig.Page, selection Selection, summaries map[stri
 		GroupsCollapsed: page.GroupsCollapsed,
 		Featured:        make([]FeaturedEndpointPayload, 0, len(selection.Featured)),
 		Groups:          make([]GroupPayload, 0, len(selection.Sections)),
+		Views:           buildViewsPayload(page),
 	}
 	var pageStatuses []string
 	for _, ref := range selection.Featured {
@@ -328,6 +346,7 @@ func BuildPayload(page *pageconfig.Page, selection Selection, summaries map[stri
 	}
 	for _, section := range selection.Sections {
 		group := GroupPayload{Name: section.Group, Endpoints: make([]EndpointPayload, 0, len(section.Endpoints))}
+		applyGroupDetails(page, &group)
 		groupStatuses := make([]string, 0, len(section.Endpoints))
 		for _, ref := range section.Endpoints {
 			endpointPayload := buildEndpointPayload(page, ref, summaries[ref.Key], now, false)
@@ -339,6 +358,7 @@ func BuildPayload(page *pageconfig.Page, selection Selection, summaries map[stri
 		payload.Groups = append(payload.Groups, group)
 		pageStatuses = append(pageStatuses, groupStatuses...)
 	}
+	payload.Views.Groups = featuredGroupDetails(page, selection)
 	payload.Status = aggregateStatus(pageStatuses)
 	payload.Summary = summaryOf(pageStatuses)
 	return payload
@@ -385,6 +405,7 @@ func BuildEndpointDetailsPayload(page *pageconfig.Page, ref EndpointRef, summary
 // only set with withMessages, which is only used by the details page of a page that shows messages.
 func buildEndpointPayload(page *pageconfig.Page, ref EndpointRef, summary *common.EndpointSummary, now time.Time, withMessages bool) EndpointPayload {
 	endpointPayload := EndpointPayload{Name: ref.Name, Status: StatusUnknown, Results: []ResultPayload{}}
+	endpointPayload.Application, endpointPayload.Environment = classify(page, ref)
 	if summary == nil {
 		return endpointPayload
 	}

@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="container mx-auto px-4 py-8 max-w-5xl">
+  <div class="mx-auto w-full px-4 py-6 sm:px-12 max-w-6xl 2xl:max-w-[1400px]">
     <RouterLink
       v-if="validAddress"
       :to="{ name: 'PublicStatusPage', params: { slug } }"

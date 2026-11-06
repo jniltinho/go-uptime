@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div class="container mx-auto px-4 py-6 max-w-5xl">
+  <div :class="['mx-auto w-full px-4 py-5 sm:px-12', activeView === VIEW_LIST ? 'max-w-6xl 2xl:max-w-[1400px]' : 'max-w-[1760px]']">
     <div v-if="state === 'loading'" class="py-16 flex justify-center"><Loading /></div>
 
     <section v-else-if="state === 'not-found'" class="py-16 text-center" data-testid="status-page-not-found">
@@ -26,12 +26,27 @@
       </div>
 
       <template v-if="page">
-        <header class="mb-4">
-          <h1 class="text-2xl font-bold tracking-tight sm:text-3xl" data-testid="status-page-title">{{ page.title }}</h1>
-          <p v-if="page.description" class="mt-1 text-muted-foreground whitespace-pre-line" data-testid="status-page-description">{{ page.description }}</p>
+        <header class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div class="min-w-0">
+            <h1 class="text-xl font-semibold tracking-tight sm:text-2xl" data-testid="status-page-title">{{ page.title }}</h1>
+            <p v-if="page.description" class="mt-0.5 text-sm text-muted-foreground whitespace-pre-line" data-testid="status-page-description">{{ page.description }}</p>
+          </div>
+          <!-- Fork: the views of the page, when it enables more than one -->
+          <ViewSwitcher v-if="pageViews.enabled.length > 1" :views="pageViews.enabled" :model-value="activeView" :group-label="pageViews.groupLabel" @update:model-value="selectView" />
         </header>
 
         <StatusSummary :status="page.status" :updated-at="page.updatedAt" :now="now" :summary="page.summary" />
+
+        <!-- Fork: the grouped and matrix views, computed in the browser from the payload (utils/statusPageViews.js) -->
+        <template v-if="activeView !== VIEW_LIST">
+          <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">Showing the first {{ page.summary?.total ?? 0 }} services.</p>
+          <ViewCounters class="mt-4" :counts="viewCounters" :group-label="pageViews.groupLabel" :primary-name="primaryEnvironmentName" />
+          <ViewFilters v-model="filters" :environments="viewFilterOptions.environments" :applications="viewFilterOptions.applications" :group-label="pageViews.groupLabel" />
+          <GroupedView v-if="activeView === VIEW_GROUPED" :groups="groupedGroups" :collapsed="groupedCollapsed" :slug="slug" :has-environments="pageViews.environments.length > 0" @toggle="toggleGroupByName" />
+          <MatrixView v-else :model="matrix" :slug="slug" :group-label="pageViews.groupLabel" :primary-name="primaryEnvironmentName" />
+        </template>
+
+        <template v-else>
 
         <!-- The number is the one of the payload: the limit is status-pages.maximum-endpoints-per-page, not a constant -->
         <p v-if="page.truncated" class="mt-2 text-sm text-muted-foreground" data-testid="status-page-truncated">Showing the first {{ page.summary?.total ?? 0 }} services.</p>
@@ -90,6 +105,7 @@
             </ul>
           </div>
         </section>
+        </template>
       </template>
     </template>
   </div>
@@ -97,13 +113,19 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Loading from '@/components/Loading.vue'
 import StatusSummary from '@/components/public/StatusSummary.vue'
 import { ChevronDown, ChevronRight } from 'lucide-vue-next'
 import EndpointRow from '@/components/public/EndpointRow.vue'
 import { SLUG_PATTERN, STATUS_LABELS } from '@/utils/statusPage'
 import { COLLAPSED, EXPANDED, groupCounts, isCollapsed, rememberedChoices, writeChoice } from '@/utils/statusPageGroups'
+import ViewSwitcher from '@/components/public/ViewSwitcher.vue'
+import ViewCounters from '@/components/public/ViewCounters.vue'
+import ViewFilters from '@/components/public/ViewFilters.vue'
+import GroupedView from '@/components/public/GroupedView.vue'
+import MatrixView from '@/components/public/MatrixView.vue'
+import { ALL, VIEW_GROUPED, VIEW_LIST, collectGroups, counters, filterOptions, groupedModel, groupStatuses, matrixModel, normalizeViews, resolveView, sanitizeFilters } from '@/utils/statusPageViews'
 
 const UPTIME_PERIODS = ['24h', '7d', '30d']
 
@@ -111,6 +133,7 @@ const REFRESH_INTERVAL_MS = 60000
 const CLOCK_INTERVAL_MS = 10000
 
 const route = useRoute()
+const router = useRouter()
 
 const page = ref(null)
 // loading, ready (with or without page, see errorMessage) or not-found
@@ -163,6 +186,64 @@ const toggleGroup = (group) => {
     return
   }
   const choice = collapsedGroups.value.has(name) ? EXPANDED : COLLAPSED
+  visitChoices.value = new Map(visitChoices.value).set(name, choice)
+  const key = groupStorageKeys?.get(name)
+  if (key) {
+    writeChoice(key, choice)
+  }
+}
+
+// Fork: views of the page. The view comes from ?view= when the page enables it, else the default of the page; the
+// filters live in memory and fall back to "All" when a refresh removes their value.
+const pageViews = computed(() => normalizeViews(page.value?.views))
+const activeView = computed(() => resolveView(page.value?.views, typeof route.query.view === 'string' ? route.query.view : ''))
+const filters = ref({ environment: ALL, application: ALL, onlyProblems: false })
+const viewCounters = computed(() => counters(page.value))
+const viewFilterOptions = computed(() => filterOptions(page.value))
+const primaryEnvironmentName = computed(() => pageViews.value.environments[0]?.name || '')
+const groupedGroups = computed(() => (activeView.value === VIEW_GROUPED ? groupedModel(page.value, filters.value) : []))
+const matrix = computed(() => (activeView.value !== VIEW_LIST && activeView.value !== VIEW_GROUPED ? matrixModel(page.value, filters.value) : { columns: [], rows: [] }))
+
+const selectView = (view) => {
+  const query = { ...route.query }
+  if (view === pageViews.value.default) {
+    delete query.view
+  } else {
+    query.view = view
+  }
+  router.replace({ query })
+}
+
+// The grouped view follows the collapsing rules of the list, with the same choices, but over the status of the group
+// with its featured endpoints: a group with a featured endpoint down, or reached only through featured endpoints, is
+// expanded during an incident like any other
+const viewGroupStatuses = computed(() => groupStatuses(page.value))
+const groupedCollapsed = computed(() => {
+  const collapsed = new Set()
+  for (const [name, status] of viewGroupStatuses.value) {
+    if (isCollapsed({
+      status,
+      visitChoice: visitChoices.value.get(name),
+      rememberedChoice: rememberedGroupChoices.value.get(name),
+      pageDefault: page.value?.groupsCollapsed === true,
+      incidentCollapsed: incidentCollapsed.value.has(name)
+    })) {
+      collapsed.add(name)
+    }
+  }
+  return collapsed
+})
+
+const toggleGroupByName = (name) => {
+  if (viewGroupStatuses.value.get(name) !== 'operational') {
+    const next = new Set(incidentCollapsed.value)
+    if (!next.delete(name)) {
+      next.add(name)
+    }
+    incidentCollapsed.value = next
+    return
+  }
+  const choice = groupedCollapsed.value.has(name) ? EXPANDED : COLLAPSED
   visitChoices.value = new Map(visitChoices.value).set(name, choice)
   const key = groupStorageKeys?.get(name)
   if (key) {
@@ -255,13 +336,14 @@ const load = async () => {
       if (generation !== requestGeneration) {
         return
       }
-      const { hashes, remembered } = await rememberedChoices(currentSlug, payload.groups)
+      const { hashes, remembered } = await rememberedChoices(currentSlug, collectGroups(payload))
       if (generation !== requestGeneration) {
         return
       }
       groupStorageKeys = hashes
       rememberedGroupChoices.value = remembered
       incidentCollapsed.value = new Set()
+      filters.value = sanitizeFilters(payload, filters.value)
       page.value = payload
       errorMessage.value = ''
       document.title = page.value.title
@@ -297,6 +379,7 @@ watch(slug, () => {
   rememberedGroupChoices.value = new Map()
   incidentCollapsed.value = new Set()
   groupStorageKeys = null
+  filters.value = { environment: ALL, application: ALL, onlyProblems: false }
   errorMessage.value = ''
   state.value = 'loading'
   load()

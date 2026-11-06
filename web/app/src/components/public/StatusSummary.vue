@@ -1,11 +1,11 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <div :class="['border px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between', bannerClass]" data-testid="status-summary">
-    <p role="status" class="font-semibold flex items-center gap-2">
-      <span :class="['inline-block h-3 w-3 rounded-full flex-shrink-0', dotClass]" aria-hidden="true"></span>
+  <div :class="['border px-3 py-2 text-sm flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between', bannerClass]" data-testid="status-summary">
+    <p role="status" class="font-medium flex items-center gap-2">
+      <span :class="['inline-block h-2.5 w-2.5 rounded-full flex-shrink-0', dotClass]" aria-hidden="true"></span>
       {{ label }}
     </p>
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm opacity-80">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs opacity-80">
       <!-- Fork: how many endpoints are up and down, counted by the server so that a truncated page stays right -->
       <p v-if="counts" data-testid="status-summary-counts">
         <span v-for="(count, index) in counts" :key="count.label">{{ index > 0 ? ' · ' : '' }}{{ count.value }} {{ count.label }}</span>

@@ -5,6 +5,7 @@ package statuspage
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"slices"
 	"sort"
 	"strconv"
@@ -21,6 +22,10 @@ import (
 
 // warningTypeCharts is the type of the warning of a page with the deprecated charts, which are ignored
 const warningTypeCharts = "charts"
+
+// WarningTypeClassification is the type of the warning of a classification of the views whose endpoint key matches no
+// endpoint (fork)
+const WarningTypeClassification = "classification"
 
 // WarningTypeTruncated is the type of the warning of a page that selects more endpoints than
 // status-pages.maximum-endpoints-per-page: unlike the other warnings, its value is not something without match but the
@@ -622,6 +627,14 @@ func selectionWarnings(page *pageconfig.Page, refs []EndpointRef) []Warning {
 	for _, key := range page.Featured {
 		if _, exists := keys[key]; !exists {
 			warnings = append(warnings, Warning{Type: "featured", Value: key})
+		}
+	}
+	// Fork: classifications of the views whose key matches no endpoint; they are kept, and only placed once it exists
+	if page.Views != nil {
+		for _, key := range slices.Sorted(maps.Keys(page.Views.Endpoints)) {
+			if _, exists := keys[key]; !exists {
+				warnings = append(warnings, Warning{Type: WarningTypeClassification, Value: key})
+			}
 		}
 	}
 	if len(page.Charts) > 0 {

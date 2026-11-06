@@ -3,6 +3,7 @@
 package statuspage
 
 import (
+	pageconfig "github.com/jniltinho/go-uptime/v7/internal/config/statuspage"
 	"reflect"
 	"slices"
 	"sync"
@@ -163,5 +164,39 @@ func TestKeyRenameParticipant(t *testing.T) {
 	}
 	if !found {
 		t.Errorf("expected the spotlight page to expose core_api as featured, got %+v", exposure.StatusPages)
+	}
+}
+
+// Fork: the classification of the views follows the key, on a page that reaches the endpoint only through its group,
+// and replaces a stale classification of the new key
+func TestKeyRenameParticipant_ViewsClassification(t *testing.T) {
+	managedStatusPageStore := initializeSQLiteStore(t)
+	cfg := loadTestConfig(t, testConfig+"    - slug: classified\n      title: Classified\n      groups: [web]\n      views:\n        endpoints:\n          web_site: {application: Portal}\n")
+	createStoredPage(t, managedStatusPageStore, "grouped", "slug: grouped\ntitle: Grouped\ngroups: [web]\nviews:\n  environments: [{id: prod}]\n  endpoints:\n    web_site: {application: Portal, environment: prod}\n    web_new: {application: Stale}\nenabled: true\n")
+	createStoredPage(t, managedStatusPageStore, "other", "slug: other\ntitle: Other\ngroups: [web]\nenabled: true\n")
+	if _, err := managedendpoint.Load(cfg); err != nil {
+		t.Fatal(err)
+	}
+	Load(cfg)
+	t.Cleanup(publicCache.Clear)
+
+	plan, err := keyRenameParticipant{}.PrepareKeyRename("web_site", "web_new", "ops@example.com")
+	if err != nil {
+		t.Fatalf("failed to prepare the rename: %v", err)
+	}
+	defer plan.Discard()
+	if !reflect.DeepEqual(plan.AffectedConfigStatusPages, []managedendpoint.AffectedStatusPage{{Slug: "classified", Title: "Classified"}}) {
+		t.Errorf("expected the page of the file that classifies the key to be affected, got %v", plan.AffectedConfigStatusPages)
+	}
+	if len(plan.StatusPages) != 1 || plan.StatusPages[0].StatusPage.Slug != "grouped" {
+		t.Fatalf("expected only the grouped page to be updated, got %+v", plan.StatusPages)
+	}
+	page, err := Parse([]byte(plan.StatusPages[0].StatusPage.Definition))
+	if err != nil {
+		t.Fatalf("expected a valid updated definition, got %v", err)
+	}
+	expected := map[string]*pageconfig.EndpointClassification{"web_new": {Application: "Portal", Environment: "prod"}}
+	if !reflect.DeepEqual(page.Views.Endpoints, expected) {
+		t.Errorf("expected the classification to follow the key and replace the stale one, got %+v", page.Views.Endpoints)
 	}
 }
