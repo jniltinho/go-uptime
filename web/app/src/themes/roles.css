@@ -4,9 +4,10 @@
    the dark schemes (data-scheme="dark", see themes.json), the dark value; the variables are resolved on the element
    itself, so a theme that redefines them, also in an inner scope like the navy header of bio, reaches the roles.
 
-   The values are the ones of the pairs they replaced, so the colours of the three themes did not change
-   (test/e2e/theme-colors.sh). The status tones (danger, warning, success, info) are literal on purpose: a status has
-   the same colour in every light theme and in every dark theme. A role works with the variants, like hover:bg-hover
+   Every component uses them: there is no dark: class left in the components. The scale is per tone — danger (red),
+   warning (amber), pending (yellow), success (green), info (blue), notice (sky), highlight (violet) and status-none
+   (statusgray) — with text, strong text, soft and muted backgrounds, borders and the left bar of an item. The tones
+   are literal on purpose: a status has the same colour in every light theme and in every dark theme. A role works with the variants, like hover:bg-hover
    and focus-visible:outline-focus. */
 
 /* secondary text: labels, hints, metadata */
@@ -14,6 +15,22 @@
   color: hsl(var(--muted-foreground));
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
     color: rgb(var(--gray-400));
+  }
+}
+
+/* dimmed text: placeholders of empty states, disabled hints */
+@utility text-fg-subtle {
+  color: hsl(var(--muted-foreground));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-500));
+  }
+}
+
+/* body text inside a panel */
+@utility text-fg-body {
+  color: rgb(var(--gray-700));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-300));
   }
 }
 
@@ -49,11 +66,35 @@
   }
 }
 
+/* borders that must show on a surface: toggles, outlined chips */
+@utility border-line-strong {
+  border-color: rgb(var(--gray-300));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-600));
+  }
+}
+
 /* borders of fields and buttons */
 @utility border-field {
   border-color: hsl(var(--input));
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
     border-color: rgb(var(--gray-700));
+  }
+}
+
+/* the border of a selected option */
+@utility border-selected {
+  border-color: rgb(var(--gray-900));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-300));
+  }
+}
+
+/* the page behind the panels */
+@utility bg-page {
+  background-color: hsl(var(--background));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-900));
   }
 }
 
@@ -70,6 +111,30 @@
   background-color: rgb(var(--gray-50));
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
     background-color: rgb(var(--gray-800));
+  }
+}
+
+/* the track of a bar or of a switch */
+@utility bg-track {
+  background-color: rgb(var(--gray-200));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-700));
+  }
+}
+
+/* an inverted surface: a selected switch, a tooltip */
+@utility bg-inverse {
+  background-color: rgb(var(--gray-900));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-100));
+  }
+}
+
+/* the backdrop behind a dialog */
+@utility bg-overlay {
+  background-color: color-mix(in oklab, #000 50%, transparent);
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #000 70%, transparent);
   }
 }
 
@@ -105,19 +170,11 @@
   }
 }
 
-/* background of an error banner */
-@utility bg-danger-soft {
-  background-color: #fef2f2;
+/* an error message or a destructive action */
+@utility text-danger {
+  color: #dc2626;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    background-color: color-mix(in oklab, #7f1d1d 30%, transparent);
-  }
-}
-
-/* border of an error banner */
-@utility border-danger {
-  border-color: #fca5a5;
-  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    border-color: #991b1b;
+    color: #f87171;
   }
 }
 
@@ -129,11 +186,59 @@
   }
 }
 
-/* an error message or a destructive action */
-@utility text-danger {
-  color: #dc2626;
+/* background of an error banner */
+@utility bg-danger-soft {
+  background-color: #fef2f2;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    color: #f87171;
+    background-color: color-mix(in oklab, #7f1d1d 30%, transparent);
+  }
+}
+
+/* a filled error badge */
+@utility bg-danger-muted {
+  background-color: #fee2e2;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #7f1d1d;
+  }
+}
+
+/* border of an error banner */
+@utility border-danger {
+  border-color: #fca5a5;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #991b1b;
+  }
+}
+
+/* a strong error border */
+@utility border-danger-strong {
+  border-color: #ef4444;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #f87171;
+  }
+}
+
+/* the bar of an error item */
+@utility border-l-danger {
+  border-left-color: #dc2626;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-left-color: #ef4444;
+  }
+}
+
+/* a warning message */
+@utility text-warning {
+  color: #b45309;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #fbbf24;
+  }
+}
+
+/* text of a warning banner */
+@utility text-warning-strong {
+  color: #78350f;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #fef3c7;
   }
 }
 
@@ -153,27 +258,59 @@
   }
 }
 
-/* text of a warning banner */
-@utility text-warning-strong {
-  color: #78350f;
+/* the bar of a warning item */
+@utility border-l-warning {
+  border-left-color: #f59e0b;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    color: #fef3c7;
+    border-left-color: #fbbf24;
   }
 }
 
-/* background of a success banner */
-@utility bg-success-soft {
-  background-color: #f0fdf4;
+/* a pending state */
+@utility text-pending {
+  color: #a16207;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    background-color: color-mix(in oklab, #14532d 30%, transparent);
+    color: #facc15;
   }
 }
 
-/* border of a success banner */
-@utility border-success {
-  border-color: #86efac;
+/* text of a pending banner */
+@utility text-pending-strong {
+  color: #854d0e;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    border-color: #166534;
+    color: #fef08a;
+  }
+}
+
+/* background of a pending banner */
+@utility bg-pending-soft {
+  background-color: #fefce8;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #713f12 30%, transparent);
+  }
+}
+
+/* a filled pending marker */
+@utility bg-pending-solid {
+  background-color: #facc15;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #eab308;
+  }
+}
+
+/* border of a pending banner */
+@utility border-pending {
+  border-color: #fde047;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #a16207;
+  }
+}
+
+/* a strong pending border */
+@utility border-pending-strong {
+  border-color: #eab308;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #facc15;
   }
 }
 
@@ -185,11 +322,51 @@
   }
 }
 
-/* background of an information banner */
-@utility bg-info-soft {
-  background-color: #eff6ff;
+/* text of a success banner */
+@utility text-success-strong {
+  color: #166534;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
-    background-color: color-mix(in oklab, #1e3a8a 30%, transparent);
+    color: #bbf7d0;
+  }
+}
+
+/* background of a success banner */
+@utility bg-success-soft {
+  background-color: #f0fdf4;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #14532d 30%, transparent);
+  }
+}
+
+/* a filled success marker */
+@utility bg-success-solid {
+  background-color: #22c55e;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #16a34a;
+  }
+}
+
+/* border of a success banner */
+@utility border-success {
+  border-color: #86efac;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #166534;
+  }
+}
+
+/* a strong success border */
+@utility border-success-strong {
+  border-color: #22c55e;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #4ade80;
+  }
+}
+
+/* the bar of a success item */
+@utility border-l-success {
+  border-left-color: #16a34a;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-left-color: #22c55e;
   }
 }
 
@@ -198,5 +375,249 @@
   color: #2563eb;
   &:where([data-scheme='dark'], [data-scheme='dark'] *) {
     color: #60a5fa;
+  }
+}
+
+/* text of an information banner */
+@utility text-info-strong {
+  color: #1e40af;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #bfdbfe;
+  }
+}
+
+/* background of an information banner */
+@utility bg-info-soft {
+  background-color: #eff6ff;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #1e3a8a 30%, transparent);
+  }
+}
+
+/* a filled information badge */
+@utility bg-info-muted {
+  background-color: #dbeafe;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #1e3a8a;
+  }
+}
+
+/* border of an information banner */
+@utility border-info {
+  border-color: #93c5fd;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #1e40af;
+  }
+}
+
+/* a strong information border */
+@utility border-info-strong {
+  border-color: #3b82f6;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #60a5fa;
+  }
+}
+
+/* the bar of an information item */
+@utility border-l-info {
+  border-left-color: #2563eb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-left-color: #3b82f6;
+  }
+}
+
+/* the ring of an information element */
+@utility ring-info {
+  --tw-ring-color: #bfdbfe;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    --tw-ring-color: #1e40af;
+  }
+}
+
+/* text of an environment chip */
+@utility text-notice {
+  color: #075985;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #7dd3fc;
+  }
+}
+
+/* text of a selected chip */
+@utility text-notice-strong {
+  color: #0c4a6e;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #e0f2fe;
+  }
+}
+
+/* background of a selected chip */
+@utility bg-notice-soft {
+  background-color: #e0f2fe;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #0c4a6e 40%, transparent);
+  }
+}
+
+/* border of an environment chip */
+@utility border-notice {
+  border-color: #7dd3fc;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #075985;
+  }
+}
+
+/* text of a highlighted badge */
+@utility text-highlight-strong {
+  color: #5b21b6;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #ddd6fe;
+  }
+}
+
+/* background of a highlighted badge */
+@utility bg-highlight-soft {
+  background-color: #f5f3ff;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: color-mix(in oklab, #4c1d95 30%, transparent);
+  }
+}
+
+/* border of a highlighted badge */
+@utility border-highlight {
+  border-color: #c4b5fd;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #5b21b6;
+  }
+}
+
+/* a status without data */
+@utility text-status-none {
+  color: #6b7280;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #9ca3af;
+  }
+}
+
+/* text of a banner without data */
+@utility text-status-none-strong {
+  color: #1f2937;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #e5e7eb;
+  }
+}
+
+/* a filled marker without data */
+@utility bg-status-none {
+  background-color: #e5e7eb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #374151;
+  }
+}
+
+/* background of a banner without data */
+@utility bg-status-none-soft {
+  background-color: #f9fafb;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: #111827;
+  }
+}
+
+/* border of a banner without data */
+@utility border-status-none {
+  border-color: #d1d5db;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: #374151;
+  }
+}
+
+/* the underline of the active tab */
+@utility border-active {
+  border-color: hsl(var(--foreground));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    border-color: rgb(var(--gray-100));
+  }
+}
+
+/* text on bg-inverse */
+@utility text-on-inverse {
+  color: #fff;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: rgb(var(--gray-900));
+  }
+}
+
+/* text of a highlighted value: the origin of a pushed result */
+@utility text-highlight {
+  color: #6d28d9;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #c4b5fd;
+  }
+}
+
+/* a cell that reacts to the pointer: darker on a light theme, brighter on a dark one (with hover:) */
+@utility brightness-hover {
+  filter: brightness(0.95);
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    filter: brightness(1.25);
+  }
+}
+
+/* a link inside a text, such as an announcement */
+@utility text-link {
+  color: #1d4ed8;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #60a5fa;
+  }
+}
+
+/* a hovered link (with hover:) */
+@utility text-link-hover {
+  color: #1e40af;
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    color: #93c5fd;
+  }
+}
+
+/* an empty slot of a history bar: a check that did not happen yet */
+@utility bg-empty {
+  background-color: rgb(var(--gray-200));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-800));
+  }
+}
+
+/* the line that connects the steps of a flow or the items of a timeline */
+@utility bg-connector {
+  background-color: rgb(var(--gray-300));
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    background-color: rgb(var(--gray-600));
+  }
+}
+
+/* the dividers between the children of a list */
+@utility divide-line {
+  :where(& > :not(:last-child)) {
+    border-color: hsl(var(--border));
+  }
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) > :not(:last-child) {
+    border-color: rgb(var(--gray-700));
+  }
+}
+
+/* the line under the sticky header of a list, drawn as a shadow so that it scrolls with nothing */
+@utility shadow-line-bottom {
+  box-shadow: 0 1px 0 0 rgb(229, 231, 235);
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) {
+    box-shadow: 0 1px 0 0 rgb(55, 65, 81);
+  }
+}
+
+/* softer dividers, between the rows of a status page */
+@utility divide-line-soft {
+  :where(& > :not(:last-child)) {
+    border-color: hsl(var(--border));
+  }
+  &:where([data-scheme='dark'], [data-scheme='dark'] *) > :not(:last-child) {
+    border-color: rgb(var(--gray-800));
   }
 }

@@ -217,8 +217,8 @@ const statusTextClass = computed(
   () =>
     ({
       up: 'text-success',
-      pending: 'text-yellow-700 dark:text-yellow-400',
-      down: 'text-red-700 dark:text-red-400',
+      pending: 'text-pending',
+      down: 'text-danger',
     })[props.endpoint.status] || 'text-muted-foreground',
 )
 
@@ -230,7 +230,7 @@ const accessibleSummary = computed(() => {
 
 const barClass = (result, index) => {
   if (!result) {
-    return 'bg-gray-200 dark:bg-gray-800'
+    return 'bg-empty'
   }
   const active = activeIndex.value === index
   if (result.success) {

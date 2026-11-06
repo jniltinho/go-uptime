@@ -1,6 +1,6 @@
 <!-- Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE. -->
 <template>
-  <nav :class="['flex border-b dark:border-gray-700', compact ? '' : 'mb-6']" aria-label="Administration sections" data-testid="admin-tabs">
+  <nav :class="['flex border-b border-line', compact ? '' : 'mb-6']" aria-label="Administration sections" data-testid="admin-tabs">
     <router-link
       v-for="tab in tabs"
       :key="tab.id"
@@ -10,9 +10,7 @@
       :class="[
         '-mb-px border-b-2 px-4 text-sm font-medium',
         compact ? 'py-1.5' : 'py-2',
-        active === tab.id
-          ? 'border-foreground text-fg-strong dark:border-gray-100'
-          : 'border-transparent text-fg-muted hover:text-fg-strong',
+        active === tab.id ? 'border-active text-fg-strong' : 'border-transparent text-fg-muted hover:text-fg-strong',
       ]"
     >
       {{ tab.label }}

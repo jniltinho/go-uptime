@@ -18,7 +18,7 @@
           }}
         </caption>
         <thead class="text-xs text-muted-foreground">
-          <tr class="border-b dark:border-gray-800">
+          <tr class="border-b border-line-soft">
             <th scope="col" class="sticky left-0 z-10 bg-card px-4 py-2 text-left font-normal">{{ groupLabel }}</th>
             <th
               v-for="column in model.columns"
@@ -34,7 +34,7 @@
           <tr
             v-for="row in model.rows"
             :key="`row-${row.name}`"
-            class="border-t dark:border-gray-800"
+            class="border-t border-line-soft"
             :data-testid="`status-matrix-row-${row.name || 'outros'}`"
           >
             <th scope="row" class="sticky left-0 z-10 bg-card px-4 py-2 text-left align-middle font-normal">
@@ -56,7 +56,7 @@
                   'flex min-h-14 flex-col items-center justify-center border px-2 py-1.5 text-center',
                   cellClass(cell),
                   cell.endpoints.length === 1
-                    ? 'hover:brightness-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:hover:brightness-125'
+                    ? 'hover:brightness-hover focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring'
                     : '',
                 ]"
                 :data-status="cell.kind === 'cell' ? cell.status : cell.kind"
@@ -126,15 +126,14 @@ const dotClass = (status) => ({ operational: 'bg-green-500', degraded: 'bg-amber
 
 const cellClass = (cell) => {
   if (cell.kind !== 'cell') {
-    return 'border-dashed border-gray-300 dark:border-gray-700'
+    return 'border-dashed border-line'
   }
   return (
     {
-      operational: 'border-success bg-success-soft text-green-900 dark:text-green-100',
+      operational: 'border-success bg-success-soft text-success-strong',
       degraded: 'border-warning bg-warning-soft text-warning-strong',
-      down: 'border-danger bg-danger-soft text-red-900 dark:text-red-100',
-    }[cell.status] ||
-    'border-statusgray-300 bg-statusgray-50 text-statusgray-800 dark:border-statusgray-700 dark:bg-statusgray-900 dark:text-statusgray-200'
+      down: 'border-danger bg-danger-soft text-danger-strong',
+    }[cell.status] || 'border-status-none bg-status-none-soft text-status-none-strong'
   )
 }
 </script>

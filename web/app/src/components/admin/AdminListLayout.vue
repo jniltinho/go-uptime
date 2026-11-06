@@ -29,11 +29,7 @@
       <div class="overflow-x-auto md:min-h-0 md:flex-1 md:overflow-auto" data-testid="admin-list-scroll">
         <slot />
       </div>
-      <div
-        v-if="$slots.footer"
-        class="shrink-0 border-t px-3 py-2 text-xs text-fg-muted dark:border-gray-700"
-        data-testid="admin-list-footer"
-      >
+      <div v-if="$slots.footer" class="shrink-0 border-t px-3 py-2 text-xs text-fg-muted border-line" data-testid="admin-list-footer">
         <slot name="footer" />
       </div>
     </div>

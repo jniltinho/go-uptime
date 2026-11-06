@@ -57,16 +57,16 @@ import { announcements, dismissToast, pauseToasts, resumeToasts, toasts } from '
 const ICONS = { success: CheckCircle2, info: Info, warning: AlertTriangle, error: AlertCircle }
 
 const STYLES = {
-  success: 'border-gray-200 border-l-green-600 dark:border-gray-700 dark:border-l-green-500',
-  info: 'border-gray-200 border-l-blue-600 dark:border-gray-700 dark:border-l-blue-500',
-  warning: 'border-gray-200 border-l-amber-500 dark:border-gray-700 dark:border-l-amber-400',
-  error: 'border-gray-200 border-l-red-600 dark:border-gray-700 dark:border-l-red-500',
+  success: 'border-line border-l-success',
+  info: 'border-line border-l-info',
+  warning: 'border-line border-l-warning',
+  error: 'border-line border-l-danger',
 }
 
 const ICON_COLORS = {
-  success: 'text-green-600 dark:text-green-400',
+  success: 'text-success',
   info: 'text-info',
-  warning: 'text-amber-600 dark:text-amber-400',
+  warning: 'text-warning',
   error: 'text-danger',
 }
 

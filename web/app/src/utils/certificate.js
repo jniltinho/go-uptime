@@ -40,10 +40,10 @@ export const certificateText = (days) => {
 // Secondary color while the expiration is far, amber from 14 days and red from 7 days or once expired
 export const certificateClass = (days) => {
   if (days <= 7) {
-    return 'text-red-600 dark:text-red-400'
+    return 'text-danger'
   }
   if (days <= 14) {
-    return 'text-amber-600 dark:text-amber-400'
+    return 'text-warning'
   }
-  return 'text-muted-foreground dark:text-gray-400'
+  return 'text-fg-muted'
 }

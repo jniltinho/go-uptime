@@ -25,7 +25,7 @@
         v-if="notice"
         role="status"
         data-testid="admin-notice"
-        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-green-800 dark:text-green-200"
+        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-success-strong"
       >
         {{ notice }}
       </div>
@@ -84,9 +84,7 @@
     <div v-if="loading" class="py-12 flex justify-center"><Loading /></div>
     <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
     <table v-else class="hidden w-full table-fixed text-xs md:table" data-testid="push-keys-table">
-      <thead
-        class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-      >
+      <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
         <tr class="uppercase tracking-wide">
           <th class="px-2 py-1.5 font-medium">Name</th>
           <th class="w-28 px-2 py-1.5 font-medium">Key</th>
@@ -102,7 +100,7 @@
         <tr
           v-for="key in keys"
           :key="`${key.origin}-${key.id || key.name}`"
-          class="border-t hover:bg-hover-soft dark:border-gray-700"
+          class="border-t hover:bg-hover-soft border-line"
           :data-testid="`push-key-row-${key.origin}-${key.name}`"
         >
           <td class="px-2 py-1 font-medium text-fg-strong">
@@ -113,9 +111,7 @@
             <span
               :class="[
                 'border px-1 text-[11px] leading-4',
-                key.origin === 'admin'
-                  ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
-                  : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
+                key.origin === 'admin' ? 'bg-info-soft text-info-strong border-info' : 'bg-surface-2 text-fg-body border-line-strong',
               ]"
               >{{ key.origin === 'admin' ? 'Web' : 'YAML' }}</span
             >
@@ -146,7 +142,7 @@
     </table>
 
     <!-- Fork: below md the table gives way to one card per key, with every field and the same action -->
-    <div v-if="!loading" class="divide-y md:hidden dark:divide-gray-700">
+    <div v-if="!loading" class="divide-y md:hidden divide-line">
       <p v-if="keys.length === 0" class="px-3 py-8 text-center text-sm text-fg-muted">No push keys yet.</p>
       <div
         v-for="key in keys"

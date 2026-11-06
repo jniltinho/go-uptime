@@ -28,7 +28,7 @@
       </div>
       <div
         v-if="readOnly"
-        class="mb-4 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
+        class="mb-4 border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong"
         data-testid="alert-provider-readonly"
       >
         This notification is configured in the configuration file and can only be viewed. Secrets are masked.
@@ -37,23 +37,17 @@
           one.</template
         >
       </div>
-      <div
-        v-if="info.deprecated"
-        class="mb-4 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
-      >
+      <div v-if="info.deprecated" class="mb-4 border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong">
         {{ info.name }} is deprecated: prefer Microsoft Teams Workflows.
       </div>
-      <div
-        v-else-if="info.untested"
-        class="mb-4 border border-gray-300 bg-surface-2 px-4 py-3 text-sm text-gray-700 dark:border-gray-600 dark:text-gray-300"
-      >
+      <div v-else-if="info.untested" class="mb-4 border border-line-strong bg-surface-2 px-4 py-3 text-sm text-fg-body">
         This provider has not been validated against the real service yet: send a test before relying on it.
       </div>
       <div v-if="itemError && !readOnly" role="alert" class="mb-4 border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-strong">
         The stored definition is invalid and sends nothing: {{ itemError }}
       </div>
 
-      <div class="mb-4 flex border-b dark:border-gray-700" role="tablist">
+      <div class="mb-4 flex border-b border-line" role="tablist">
         <button
           v-for="tab in tabs"
           :key="tab.value"
@@ -63,9 +57,7 @@
           :data-testid="`admin-mode-${tab.value}`"
           :class="[
             '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
-            mode === tab.value
-              ? 'border-primary text-fg-strong dark:border-gray-100'
-              : 'border-transparent text-fg-muted hover:text-fg-strong',
+            mode === tab.value ? 'border-active text-fg-strong' : 'border-transparent text-fg-muted hover:text-fg-strong',
           ]"
           @click="switchMode(tab.value)"
         >
@@ -142,11 +134,7 @@
                   :autocomplete="field.secret ? 'new-password' : 'off'"
                   :aria-describedby="field.help ? `help-${field.key}` : undefined"
                   :aria-invalid="invalidFields.includes(field.key) ? 'true' : undefined"
-                  :class="[
-                    'border-field',
-                    field.secret ? 'pr-10' : '',
-                    invalidFields.includes(field.key) ? 'border-red-500 dark:border-red-500' : '',
-                  ]"
+                  :class="['border-field', field.secret ? 'pr-10' : '', invalidFields.includes(field.key) ? 'border-danger-strong' : '']"
                   :data-testid="`alert-provider-field-${field.key}`"
                 />
                 <button
@@ -255,11 +243,11 @@
 
       <div v-if="shadowedDefinition" class="mt-4 border bg-surface p-4 border-line">
         <h2 class="mb-2 text-sm font-semibold text-fg-strong">Shadowed web notification</h2>
-        <pre class="overflow-x-auto bg-muted/40 p-3 font-mono text-xs text-fg dark:bg-gray-800">{{ shadowedDefinition }}</pre>
+        <pre class="overflow-x-auto bg-surface-2 p-3 font-mono text-xs text-fg">{{ shadowedDefinition }}</pre>
       </div>
 
       <!-- Save is the primary action; validating and testing never store anything -->
-      <div class="mt-6 flex flex-wrap items-center gap-2 border-t pt-4 dark:border-gray-700">
+      <div class="mt-6 flex flex-wrap items-center gap-2 border-t pt-4 border-line">
         <template v-if="!readOnly">
           <Button variant="outline" :disabled="busy" data-testid="admin-validate" @click="validate">Validate</Button>
         </template>
@@ -300,9 +288,7 @@
         data-testid="alert-provider-test-result"
         :class="[
           'mt-4 border px-4 py-3 text-sm',
-          testResult.success
-            ? 'border-success bg-success-soft text-green-800 dark:text-green-200'
-            : 'border-danger bg-danger-soft text-danger-strong',
+          testResult.success ? 'border-success bg-success-soft text-success-strong' : 'border-danger bg-danger-soft text-danger-strong',
         ]"
       >
         <p class="font-medium">

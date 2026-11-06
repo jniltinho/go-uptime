@@ -38,6 +38,8 @@ for name in names:
             differences += 1
             if differences <= 40:
                 print(f"{name}: {key}\n    - {old.get(key)}\n    + {new.get(key)}")
+if differences > 40:
+    print(f"(only the first 40 of the {differences} differences are shown: read the collections to see them all)")
 print(f"{len(names)} collections compared, {differences} differences")
 sys.exit(1 if differences else 0)
 PY

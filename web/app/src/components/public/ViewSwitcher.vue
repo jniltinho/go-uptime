@@ -9,7 +9,7 @@
       :aria-pressed="view === modelValue"
       :class="[
         'px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus',
-        view === modelValue ? 'bg-foreground text-background dark:bg-gray-100 dark:text-gray-900' : 'text-fg-muted hover:text-fg-strong',
+        view === modelValue ? 'bg-inverse text-on-inverse' : 'text-fg-muted hover:text-fg-strong',
       ]"
       :data-testid="`status-view-switch-${view}`"
       @click="$emit('update:modelValue', view)"

@@ -2,10 +2,7 @@
 <template>
   <!-- Fork: dialog of the administration, teleported to the body in the order it opens, see utils/dialogStack.js -->
   <Teleport v-if="open" to="body">
-    <div
-      class="fixed inset-0 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70"
-      :style="{ zIndex: 50 + Math.max(position, 0) }"
-    >
+    <div class="fixed inset-0 flex items-center justify-center bg-overlay p-4" :style="{ zIndex: 50 + Math.max(position, 0) }">
       <div
         ref="panel"
         role="dialog"
@@ -19,7 +16,7 @@
           SIZES[size] || SIZES.lg,
         ]"
       >
-        <div class="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4 dark:border-gray-700">
+        <div class="flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4 border-line">
           <div class="min-w-0">
             <h2 :id="titleId" class="text-lg font-semibold text-fg-strong">{{ title }}</h2>
             <p v-if="description" :id="descriptionId" class="mt-0.5 text-sm text-fg-muted">{{ description }}</p>
@@ -38,7 +35,7 @@
         <div class="min-h-0 flex-1 overflow-auto overscroll-contain px-6 py-4">
           <slot />
         </div>
-        <div v-if="$slots.footer" class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t px-6 py-4 dark:border-gray-700">
+        <div v-if="$slots.footer" class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t px-6 py-4 border-line">
           <slot name="footer" />
         </div>
       </div>

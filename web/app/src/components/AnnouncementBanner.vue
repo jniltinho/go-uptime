@@ -5,20 +5,18 @@
       <!-- Header -->
       <div
         :class="[
-          'announcement-header px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors',
-          isCollapsed ? 'rounded-lg' : 'rounded-t-lg border-b border-gray-200 dark:border-gray-600',
+          'announcement-header px-4 py-3 cursor-pointer hover:bg-hover transition-colors',
+          isCollapsed ? 'rounded-lg' : 'rounded-t-lg border-b border-line-strong',
         ]"
         @click="toggleCollapsed"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <component :is="mostRecentIcon" :class="['w-5 h-5', mostRecentIconClass]" />
-            <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Announcements</h2>
-            <span class="text-xs text-gray-500 dark:text-gray-400"> ({{ announcements.length }}) </span>
+            <h2 class="text-base font-semibold text-fg-strong">Announcements</h2>
+            <span class="text-xs text-fg-muted"> ({{ announcements.length }}) </span>
           </div>
-          <ChevronDown
-            :class="['w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200', isCollapsed ? '-rotate-90' : 'rotate-0']"
-          />
+          <ChevronDown :class="['w-4 h-4 text-fg-muted transition-transform duration-200', isCollapsed ? '-rotate-90' : 'rotate-0']" />
         </div>
       </div>
 
@@ -30,12 +28,12 @@
             <div v-for="(group, date) in groupedAnnouncements" :key="date" class="relative">
               <!-- Date Header -->
               <div class="flex items-center gap-3 mb-2 relative">
-                <div class="relative z-10 bg-white dark:bg-gray-800 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-600">
-                  <time class="text-sm font-medium text-gray-600 dark:text-gray-300">
+                <div class="relative z-10 bg-surface-2 px-2 py-1 rounded-md border border-line-strong">
+                  <time class="text-sm font-medium text-fg-body">
                     {{ formatDate(date) }}
                   </time>
                 </div>
-                <div class="flex-1 border-t border-gray-200 dark:border-gray-600"></div>
+                <div class="flex-1 border-t border-line-strong"></div>
               </div>
 
               <!-- Announcements for this date -->
@@ -44,7 +42,7 @@
                   <!-- Timeline Icon -->
                   <div
                     :class="[
-                      'absolute left-[-26px] w-5 h-5 rounded-full border bg-white dark:bg-gray-800 flex items-center justify-center z-10',
+                      'absolute left-[-26px] w-5 h-5 rounded-full border bg-surface-2 flex items-center justify-center z-10',
                       index === group.length - 1 ? 'top-3' : 'top-1/2 -translate-y-1/2',
                       getTypeClasses(announcement.type).border,
                     ]"
@@ -55,14 +53,14 @@
                   <!-- Vertical line segment connecting upward from first icon to date -->
                   <div
                     v-if="index === 0"
-                    class="absolute w-0.5 bg-gray-300 dark:bg-gray-600 pointer-events-none"
+                    class="absolute w-0.5 bg-connector pointer-events-none"
                     style="left: -16px; top: -2.5rem; height: calc(50% + 2.5rem)"
                   ></div>
 
                   <!-- Vertical line segment connecting downward to next icon -->
                   <div
                     v-if="index < group.length - 1"
-                    class="absolute w-0.5 bg-gray-300 dark:bg-gray-600 pointer-events-none"
+                    class="absolute w-0.5 bg-connector pointer-events-none"
                     :style="{
                       left: '-16px',
                       top: '50%',
@@ -85,10 +83,7 @@
                         {{ formatTime(announcement.timestamp) }}
                       </time>
                       <div class="flex-1 min-w-0">
-                        <p
-                          class="text-sm leading-relaxed text-gray-900 dark:text-gray-100"
-                          v-html="formatAnnouncementMessage(announcement.message)"
-                        ></p>
+                        <p class="text-sm leading-relaxed text-fg-strong" v-html="formatAnnouncementMessage(announcement.message)"></p>
                       </div>
                     </div>
                   </div>
@@ -127,38 +122,38 @@ const toggleCollapsed = () => {
 const typeConfigs = {
   outage: {
     icon: XCircle,
-    background: 'bg-red-50 border-gray-200 dark:bg-red-900/50 dark:border-gray-600',
+    background: 'bg-danger-soft border-line-strong',
     border: 'border-red-500',
     iconColor: 'text-danger',
-    text: 'text-red-700 dark:text-red-300',
+    text: 'text-danger',
   },
   warning: {
     icon: AlertTriangle,
-    background: 'bg-yellow-50 border-gray-200 dark:bg-yellow-900/50 dark:border-gray-600',
+    background: 'bg-pending-soft border-line-strong',
     border: 'border-yellow-500',
-    iconColor: 'text-yellow-600 dark:text-yellow-400',
-    text: 'text-yellow-700 dark:text-yellow-300',
+    iconColor: 'text-pending',
+    text: 'text-pending',
   },
   information: {
     icon: Info,
-    background: 'bg-blue-50 border-gray-200 dark:bg-blue-900/50 dark:border-gray-600',
+    background: 'bg-info-soft border-line-strong',
     border: 'border-blue-500',
     iconColor: 'text-info',
-    text: 'text-blue-700 dark:text-blue-300',
+    text: 'text-info',
   },
   operational: {
     icon: CheckCircle,
-    background: 'bg-green-50 border-gray-200 dark:bg-green-900/50 dark:border-gray-600',
+    background: 'bg-success-soft border-line-strong',
     border: 'border-green-500',
-    iconColor: 'text-green-600 dark:text-green-400',
-    text: 'text-green-700 dark:text-green-300',
+    iconColor: 'text-success',
+    text: 'text-success',
   },
   none: {
     icon: Circle,
-    background: 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-600',
+    background: 'bg-surface-2 border-line-strong',
     border: 'border-gray-500',
-    iconColor: 'text-gray-600 dark:text-gray-400',
-    text: 'text-gray-700 dark:text-gray-300',
+    iconColor: 'text-fg-muted',
+    text: 'text-fg-body',
   },
 }
 
@@ -174,7 +169,7 @@ const mostRecentIcon = computed(() => {
 
 const mostRecentIconClass = computed(() => {
   const type = mostRecentAnnouncement.value?.type || 'none'
-  return typeConfigs[type]?.iconColor || 'text-gray-600 dark:text-gray-400'
+  return typeConfigs[type]?.iconColor || 'text-fg-muted'
 })
 
 const containerClasses = computed(() => {

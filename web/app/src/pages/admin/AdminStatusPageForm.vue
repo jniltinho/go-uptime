@@ -39,10 +39,7 @@
     >
       <p class="whitespace-pre-line">{{ loadError }}</p>
     </div>
-    <div
-      v-if="readOnly"
-      class="mt-3 shrink-0 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
-    >
+    <div v-if="readOnly" class="mt-3 shrink-0 border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong">
       This status page is defined in the configuration file and can only be viewed.
     </div>
     <div v-if="savedError" role="alert" class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-3 text-sm text-danger-strong">
@@ -67,7 +64,7 @@
             v-if="validationWarnings.length"
             ref="validationBand"
             data-testid="status-page-validation"
-            class="border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
+            class="border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong"
           >
             <p class="font-medium">
               The page will show {{ validation.endpoints === 1 ? '1 endpoint' : `${validation.endpoints} endpoints` }}.
@@ -89,7 +86,7 @@
                 <div class="mt-1.5 flex flex-wrap gap-2 lg:flex-nowrap">
                   <div class="flex w-full min-w-0 lg:flex-1">
                     <span
-                      class="inline-flex h-10 shrink-0 items-center border border-r-0 border-field bg-muted/40 px-3 font-mono text-sm text-fg-muted dark:bg-gray-800"
+                      class="inline-flex h-10 shrink-0 items-center border border-r-0 border-field bg-surface-2 px-3 font-mono text-sm text-fg-muted"
                       >/status/</span
                     >
                     <Input
@@ -149,7 +146,7 @@
               <label
                 :class="[
                   'flex items-start gap-3 border px-3 py-2.5 text-sm border-line',
-                  form.enabled ? 'border-success bg-green-50/60 dark:bg-green-900/20' : '',
+                  form.enabled ? 'border-success bg-success-soft' : '',
                 ]"
               >
                 <input v-model="form.enabled" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="status-page-field-enabled" />
@@ -163,12 +160,7 @@
                 </span>
               </label>
               <!-- Fork: login of the page, asked by the browser itself -->
-              <div
-                :class="[
-                  'border px-3 py-2.5 text-sm border-line',
-                  form.requiresLogin ? 'border-amber-300 bg-amber-50/60 dark:border-amber-800 dark:bg-amber-900/20' : '',
-                ]"
-              >
+              <div :class="['border px-3 py-2.5 text-sm border-line', form.requiresLogin ? 'border-warning bg-warning-soft' : '']">
                 <label class="flex items-start gap-3">
                   <input
                     v-model="form.requiresLogin"
@@ -280,8 +272,8 @@
                 v-for="group in groupOptions"
                 :key="group.name"
                 :class="[
-                  'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-accent/50 dark:hover:bg-gray-800/60',
-                  form.groups.includes(group.name) ? 'border-gray-900 dark:border-gray-300' : 'border-line',
+                  'flex cursor-pointer items-center gap-2 border px-3 py-2 text-sm hover:bg-hover',
+                  form.groups.includes(group.name) ? 'border-selected' : 'border-line',
                 ]"
               >
                 <input
@@ -316,7 +308,7 @@
                     :key="view.id"
                     :class="[
                       'flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm',
-                      form.views.enabled.includes(view.id) ? 'border-gray-900 dark:border-gray-300' : 'border-line',
+                      form.views.enabled.includes(view.id) ? 'border-selected' : 'border-line',
                     ]"
                   >
                     <input
@@ -338,7 +330,7 @@
                   <span class="block text-sm font-medium text-fg">Default view</span>
                   <select
                     v-model="form.views.default"
-                    class="mt-1.5 h-10 w-full border border-field bg-background px-3 text-sm text-fg-strong dark:bg-gray-900"
+                    class="mt-1.5 h-10 w-full border border-field bg-page px-3 text-sm text-fg-strong"
                     data-testid="status-page-view-default"
                   >
                     <option value="">First enabled</option>
@@ -445,7 +437,7 @@
                   class="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_auto] items-center gap-2"
                 >
                   <span
-                    :class="['truncate text-sm', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-fg-strong']"
+                    :class="['truncate text-sm', row.orphan ? 'text-fg-subtle line-through' : 'text-fg-strong']"
                     :title="row.orphan ? 'Group not selected by the page: the entry is kept until removed' : row.name"
                     >{{ row.name }}</span
                   >
@@ -491,14 +483,11 @@
                   <div
                     v-for="row in classificationRows.filter((candidate) => form.views.endpoints[candidate.key])"
                     :key="`classification-${row.key}`"
-                    class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 border-t px-2 py-1.5 text-sm first:border-t-0 dark:border-gray-800"
+                    class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2 border-t px-2 py-1.5 text-sm first:border-t-0 border-line-soft"
                     :data-testid="`status-page-classification-${row.key}`"
                   >
                     <span class="min-w-0" :title="row.key">
-                      <span
-                        :class="['block truncate', row.orphan ? 'text-muted-foreground line-through dark:text-gray-500' : 'text-fg-strong']"
-                        >{{ row.name }}</span
-                      >
+                      <span :class="['block truncate', row.orphan ? 'text-fg-subtle line-through' : 'text-fg-strong']">{{ row.name }}</span>
                       <span class="block truncate text-xs text-fg-muted">{{
                         row.orphan ? 'not shown by the page' : row.group || 'no group'
                       }}</span>
@@ -508,13 +497,13 @@
                       list="status-page-view-applications-list"
                       maxlength="40"
                       :placeholder="row.orphan ? '' : row.name"
-                      class="h-9 w-full min-w-0 border border-field bg-background px-2 text-sm text-fg-strong dark:bg-gray-900"
+                      class="h-9 w-full min-w-0 border border-field bg-page px-2 text-sm text-fg-strong"
                       :aria-label="`Application of ${row.name}`"
                       :data-testid="`status-page-classification-application-${row.key}`"
                     />
                     <select
                       v-model="form.views.endpoints[row.key].environment"
-                      class="h-9 w-full min-w-0 border border-field bg-background px-2 text-sm text-fg-strong dark:bg-gray-900"
+                      class="h-9 w-full min-w-0 border border-field bg-page px-2 text-sm text-fg-strong"
                       :aria-label="`Environment of ${row.name}`"
                       :data-testid="`status-page-classification-environment-${row.key}`"
                     >
@@ -545,7 +534,7 @@
 
         <!-- Right column: endpoints, with the list filling the column -->
         <section class="flex flex-col border bg-surface border-line md:min-h-0" data-testid="status-page-section-endpoints">
-          <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
+          <header class="shrink-0 border-b px-5 py-4 border-line">
             <div class="flex items-start justify-between gap-4">
               <h2 class="text-base font-semibold text-fg-strong">Endpoints</h2>
               <span class="shrink-0 text-xs text-fg-muted" data-testid="status-page-endpoints-count">
@@ -574,7 +563,7 @@
             data-testid="status-page-endpoint-list"
           >
             <div
-              class="sticky top-0 z-10 grid grid-cols-[1fr_auto] gap-4 bg-surface-2 px-3 py-2 text-xs font-medium text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] sm:grid-cols-[1fr_auto_auto] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+              class="sticky top-0 z-10 grid grid-cols-[1fr_auto] gap-4 bg-surface-2 px-3 py-2 text-xs font-medium text-fg-muted shadow-line-bottom sm:grid-cols-[1fr_auto_auto]"
             >
               <span>Endpoint</span>
               <span class="hidden sm:block">Key</span>
@@ -585,8 +574,8 @@
               v-for="endpoint in filteredEndpoints"
               :key="endpoint.key"
               :class="[
-                'grid grid-cols-[1fr_auto] items-center gap-4 border-t px-3 py-2 text-sm first-of-type:border-t-0 sm:grid-cols-[1fr_auto_auto] dark:border-gray-800',
-                form.endpoints.includes(endpoint.key) ? 'bg-muted/40 dark:bg-gray-800/40' : '',
+                'grid grid-cols-[1fr_auto] items-center gap-4 border-t px-3 py-2 text-sm first-of-type:border-t-0 sm:grid-cols-[1fr_auto_auto] border-line-soft',
+                form.endpoints.includes(endpoint.key) ? 'bg-surface-2' : '',
               ]"
             >
               <label class="flex min-w-0 cursor-pointer items-center gap-2">
@@ -600,7 +589,7 @@
                 <span class="truncate font-medium text-fg-strong">{{ endpoint.name }}</span>
                 <span class="truncate text-fg-muted">{{ endpoint.group || 'no group' }}</span>
               </label>
-              <span class="hidden font-mono text-xs text-muted-foreground sm:block dark:text-gray-500">{{ endpoint.key }}</span>
+              <span class="hidden font-mono text-xs text-fg-subtle sm:block">{{ endpoint.key }}</span>
               <label
                 class="flex items-center justify-end gap-1.5 text-xs text-fg"
                 :title="featuredLimitReached(endpoint.key) ? `At most ${MAXIMUM_FEATURED} featured endpoints` : ''"
@@ -620,7 +609,7 @@
         </section>
       </div>
 
-      <div class="mt-3 flex shrink-0 flex-wrap items-center gap-2 border-t pt-3 dark:border-gray-700">
+      <div class="mt-3 flex shrink-0 flex-wrap items-center gap-2 border-t pt-3 border-line">
         <Button v-if="!readOnly" variant="outline" :disabled="busy" data-testid="status-page-validate" @click="validate">Validate</Button>
         <Button ref="previewButton" variant="secondary" :disabled="busy" data-testid="status-page-preview-button" @click="showPreview"
           >Preview</Button
@@ -660,14 +649,14 @@
           :primary-name="previewViews.environments[0]?.name || ''"
         />
         <template v-else>
-          <p v-if="preview.truncated" class="mb-3 text-sm text-amber-800 dark:text-amber-300" data-testid="status-page-preview-truncated">
+          <p v-if="preview.truncated" class="mb-3 text-sm text-warning-strong" data-testid="status-page-preview-truncated">
             Showing the first {{ preview.summary?.total ?? 0 }} services.
           </p>
           <p v-if="preview.groups.length === 0 && (preview.featured || []).length === 0" class="text-sm text-fg-muted">
             No endpoints selected.
           </p>
           <div v-if="(preview.featured || []).length" class="mb-4" data-testid="status-page-preview-featured">
-            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong dark:border-gray-800">Featured</h3>
+            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong border-line-soft">Featured</h3>
             <ul class="mt-1 space-y-1 text-sm">
               <li v-for="endpoint in preview.featured" :key="`${endpoint.group}-${endpoint.name}`" class="flex justify-between gap-4">
                 <span class="text-fg"
@@ -687,7 +676,7 @@
             class="mb-4 last:mb-0"
             :data-testid="`status-page-preview-group-${group.name || 'outros'}`"
           >
-            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong dark:border-gray-800">
+            <h3 class="border-b pb-1 text-sm font-semibold text-fg-strong border-line-soft">
               <button
                 type="button"
                 class="flex w-full items-baseline gap-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"

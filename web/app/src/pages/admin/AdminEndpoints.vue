@@ -17,7 +17,7 @@
         v-if="notice"
         role="status"
         data-testid="admin-notice"
-        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-green-800 dark:text-green-200"
+        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-success-strong"
       >
         {{ notice }}
       </div>
@@ -38,9 +38,7 @@
     <div v-if="loading" class="py-12 flex justify-center"><Loading /></div>
     <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
     <table v-else class="hidden w-full table-fixed text-xs md:table" data-testid="admin-table">
-      <thead
-        class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-      >
+      <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
         <tr class="uppercase tracking-wide">
           <th class="w-[26%] px-2 py-1.5 font-medium">Name</th>
           <th class="w-[12%] px-2 py-1.5 font-medium">Group</th>
@@ -59,7 +57,7 @@
         <tr
           v-for="item in filteredItems"
           :key="item.key"
-          class="border-t hover:bg-hover-soft dark:border-gray-700"
+          class="border-t hover:bg-hover-soft border-line"
           :data-testid="`admin-row-${item.key}`"
         >
           <td class="px-2 py-1 font-medium text-fg-strong">
@@ -68,7 +66,7 @@
               <!-- The warning is an icon so that it neither adds width nor pushes the row to a second line -->
               <AlertTriangle
                 v-if="item.conflict || item.error"
-                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-danger']"
+                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-warning' : 'text-danger']"
                 :aria-label="
                   item.conflict ? `Conflicts with the configuration file: ${item.conflictOrigin}` : `Invalid definition: ${item.error}`
                 "
@@ -85,7 +83,7 @@
             <span
               v-if="item.acceptsPush && item.type !== 'PUSH'"
               title="Also receives push"
-              class="ml-1 whitespace-nowrap border border-violet-300 bg-violet-50 px-1 text-[11px] normal-case leading-4 text-violet-800 dark:border-violet-800 dark:bg-violet-900/30 dark:text-violet-200"
+              class="ml-1 whitespace-nowrap border border-highlight bg-highlight-soft px-1 text-[11px] normal-case leading-4 text-highlight-strong"
               :data-testid="`admin-accepts-push-${item.key}`"
               >push</span
             >
@@ -95,17 +93,13 @@
           </td>
           <td class="hidden px-2 py-1 text-right lg:table-cell">{{ item.interval }}</td>
           <td class="px-2 py-1">
-            <span :class="item.enabled ? 'text-success' : 'text-muted-foreground dark:text-gray-500'">{{
-              item.enabled ? 'Enabled' : 'Disabled'
-            }}</span>
+            <span :class="item.enabled ? 'text-success' : 'text-fg-subtle'">{{ item.enabled ? 'Enabled' : 'Disabled' }}</span>
           </td>
           <td class="hidden px-2 py-1 lg:table-cell">
             <span
               :class="[
                 'border px-1 text-[11px] leading-4',
-                item.source === 'admin'
-                  ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
-                  : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
+                item.source === 'admin' ? 'bg-info-soft text-info-strong border-info' : 'bg-surface-2 text-fg-body border-line-strong',
               ]"
               >{{ item.source === 'admin' ? 'Web' : 'YAML' }}</span
             >
@@ -140,7 +134,7 @@
     </table>
 
     <!-- Fork: below md the table gives way to one card per endpoint, with every field and the same actions -->
-    <div v-if="!loading" class="divide-y md:hidden dark:divide-gray-700">
+    <div v-if="!loading" class="divide-y md:hidden divide-line">
       <p v-if="filteredItems.length === 0" class="px-3 py-8 text-center text-sm text-fg-muted">No endpoints found.</p>
       <div v-for="item in filteredItems" :key="`card-${item.key}`" class="px-3 py-2.5" :data-testid="`admin-card-${item.key}`">
         <div class="flex items-start justify-between gap-3">
@@ -149,7 +143,7 @@
               <span class="min-w-0 truncate" :title="item.name">{{ item.name }}</span>
               <AlertTriangle
                 v-if="item.conflict || item.error"
-                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-danger']"
+                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-warning' : 'text-danger']"
                 :aria-label="
                   item.conflict ? `Conflicts with the configuration file: ${item.conflictOrigin}` : `Invalid definition: ${item.error}`
                 "
@@ -160,7 +154,7 @@
               {{ item.url || (item.type === 'PUSH' ? '—' : '') }}
             </p>
           </div>
-          <span :class="['shrink-0 text-xs', item.enabled ? 'text-success' : 'text-muted-foreground dark:text-gray-500']">{{
+          <span :class="['shrink-0 text-xs', item.enabled ? 'text-success' : 'text-fg-subtle']">{{
             item.enabled ? 'Enabled' : 'Disabled'
           }}</span>
         </div>

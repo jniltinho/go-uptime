@@ -37,7 +37,7 @@
             <span
               v-for="short in group.environments"
               :key="`env-${short}`"
-              class="border border-sky-300 px-1.5 py-px text-[11px] font-medium text-sky-800 dark:border-sky-800 dark:text-sky-300"
+              class="border border-notice px-1.5 py-px text-[11px] font-medium text-notice"
               >{{ short }}</span
             >
             <span
@@ -59,9 +59,9 @@
         </button>
       </h2>
       <div :id="`grouped-panel-${groupIndex}`">
-        <table v-if="!collapsed.has(group.name)" class="w-full border-t text-sm dark:border-gray-800">
+        <table v-if="!collapsed.has(group.name)" class="w-full border-t text-sm border-line-soft">
           <thead class="text-xs text-muted-foreground">
-            <tr class="border-b dark:border-gray-800">
+            <tr class="border-b border-line-soft">
               <th scope="col" class="w-32 px-4 py-1.5 text-left font-normal">Application</th>
               <th scope="col" class="px-2 py-1.5 text-left font-normal">Endpoint</th>
               <th scope="col" class="hidden w-[34%] px-2 py-1.5 text-left font-normal lg:table-cell">Latest checks</th>
@@ -71,13 +71,11 @@
             </tr>
           </thead>
           <tbody v-for="section in group.sections" :key="`section-${section.id}`">
-            <tr v-if="hasEnvironments" class="bg-muted/40 dark:bg-gray-800/40">
+            <tr v-if="hasEnvironments" class="bg-surface-2">
               <th colspan="7" scope="colgroup" class="px-4 py-1 text-left text-xs font-medium">
-                <span
-                  v-if="section.environment"
-                  class="mr-1.5 border border-sky-300 px-1.5 py-px text-[11px] text-sky-800 dark:border-sky-800 dark:text-sky-300"
-                  >{{ section.environment.short }}</span
-                >
+                <span v-if="section.environment" class="mr-1.5 border border-notice px-1.5 py-px text-[11px] text-notice">{{
+                  section.environment.short
+                }}</span>
                 <span>{{ section.environment ? section.environment.name : 'No environment' }}</span>
                 <span class="ml-2 font-normal text-muted-foreground">{{ sectionCounts(section) }}</span>
               </th>
@@ -85,7 +83,7 @@
             <tr
               v-for="endpoint in section.endpoints"
               :key="`${endpoint.group}-${endpoint.name}`"
-              class="border-t dark:border-gray-800"
+              class="border-t border-line-soft"
               :data-testid="`status-grouped-endpoint-${endpoint.name}`"
             >
               <td class="px-4 py-1.5 align-middle">
@@ -160,14 +158,12 @@ const sectionCounts = (section) =>
 
 const dotClass = (status) => ({ operational: 'bg-green-500', degraded: 'bg-amber-500', down: 'bg-red-500' })[status] || 'bg-statusgray-400'
 const endpointDotClass = (status) => ({ up: 'bg-green-500', pending: 'bg-yellow-400', down: 'bg-red-500' })[status] || 'bg-statusgray-400'
-const endpointTextClass = (status) =>
-  ({ up: 'text-success', pending: 'text-yellow-700 dark:text-yellow-400', down: 'text-red-700 dark:text-red-400' })[status] || ''
-const chipStatusClass = (status) =>
-  ({ degraded: 'border-amber-400 dark:border-amber-700', down: 'border-red-400 dark:border-red-800' })[status] || ''
+const endpointTextClass = (status) => ({ up: 'text-success', pending: 'text-pending', down: 'text-danger' })[status] || ''
+const chipStatusClass = (status) => ({ degraded: 'border-warning', down: 'border-danger' })[status] || ''
 const statusBadgeClass = (status) =>
   ({
     operational: 'border-success text-success',
-    degraded: 'border-warning text-amber-700 dark:text-amber-400',
-    down: 'border-danger text-red-700 dark:text-red-400',
-  })[status] || 'border-statusgray-300 text-statusgray-600 dark:border-statusgray-700 dark:text-statusgray-400'
+    degraded: 'border-warning text-warning',
+    down: 'border-danger text-danger',
+  })[status] || 'border-status-none text-status-none'
 </script>

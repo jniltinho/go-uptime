@@ -22,10 +22,10 @@
       <div class="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
         <!-- Special properties -->
         <div v-if="step.isAlwaysRun" class="flex flex-wrap gap-2">
-          <div class="flex items-center gap-2 px-3 py-2 bg-info-soft rounded-lg border border-blue-200 dark:border-blue-700">
+          <div class="flex items-center gap-2 px-3 py-2 bg-info-soft rounded-lg border border-info">
             <RotateCcw class="w-4 h-4 text-info" />
             <div>
-              <p class="text-sm font-medium text-blue-900 dark:text-blue-200">Always Run</p>
+              <p class="text-sm font-medium text-info-strong">Always Run</p>
               <p class="text-xs text-info">This endpoint is configured to execute even after failures</p>
             </div>
           </div>
@@ -41,7 +41,7 @@
             <div
               v-for="(error, index) in step.errors"
               :key="index"
-              class="p-3 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded text-sm font-mono text-red-800 dark:text-red-300 break-all"
+              class="p-3 bg-danger-soft border border-danger rounded text-sm font-mono text-danger-strong break-all"
             >
               {{ error }}
             </div>
@@ -70,7 +70,7 @@
             </div>
             <div>
               <span class="text-muted-foreground">Success:</span>
-              <p class="mt-1" :class="step.result.success ? 'text-green-600 dark:text-green-400' : 'text-danger'">
+              <p class="mt-1" :class="step.result.success ? 'text-success' : 'text-danger'">
                 {{ step.result.success ? 'Yes' : 'No' }}
               </p>
             </div>
@@ -88,30 +88,20 @@
               v-for="(conditionResult, index) in step.result.conditionResults"
               :key="index"
               class="flex items-start gap-3 p-1 rounded-lg border"
-              :class="
-                conditionResult.success
-                  ? 'bg-success-soft border-green-200 dark:border-green-700'
-                  : 'bg-danger-soft border-red-200 dark:border-red-700'
-              "
+              :class="conditionResult.success ? 'bg-success-soft border-success' : 'bg-danger-soft border-danger'"
             >
               <!-- Status icon -->
               <div class="shrink-0 mt-0.5">
-                <CheckCircle v-if="conditionResult.success" class="w-4 h-4 text-green-600 dark:text-green-400" />
+                <CheckCircle v-if="conditionResult.success" class="w-4 h-4 text-success" />
                 <XCircle v-else class="w-4 h-4 text-danger" />
               </div>
 
               <!-- Condition text -->
               <div class="flex-1 min-w-0 flex items-center justify-between gap-3">
-                <p
-                  class="text-sm font-mono break-all"
-                  :class="conditionResult.success ? 'text-green-800 dark:text-green-200' : 'text-danger-strong'"
-                >
+                <p class="text-sm font-mono break-all" :class="conditionResult.success ? 'text-success-strong' : 'text-danger-strong'">
                   {{ conditionResult.condition }}
                 </p>
-                <span
-                  class="text-xs font-medium whitespace-nowrap"
-                  :class="conditionResult.success ? 'text-green-600 dark:text-green-400' : 'text-danger'"
-                >
+                <span class="text-xs font-medium whitespace-nowrap" :class="conditionResult.success ? 'text-success' : 'text-danger'">
                   {{ conditionResult.success ? 'Passed' : 'Failed' }}
                 </span>
               </div>
@@ -155,7 +145,7 @@
             <div
               v-for="(error, index) in step.result.errors"
               :key="index"
-              class="p-3 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-700 rounded text-sm font-mono text-red-800 dark:text-red-300 break-all"
+              class="p-3 bg-danger-soft border border-danger rounded text-sm font-mono text-danger-strong break-all"
             >
               {{ error }}
             </div>
@@ -198,11 +188,11 @@ const statusIcon = computed(() => {
 const iconClasses = computed(() => {
   switch (props.step.status) {
     case 'success':
-      return 'text-green-600 dark:text-green-400'
+      return 'text-success'
     case 'failed':
       return 'text-danger'
     case 'skipped':
-      return 'text-statusgray-600 dark:text-statusgray-400'
+      return 'text-status-none'
     default:
       return 'text-info'
   }

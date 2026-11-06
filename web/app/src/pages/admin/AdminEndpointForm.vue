@@ -28,21 +28,18 @@
         v-if="success"
         role="status"
         data-testid="admin-success"
-        class="mb-4 border border-success bg-success-soft px-4 py-3 text-sm text-green-800 dark:text-green-200"
+        class="mb-4 border border-success bg-success-soft px-4 py-3 text-sm text-success-strong"
       >
         {{ success }}
       </div>
-      <div
-        v-if="readOnly"
-        class="mb-4 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
-      >
+      <div v-if="readOnly" class="mb-4 border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong">
         This endpoint is defined in the configuration file and can only be viewed.
       </div>
       <div
         v-if="exposure.length"
         role="status"
         data-testid="admin-endpoint-exposure"
-        class="mb-4 border border-blue-300 bg-info-soft px-4 py-3 text-sm text-blue-900 dark:border-blue-800 dark:text-blue-100"
+        class="mb-4 border border-info bg-info-soft px-4 py-3 text-sm text-info-strong"
       >
         This endpoint will be publicly visible on the {{ exposure.length === 1 ? 'status page' : 'status pages' }}:
         <template v-for="(page, index) in exposure" :key="`${page.origin}-${page.slug}`">
@@ -57,7 +54,7 @@
         v-if="keyChange"
         role="status"
         data-testid="admin-key-change"
-        class="mb-4 border border-amber-300 bg-warning-soft px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
+        class="mb-4 border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong"
       >
         <p>
           Saving renames the key from <span class="font-mono">{{ endpointKey }}</span> to <span class="font-mono">{{ keyChange }}</span
@@ -74,7 +71,7 @@
         </p>
       </div>
 
-      <div v-if="!readOnly" class="mb-4 flex border-b dark:border-gray-700" role="tablist">
+      <div v-if="!readOnly" class="mb-4 flex border-b border-line" role="tablist">
         <button
           v-for="tab in tabs"
           :key="tab.value"
@@ -84,9 +81,7 @@
           :data-testid="`admin-mode-${tab.value}`"
           :class="[
             '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
-            mode === tab.value
-              ? 'border-primary text-fg-strong dark:border-gray-100'
-              : 'border-transparent text-fg-muted hover:text-fg-strong',
+            mode === tab.value ? 'border-active text-fg-strong' : 'border-transparent text-fg-muted hover:text-fg-strong',
           ]"
           @click="switchMode(tab.value)"
         >
@@ -229,7 +224,7 @@
             type="button"
             :aria-expanded="pushExpanded"
             data-testid="admin-push-toggle"
-            class="flex w-full items-center gap-3 p-5 text-left hover:bg-accent/50 dark:hover:bg-gray-800/60"
+            class="flex w-full items-center gap-3 p-5 text-left hover:bg-hover"
             @click="pushExpanded = !pushExpanded"
           >
             <ChevronDown v-if="pushExpanded" class="h-4 w-4 shrink-0 text-fg-muted" />
@@ -246,7 +241,7 @@
             <span class="hidden shrink-0 font-mono text-xs text-fg-muted sm:block" data-testid="admin-push-summary">{{ pushSummary }}</span>
           </button>
 
-          <div v-if="pushExpanded" class="space-y-5 border-t px-5 pb-5 pt-4 dark:border-gray-700">
+          <div v-if="pushExpanded" class="space-y-5 border-t px-5 pb-5 pt-4 border-line">
             <div>
               <label for="admin-push-token" class="block text-sm font-medium text-fg">Token</label>
               <div class="mt-1.5 flex gap-2">
@@ -415,7 +410,7 @@
             <p
               v-if="alert.type && !alertProviderOf(alert.type)"
               role="alert"
-              class="mb-3 border border-amber-300 bg-warning-soft px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:text-amber-200"
+              class="mb-3 border border-warning bg-warning-soft px-3 py-2 text-xs text-warning-strong"
             >
               No valid {{ alert.type }} notification is configured: this alert cannot be saved until one is
               <a href="/admin/alert-providers" target="_blank" rel="noopener" class="underline underline-offset-2">configured</a>.
@@ -459,7 +454,7 @@
                 />
               </div>
             </div>
-            <details class="mt-3 border-t pt-3 dark:border-gray-700" :open="alert.enabled === 'no' || Boolean(alert.reminder)">
+            <details class="mt-3 border-t pt-3 border-line" :open="alert.enabled === 'no' || Boolean(alert.reminder)">
               <summary class="cursor-pointer text-sm font-medium text-fg">Advanced</summary>
               <div class="mt-3 grid gap-3 sm:grid-cols-2">
                 <div>
@@ -500,7 +495,7 @@
         ></textarea>
       </div>
 
-      <div v-if="!readOnly" class="mt-6 flex flex-wrap items-center gap-2 border-t pt-4 dark:border-gray-700">
+      <div v-if="!readOnly" class="mt-6 flex flex-wrap items-center gap-2 border-t pt-4 border-line">
         <Button variant="outline" :disabled="busy" data-testid="admin-validate" @click="validate">Validate</Button>
         <Button v-if="!isPush" variant="secondary" :disabled="busy" data-testid="admin-test" @click="test">Test</Button>
         <Button :disabled="busy" class="sm:ml-auto" data-testid="admin-save" @click="save">Save</Button>
@@ -509,9 +504,7 @@
       <div v-if="testResult" data-testid="admin-test-result" class="mt-6 border bg-surface p-6 border-line">
         <h2 class="mb-1 text-lg font-semibold text-fg-strong">
           Test result:
-          <span :class="testResult.success ? 'text-green-600 dark:text-green-400' : 'text-danger'">{{
-            testResult.success ? 'success' : 'failure'
-          }}</span>
+          <span :class="testResult.success ? 'text-success' : 'text-danger'">{{ testResult.success ? 'success' : 'failure' }}</span>
         </h2>
         <p class="mb-3 text-sm text-fg-muted">
           Duration: {{ testResult.durationMs }} ms<span v-if="testResult.status"> · HTTP {{ testResult.status }}</span>
@@ -520,12 +513,12 @@
           <li
             v-for="(condition, index) in testResult.conditionResults"
             :key="index"
-            :class="condition.success ? 'text-success' : 'text-red-700 dark:text-red-400'"
+            :class="condition.success ? 'text-success' : 'text-danger'"
           >
             {{ condition.success ? '✓' : '✗' }} {{ condition.condition }}
           </li>
         </ul>
-        <ul v-if="testResult.errors && testResult.errors.length" class="mt-3 list-disc pl-5 text-sm text-red-700 dark:text-red-400">
+        <ul v-if="testResult.errors && testResult.errors.length" class="mt-3 list-disc pl-5 text-sm text-danger">
           <li v-for="(message, index) in testResult.errors" :key="index">{{ message }}</li>
         </ul>
       </div>

@@ -44,7 +44,7 @@
         v-if="notice"
         role="status"
         data-testid="admin-notice"
-        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-green-800 dark:text-green-200"
+        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-success-strong"
       >
         {{ notice }}
       </div>
@@ -74,9 +74,7 @@
     <div v-if="loading" class="py-12 flex justify-center"><Loading /></div>
     <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
     <table v-else class="hidden w-full table-fixed text-xs md:table" data-testid="status-pages-table">
-      <thead
-        class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-      >
+      <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
         <tr class="uppercase tracking-wide">
           <th class="w-[20%] px-2 py-1.5 font-medium">Slug</th>
           <th class="px-2 py-1.5 font-medium">Title</th>
@@ -93,7 +91,7 @@
         <tr
           v-for="item in items"
           :key="`${item.origin}-${item.slug}`"
-          class="border-t hover:bg-hover-soft dark:border-gray-700"
+          class="border-t hover:bg-hover-soft border-line"
           :data-testid="`status-page-row-${item.origin}-${item.slug}`"
         >
           <td class="px-2 py-1 font-mono text-[11px] text-fg-strong">
@@ -101,7 +99,7 @@
               <!-- Fork: the page has a login of its own -->
               <Lock
                 v-if="item.requiresLogin"
-                class="h-3 w-3 shrink-0 text-amber-600 dark:text-amber-400"
+                class="h-3 w-3 shrink-0 text-warning"
                 aria-label="Requires login"
                 :data-testid="`status-page-requires-login-${item.slug}`"
               />
@@ -115,9 +113,7 @@
             <span
               :class="[
                 'border px-1 text-[11px] leading-4',
-                item.origin === 'admin'
-                  ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
-                  : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
+                item.origin === 'admin' ? 'bg-info-soft text-info-strong border-info' : 'bg-surface-2 text-fg-body border-line-strong',
               ]"
               >{{ item.origin === 'admin' ? 'Web' : 'YAML' }}</span
             >
@@ -127,11 +123,7 @@
           </td>
           <td class="hidden px-2 py-1 text-right lg:table-cell">
             <!-- The page selects more endpoints than status-pages.maximum-endpoints-per-page shows -->
-            <span
-              v-if="item.truncated"
-              class="text-amber-700 dark:text-amber-400"
-              :title="TRUNCATED_TITLE"
-              :data-testid="`status-page-truncated-${item.slug}`"
+            <span v-if="item.truncated" class="text-warning" :title="TRUNCATED_TITLE" :data-testid="`status-page-truncated-${item.slug}`"
               >{{ item.endpoints }}+<span class="sr-only"> ({{ TRUNCATED_TITLE }})</span></span
             >
             <template v-else>{{ item.endpoints }}</template>
@@ -179,7 +171,7 @@
     </table>
 
     <!-- Fork: below md the table gives way to one card per status page, with every field and the same actions -->
-    <div v-if="!loading" class="divide-y md:hidden dark:divide-gray-700">
+    <div v-if="!loading" class="divide-y md:hidden divide-line">
       <p v-if="items.length === 0" class="px-3 py-8 text-center text-sm text-fg-muted">No status pages yet.</p>
       <div
         v-for="item in items"
@@ -198,14 +190,14 @@
         </div>
         <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-fg-muted">
           <span>{{ item.origin === 'admin' ? 'Web' : 'YAML' }}</span>
-          <span :class="item.truncated ? 'text-amber-700 dark:text-amber-400' : ''" :title="item.truncated ? TRUNCATED_TITLE : ''"
+          <span :class="item.truncated ? 'text-warning' : ''" :title="item.truncated ? TRUNCATED_TITLE : ''"
             >{{ item.endpoints }}{{ item.truncated ? '+' : '' }} {{ item.endpoints === 1 ? 'endpoint' : 'endpoints'
             }}<span v-if="item.truncated" class="sr-only"> ({{ TRUNCATED_TITLE }})</span></span
           >
           <!-- Fork: the page has a login of its own -->
           <span
             v-if="item.requiresLogin"
-            class="flex items-center gap-1 text-amber-600 dark:text-amber-400"
+            class="flex items-center gap-1 text-warning"
             :data-testid="`status-page-requires-login-${item.slug}`"
           >
             <Lock class="h-3 w-3 shrink-0" aria-hidden="true" />Requires login
@@ -325,12 +317,12 @@ const stateLabel = (item) => {
 
 const stateClass = (item) => {
   if (item.conflict) {
-    return 'text-amber-700 dark:text-amber-400'
+    return 'text-warning'
   }
   if (item.error) {
-    return 'text-red-700 dark:text-red-400'
+    return 'text-danger'
   }
-  return item.published ? 'text-success' : 'text-muted-foreground dark:text-gray-500'
+  return item.published ? 'text-success' : 'text-fg-subtle'
 }
 
 const load = async () => {

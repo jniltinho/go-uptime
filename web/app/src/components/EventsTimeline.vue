@@ -18,13 +18,8 @@
         >Latest: {{ latest.text }} · {{ latest.timeAgo }}</span
       >
     </button>
-    <ul
-      v-if="expanded"
-      id="endpoint-events-list"
-      class="space-y-4 border border-t-0 px-4 py-4 dark:border-gray-700"
-      data-testid="events-list"
-    >
-      <li v-for="item in items" :key="item.key" class="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0 dark:border-gray-800">
+    <ul v-if="expanded" id="endpoint-events-list" class="space-y-4 border border-t-0 px-4 py-4 border-line" data-testid="events-list">
+      <li v-for="item in items" :key="item.key" class="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0 border-line-soft">
         <div class="mt-1" aria-hidden="true">
           <ArrowUpCircle v-if="item.type === 'HEALTHY'" class="h-5 w-5 text-green-500" />
           <ArrowDownCircle v-else-if="item.type === 'UNHEALTHY'" class="h-5 w-5 text-red-500" />

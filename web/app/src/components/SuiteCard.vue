@@ -50,7 +50,7 @@
                     : selectedResultIndex === index
                       ? 'bg-red-700'
                       : 'bg-red-500 hover:bg-red-700'
-                  : 'bg-gray-200 dark:bg-gray-700',
+                  : 'bg-track',
               ]"
               @mouseenter="result && handleMouseEnter(result, $event)"
               @mouseleave="result && handleMouseLeave(result, $event)"

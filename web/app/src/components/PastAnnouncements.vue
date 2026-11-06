@@ -35,10 +35,7 @@
                 {{ formatTime(announcement.timestamp) }}
               </time>
               <div class="flex-1 min-w-0">
-                <p
-                  class="text-sm leading-relaxed text-gray-900 dark:text-gray-100"
-                  v-html="formatAnnouncementMessage(announcement.message)"
-                ></p>
+                <p class="text-sm leading-relaxed text-fg-strong" v-html="formatAnnouncementMessage(announcement.message)"></p>
               </div>
             </div>
           </div>
@@ -54,7 +51,7 @@
       <div v-if="hasOlderAnnouncements && !showAllAnnouncements">
         <button
           @click="showAllAnnouncements = true"
-          class="inline-flex items-center gap-2 text-sm font-medium text-info hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 cursor-pointer group"
+          class="inline-flex items-center gap-2 text-sm font-medium text-info hover:text-info transition-colors duration-200 cursor-pointer group"
         >
           <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform duration-200" />
           <span class="group-hover:underline">View older announcements</span>
@@ -84,38 +81,38 @@ const showAllAnnouncements = ref(false)
 const typeConfigs = {
   outage: {
     icon: XCircle,
-    background: 'bg-red-50 dark:bg-red-900/20',
-    borderColor: 'border-red-500 dark:border-red-400',
+    background: 'bg-danger-soft',
+    borderColor: 'border-danger-strong',
     iconColor: 'text-danger',
-    text: 'text-red-700 dark:text-red-300',
+    text: 'text-danger',
   },
   warning: {
     icon: AlertTriangle,
-    background: 'bg-yellow-50 dark:bg-yellow-900/20',
-    borderColor: 'border-yellow-500 dark:border-yellow-400',
-    iconColor: 'text-yellow-600 dark:text-yellow-400',
-    text: 'text-yellow-700 dark:text-yellow-300',
+    background: 'bg-pending-soft',
+    borderColor: 'border-pending-strong',
+    iconColor: 'text-pending',
+    text: 'text-pending',
   },
   information: {
     icon: Info,
-    background: 'bg-blue-50 dark:bg-blue-900/20',
-    borderColor: 'border-blue-500 dark:border-blue-400',
+    background: 'bg-info-soft',
+    borderColor: 'border-info-strong',
     iconColor: 'text-info',
-    text: 'text-blue-700 dark:text-blue-300',
+    text: 'text-info',
   },
   operational: {
     icon: CheckCircle,
-    background: 'bg-green-50 dark:bg-green-900/20',
-    borderColor: 'border-green-500 dark:border-green-400',
-    iconColor: 'text-green-600 dark:text-green-400',
-    text: 'text-green-700 dark:text-green-300',
+    background: 'bg-success-soft',
+    borderColor: 'border-success-strong',
+    iconColor: 'text-success',
+    text: 'text-success',
   },
   none: {
     icon: Circle,
-    background: 'bg-gray-50 dark:bg-gray-800/20',
-    borderColor: 'border-gray-500 dark:border-gray-400',
-    iconColor: 'text-gray-600 dark:text-gray-400',
-    text: 'text-gray-700 dark:text-gray-300',
+    background: 'bg-surface-2',
+    borderColor: 'border-line-strong',
+    iconColor: 'text-fg-muted',
+    text: 'text-fg-body',
   },
 }
 

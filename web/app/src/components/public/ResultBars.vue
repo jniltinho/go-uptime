@@ -27,7 +27,7 @@ const displayed = computed(() => {
 })
 
 const barClass = (result) => {
-  if (!result) return 'bg-gray-200 dark:bg-gray-800'
+  if (!result) return 'bg-empty'
   if (result.success) return 'bg-green-500'
   if (result.pending) return 'bg-yellow-400'
   return 'bg-red-500'

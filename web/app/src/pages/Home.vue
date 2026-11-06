@@ -30,7 +30,7 @@
               </span>
               <span
                 v-if="endpointSummary.pending"
-                class="inline-flex items-center gap-1.5 border border-yellow-300 bg-yellow-50 px-2 py-1 text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200"
+                class="inline-flex items-center gap-1.5 border border-pending bg-pending-soft px-2 py-1 text-pending-strong"
                 data-testid="dashboard-summary-pending"
               >
                 <span class="h-2 w-2 rounded-full bg-yellow-400" aria-hidden="true"></span>{{ endpointSummary.pending }} pending
