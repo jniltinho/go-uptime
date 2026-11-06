@@ -43,8 +43,24 @@ function keepGoTemplateLinks() {
   ]
 }
 
+// The development server serves index.html without the Go server: the actions of the template that are not inside a
+// string ({{- range .UI.Buttons}}...{{end}}) would be a syntax error in the inline script and stop the theme from being
+// applied. They are dropped in the development server only; the build keeps the template whole.
+function devTemplate() {
+  return {
+    name: 'go-uptime-dev-template',
+    apply: 'serve',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        return html.replace(/\{\{-?\s*range[^}]*\}\}[\s\S]*?\{\{-?\s*end\s*-?\}\}/g, '')
+      },
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [vue(), tailwindcss(), ...keepGoTemplateLinks(), injectThemes(), themesFile()],
+  plugins: [vue(), tailwindcss(), ...keepGoTemplateLinks(), devTemplate(), injectThemes(), themesFile()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     // The sources import components and modules without extension, as Vue CLI allowed

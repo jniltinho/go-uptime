@@ -42,28 +42,30 @@
     --gray-800: 29 60 85;
     --gray-900: 20 43 62;
   }
+}
 
-  /* Fork: the header of the bio theme is navy. The variables of the theme are redefined inside it, so that what lives
-     there — the title, the links, the theme selector and its menu — follows without a rule per component. On the navy
-     the teal has a contrast of 5.9, so here, and only here, it is the focus ring. */
-  :root[data-theme='bio'] .app-header {
-    --background: 207 49% 22.4%;
-    --foreground: 0 0% 100%;
-    --card: 207 49% 22.4%;
-    --card-foreground: 0 0% 100%;
-    --popover: 207 52% 17%;
-    --popover-foreground: 0 0% 100%;
-    --muted: 207 45% 28%;
-    --muted-foreground: 200 40% 85%;
-    --accent: 207 45% 32%;
-    --accent-foreground: 0 0% 100%;
-    --border: 207 40% 34%;
-    --input: 200 45% 70%;
-    --ring: 184 67% 60%;
-    background-color: hsl(var(--card));
-    color: hsl(var(--foreground));
-    border-color: hsl(var(--card));
-  }
+/* Outside of the layers on purpose: with the native cascade layers of Tailwind 4, the utilities (bg-card/50 on the
+   header) win over anything in @layer base whatever its specificity, and the header of bio must stay opaque navy. */
+/* Fork: the header of the bio theme is navy. The variables of the theme are redefined inside it, so that what lives
+   there — the title, the links, the theme selector and its menu — follows without a rule per component. On the navy
+   the teal has a contrast of 5.9, so here, and only here, it is the focus ring. */
+:root[data-theme='bio'] .app-header {
+  --background: 207 49% 22.4%;
+  --foreground: 0 0% 100%;
+  --card: 207 49% 22.4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 207 52% 17%;
+  --popover-foreground: 0 0% 100%;
+  --muted: 207 45% 28%;
+  --muted-foreground: 200 40% 85%;
+  --accent: 207 45% 32%;
+  --accent-foreground: 0 0% 100%;
+  --border: 207 40% 34%;
+  --input: 200 45% 70%;
+  --ring: 184 67% 60%;
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--card));
 }
 
 @media (prefers-contrast: more) {
