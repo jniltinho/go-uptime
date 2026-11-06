@@ -19,7 +19,7 @@ renderer.link = (tokenOrHref, title, text) => {
   const url = escapeHtml(href || '')
   const titleAttribute = resolvedTitle ? ` title="${escapeHtml(resolvedTitle)}"` : ''
   const linkText = resolvedText || ''
-  return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium"${titleAttribute}>${linkText}</a>`
+  return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-link hover:text-link-hover underline font-medium"${titleAttribute}>${linkText}</a>`
 }
 
 marked.use({

@@ -17,9 +17,7 @@
       v-if="incidents > 0 || counts.pending > 0"
       :class="[
         'mt-3 flex flex-col gap-1 border px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between',
-        counts.primaryDown > 0
-          ? 'border-danger bg-danger-soft text-red-900 dark:text-red-100'
-          : 'border-warning bg-warning-soft text-warning-strong',
+        counts.primaryDown > 0 ? 'border-danger bg-danger-soft text-danger-strong' : 'border-warning bg-warning-soft text-warning-strong',
       ]"
       role="status"
       data-testid="status-view-banner"
@@ -54,7 +52,7 @@ const cards = computed(() => {
     { key: 'monitors', label: 'Monitors', value: props.counts.monitors, class: '' },
   ]
   const red = (value) => (value > 0 ? 'text-danger' : '')
-  const amber = (value) => (value > 0 ? 'text-amber-600 dark:text-amber-400' : '')
+  const amber = (value) => (value > 0 ? 'text-warning' : '')
   if (props.counts.hasEnvironments) {
     list.push({
       key: 'primary',

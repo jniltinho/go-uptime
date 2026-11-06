@@ -87,11 +87,7 @@
               <div v-if="latestResult.errors && latestResult.errors.length > 0" class="mt-6">
                 <h3 class="text-lg font-semibold mb-3 text-red-500">Suite Errors</h3>
                 <div class="space-y-2">
-                  <div
-                    v-for="(error, index) in latestResult.errors"
-                    :key="index"
-                    class="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 p-3 rounded-md text-sm"
-                  >
+                  <div v-for="(error, index) in latestResult.errors" :key="index" class="bg-danger-soft text-danger p-3 rounded-md text-sm">
                     {{ error }}
                   </div>
                 </div>

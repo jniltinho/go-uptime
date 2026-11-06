@@ -30,14 +30,14 @@
       <div class="flex flex-wrap gap-1">
         <span
           v-if="step.isAlwaysRun"
-          class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-md"
+          class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-info-muted text-info-strong rounded-md"
         >
           <RotateCcw class="w-3 h-3" />
           Always Run
         </span>
         <span
           v-if="step.errors?.length"
-          class="inline-flex items-center px-2 py-1 text-xs font-medium bg-red-100 text-danger-strong dark:bg-red-900 rounded-md"
+          class="inline-flex items-center px-2 py-1 text-xs font-medium bg-danger-muted text-danger-strong rounded-md"
         >
           {{ step.errors.length }} error{{ step.errors.length !== 1 ? 's' : '' }}
         </span>
@@ -84,11 +84,11 @@ const circleClasses = computed(() => {
     // Always-run endpoints get a special ring effect
     switch (props.step.status) {
       case 'success':
-        return `${baseClasses} bg-green-500 text-white border-green-600 ring-2 ring-blue-200 dark:ring-blue-800`
+        return `${baseClasses} bg-green-500 text-white border-green-600 ring-2 ring-info`
       case 'failed':
-        return `${baseClasses} bg-red-500 text-white border-red-600 ring-2 ring-blue-200 dark:ring-blue-800`
+        return `${baseClasses} bg-red-500 text-white border-red-600 ring-2 ring-info`
       default:
-        return `${baseClasses} bg-blue-500 text-white border-blue-600 ring-2 ring-blue-200 dark:ring-blue-800`
+        return `${baseClasses} bg-blue-500 text-white border-blue-600 ring-2 ring-info`
     }
   }
 
@@ -100,15 +100,15 @@ const circleClasses = computed(() => {
     case 'skipped':
       return `${baseClasses} bg-statusgray-400 text-white border-statusgray-500`
     case 'not-started':
-      return `${baseClasses} bg-statusgray-200 text-statusgray-500 border-statusgray-300 dark:bg-statusgray-700 dark:text-statusgray-400 dark:border-statusgray-600`
+      return `${baseClasses} bg-status-none text-status-none border-status-none`
     default:
-      return `${baseClasses} bg-statusgray-200 text-statusgray-500 border-statusgray-300 dark:bg-statusgray-700 dark:text-statusgray-400 dark:border-statusgray-600`
+      return `${baseClasses} bg-status-none text-status-none border-status-none`
   }
 })
 
 // Incoming connection line styling (from previous step to this step)
 const incomingLineClasses = computed(() => {
-  if (!props.previousStep) return 'bg-gray-300 dark:bg-gray-600'
+  if (!props.previousStep) return 'bg-connector'
 
   // If this step is skipped, the line should be dashed/gray
   if (props.step.status === 'skipped') {
@@ -123,7 +123,7 @@ const incomingLineClasses = computed(() => {
       // If previous failed but this ran (always-run), show red line
       return 'bg-red-500'
     default:
-      return 'bg-gray-300 dark:bg-gray-600'
+      return 'bg-connector'
   }
 })
 
@@ -132,11 +132,11 @@ const connectionLineClasses = computed(() => {
   const nextStep = props.step.nextStepStatus
   switch (props.step.status) {
     case 'success':
-      return nextStep === 'skipped' ? 'bg-gray-300 dark:bg-gray-600' : 'bg-green-500'
+      return nextStep === 'skipped' ? 'bg-connector' : 'bg-green-500'
     case 'failed':
       return nextStep === 'skipped' ? 'border-l-2 border-dashed border-gray-400 bg-transparent' : 'bg-red-500'
     default:
-      return 'bg-gray-300 dark:bg-gray-600'
+      return 'bg-connector'
   }
 })
 </script>

@@ -26,7 +26,7 @@
         v-if="listing && !listing.storageSupported"
         role="status"
         data-testid="alert-providers-storage"
-        class="mt-3 shrink-0 border border-amber-300 bg-warning-soft px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
+        class="mt-3 shrink-0 border border-warning bg-warning-soft px-4 py-2 text-sm text-warning-strong"
       >
         {{ storageMessage }}
       </div>
@@ -56,7 +56,7 @@
       class="flex flex-col items-center gap-3 px-4 py-12 text-center"
       data-testid="alert-providers-empty"
     >
-      <BellOff class="h-8 w-8 text-muted-foreground dark:text-gray-500" aria-hidden="true" />
+      <BellOff class="h-8 w-8 text-fg-subtle" aria-hidden="true" />
       <p class="text-sm font-medium text-fg-strong">No notification is configured yet</p>
       <p class="max-w-md text-sm text-fg-muted">
         Add a provider such as Telegram, Slack, email or ntfy, then add an alert of that type to the endpoints that should notify.
@@ -67,9 +67,7 @@
     <template v-else>
       <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
       <table class="hidden w-full table-fixed text-xs md:table" data-testid="alert-providers-table">
-        <thead
-          class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-        >
+        <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
           <tr class="uppercase tracking-wide">
             <th class="px-2 py-1.5 font-medium">Provider</th>
             <th class="hidden w-28 px-2 py-1.5 font-medium lg:table-cell">Category</th>
@@ -84,7 +82,7 @@
           <tr
             v-for="item in configured"
             :key="item.type"
-            class="border-t hover:bg-hover-soft dark:border-gray-700"
+            class="border-t hover:bg-hover-soft border-line"
             :data-testid="`alert-provider-row-${item.type}`"
           >
             <td class="px-2 py-1">
@@ -106,7 +104,7 @@
               </span>
               <span
                 v-if="item.shadowed"
-                class="ml-1 border border-warning px-1 text-[11px] leading-4 text-amber-800 dark:text-amber-200"
+                class="ml-1 border border-warning px-1 text-[11px] leading-4 text-warning-strong"
                 title="A notification configured through the web exists for this type, but the configuration file takes precedence"
                 >+ Web shadowed</span
               >
@@ -160,7 +158,7 @@
       </table>
 
       <!-- Fork: below md the table gives way to one card per provider, with every field and the same actions -->
-      <div class="divide-y md:hidden dark:divide-gray-700">
+      <div class="divide-y md:hidden divide-line">
         <div v-for="item in configured" :key="`card-${item.type}`" class="px-3 py-2.5" :data-testid="`alert-provider-card-${item.type}`">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
@@ -173,7 +171,7 @@
               <component :is="stateIcon(item)" class="h-3.5 w-3.5" aria-hidden="true" />{{ providerState(item).label }}
             </span>
           </div>
-          <p v-if="item.error" class="mt-1 wrap-break-word text-xs text-red-700 dark:text-red-400">{{ item.error }}</p>
+          <p v-if="item.error" class="mt-1 wrap-break-word text-xs text-danger">{{ item.error }}</p>
           <button type="button" class="mt-1 text-xs text-fg-muted underline-offset-2 hover:underline" @click="usageItem = item">
             Used by {{ usageCount(item) }} {{ usageCount(item) === 1 ? 'endpoint' : 'endpoints' }}
           </button>
@@ -249,7 +247,7 @@
             >
               <span class="min-w-0">
                 <span class="block truncate font-medium text-fg-strong">{{ type.name }}</span>
-                <span v-if="type.deprecated" class="text-xs text-amber-700 dark:text-amber-300">Deprecated</span>
+                <span v-if="type.deprecated" class="text-xs text-warning">Deprecated</span>
                 <span v-else-if="type.untested" class="text-xs text-fg-muted">Not validated yet</span>
               </span>
               <span v-if="isConfigured(type.type)" class="shrink-0 text-xs text-fg-muted">Configured</span>
@@ -342,14 +340,12 @@ const pickerGroups = computed(() => groupByCategory((listing.value && listing.va
 const isConfigured = (type) => providers.value.some((item) => item.type === type && (item.source !== 'none' || item.shadowed))
 
 const sourceClass = (item) =>
-  item.source === 'web'
-    ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
-    : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300'
+  item.source === 'web' ? 'border-info bg-info-soft text-info-strong' : 'border-line-strong bg-surface-2 text-fg-body'
 
 const stateClass = (item) =>
   ({
     success: 'text-success',
-    error: 'text-red-700 dark:text-red-400',
+    error: 'text-danger',
     muted: 'text-fg-muted',
   })[providerState(item).tone]
 

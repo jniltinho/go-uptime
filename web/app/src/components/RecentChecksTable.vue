@@ -16,9 +16,9 @@
         showMessage ? 'Status, date and time, message and origin' : 'Status, date and time and response time'
       }}</span>
     </button>
-    <div v-if="expanded" class="overflow-x-auto border border-t-0 dark:border-gray-700" data-testid="recent-checks-table">
+    <div v-if="expanded" class="overflow-x-auto border border-t-0 border-line" data-testid="recent-checks-table">
       <table class="w-full text-sm">
-        <thead class="bg-muted/50 text-left text-fg-muted dark:bg-gray-800">
+        <thead class="bg-surface-2 text-left text-fg-muted">
           <tr>
             <th class="px-3 py-2 font-medium">Status</th>
             <th class="px-3 py-2 font-medium">Date and time</th>
@@ -36,7 +36,7 @@
           <tr
             v-for="(row, index) in rows"
             :key="`${row.timestamp}-${index}`"
-            class="border-t dark:border-gray-700"
+            class="border-t border-line"
             :data-testid="`recent-check-${index}`"
           >
             <td class="px-3 py-2">
@@ -48,9 +48,7 @@
                 {{ row.message }}
               </td>
               <td class="px-3 py-2 whitespace-nowrap">
-                <span :class="['text-xs', row.push ? 'text-violet-700 dark:text-violet-300' : 'text-fg-muted']">{{
-                  row.push ? 'Push' : 'Check'
-                }}</span>
+                <span :class="['text-xs', row.push ? 'text-highlight' : 'text-fg-muted']">{{ row.push ? 'Push' : 'Check' }}</span>
               </td>
             </template>
             <td v-else class="px-3 py-2 whitespace-nowrap text-fg-muted">{{ row.responseTime }}</td>
@@ -81,9 +79,9 @@ const props = defineProps({
 // Pending results are not successful, but are shown in yellow
 const STATUS_TEXTS = { up: 'Up', pending: 'Pending', down: 'Down' }
 const STATUS_CLASSES = {
-  up: 'border-success bg-success-soft text-green-800 dark:text-green-300',
-  pending: 'border-yellow-300 bg-yellow-50 text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-  down: 'border-danger bg-danger-soft text-red-800 dark:text-red-300',
+  up: 'border-success bg-success-soft text-success-strong',
+  pending: 'border-pending bg-pending-soft text-pending-strong',
+  down: 'border-danger bg-danger-soft text-danger-strong',
 }
 
 const PREFERENCE = 'show-recent-checks-table'

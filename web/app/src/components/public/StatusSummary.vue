@@ -54,11 +54,10 @@ const label = computed(() => STATUS_LABELS[props.status]?.page || STATUS_LABELS.
 const bannerClass = computed(
   () =>
     ({
-      operational: 'border-success bg-success-soft text-green-900 dark:text-green-100',
+      operational: 'border-success bg-success-soft text-success-strong',
       degraded: 'border-warning bg-warning-soft text-warning-strong',
-      down: 'border-danger bg-danger-soft text-red-900 dark:text-red-100',
-    })[props.status] ||
-    'border-statusgray-300 bg-statusgray-50 text-statusgray-800 dark:border-statusgray-700 dark:bg-statusgray-900 dark:text-statusgray-200',
+      down: 'border-danger bg-danger-soft text-danger-strong',
+    })[props.status] || 'border-status-none bg-status-none-soft text-status-none-strong',
 )
 
 const dotClass = computed(

@@ -108,7 +108,7 @@
             :aria-labelledby="`status-group-${groupIndex}`"
             :data-testid="`status-group-${group.name || 'outros'}`"
           >
-            <div class="flex items-baseline justify-between gap-4 border-b pb-1.5 dark:border-gray-800">
+            <div class="flex items-baseline justify-between gap-4 border-b pb-1.5 border-line-soft">
               <!-- The header is a real button, so that it works with a keyboard and a screen reader: its text carries the
                  name, the status and the counts of the group, which is what is announced instead of the rows of a
                  collapsed group -->
@@ -148,7 +148,7 @@
             </div>
             <!-- The panel always exists, so that aria-controls points to something; the rows of a collapsed group do not -->
             <div :id="`status-group-panel-${groupIndex}`">
-              <ul v-if="!collapsedGroups.has(group.name || '')" class="divide-y dark:divide-gray-800">
+              <ul v-if="!collapsedGroups.has(group.name || '')" class="divide-y divide-line-soft">
                 <EndpointRow
                   v-for="endpoint in group.endpoints"
                   :key="endpoint.name"
@@ -332,8 +332,8 @@ const groupStatusLabel = (status) => STATUS_LABELS[status]?.group || STATUS_LABE
 const groupStatusClass = (status) =>
   ({
     operational: 'text-success',
-    degraded: 'text-amber-700 dark:text-amber-400',
-    down: 'text-red-700 dark:text-red-400',
+    degraded: 'text-warning',
+    down: 'text-danger',
   })[status] || 'text-muted-foreground'
 
 const stopRefreshing = () => {

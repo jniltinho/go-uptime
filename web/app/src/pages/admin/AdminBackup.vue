@@ -17,7 +17,7 @@
     <div class="grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2 md:grid-rows-1">
       <!-- Download -->
       <section class="flex min-h-0 flex-col border bg-surface border-line" data-testid="backup-section-download">
-        <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
+        <header class="shrink-0 border-b px-5 py-4 border-line">
           <h2 class="text-base font-semibold text-fg-strong">Download backup</h2>
           <p class="mt-0.5 text-xs text-fg-muted">
             A JSON file with the complete definitions, that can be restored in another installation with any supported database.
@@ -35,10 +35,7 @@
           </div>
 
           <label
-            :class="[
-              'flex items-start gap-3 border px-3 py-2.5 text-sm border-line',
-              encrypt ? 'border-success bg-green-50/60 dark:bg-green-900/20' : '',
-            ]"
+            :class="['flex items-start gap-3 border px-3 py-2.5 text-sm border-line', encrypt ? 'border-success bg-success-soft' : '']"
           >
             <input v-model="encrypt" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="backup-encrypt" />
             <span>
@@ -76,11 +73,9 @@
               />
             </label>
             <p class="text-xs text-fg-muted sm:col-span-2" data-testid="backup-password-hint">
-              <span
-                v-if="downloadPasswordError && (downloadPassword || downloadPasswordConfirmation)"
-                class="text-red-700 dark:text-red-300"
-                >{{ downloadPasswordError }}</span
-              >
+              <span v-if="downloadPasswordError && (downloadPassword || downloadPasswordConfirmation)" class="text-danger">{{
+                downloadPasswordError
+              }}</span>
               <span v-else>Between {{ MIN_PASSWORD_BYTES }} and {{ MAX_PASSWORD_BYTES }} bytes in UTF-8.</span>
             </p>
           </div>
@@ -95,7 +90,7 @@
           </div>
         </div>
 
-        <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 dark:border-gray-700">
+        <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 border-line">
           <Button :disabled="downloading || (encrypt && Boolean(downloadPasswordError))" data-testid="backup-download" @click="download">{{
             downloading ? 'Downloading…' : 'Download'
           }}</Button>
@@ -104,7 +99,7 @@
 
       <!-- Restore -->
       <section class="flex min-h-0 flex-col border bg-surface border-line" data-testid="backup-section-restore">
-        <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
+        <header class="shrink-0 border-b px-5 py-4 border-line">
           <h2 class="text-base font-semibold text-fg-strong">Restore</h2>
           <p class="mt-0.5 text-xs text-fg-muted">
             Merges a backup into this installation: nothing is removed, and the preview shows exactly what will be applied.
@@ -132,10 +127,7 @@
                 >Read again</Button
               >
             </div>
-            <p
-              :class="['mt-1 text-xs', fileError && !reading ? 'text-red-700 dark:text-red-300' : 'text-fg-muted']"
-              data-testid="restore-file-status"
-            >
+            <p :class="['mt-1 text-xs', fileError && !reading ? 'text-danger' : 'text-fg-muted']" data-testid="restore-file-status">
               <template v-if="reading">Reading the file…</template>
               <!-- The refused file keeps explaining why Preview is disabled, announced once when it changes -->
               <span v-else-if="fileError" :key="fileErrorKey" role="alert">{{ fileError }}</span>
@@ -159,13 +151,13 @@
             <span
               v-if="wrongPassword"
               id="restore-password-error"
-              class="mt-1 block text-xs text-red-700 dark:text-red-300"
+              class="mt-1 block text-xs text-danger"
               data-testid="restore-password-error"
               >{{ WRONG_PASSWORD_MESSAGE }}</span
             >
             <span
               v-else-if="restorePassword && restorePasswordError"
-              class="mt-1 block text-xs text-red-700 dark:text-red-300"
+              class="mt-1 block text-xs text-danger"
               data-testid="restore-password-hint"
               >{{ restorePasswordError }}</span
             >
@@ -191,7 +183,7 @@
           </label>
         </div>
 
-        <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 dark:border-gray-700">
+        <footer class="flex shrink-0 items-center justify-end gap-2 border-t px-5 py-3 border-line">
           <Button ref="previewButton" :disabled="!canPreview" data-testid="restore-preview" @click="runPreview">{{
             previewing ? 'Previewing…' : 'Preview'
           }}</Button>
@@ -237,7 +229,7 @@
               :class="[
                 '-ml-px h-9 border px-3 text-xs font-medium first:ml-0 border-line',
                 actionFilter === option.id
-                  ? 'relative z-10 border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900'
+                  ? 'relative z-10 border-selected bg-inverse text-on-inverse'
                   : 'bg-background text-fg hover:bg-hover',
               ]"
               :data-testid="`restore-filter-${option.id}`"
@@ -249,9 +241,7 @@
 
           <div class="border border-line">
             <table class="w-full text-sm" data-testid="restore-plan-table">
-              <thead
-                class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-              >
+              <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
                 <tr>
                   <th class="px-3 py-2 font-medium">Type</th>
                   <th class="px-3 py-2 font-medium">ID</th>
@@ -266,7 +256,7 @@
                 <tr
                   v-for="item in filteredItems"
                   :key="`${item.type}-${item.id}`"
-                  class="border-t align-top dark:border-gray-700"
+                  class="border-t align-top border-line"
                   :data-testid="`restore-plan-row-${item.type}-${item.id}`"
                   :data-action="item.action"
                 >
@@ -277,7 +267,7 @@
                   </td>
                   <td class="px-3 py-1.5 text-xs">
                     <span v-if="item.reason" class="text-fg">{{ item.reason }}</span>
-                    <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
+                    <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-warning-strong">
                       <li v-for="(warning, index) in item.warnings" :key="index">{{ formatWarning(warning) }}</li>
                     </ul>
                   </td>
@@ -306,9 +296,7 @@
       >
         <div v-if="results" class="border border-line">
           <table class="w-full text-sm" data-testid="restore-results-table">
-            <thead
-              class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
-            >
+            <thead class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-line-bottom">
               <tr>
                 <th class="px-3 py-2 font-medium">Type</th>
                 <th class="px-3 py-2 font-medium">ID</th>
@@ -323,7 +311,7 @@
               <tr
                 v-for="item in results"
                 :key="`${item.type}-${item.id}`"
-                class="border-t align-top dark:border-gray-700"
+                class="border-t align-top border-line"
                 :data-testid="`restore-result-row-${item.type}-${item.id}`"
                 :data-result="item.result"
               >
@@ -334,7 +322,7 @@
                 </td>
                 <td class="px-3 py-1.5 text-xs">
                   <span v-if="item.message" class="text-fg">{{ item.message }}</span>
-                  <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
+                  <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-warning-strong">
                     <li v-for="(warning, index) in item.warnings" :key="index">{{ formatWarning(warning) }}</li>
                   </ul>
                 </td>
@@ -681,9 +669,9 @@ const TYPE_LABELS = { pushKey: 'Push key', alertProvider: 'Notification', endpoi
 const typeLabel = (type) => TYPE_LABELS[type] || type
 
 const BADGES = {
-  green: 'border-success bg-success-soft text-green-800 dark:text-green-200',
-  blue: 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200',
-  gray: 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
+  green: 'border-success bg-success-soft text-success-strong',
+  blue: 'border-info bg-info-soft text-info-strong',
+  gray: 'border-line-strong bg-surface-2 text-fg-body',
   amber: 'border-warning bg-warning-soft text-warning-strong',
   red: 'border-danger bg-danger-soft text-danger-strong',
 }

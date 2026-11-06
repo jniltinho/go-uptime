@@ -19,7 +19,7 @@
         <div
           v-if="error"
           role="alert"
-          class="mb-4 border border-red-200 bg-danger-soft px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:text-red-300"
+          class="mb-4 border border-danger bg-danger-soft px-3 py-2 text-sm text-danger"
           data-testid="login-error"
         >
           {{ error }}

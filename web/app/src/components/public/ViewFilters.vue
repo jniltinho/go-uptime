@@ -70,8 +70,6 @@ const update = (change) => emit('update:modelValue', { ...props.modelValue, ...c
 
 const chipClass = (active) => [
   'border px-3 py-0.5 text-xs font-medium focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus',
-  active
-    ? 'border-sky-300 bg-sky-100 text-sky-900 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-100'
-    : 'border-field text-fg hover:bg-muted dark:hover:bg-gray-800',
+  active ? 'border-notice bg-notice-soft text-notice-strong' : 'border-field text-fg hover:bg-hover',
 ]
 </script>

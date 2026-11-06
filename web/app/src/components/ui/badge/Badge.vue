@@ -28,7 +28,7 @@ const badgeVariants = cva(
         success: 'border-transparent bg-green-500 text-white',
         warning: 'border-transparent bg-yellow-500 text-white',
         // Fork: Pending results, with dark text for the contrast on the yellow background
-        pending: 'border-transparent bg-yellow-400 text-yellow-900 dark:bg-yellow-500',
+        pending: 'border-transparent bg-pending-solid text-yellow-900',
       },
     },
     defaultVariants: {
