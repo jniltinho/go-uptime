@@ -7,14 +7,14 @@
       :aria-expanded="expanded"
       aria-controls="endpoint-events-list"
       data-testid="events-toggle"
-      class="flex w-full items-center gap-2 border px-3 py-2 text-left text-sm font-medium text-foreground hover:bg-accent dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+      class="flex w-full items-center gap-2 border px-3 py-2 text-left text-sm font-medium text-fg hover:bg-hover border-line"
       @click="toggle"
     >
       <ChevronDown v-if="expanded" class="h-4 w-4" />
       <ChevronRight v-else class="h-4 w-4" />
       Events
-      <span class="font-normal text-muted-foreground dark:text-gray-400">({{ items.length }})</span>
-      <span v-if="latest" class="ml-auto truncate text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="events-latest"
+      <span class="font-normal text-fg-muted">({{ items.length }})</span>
+      <span v-if="latest" class="ml-auto truncate text-xs font-normal text-fg-muted" data-testid="events-latest"
         >Latest: {{ latest.text }} · {{ latest.timeAgo }}</span
       >
     </button>

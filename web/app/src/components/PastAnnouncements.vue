@@ -54,7 +54,7 @@
       <div v-if="hasOlderAnnouncements && !showAllAnnouncements">
         <button
           @click="showAllAnnouncements = true"
-          class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 cursor-pointer group"
+          class="inline-flex items-center gap-2 text-sm font-medium text-info hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 cursor-pointer group"
         >
           <ChevronDown class="w-4 h-4 group-hover:translate-y-0.5 transition-transform duration-200" />
           <span class="group-hover:underline">View older announcements</span>
@@ -86,7 +86,7 @@ const typeConfigs = {
     icon: XCircle,
     background: 'bg-red-50 dark:bg-red-900/20',
     borderColor: 'border-red-500 dark:border-red-400',
-    iconColor: 'text-red-600 dark:text-red-400',
+    iconColor: 'text-danger',
     text: 'text-red-700 dark:text-red-300',
   },
   warning: {
@@ -100,7 +100,7 @@ const typeConfigs = {
     icon: Info,
     background: 'bg-blue-50 dark:bg-blue-900/20',
     borderColor: 'border-blue-500 dark:border-blue-400',
-    iconColor: 'text-blue-600 dark:text-blue-400',
+    iconColor: 'text-info',
     text: 'text-blue-700 dark:text-blue-300',
   },
   operational: {

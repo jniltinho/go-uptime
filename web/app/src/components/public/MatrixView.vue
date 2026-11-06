@@ -9,7 +9,7 @@
     >
       No services match the filters.
     </p>
-    <div v-else class="overflow-x-auto border bg-card dark:border-gray-800">
+    <div v-else class="overflow-x-auto border bg-card border-line-soft">
       <table class="w-full border-collapse text-sm">
         <caption class="sr-only">
           Status of each application by
@@ -130,9 +130,9 @@ const cellClass = (cell) => {
   }
   return (
     {
-      operational: 'border-green-300 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/30 dark:text-green-100',
-      degraded: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100',
-      down: 'border-red-300 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/30 dark:text-red-100',
+      operational: 'border-success bg-success-soft text-green-900 dark:text-green-100',
+      degraded: 'border-warning bg-warning-soft text-warning-strong',
+      down: 'border-danger bg-danger-soft text-red-900 dark:text-red-100',
     }[cell.status] ||
     'border-statusgray-300 bg-statusgray-50 text-statusgray-800 dark:border-statusgray-700 dark:bg-statusgray-900 dark:text-statusgray-200'
   )

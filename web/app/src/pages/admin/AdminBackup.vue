@@ -9,30 +9,26 @@
     data-testid="admin-backup"
   >
     <template #actions>
-      <router-link
-        to="/"
-        class="inline-flex h-9 items-center border border-input bg-background px-3 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+      <router-link to="/" class="inline-flex h-9 items-center border border-field bg-background px-3 text-sm font-medium hover:bg-hover"
         >Dashboard</router-link
       >
     </template>
 
     <div class="grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2 md:grid-rows-1">
       <!-- Download -->
-      <section class="flex min-h-0 flex-col border bg-card dark:border-gray-700 dark:bg-gray-900" data-testid="backup-section-download">
+      <section class="flex min-h-0 flex-col border bg-surface border-line" data-testid="backup-section-download">
         <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
-          <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Download backup</h2>
-          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+          <h2 class="text-base font-semibold text-fg-strong">Download backup</h2>
+          <p class="mt-0.5 text-xs text-fg-muted">
             A JSON file with the complete definitions, that can be restored in another installation with any supported database.
           </p>
         </header>
 
         <div class="min-h-0 flex-1 space-y-4 overflow-auto overscroll-contain px-5 py-4">
           <div class="grid grid-cols-2 gap-2">
-            <div v-for="counter in counters" :key="counter.id" class="border px-3 py-2 dark:border-gray-700">
-              <span class="block truncate text-xs text-muted-foreground dark:text-gray-400" :title="counter.label">{{
-                counter.label
-              }}</span>
-              <span class="block text-lg font-semibold text-foreground dark:text-gray-100" :data-testid="`backup-count-${counter.id}`">{{
+            <div v-for="counter in counters" :key="counter.id" class="border px-3 py-2 border-line">
+              <span class="block truncate text-xs text-fg-muted" :title="counter.label">{{ counter.label }}</span>
+              <span class="block text-lg font-semibold text-fg-strong" :data-testid="`backup-count-${counter.id}`">{{
                 counter.value === null ? '—' : counter.value
               }}</span>
             </div>
@@ -40,19 +36,14 @@
 
           <label
             :class="[
-              'flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700',
-              encrypt ? 'border-green-300 bg-green-50/60 dark:border-green-800 dark:bg-green-900/20' : '',
+              'flex items-start gap-3 border px-3 py-2.5 text-sm border-line',
+              encrypt ? 'border-success bg-green-50/60 dark:bg-green-900/20' : '',
             ]"
           >
-            <input
-              v-model="encrypt"
-              type="checkbox"
-              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
-              data-testid="backup-encrypt"
-            />
+            <input v-model="encrypt" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="backup-encrypt" />
             <span>
-              <span class="block font-medium text-foreground dark:text-gray-200">Encrypt with a password</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+              <span class="block font-medium text-fg">Encrypt with a password</span>
+              <span class="block text-xs text-fg-muted"
                 >Argon2id and AES-256-GCM. The password is not stored anywhere: without it the file cannot be restored.</span
               >
             </span>
@@ -60,9 +51,9 @@
 
           <div v-if="encrypt" class="grid gap-3 sm:grid-cols-2">
             <label class="block">
-              <span class="flex items-baseline justify-between text-sm font-medium text-foreground dark:text-gray-200">
+              <span class="flex items-baseline justify-between text-sm font-medium text-fg">
                 Password
-                <span class="text-xs font-normal text-muted-foreground dark:text-gray-400" data-testid="backup-password-bytes"
+                <span class="text-xs font-normal text-fg-muted" data-testid="backup-password-bytes"
                   >{{ downloadPasswordBytes }}/{{ MAX_PASSWORD_BYTES }} bytes</span
                 >
               </span>
@@ -70,21 +61,21 @@
                 v-model="downloadPassword"
                 type="password"
                 autocomplete="new-password"
-                class="mt-1.5 dark:border-gray-700"
+                class="mt-1.5 border-field"
                 data-testid="backup-password"
               />
             </label>
             <label class="block">
-              <span class="block text-sm font-medium text-foreground dark:text-gray-200">Confirm the password</span>
+              <span class="block text-sm font-medium text-fg">Confirm the password</span>
               <Input
                 v-model="downloadPasswordConfirmation"
                 type="password"
                 autocomplete="new-password"
-                class="mt-1.5 dark:border-gray-700"
+                class="mt-1.5 border-field"
                 data-testid="backup-password-confirm"
               />
             </label>
-            <p class="text-xs text-muted-foreground sm:col-span-2 dark:text-gray-400" data-testid="backup-password-hint">
+            <p class="text-xs text-fg-muted sm:col-span-2" data-testid="backup-password-hint">
               <span
                 v-if="downloadPasswordError && (downloadPassword || downloadPasswordConfirmation)"
                 class="text-red-700 dark:text-red-300"
@@ -97,7 +88,7 @@
           <div
             v-else
             role="status"
-            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100"
+            class="border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong"
             data-testid="backup-plaintext-warning"
           >
             Without a password, the file contains tokens, passwords, headers and webhooks in plain text. Keep it somewhere safe.
@@ -112,23 +103,23 @@
       </section>
 
       <!-- Restore -->
-      <section class="flex min-h-0 flex-col border bg-card dark:border-gray-700 dark:bg-gray-900" data-testid="backup-section-restore">
+      <section class="flex min-h-0 flex-col border bg-surface border-line" data-testid="backup-section-restore">
         <header class="shrink-0 border-b px-5 py-4 dark:border-gray-700">
-          <h2 class="text-base font-semibold text-foreground dark:text-gray-100">Restore</h2>
-          <p class="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
+          <h2 class="text-base font-semibold text-fg-strong">Restore</h2>
+          <p class="mt-0.5 text-xs text-fg-muted">
             Merges a backup into this installation: nothing is removed, and the preview shows exactly what will be applied.
           </p>
         </header>
 
         <div class="min-h-0 flex-1 space-y-4 overflow-auto overscroll-contain px-5 py-4">
           <div>
-            <label for="restore-file" class="block text-sm font-medium text-foreground dark:text-gray-200">Backup file</label>
+            <label for="restore-file" class="block text-sm font-medium text-fg">Backup file</label>
             <div class="mt-1.5 flex gap-2">
               <input
                 id="restore-file"
                 ref="fileInput"
                 type="file"
-                class="flex h-10 w-full min-w-0 border border-input bg-background px-3 py-2 text-sm text-foreground file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium dark:border-gray-700 dark:text-gray-100"
+                class="flex h-10 w-full min-w-0 border border-field bg-background px-3 py-2 text-sm text-fg-strong file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium"
                 data-testid="restore-file"
                 @change="onFileChange"
               />
@@ -142,10 +133,7 @@
               >
             </div>
             <p
-              :class="[
-                'mt-1 text-xs',
-                fileError && !reading ? 'text-red-700 dark:text-red-300' : 'text-muted-foreground dark:text-gray-400',
-              ]"
+              :class="['mt-1 text-xs', fileError && !reading ? 'text-red-700 dark:text-red-300' : 'text-fg-muted']"
               data-testid="restore-file-status"
             >
               <template v-if="reading">Reading the file…</template>
@@ -158,12 +146,12 @@
           </div>
 
           <label v-if="fileFormat === 'encrypted'" class="block">
-            <span class="block text-sm font-medium text-foreground dark:text-gray-200">Password of the backup</span>
+            <span class="block text-sm font-medium text-fg">Password of the backup</span>
             <Input
               v-model="restorePassword"
               type="password"
               autocomplete="off"
-              class="mt-1.5 dark:border-gray-700"
+              class="mt-1.5 border-field"
               :aria-invalid="wrongPassword ? 'true' : undefined"
               :aria-describedby="wrongPassword ? 'restore-password-error' : undefined"
               data-testid="restore-password"
@@ -183,30 +171,20 @@
             >
           </label>
 
-          <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
-            <input
-              v-model="overwrite"
-              type="checkbox"
-              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
-              data-testid="restore-overwrite"
-            />
+          <label class="flex items-start gap-3 border px-3 py-2.5 text-sm border-line">
+            <input v-model="overwrite" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="restore-overwrite" />
             <span>
-              <span class="block font-medium text-foreground dark:text-gray-200">Overwrite existing items</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+              <span class="block font-medium text-fg">Overwrite existing items</span>
+              <span class="block text-xs text-fg-muted"
                 >Items that already exist with a different definition are updated. Without it they are skipped.</span
               >
             </span>
           </label>
-          <label class="flex items-start gap-3 border px-3 py-2.5 text-sm dark:border-gray-700">
-            <input
-              v-model="disableEndpoints"
-              type="checkbox"
-              class="mt-0.5 h-4 w-4 accent-gray-900 dark:accent-gray-100"
-              data-testid="restore-disable-endpoints"
-            />
+          <label class="flex items-start gap-3 border px-3 py-2.5 text-sm border-line">
+            <input v-model="disableEndpoints" type="checkbox" class="mt-0.5 h-4 w-4 accent-check" data-testid="restore-disable-endpoints" />
             <span>
-              <span class="block font-medium text-foreground dark:text-gray-200">Restore endpoints as disabled</span>
-              <span class="block text-xs text-muted-foreground dark:text-gray-400"
+              <span class="block font-medium text-fg">Restore endpoints as disabled</span>
+              <span class="block text-xs text-fg-muted"
                 >Created or updated endpoints are saved disabled: no checks and no alerts until they are enabled.</span
               >
             </span>
@@ -237,7 +215,7 @@
           <div
             v-if="notices.monitoringStarts || notices.withAlerts"
             role="status"
-            class="border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100"
+            class="border border-warning bg-warning-soft px-4 py-3 text-sm text-warning-strong"
             data-testid="restore-notices"
           >
             <p v-if="notices.monitoringStarts" data-testid="restore-notice-monitoring">
@@ -257,10 +235,10 @@
               type="button"
               :aria-pressed="actionFilter === option.id"
               :class="[
-                '-ml-px h-9 border px-3 text-xs font-medium first:ml-0 dark:border-gray-700',
+                '-ml-px h-9 border px-3 text-xs font-medium first:ml-0 border-line',
                 actionFilter === option.id
                   ? 'relative z-10 border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900'
-                  : 'bg-background text-foreground hover:bg-accent dark:text-gray-200 dark:hover:bg-gray-800',
+                  : 'bg-background text-fg hover:bg-hover',
               ]"
               :data-testid="`restore-filter-${option.id}`"
               @click="actionFilter = option.id"
@@ -269,10 +247,10 @@
             </button>
           </div>
 
-          <div class="border dark:border-gray-700">
+          <div class="border border-line">
             <table class="w-full text-sm" data-testid="restore-plan-table">
               <thead
-                class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+                class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
               >
                 <tr>
                   <th class="px-3 py-2 font-medium">Type</th>
@@ -283,7 +261,7 @@
               </thead>
               <tbody>
                 <tr v-if="filteredItems.length === 0">
-                  <td colspan="4" class="px-3 py-6 text-center text-muted-foreground dark:text-gray-400">No items.</td>
+                  <td colspan="4" class="px-3 py-6 text-center text-fg-muted">No items.</td>
                 </tr>
                 <tr
                   v-for="item in filteredItems"
@@ -292,13 +270,13 @@
                   :data-testid="`restore-plan-row-${item.type}-${item.id}`"
                   :data-action="item.action"
                 >
-                  <td class="whitespace-nowrap px-3 py-1.5 text-muted-foreground dark:text-gray-400">{{ typeLabel(item.type) }}</td>
-                  <td class="px-3 py-1.5 font-mono text-xs text-foreground break-all dark:text-gray-100">{{ item.id }}</td>
+                  <td class="whitespace-nowrap px-3 py-1.5 text-fg-muted">{{ typeLabel(item.type) }}</td>
+                  <td class="px-3 py-1.5 font-mono text-xs text-fg-strong break-all">{{ item.id }}</td>
                   <td class="px-3 py-1.5">
                     <span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.action)]">{{ item.action }}</span>
                   </td>
                   <td class="px-3 py-1.5 text-xs">
-                    <span v-if="item.reason" class="text-foreground dark:text-gray-200">{{ item.reason }}</span>
+                    <span v-if="item.reason" class="text-fg">{{ item.reason }}</span>
                     <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
                       <li v-for="(warning, index) in item.warnings" :key="index">{{ formatWarning(warning) }}</li>
                     </ul>
@@ -326,10 +304,10 @@
         testid="restore-results"
         @close="results = null"
       >
-        <div v-if="results" class="border dark:border-gray-700">
+        <div v-if="results" class="border border-line">
           <table class="w-full text-sm" data-testid="restore-results-table">
             <thead
-              class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+              class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
             >
               <tr>
                 <th class="px-3 py-2 font-medium">Type</th>
@@ -340,7 +318,7 @@
             </thead>
             <tbody>
               <tr v-if="results.length === 0">
-                <td colspan="4" class="px-3 py-6 text-center text-muted-foreground dark:text-gray-400">No items.</td>
+                <td colspan="4" class="px-3 py-6 text-center text-fg-muted">No items.</td>
               </tr>
               <tr
                 v-for="item in results"
@@ -349,13 +327,13 @@
                 :data-testid="`restore-result-row-${item.type}-${item.id}`"
                 :data-result="item.result"
               >
-                <td class="whitespace-nowrap px-3 py-1.5 text-muted-foreground dark:text-gray-400">{{ typeLabel(item.type) }}</td>
-                <td class="px-3 py-1.5 font-mono text-xs text-foreground break-all dark:text-gray-100">{{ item.id }}</td>
+                <td class="whitespace-nowrap px-3 py-1.5 text-fg-muted">{{ typeLabel(item.type) }}</td>
+                <td class="px-3 py-1.5 font-mono text-xs text-fg-strong break-all">{{ item.id }}</td>
                 <td class="px-3 py-1.5">
                   <span :class="['border px-1.5 py-0.5 text-xs', badgeClass(item.result)]">{{ item.result }}</span>
                 </td>
                 <td class="px-3 py-1.5 text-xs">
-                  <span v-if="item.message" class="text-foreground dark:text-gray-200">{{ item.message }}</span>
+                  <span v-if="item.message" class="text-fg">{{ item.message }}</span>
                   <ul v-if="item.warnings && item.warnings.length" class="list-disc pl-4 text-amber-800 dark:text-amber-300">
                     <li v-for="(warning, index) in item.warnings" :key="index">{{ formatWarning(warning) }}</li>
                   </ul>
@@ -703,11 +681,11 @@ const TYPE_LABELS = { pushKey: 'Push key', alertProvider: 'Notification', endpoi
 const typeLabel = (type) => TYPE_LABELS[type] || type
 
 const BADGES = {
-  green: 'border-green-300 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200',
-  blue: 'border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200',
-  gray: 'border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300',
-  amber: 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100',
-  red: 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
+  green: 'border-success bg-success-soft text-green-800 dark:text-green-200',
+  blue: 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200',
+  gray: 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
+  amber: 'border-warning bg-warning-soft text-warning-strong',
+  red: 'border-danger bg-danger-soft text-danger-strong',
 }
 const BADGE_COLORS = {
   create: 'green',

@@ -8,14 +8,14 @@
     <section
       v-for="(group, groupIndex) in groups"
       :key="`grouped:${group.name}`"
-      class="border bg-card dark:border-gray-800"
+      class="border bg-card border-line-soft"
       :aria-labelledby="`grouped-group-${groupIndex}`"
       :data-testid="`status-grouped-${group.name || 'outros'}`"
     >
       <h2 :id="`grouped-group-${groupIndex}`">
         <button
           type="button"
-          class="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+          class="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
           :aria-expanded="!collapsed.has(group.name)"
           :aria-controls="`grouped-panel-${groupIndex}`"
           :data-testid="`status-grouped-toggle-${group.name || 'outros'}`"
@@ -31,12 +31,9 @@
             <span v-if="group.description" class="block truncate text-xs font-normal text-muted-foreground">{{ group.description }}</span>
           </span>
           <span class="ml-auto flex flex-wrap items-center justify-end gap-1.5 text-xs font-normal">
-            <span
-              v-for="tag in group.tags"
-              :key="`tag-${tag}`"
-              class="border px-1.5 py-px text-[11px] text-muted-foreground dark:border-gray-700"
-              >{{ tag }}</span
-            >
+            <span v-for="tag in group.tags" :key="`tag-${tag}`" class="border px-1.5 py-px text-[11px] text-muted-foreground border-line">{{
+              tag
+            }}</span>
             <span
               v-for="short in group.environments"
               :key="`env-${short}`"
@@ -47,7 +44,7 @@
               v-for="application in group.applications"
               :key="`app-${application.name}`"
               :class="[
-                'hidden items-center gap-1 border px-1.5 py-px text-[11px] md:inline-flex dark:border-gray-700',
+                'hidden items-center gap-1 border px-1.5 py-px text-[11px] md:inline-flex border-line',
                 application.status === 'operational' ? '' : chipStatusClass(application.status),
               ]"
             >
@@ -164,15 +161,13 @@ const sectionCounts = (section) =>
 const dotClass = (status) => ({ operational: 'bg-green-500', degraded: 'bg-amber-500', down: 'bg-red-500' })[status] || 'bg-statusgray-400'
 const endpointDotClass = (status) => ({ up: 'bg-green-500', pending: 'bg-yellow-400', down: 'bg-red-500' })[status] || 'bg-statusgray-400'
 const endpointTextClass = (status) =>
-  ({ up: 'text-green-700 dark:text-green-400', pending: 'text-yellow-700 dark:text-yellow-400', down: 'text-red-700 dark:text-red-400' })[
-    status
-  ] || ''
+  ({ up: 'text-success', pending: 'text-yellow-700 dark:text-yellow-400', down: 'text-red-700 dark:text-red-400' })[status] || ''
 const chipStatusClass = (status) =>
   ({ degraded: 'border-amber-400 dark:border-amber-700', down: 'border-red-400 dark:border-red-800' })[status] || ''
 const statusBadgeClass = (status) =>
   ({
-    operational: 'border-green-300 text-green-700 dark:border-green-800 dark:text-green-400',
-    degraded: 'border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-400',
-    down: 'border-red-300 text-red-700 dark:border-red-800 dark:text-red-400',
+    operational: 'border-success text-success',
+    degraded: 'border-warning text-amber-700 dark:text-amber-400',
+    down: 'border-danger text-red-700 dark:text-red-400',
   })[status] || 'border-statusgray-300 text-statusgray-600 dark:border-statusgray-700 dark:text-statusgray-400'
 </script>

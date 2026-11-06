@@ -6,9 +6,7 @@
     active="notifications"
   >
     <template #actions>
-      <router-link
-        to="/"
-        class="inline-flex h-9 items-center border border-input bg-background px-3 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+      <router-link to="/" class="inline-flex h-9 items-center border border-field bg-background px-3 text-sm font-medium hover:bg-hover"
         >Dashboard</router-link
       >
       <Button
@@ -28,7 +26,7 @@
         v-if="listing && !listing.storageSupported"
         role="status"
         data-testid="alert-providers-storage"
-        class="mt-3 shrink-0 border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200"
+        class="mt-3 shrink-0 border border-amber-300 bg-warning-soft px-4 py-2 text-sm text-amber-900 dark:border-amber-800 dark:text-amber-200"
       >
         {{ storageMessage }}
       </div>
@@ -36,7 +34,7 @@
         v-if="listing && listing.managedUnavailable"
         role="alert"
         data-testid="alert-providers-unavailable"
-        class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+        class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-2 text-sm text-danger-strong"
       >
         The notifications configured through the web could not be loaded: only the ones from the configuration file are sending alerts until
         the next reload.
@@ -45,7 +43,7 @@
         v-if="error"
         role="alert"
         data-testid="admin-error"
-        class="mt-3 shrink-0 whitespace-pre-line border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+        class="mt-3 shrink-0 whitespace-pre-line border border-danger bg-danger-soft px-4 py-2 text-sm text-danger-strong"
       >
         {{ error }}
       </div>
@@ -59,8 +57,8 @@
       data-testid="alert-providers-empty"
     >
       <BellOff class="h-8 w-8 text-muted-foreground dark:text-gray-500" aria-hidden="true" />
-      <p class="text-sm font-medium text-foreground dark:text-gray-100">No notification is configured yet</p>
-      <p class="max-w-md text-sm text-muted-foreground dark:text-gray-400">
+      <p class="text-sm font-medium text-fg-strong">No notification is configured yet</p>
+      <p class="max-w-md text-sm text-fg-muted">
         Add a provider such as Telegram, Slack, email or ntfy, then add an alert of that type to the endpoints that should notify.
       </p>
       <Button v-if="canCreate" size="sm" data-testid="alert-provider-add-empty" @click="pickerOpen = true">Add notification</Button>
@@ -70,7 +68,7 @@
       <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
       <table class="hidden w-full table-fixed text-xs md:table" data-testid="alert-providers-table">
         <thead
-          class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+          class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
         >
           <tr class="uppercase tracking-wide">
             <th class="px-2 py-1.5 font-medium">Provider</th>
@@ -86,13 +84,13 @@
           <tr
             v-for="item in configured"
             :key="item.type"
-            class="border-t hover:bg-muted/40 dark:border-gray-700 dark:hover:bg-gray-800/50"
+            class="border-t hover:bg-hover-soft dark:border-gray-700"
             :data-testid="`alert-provider-row-${item.type}`"
           >
             <td class="px-2 py-1">
-              <span class="block truncate text-sm font-medium text-foreground dark:text-gray-100" :title="item.name">{{ item.name }}</span>
+              <span class="block truncate text-sm font-medium text-fg-strong" :title="item.name">{{ item.name }}</span>
             </td>
-            <td class="hidden px-2 py-1 text-muted-foreground dark:text-gray-400 lg:table-cell">
+            <td class="hidden px-2 py-1 text-fg-muted lg:table-cell">
               <span class="block truncate">{{ item.category }}</span>
             </td>
             <td class="px-2 py-1">
@@ -108,7 +106,7 @@
               </span>
               <span
                 v-if="item.shadowed"
-                class="ml-1 border border-amber-300 px-1 text-[11px] leading-4 text-amber-800 dark:border-amber-700 dark:text-amber-200"
+                class="ml-1 border border-warning px-1 text-[11px] leading-4 text-amber-800 dark:text-amber-200"
                 title="A notification configured through the web exists for this type, but the configuration file takes precedence"
                 >+ Web shadowed</span
               >
@@ -124,7 +122,7 @@
                 {{ usageCount(item) }} {{ usageCount(item) === 1 ? 'endpoint' : 'endpoints' }}
               </button>
             </td>
-            <td class="hidden px-2 py-1 text-muted-foreground dark:text-gray-400 lg:table-cell">
+            <td class="hidden px-2 py-1 text-fg-muted lg:table-cell">
               <span class="block truncate">
                 <template v-if="item.updatedAt"
                   >{{ new Date(item.updatedAt).toLocaleString() }}<span v-if="item.updatedBy"> · {{ item.updatedBy }}</span></template
@@ -166,8 +164,8 @@
         <div v-for="item in configured" :key="`card-${item.type}`" class="px-3 py-2.5" :data-testid="`alert-provider-card-${item.type}`">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <p class="truncate font-medium text-foreground dark:text-gray-100">{{ item.name }}</p>
-              <p class="truncate text-xs text-muted-foreground dark:text-gray-400">
+              <p class="truncate font-medium text-fg-strong">{{ item.name }}</p>
+              <p class="truncate text-xs text-fg-muted">
                 {{ item.category }} · {{ item.source === 'web' ? 'Web' : 'YAML' }}<template v-if="item.shadowed"> · web shadowed</template>
               </p>
             </div>
@@ -176,11 +174,7 @@
             </span>
           </div>
           <p v-if="item.error" class="mt-1 wrap-break-word text-xs text-red-700 dark:text-red-400">{{ item.error }}</p>
-          <button
-            type="button"
-            class="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline dark:text-gray-400"
-            @click="usageItem = item"
-          >
+          <button type="button" class="mt-1 text-xs text-fg-muted underline-offset-2 hover:underline" @click="usageItem = item">
             Used by {{ usageCount(item) }} {{ usageCount(item) === 1 ? 'endpoint' : 'endpoints' }}
           </button>
           <div class="mt-1 flex gap-1">
@@ -237,14 +231,12 @@
           v-model="search"
           type="search"
           placeholder="Search, e.g. telegram"
-          class="mb-3 h-9 w-full border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:border-gray-700 dark:text-gray-100"
+          class="mb-3 h-9 w-full border border-field bg-background px-3 text-sm text-fg-strong focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
           data-testid="alert-provider-search"
         />
-        <p v-if="pickerGroups.length === 0" class="py-6 text-center text-sm text-muted-foreground dark:text-gray-400">
-          No provider matches “{{ search }}”.
-        </p>
+        <p v-if="pickerGroups.length === 0" class="py-6 text-center text-sm text-fg-muted">No provider matches “{{ search }}”.</p>
         <div v-for="group in pickerGroups" :key="group.category" class="mb-3 last:mb-0">
-          <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground dark:text-gray-400">{{ group.category }}</h3>
+          <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-fg-muted">{{ group.category }}</h3>
           <div class="grid gap-1 sm:grid-cols-2">
             <button
               v-for="type in group.types"
@@ -252,15 +244,15 @@
               type="button"
               :disabled="isConfigured(type.type)"
               :data-testid="`alert-provider-pick-${type.type}`"
-              class="flex items-center justify-between gap-2 border px-3 py-2 text-left text-sm hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+              class="flex items-center justify-between gap-2 border px-3 py-2 text-left text-sm hover:bg-hover focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 border-line"
               @click="pick(type)"
             >
               <span class="min-w-0">
-                <span class="block truncate font-medium text-foreground dark:text-gray-100">{{ type.name }}</span>
+                <span class="block truncate font-medium text-fg-strong">{{ type.name }}</span>
                 <span v-if="type.deprecated" class="text-xs text-amber-700 dark:text-amber-300">Deprecated</span>
-                <span v-else-if="type.untested" class="text-xs text-muted-foreground dark:text-gray-400">Not validated yet</span>
+                <span v-else-if="type.untested" class="text-xs text-fg-muted">Not validated yet</span>
               </span>
-              <span v-if="isConfigured(type.type)" class="shrink-0 text-xs text-muted-foreground dark:text-gray-400">Configured</span>
+              <span v-if="isConfigured(type.type)" class="shrink-0 text-xs text-fg-muted">Configured</span>
             </button>
           </div>
         </div>
@@ -275,7 +267,7 @@
         @close="usageItem = null"
       >
         <template v-if="usageItem">
-          <p v-if="usageCount(usageItem) === 0" class="text-sm text-muted-foreground dark:text-gray-400">
+          <p v-if="usageCount(usageItem) === 0" class="text-sm text-fg-muted">
             No endpoint has an alert of this type yet. Add one in the Alerts section of an endpoint.
           </p>
           <EndpointKeyList :managed="usageItem.usage.managed" :file="usageItem.usage.file" />
@@ -300,7 +292,7 @@
         @close="blockedRemoval = null"
       >
         <template v-if="blockedRemoval">
-          <p class="mb-3 text-sm text-muted-foreground dark:text-gray-400">
+          <p class="mb-3 text-sm text-fg-muted">
             Remove the {{ blockedRemoval.item.name }} alerts of these endpoints first, then remove the notification.
           </p>
           <EndpointKeyList :managed="blockedRemoval.keys" :file="[]" />
@@ -351,14 +343,14 @@ const isConfigured = (type) => providers.value.some((item) => item.type === type
 
 const sourceClass = (item) =>
   item.source === 'web'
-    ? 'border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
-    : 'border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300'
+    ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
+    : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300'
 
 const stateClass = (item) =>
   ({
-    success: 'text-green-700 dark:text-green-400',
+    success: 'text-success',
     error: 'text-red-700 dark:text-red-400',
-    muted: 'text-muted-foreground dark:text-gray-400',
+    muted: 'text-fg-muted',
   })[providerState(item).tone]
 
 const stateIcon = (item) => ({ success: CheckCircle2, error: XCircle, muted: AlertTriangle })[providerState(item).tone]

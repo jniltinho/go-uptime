@@ -4,7 +4,7 @@
     <RouterLink
       v-if="validAddress"
       :to="{ name: 'PublicStatusPage', params: { slug } }"
-      class="mb-4 inline-flex h-9 items-center gap-2 px-3 text-sm font-medium hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring dark:hover:bg-gray-800"
+      class="mb-4 inline-flex h-9 items-center gap-2 px-3 text-sm font-medium hover:bg-hover focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
       data-testid="status-endpoint-back"
     >
       <ArrowLeft class="h-4 w-4" aria-hidden="true" />
@@ -22,7 +22,7 @@
     <section v-else-if="state === 'unauthorized'" class="py-16 text-center" data-testid="status-page-unauthorized">
       <h1 class="text-2xl font-bold tracking-tight">Login required</h1>
       <p class="mt-2 text-muted-foreground">This status page asks for a username and a password.</p>
-      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">
+      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted border-line" @click="reload">
         Reload the page
       </button>
     </section>
@@ -34,9 +34,7 @@
         data-testid="status-page-error"
         :class="[
           'mb-4 border px-4 py-3 text-sm',
-          details
-            ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100'
-            : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
+          details ? 'border-warning bg-warning-soft text-warning-strong' : 'border-danger bg-danger-soft text-danger-strong',
         ]"
       >
         {{ errorMessage }}
@@ -90,7 +88,7 @@
               <select
                 v-model="chartPeriod"
                 aria-label="Period of the response time chart"
-                class="border border-input bg-background px-3 py-1 text-sm focus:outline-hidden focus:ring-2 focus:ring-ring dark:border-gray-700"
+                class="border border-field bg-background px-3 py-1 text-sm focus:outline-hidden focus:ring-2 focus:ring-ring"
                 data-testid="status-endpoint-chart-duration"
               >
                 <option v-for="option in CHART_PERIOD_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>

@@ -6,9 +6,7 @@
     active="endpoints"
   >
     <template #actions>
-      <router-link
-        to="/"
-        class="inline-flex h-9 items-center border border-input bg-background px-3 text-sm font-medium hover:bg-accent dark:border-gray-700 dark:hover:bg-gray-800"
+      <router-link to="/" class="inline-flex h-9 items-center border border-field bg-background px-3 text-sm font-medium hover:bg-hover"
         >Dashboard</router-link
       >
       <Button size="sm" data-testid="admin-new-endpoint" @click="router.push({ name: 'AdminEndpointNew' })">New endpoint</Button>
@@ -19,7 +17,7 @@
         v-if="notice"
         role="status"
         data-testid="admin-notice"
-        class="mt-3 shrink-0 border border-green-300 bg-green-50 px-4 py-2 text-sm text-green-800 dark:border-green-800 dark:bg-green-900/30 dark:text-green-200"
+        class="mt-3 shrink-0 border border-success bg-success-soft px-4 py-2 text-sm text-green-800 dark:text-green-200"
       >
         {{ notice }}
       </div>
@@ -27,26 +25,21 @@
         v-if="error"
         role="alert"
         data-testid="admin-error"
-        class="mt-3 shrink-0 border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200"
+        class="mt-3 shrink-0 border border-danger bg-danger-soft px-4 py-2 text-sm text-danger-strong"
       >
         {{ error }}
       </div>
     </template>
 
     <template #toolbar>
-      <Input
-        v-model="search"
-        placeholder="Search by name, group or URL"
-        class="h-9 max-w-md dark:border-gray-700"
-        data-testid="admin-search"
-      />
+      <Input v-model="search" placeholder="Search by name, group or URL" class="h-9 max-w-md border-field" data-testid="admin-search" />
     </template>
 
     <div v-if="loading" class="py-12 flex justify-center"><Loading /></div>
     <!-- Fork: fixed layout so that the width of the table never depends on the content, and cards below md -->
     <table v-else class="hidden w-full table-fixed text-xs md:table" data-testid="admin-table">
       <thead
-        class="sticky top-0 z-10 bg-gray-50 text-left text-muted-foreground shadow-[0_1px_0_0_rgb(229,231,235)] dark:bg-gray-800 dark:text-gray-400 dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
+        class="sticky top-0 z-10 bg-surface-2 text-left text-fg-muted shadow-[0_1px_0_0_rgb(229,231,235)] dark:shadow-[0_1px_0_0_rgb(55,65,81)]"
       >
         <tr class="uppercase tracking-wide">
           <th class="w-[26%] px-2 py-1.5 font-medium">Name</th>
@@ -61,21 +54,21 @@
       </thead>
       <tbody>
         <tr v-if="filteredItems.length === 0">
-          <td colspan="8" class="px-2 py-8 text-center text-muted-foreground dark:text-gray-400">No endpoints found.</td>
+          <td colspan="8" class="px-2 py-8 text-center text-fg-muted">No endpoints found.</td>
         </tr>
         <tr
           v-for="item in filteredItems"
           :key="item.key"
-          class="border-t hover:bg-muted/40 dark:border-gray-700 dark:hover:bg-gray-800/50"
+          class="border-t hover:bg-hover-soft dark:border-gray-700"
           :data-testid="`admin-row-${item.key}`"
         >
-          <td class="px-2 py-1 font-medium text-foreground dark:text-gray-100">
+          <td class="px-2 py-1 font-medium text-fg-strong">
             <span class="flex min-w-0 items-center gap-1">
               <span class="min-w-0 truncate text-sm" :title="item.name">{{ item.name }}</span>
               <!-- The warning is an icon so that it neither adds width nor pushes the row to a second line -->
               <AlertTriangle
                 v-if="item.conflict || item.error"
-                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400']"
+                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-danger']"
                 :aria-label="
                   item.conflict ? `Conflicts with the configuration file: ${item.conflictOrigin}` : `Invalid definition: ${item.error}`
                 "
@@ -84,10 +77,10 @@
               />
             </span>
           </td>
-          <td class="px-2 py-1 text-muted-foreground dark:text-gray-400">
+          <td class="px-2 py-1 text-fg-muted">
             <span class="block truncate" :title="item.group">{{ item.group }}</span>
           </td>
-          <td class="whitespace-nowrap px-2 py-1 uppercase text-muted-foreground dark:text-gray-400">
+          <td class="whitespace-nowrap px-2 py-1 uppercase text-fg-muted">
             {{ item.type }}
             <span
               v-if="item.acceptsPush && item.type !== 'PUSH'"
@@ -102,7 +95,7 @@
           </td>
           <td class="hidden px-2 py-1 text-right lg:table-cell">{{ item.interval }}</td>
           <td class="px-2 py-1">
-            <span :class="item.enabled ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground dark:text-gray-500'">{{
+            <span :class="item.enabled ? 'text-success' : 'text-muted-foreground dark:text-gray-500'">{{
               item.enabled ? 'Enabled' : 'Disabled'
             }}</span>
           </td>
@@ -111,8 +104,8 @@
               :class="[
                 'border px-1 text-[11px] leading-4',
                 item.source === 'admin'
-                  ? 'border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
-                  : 'border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300',
+                  ? 'border-blue-300 bg-info-soft text-blue-800 dark:border-blue-800 dark:text-blue-200'
+                  : 'border-gray-300 bg-surface-2 text-gray-700 dark:border-gray-600 dark:text-gray-300',
               ]"
               >{{ item.source === 'admin' ? 'Web' : 'YAML' }}</span
             >
@@ -148,33 +141,30 @@
 
     <!-- Fork: below md the table gives way to one card per endpoint, with every field and the same actions -->
     <div v-if="!loading" class="divide-y md:hidden dark:divide-gray-700">
-      <p v-if="filteredItems.length === 0" class="px-3 py-8 text-center text-sm text-muted-foreground dark:text-gray-400">
-        No endpoints found.
-      </p>
+      <p v-if="filteredItems.length === 0" class="px-3 py-8 text-center text-sm text-fg-muted">No endpoints found.</p>
       <div v-for="item in filteredItems" :key="`card-${item.key}`" class="px-3 py-2.5" :data-testid="`admin-card-${item.key}`">
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0">
-            <p class="flex min-w-0 items-center gap-1 font-medium text-foreground dark:text-gray-100">
+            <p class="flex min-w-0 items-center gap-1 font-medium text-fg-strong">
               <span class="min-w-0 truncate" :title="item.name">{{ item.name }}</span>
               <AlertTriangle
                 v-if="item.conflict || item.error"
-                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400']"
+                :class="['h-3.5 w-3.5 shrink-0', item.conflict ? 'text-amber-600 dark:text-amber-400' : 'text-danger']"
                 :aria-label="
                   item.conflict ? `Conflicts with the configuration file: ${item.conflictOrigin}` : `Invalid definition: ${item.error}`
                 "
                 :title="item.conflict ? `Conflicts with YAML: ${item.conflictOrigin}` : `Invalid: ${item.error}`"
               />
             </p>
-            <p class="truncate font-mono text-xs text-muted-foreground dark:text-gray-400" :title="item.url">
+            <p class="truncate font-mono text-xs text-fg-muted" :title="item.url">
               {{ item.url || (item.type === 'PUSH' ? '—' : '') }}
             </p>
           </div>
-          <span
-            :class="['shrink-0 text-xs', item.enabled ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground dark:text-gray-500']"
-            >{{ item.enabled ? 'Enabled' : 'Disabled' }}</span
-          >
+          <span :class="['shrink-0 text-xs', item.enabled ? 'text-success' : 'text-muted-foreground dark:text-gray-500']">{{
+            item.enabled ? 'Enabled' : 'Disabled'
+          }}</span>
         </div>
-        <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground dark:text-gray-400">
+        <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-fg-muted">
           <span v-if="item.group" class="truncate">{{ item.group }}</span>
           <span class="uppercase">{{ item.type }}</span>
           <span v-if="item.acceptsPush && item.type !== 'PUSH'">push</span>

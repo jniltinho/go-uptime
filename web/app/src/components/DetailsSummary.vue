@@ -3,8 +3,8 @@
   <Card data-testid="details-summary">
     <dl class="grid grid-cols-2 gap-x-4 gap-y-5 p-6 md:grid-cols-5">
       <div v-for="(item, index) in items" :key="item.label" :data-testid="`details-summary-${index}`" class="min-w-0">
-        <dt class="text-sm font-medium text-muted-foreground dark:text-gray-400">{{ item.label }}</dt>
-        <dd class="mt-1 text-2xl font-bold text-foreground dark:text-gray-100">{{ item.value }}</dd>
+        <dt class="text-sm font-medium text-fg-muted">{{ item.label }}</dt>
+        <dd class="mt-1 text-2xl font-bold text-fg-strong">{{ item.value }}</dd>
       </div>
     </dl>
   </Card>

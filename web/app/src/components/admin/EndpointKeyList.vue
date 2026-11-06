@@ -4,22 +4,22 @@
        read-only -->
   <div class="space-y-3 text-sm" data-testid="endpoint-key-list">
     <div v-if="managed.length">
-      <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground dark:text-gray-400">Managed through the web</h3>
+      <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-fg-muted">Managed through the web</h3>
       <ul class="space-y-0.5">
         <li v-for="key in managed" :key="`managed-${key}`">
           <router-link
             :to="{ name: 'AdminEndpointEdit', params: { endpointKey: key } }"
             target="_blank"
-            class="font-mono text-xs text-foreground underline underline-offset-2 dark:text-gray-100"
+            class="font-mono text-xs text-fg-strong underline underline-offset-2"
             >{{ key }}</router-link
           >
         </li>
       </ul>
     </div>
     <div v-if="file.length">
-      <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground dark:text-gray-400">Configuration file</h3>
+      <h3 class="mb-1 text-xs font-semibold uppercase tracking-wide text-fg-muted">Configuration file</h3>
       <ul class="space-y-0.5">
-        <li v-for="key in file" :key="`file-${key}`" class="font-mono text-xs text-muted-foreground dark:text-gray-400">{{ key }}</li>
+        <li v-for="key in file" :key="`file-${key}`" class="font-mono text-xs text-fg-muted">{{ key }}</li>
       </ul>
     </div>
   </div>

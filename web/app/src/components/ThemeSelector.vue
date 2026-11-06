@@ -25,10 +25,7 @@
       :id="menuId"
       role="menu"
       aria-label="Theme"
-      :class="[
-        'absolute z-50 min-w-36 border border-input bg-popover py-1 text-sm text-popover-foreground shadow-md dark:border-gray-700',
-        placementClass,
-      ]"
+      :class="['absolute z-50 min-w-36 border border-field bg-popover py-1 text-sm text-popover-foreground shadow-md', placementClass]"
       :data-testid="`${testid}-menu`"
       @keydown.down.prevent="move(1)"
       @keydown.up.prevent="move(-1)"
@@ -90,7 +87,7 @@ const items = ref([])
 const buttonClass = computed(() =>
   props.compact
     ? 'p-1.5 rounded-none hover:bg-accent transition-colors'
-    : 'inline-flex h-9 items-center gap-2 border border-input bg-background px-3 text-sm hover:bg-accent motion-safe:transition-colors dark:border-gray-700 dark:hover:bg-gray-800',
+    : 'inline-flex h-9 items-center gap-2 border border-field bg-background px-3 text-sm hover:bg-hover motion-safe:transition-colors',
 )
 const placementClass = computed(() => (props.placement === 'top-start' ? 'bottom-full left-0 mb-2' : 'right-0 top-full mt-1'))
 

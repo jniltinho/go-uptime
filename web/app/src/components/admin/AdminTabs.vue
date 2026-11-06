@@ -11,8 +11,8 @@
         '-mb-px border-b-2 px-4 text-sm font-medium',
         compact ? 'py-1.5' : 'py-2',
         active === tab.id
-          ? 'border-foreground text-foreground dark:border-gray-100 dark:text-gray-100'
-          : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-gray-100',
+          ? 'border-foreground text-fg-strong dark:border-gray-100'
+          : 'border-transparent text-fg-muted hover:text-fg-strong',
       ]"
     >
       {{ tab.label }}

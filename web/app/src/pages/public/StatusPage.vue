@@ -12,7 +12,7 @@
     <section v-else-if="state === 'unauthorized'" class="py-16 text-center" data-testid="status-page-unauthorized">
       <h1 class="text-2xl font-bold tracking-tight">Login required</h1>
       <p class="mt-2 text-muted-foreground">This status page asks for a username and a password.</p>
-      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted dark:border-gray-700" @click="reload">
+      <button type="button" class="mt-4 border px-4 py-2 text-sm font-medium hover:bg-muted border-line" @click="reload">
         Reload the page
       </button>
     </section>
@@ -24,9 +24,7 @@
         data-testid="status-page-error"
         :class="[
           'mb-4 border px-4 py-3 text-sm',
-          page
-            ? 'border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100'
-            : 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-200',
+          page ? 'border-warning bg-warning-soft text-warning-strong' : 'border-danger bg-danger-soft text-danger-strong',
         ]"
       >
         {{ errorMessage }}
@@ -117,7 +115,7 @@
               <h2 :id="`status-group-${groupIndex}`" class="min-w-0 flex-1">
                 <button
                   type="button"
-                  class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400"
+                  class="flex w-full min-w-0 items-baseline gap-3 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                   :aria-expanded="!collapsedGroups.has(group.name || '')"
                   :aria-controls="`status-group-panel-${groupIndex}`"
                   :data-testid="`status-group-toggle-${group.name || 'outros'}`"
@@ -333,7 +331,7 @@ const groupStatusLabel = (status) => STATUS_LABELS[status]?.group || STATUS_LABE
 
 const groupStatusClass = (status) =>
   ({
-    operational: 'text-green-700 dark:text-green-400',
+    operational: 'text-success',
     degraded: 'text-amber-700 dark:text-amber-400',
     down: 'text-red-700 dark:text-red-400',
   })[status] || 'text-muted-foreground'
