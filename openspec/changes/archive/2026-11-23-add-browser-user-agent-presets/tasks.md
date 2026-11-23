@@ -28,5 +28,5 @@
 
 - [x] 4.1 README: the `user-agent` field in the endpoint table, with the accepted values and the limits (only the header changes; TLS fingerprint and other headers stay the ones of Go)
 - [x] 4.2 `docs/admin-endpoints.md`: the select of the form; `docs/migrating-from-gatus.md`: an endpoint on a preset no longer matches a rule on `go-uptime/1.0`
-- [ ] 4.3 `create-release` skill: checklist item to refresh the browser versions of the table; release notes mention the stray-key upgrade case and the rollback of managed definitions
+- [x] 4.3 `create-release` skill: checklist item to refresh the browser versions of the table; release notes mention the stray-key upgrade case and the rollback of managed definitions
 - [x] 4.4 `make lint`, `make test`, `openspec validate add-browser-user-agent-presets --strict`
