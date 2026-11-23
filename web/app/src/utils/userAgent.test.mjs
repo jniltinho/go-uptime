@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 import { test } from 'vitest'
 import assert from 'node:assert/strict'
 import { hasUserAgentHeader, supportsUserAgent, userAgentToSend } from './userAgent.js'

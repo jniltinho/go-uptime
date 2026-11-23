@@ -1,3 +1,4 @@
+// Part of go-uptime, derived from Gatus by TwiN (Apache-2.0); files that existed in Gatus were modified. See NOTICE.
 // Choice of the user-agent preset of an endpoint in the endpoint form of the administration. The server applies the
 // same rules (internal/config/endpoint/useragent.go); the form only avoids building a definition the server refuses.
 
