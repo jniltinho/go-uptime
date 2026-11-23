@@ -2,6 +2,8 @@
 <template>
   <div ref="selectRef" class="relative" :class="props.class">
     <button
+      type="button"
+      :disabled="props.disabled"
       @click="toggleDropdown"
       @keydown="handleKeyDown"
       :aria-expanded="isOpen"
@@ -42,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ChevronDown, Check } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -50,6 +52,7 @@ const props = defineProps({
   options: { type: Array, required: true },
   placeholder: { type: String, default: 'Select...' },
   class: { type: String, default: '' },
+  disabled: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -67,7 +70,21 @@ const selectOption = (option) => {
   isOpen.value = false
 }
 
+// A disabled select closes its open list
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (disabled) {
+      isOpen.value = false
+      focusedIndex.value = -1
+    }
+  },
+)
+
 const toggleDropdown = () => {
+  if (props.disabled) {
+    return
+  }
   isOpen.value = !isOpen.value
   if (isOpen.value) {
     // Set initial focus to selected option or first option

@@ -38,7 +38,7 @@ What keeps working without a change:
 | If you… | Then… |
 |---|---|
 | have Prometheus dashboards or alerts on `gatus_results_total` and the other metrics | add `metrics-namespace: gatus` to the configuration, which keeps the names of v6 exactly, or rewrite the queries for the new prefix, `go_uptime_` |
-| allow the checks through a firewall or a WAF by their `User-Agent` | allow `go-uptime/1.0` (it was `Gatus/1.0`). The Zulip provider also sends `go-uptime/1.0` now. An endpoint can still set its own `User-Agent` header |
+| allow the checks through a firewall or a WAF by their `User-Agent` | allow `go-uptime/1.0` (it was `Gatus/1.0`). The Zulip provider also sends `go-uptime/1.0` now. An endpoint can still set its own `User-Agent` header, or a browser agent with `user-agent: chrome`, `firefox` or `edge`, which a rule on `go-uptime/1.0` does not match |
 | expand `${GATUS_CONFIG_PATH}` or `${GATUS_LOG_LEVEL}` **inside** the YAML, counting on the value that the image used to set | set the variable in your compose: the image no longer defines them (their defaults would hide the old names), so the expansion would be empty |
 | show the JSON badge (`…/health/badge.shields`) through shields.io | the label is now `go-uptime`; add `&label=…` to the badge URL to choose another |
 

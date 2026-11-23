@@ -126,6 +126,11 @@ type Endpoint struct {
 	// Headers of the request
 	Headers map[string]string `yaml:"headers,omitempty"`
 
+	// UserAgent is the preset of the User-Agent of the HTTP, GraphQL and WebSocket checks: go-uptime, chrome, firefox
+	// or edge. Empty means the User-Agent header of Headers, or else DefaultUserAgent. It cannot be combined with a
+	// User-Agent header, and it is resolved when the request is built: it is never written into Headers.
+	UserAgent UserAgentPreset `yaml:"user-agent,omitempty"`
+
 	// ExtraLabels are key-value pairs that can be used to metric the endpoint
 	ExtraLabels map[string]string `yaml:"extra-labels,omitempty"`
 
@@ -215,8 +220,9 @@ func (e *Endpoint) Type() Type {
 
 // ValidateAndSetDefaults validates the endpoint's configuration and sets the default value of args that have one:
 // the interval defaults to 1 minute, the method to GET, the client and UI configurations to their defaults, and the
-// User-Agent header (plus a JSON Content-Type for GraphQL) is added when missing. It returns one of the ErrEndpoint
-// errors, ErrInvalidConditionFormat, ErrUnknownEndpointType or the error of the invalid section.
+// User-Agent header (plus a JSON Content-Type for GraphQL) is added when missing and no user-agent preset is set. It
+// returns one of the ErrEndpoint errors (the user-agent ones included), ErrInvalidConditionFormat,
+// ErrUnknownEndpointType or the error of the invalid section.
 func (e *Endpoint) ValidateAndSetDefaults() error {
 	if err := validateEndpointNameGroupAndAlerts(e.Name, e.Group, e.Alerts); err != nil {
 		return err
@@ -244,11 +250,15 @@ func (e *Endpoint) ValidateAndSetDefaults() error {
 	if len(e.Method) == 0 {
 		e.Method = http.MethodGet
 	}
+	if err := e.validateUserAgent(); err != nil {
+		return err
+	}
 	if len(e.Headers) == 0 {
 		e.Headers = make(map[string]string)
 	}
-	// Automatically add user agent header if there isn't one specified in the endpoint configuration
-	if !hasHeader(e.Headers, UserAgentHeader) {
+	// Automatically add user agent header if there isn't one specified in the endpoint configuration, unless a preset
+	// of user-agent is resolved when the request is built
+	if !hasHeader(e.Headers, UserAgentHeader) && e.UserAgent == "" {
 		e.Headers[UserAgentHeader] = DefaultUserAgent
 	}
 	// Automatically add "Content-Type: application/json" header if there's no Content-Type set
@@ -518,7 +528,9 @@ func (e *Endpoint) call(result *Result) {
 		if e.Headers != nil {
 			maps.Copy(wsHeaders, e.Headers)
 		}
-		if !hasHeader(wsHeaders, UserAgentHeader) {
+		if userAgent := e.userAgent(); userAgent != "" {
+			wsHeaders[UserAgentHeader] = userAgent
+		} else if !hasHeader(wsHeaders, UserAgentHeader) {
 			wsHeaders[UserAgentHeader] = DefaultUserAgent
 		}
 		result.Connected, result.Body, err = client.QueryWebSocket(e.URL, e.getParsedBody(), wsHeaders, e.ClientConfig)
@@ -610,6 +622,9 @@ func (e *Endpoint) buildHTTPRequest() *http.Request {
 		if strings.EqualFold(k, HostHeader) {
 			request.Host = v
 		}
+	}
+	if userAgent := e.userAgent(); userAgent != "" {
+		request.Header.Set(UserAgentHeader, userAgent)
 	}
 	return request
 }
