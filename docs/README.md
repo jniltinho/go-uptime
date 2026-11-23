@@ -282,6 +282,7 @@ You can then configure alerts to be triggered when an endpoint is unhealthy once
 | `endpoints[].graphql`                           | Whether to wrap the body in a query param (`{"query":"$body"}`).                                                                            | `false`                    |
 | `endpoints[].body`                              | Request body.                                                                                                                               | `""`                       |
 | `endpoints[].headers`                           | Request headers.                                                                                                                            | `{}`                       |
+| `endpoints[].user-agent`                        | User-Agent the HTTP(S), GraphQL and WebSocket checks send: `go-uptime`, `chrome`, `firefox` or `edge` (desktop Windows strings of the current stable release). See [User agent](#user-agent).| `go-uptime` (`go-uptime/1.0`)|
 | `endpoints[].dns`                               | Configuration for an endpoint of type DNS. <br />See [Monitoring an endpoint using DNS queries](#monitoring-an-endpoint-using-dns-queries). | `""`                       |
 | `endpoints[].dns.query-type`                    | Query type (e.g. MX).                                                                                                                       | `""`                       |
 | `endpoints[].dns.query-name`                    | Query name (e.g. example.com).                                                                                                              | `""`                       |
@@ -310,6 +311,38 @@ You may use the following placeholders in the body (`endpoints[].body`):
 - `[ENDPOINT_URL]` (resolved from `endpoints[].url`)
 - `[LOCAL_ADDRESS]` (resolves to the local IP and port like `192.0.2.1:25` or `[2001:db8::1]:80`)
 - `[RANDOM_STRING_N]` (resolves to a random string of numbers and letters of length N (max: 8192))
+
+
+#### User agent
+
+The checks of HTTP(S), GraphQL and WebSocket endpoints send `User-Agent: go-uptime/1.0`. A site behind a WAF, a CDN
+or a bot filter may answer that agent with 403, a challenge or a different page: `user-agent` makes an endpoint send
+the agent of a browser instead, without copying the string by hand.
+
+```yaml
+endpoints:
+  - name: website
+    url: "https://example.org"
+    user-agent: chrome # go-uptime (default), chrome, firefox or edge
+    conditions:
+      - "[STATUS] == 200"
+```
+
+| Value       | Sends                                                                                                                       |
+|:------------|:----------------------------------------------------------------------------------------------------------------------------|
+| `go-uptime` | `go-uptime/1.0`, the same as omitting the field                                                                             |
+| `chrome`    | `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36`           |
+| `firefox`   | `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:160.0) Gecko/20100101 Firefox/160.0`                                         |
+| `edge`      | `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36 Edg/158.0.0.0` |
+
+The browser versions follow the stable releases and are refreshed in the releases of Go Uptime. The configuration is
+invalid when `user-agent` has another value, is set on an endpoint that is not HTTP(S), GraphQL or WebSocket, or is set
+together with a `User-Agent` header: for any other string, use the header instead. In the administration, the endpoint
+form offers the same choice in the **User agent** field.
+
+Only the header changes: the other headers, the HTTP/2 settings and the TLS fingerprint stay the ones of Go, so a bot
+filter that checks them, or that requires JavaScript, still sees a monitor. Where you control the filter, allowing
+`go-uptime/1.0` remains the better option.
 
 ### External Endpoints
 Unlike regular endpoints, external endpoints are not monitored by Go Uptime, but they are instead pushed programmatically.

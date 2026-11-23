@@ -180,6 +180,20 @@
               <span class="block text-sm font-medium text-fg">Method</span>
               <Select v-model="form.method" :options="methodOptions" placeholder="GET (default)" class="mt-1.5" />
             </div>
+            <div v-if="userAgentShown" data-testid="admin-field-user-agent">
+              <span class="block text-sm font-medium text-fg">User agent</span>
+              <Select
+                v-model="form.userAgent"
+                :options="userAgentOptions"
+                :disabled="userAgentLocked"
+                placeholder="Go Uptime (default)"
+                class="mt-1.5"
+              />
+              <p v-if="userAgentLocked" class="mt-1 text-xs text-fg-muted" data-testid="admin-user-agent-locked">
+                Set by the User-Agent header.
+              </p>
+              <p v-else class="mt-1 text-xs text-fg-muted">The User-Agent header the checks send.</p>
+            </div>
             <label class="block">
               <span class="block text-sm font-medium text-fg">Interval</span>
               <Input v-model="form.interval" placeholder="1m (default)" class="mt-1.5 border-field" data-testid="admin-field-interval" />
@@ -537,6 +551,7 @@ import Loading from '@/components/Loading.vue'
 import { adminApi, describeAdminError, jsonPayload, statusPagesApi, yamlPayload } from '@/utils/adminApi'
 import { endpointKey as buildEndpointKey } from '@/utils/statusPage'
 import { toYaml } from '@/utils/yaml'
+import { hasUserAgentHeader, supportsUserAgent, userAgentOptions, userAgentToSend } from '@/utils/userAgent'
 
 const props = defineProps({
   endpointKey: { type: String, default: '' },
@@ -563,6 +578,7 @@ const monitorTypes = [
 const activeFields = [
   'url',
   'method',
+  'user-agent',
   'interval',
   'conditions',
   'headers',
@@ -608,6 +624,7 @@ const emptyForm = () => ({
   group: '',
   url: '',
   method: '',
+  userAgent: '',
   interval: '',
   enabled: true,
   followRedirects: true,
@@ -627,6 +644,14 @@ const isEdit = computed(() => props.endpointKey !== '')
 const readOnly = computed(() => source.value === 'config')
 const isPush = computed(() => monitorType.value === 'push')
 const receivesPush = computed(() => isPush.value || form.acceptPush)
+// The user-agent preset only applies to HTTP(S) and WebSocket checks, and never together with a User-Agent header row
+const userAgentShown = computed(() => !isPush.value && supportsUserAgent(form.url, monitorType.value === 'dns'))
+const userAgentLocked = computed(() => hasUserAgentHeader(form.headers))
+watch(userAgentLocked, (locked) => {
+  if (locked) {
+    form.userAgent = ''
+  }
+})
 const title = computed(() => {
   if (!isEdit.value) {
     return 'New endpoint'
@@ -804,6 +829,7 @@ const formFromDocument = (document) => {
     group: document.group || '',
     url: document.url || '',
     method: document.method || '',
+    userAgent: document['user-agent'] === 'go-uptime' ? '' : String(document['user-agent'] || ''),
     interval: document.interval || '',
     enabled: document.enabled !== false,
     followRedirects: !(document.client && document.client['ignore-redirect'] === true),
@@ -868,6 +894,7 @@ const documentFromForm = () => {
     delete document.heartbeat
     setOrDelete(document, 'url', form.url.trim())
     setOrDelete(document, 'method', monitorType.value === 'http' ? form.method : null)
+    setOrDelete(document, 'user-agent', userAgentToSend(form.userAgent, form.url, monitorType.value === 'dns', form.headers))
     setOrDelete(document, 'interval', form.interval.trim())
     // The other client options (e.g. oauth2, timeout) are only edited in YAML mode and kept as they are
     const client = { ...document.client }
