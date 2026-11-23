@@ -114,10 +114,14 @@ empty) and `authenticated`.
   and invalid endpoints; lets you enable, disable and remove the endpoints managed through the web. On larger screens
   the lists of the administration (Endpoints, Status pages and Push keys) fill the window with a compact header, and
   only the table scrolls, with its header fixed.
-- **Form (`/admin/endpoints/new` and `/admin/endpoints/<key>/edit`):** form mode (name, group, URL, method, interval,
+- **Form (`/admin/endpoints/new` and `/admin/endpoints/<key>/edit`):** form mode (name, group, URL, method, user agent, interval,
   conditions, headers, alerts, enabled, follow redirects and skip TLS certificate verification) and YAML mode, with the
   same keys as an item of `endpoints` in the configuration file. The group is picked from the groups of the existing
   endpoints or typed as a new group. Changing the name or the group renames the endpoint (see [Renaming](#renaming)).
+- **User agent** (`user-agent`): Go Uptime (the default, `go-uptime/1.0`), Chrome, Firefox or Edge, for HTTP(S) and
+  WebSocket URLs. A browser preset sends the agent of that browser, for sites behind a WAF or a bot filter. It is
+  disabled while the endpoint has a `User-Agent` header row: keep only one of them. See
+  [User agent](README.md#user-agent).
 - **Follow redirects** (`client.ignore-redirect`, on by default) and **Skip TLS certificate verification**
   (`client.insecure`) help with sites that redirect HTTP to HTTPS or send an incomplete certificate chain. The other
   `client` options are only available in YAML mode.

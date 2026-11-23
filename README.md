@@ -33,6 +33,7 @@ pages.
 | **SQLite, PostgreSQL, MySQL and MariaDB** | `storage.type: sqlite`, `postgres` or `mysql` (MySQL 8.4+ and MariaDB 10.11+). [docs/storage-mysql.md](docs/storage-mysql.md) |
 | **Push monitoring compatible with the Uptime Kuma** | Scripts and services report their status at `/api/push/<token>?status=up&msg=OK&ping=`, with Push endpoints, global keys, push on active endpoints and a Pending status with retries. [docs/push-monitoring.md](docs/push-monitoring.md) |
 | **Response time chart** | Periods Recent, 3h, 6h, 24h and 1w, with the average, the minimum and the maximum, and columns for the failures. [docs/status-pages.md](docs/status-pages.md#response-time-chart) |
+| **Browser user agent** | `user-agent: chrome`, `firefox` or `edge` on an endpoint makes its checks send the agent of that browser, for sites behind a WAF or a bot filter that refuse `go-uptime/1.0`; also a field of the endpoint form. [docs/README.md](docs/README.md#user-agent) |
 | **TLS certificate expiration** | Days until the certificate expires, below the name of the endpoint on the dashboard and, with `show-certificate-expiration`, on the status pages. [docs/status-pages.md](docs/status-pages.md) |
 | **Login screen** | A login page with logout for `security.basic`, with sessions stored in the database and a limit of failed logins, while `curl -u` keeps working. OIDC is supported too. [docs/admin-endpoints.md](docs/admin-endpoints.md#login-screen) |
 | **Backup and restore of the administration** | A JSON file with the endpoints, status pages, push keys and notifications, optionally encrypted, restored with a preview of what changes. [docs/admin-endpoints.md](docs/admin-endpoints.md#backup-and-restore) |
@@ -48,7 +49,7 @@ With Docker, using a fixed version (`latest` is never published):
 
 ```bash
 mkdir -p config && curl -sL -o config/config.yaml https://raw.githubusercontent.com/jniltinho/go-uptime/main/config.yaml
-docker run -d --name go-uptime -p 127.0.0.1:8080:8080 -v "$PWD/config:/config" jniltinho/go-uptime:v7.4.2
+docker run -d --name go-uptime -p 127.0.0.1:8080:8080 -v "$PWD/config:/config" jniltinho/go-uptime:v7.5.0
 ```
 
 Open http://127.0.0.1:8080. `docker ps` shows the container as `healthy` once `/health` answers.
@@ -58,7 +59,7 @@ That keeps nothing across restarts. With Docker Compose, the history in SQLite a
 ```yaml
 services:
   go-uptime:
-    image: jniltinho/go-uptime:v7.4.2
+    image: jniltinho/go-uptime:v7.5.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"   # publish it through a reverse proxy, not directly
@@ -70,8 +71,8 @@ volumes:
 ```
 
 ```bash
-docker run --rm -it jniltinho/go-uptime:v7.4.2 password hash             # asks for the password, prints the hash
-docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.4.2 config validate   # before every deploy
+docker run --rm -it jniltinho/go-uptime:v7.5.0 password hash             # asks for the password, prints the hash
+docker run --rm -v "$PWD/config:/config:ro" jniltinho/go-uptime:v7.5.0 config validate   # before every deploy
 docker compose up -d
 ```
 
@@ -87,7 +88,7 @@ Without Docker, download `go-uptime_<version>_linux_<amd64|arm64>.tar.gz` from t
 [releases](https://github.com/jniltinho/go-uptime/releases) and run:
 
 ```bash
-tar xzf go-uptime_7.4.2_linux_amd64.tar.gz
+tar xzf go-uptime_7.5.0_linux_amd64.tar.gz
 ./go-uptime config validate --config config.yaml
 ./go-uptime --config config.yaml
 ```
