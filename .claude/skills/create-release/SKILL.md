@@ -133,6 +133,13 @@ A versão antiga fica na `jniltinho/gatus:v6.3.0` durante toda a série 7.x: o t
 das etapas confere que a sessão da v6 não é reconhecida, o que só vale com uma imagem da v6. Contra uma 7.x essa etapa
 falha sem que haja defeito.
 
+### 0.1. Antes da tag: versões dos navegadores do `user-agent`
+
+Os presets `chrome`, `firefox` e `edge` (`internal/config/endpoint/useragent.go`) fixam a versão estável de cada navegador.
+Confira as versões atuais nas páginas de release do Chrome, do Firefox e do Edge; se mudaram, troque os números da tabela
+(e a data do comentário acima dela) e a tabela da seção "User agent" de `docs/README.md` num PR antes da tag.
+`TestUserAgentPresetFormats` confere o formato.
+
 ### 7. Depois da release: versões dos exemplos
 
 A versão aparece em exemplos que o usuário copia. Troque só as referências de imagem e os nomes dos tarballs — frases que
